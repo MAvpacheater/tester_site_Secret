@@ -384,6 +384,14 @@
                         <span class="slider"></span>
                     </label>
                 </div>
+
+                <div class="modifier-item">
+                    <span class="modifier-label">Max lvl (x2.25)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="maxlvl" checked onchange="updateMultiplier()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
             
             <div class="input-section">
@@ -402,54 +410,7 @@
         <!-- Shiny Stats Page -->
         <div class="page shiny-page" id="shinyPage">
             <h1 class="title">Shiny pets</h1>
-            <div class="stats-grid">
-                <div class="stat-row"><span class="left-value">250%</span><span class="right-value">≈ 287.5%</span></div>
-                <div class="stat-row"><span class="left-value">255%</span><span class="right-value">≈ 293.25%</span></div>
-                <div class="stat-row"><span class="left-value">260%</span><span class="right-value">≈ 299%</span></div>
-                <div class="stat-row"><span class="left-value">265%</span><span class="right-value">≈ 304.75%</span></div>
-                <div class="stat-row"><span class="left-value">270%</span><span class="right-value">≈ 310.5%</span></div>
-                <div class="stat-row"><span class="left-value">275%</span><span class="right-value">≈ 316.25%</span></div>
-                <div class="stat-row"><span class="left-value">280%</span><span class="right-value">≈ 322%</span></div>
-                <div class="stat-row"><span class="left-value">285%</span><span class="right-value">≈ 327.75%</span></div>
-                <div class="stat-row"><span class="left-value">290%</span><span class="right-value">≈ 333.5%</span></div>
-                <div class="stat-row"><span class="left-value">295%</span><span class="right-value">≈ 339.25%</span></div>
-                <div class="stat-row"><span class="left-value">300%</span><span class="right-value">≈ 345%</span></div>
-                <div class="stat-row"><span class="left-value">305%</span><span class="right-value">≈ 350.75%</span></div>
-                <div class="stat-row"><span class="left-value">310%</span><span class="right-value">≈ 356.5%</span></div>
-                <div class="stat-row"><span class="left-value">315%</span><span class="right-value">≈ 362.25%</span></div>
-                <div class="stat-row"><span class="left-value">320%</span><span class="right-value">≈ 368%</span></div>
-                <div class="stat-row"><span class="left-value">325%</span><span class="right-value">≈ 373.75%</span></div>
-                <div class="stat-row"><span class="left-value">330%</span><span class="right-value">≈ 379.5%</span></div>
-                <div class="stat-row"><span class="left-value">335%</span><span class="right-value">≈ 385.25%</span></div>
-                <div class="stat-row"><span class="left-value">340%</span><span class="right-value">≈ 391%</span></div>
-                <div class="stat-row"><span class="left-value">345%</span><span class="right-value">≈ 396.75%</span></div>
-                <div class="stat-row"><span class="left-value">350%</span><span class="right-value">≈ 402.5%</span></div>
-                <div class="stat-row"><span class="left-value">355%</span><span class="right-value">≈ 408.25%</span></div>
-                <div class="stat-row"><span class="left-value">360%</span><span class="right-value">≈ 414%</span></div>
-                <div class="stat-row"><span class="left-value">365%</span><span class="right-value">≈ 419.75%</span></div>
-                <div class="stat-row"><span class="left-value">370%</span><span class="right-value">≈ 425.5%</span></div>
-                <div class="stat-row"><span class="left-value">375%</span><span class="right-value">≈ 431.25%</span></div>
-                <div class="stat-row"><span class="left-value">380%</span><span class="right-value">≈ 437%</span></div>
-                <div class="stat-row"><span class="left-value">385%</span><span class="right-value">≈ 442.75%</span></div>
-                <div class="stat-row"><span class="left-value">390%</span><span class="right-value">≈ 448.5%</span></div>
-                <div class="stat-row"><span class="left-value">395%</span><span class="right-value">≈ 454.25%</span></div>
-                <div class="stat-row"><span class="left-value">400%</span><span class="right-value">≈ 460%</span></div>
-                <div class="stat-row"><span class="left-value">405%</span><span class="right-value">≈ 465.75%</span></div>
-                <div class="stat-row"><span class="left-value">410%</span><span class="right-value">≈ 471.5%</span></div>
-                <div class="stat-row"><span class="left-value">415%</span><span class="right-value">≈ 477.25%</span></div>
-                <div class="stat-row"><span class="left-value">420%</span><span class="right-value">≈ 483%</span></div>
-                <div class="stat-row"><span class="left-value">425%</span><span class="right-value">≈ 488.75%</span></div>
-                <div class="stat-row"><span class="left-value">430%</span><span class="right-value">≈ 494.5%</span></div>
-                <div class="stat-row"><span class="left-value">435%</span><span class="right-value">≈ 500.25%</span></div>
-                <div class="stat-row"><span class="left-value">440%</span><span class="right-value">≈ 506%</span></div>
-                <div class="stat-row"><span class="left-value">445%</span><span class="right-value">≈ 511.75%</span></div>
-                <div class="stat-row"><span class="left-value">450%</span><span class="right-value">≈ 517.5%</span></div>
-                <div class="stat-row"><span class="left-value">455%</span><span class="right-value">≈ 523.25%</span></div>
-                <div class="stat-row"><span class="left-value">460%</span><span class="right-value">≈ 529%</span></div>
-                <div class="stat-row"><span class="left-value">465%</span><span class="right-value">≈ 534.75%</span></div>
-                <div class="stat-row"><span class="left-value">470%</span><span class="right-value">≈ 540.5%</span></div>
-                <div class="stat-row"><span class="left-value">475%</span><span class="right-value">≈ 546.25%</span></div>
-            </div>
+            <div class="stats-grid" id="statsGrid"></div>
         </div>
     </div>
 
@@ -457,13 +418,25 @@
 
     <script>
         const baseMultiplier = 89.127084;
-        const modifiers = { goliath: 2.25, slime: 3.15, cosmic: 2.25, shiny: 1.15, pristine: 1.08 };
+        const modifiers = { goliath: 2.25, slime: 3.15, cosmic: 2.25, shiny: 1.15, pristine: 1.08, maxlvl: 2.25 };
         let currentMultiplier = baseMultiplier;
+        
+        // Generate shiny stats data programmatically
+        function generateShinyStats() {
+            const grid = document.getElementById('statsGrid');
+            for (let i = 250; i <= 475; i += 5) {
+                const shinyValue = (i * 1.15).toFixed(2);
+                const row = document.createElement('div');
+                row.className = 'stat-row';
+                row.innerHTML = `<span class="left-value">${i}%</span><span class="right-value">≈ ${shinyValue}%</span>`;
+                grid.appendChild(row);
+            }
+        }
         
         function switchPage(page) {
             document.querySelectorAll('.page, .nav-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(page + 'Page').classList.add('active');
-            document.querySelector(`.nav-btn:${page === 'calculator' ? 'first' : 'last'}-child`).classList.add('active');
+            document.querySelector(page === 'calculator' ? '.nav-btn:first-child' : '.nav-btn:last-child').classList.add('active');
         }
         
         function toggleSettings() {
@@ -472,11 +445,11 @@
 
         function updateMultiplier() {
             currentMultiplier = baseMultiplier;
-            Object.keys(modifiers).forEach(mod => {
+            for (const mod in modifiers) {
                 if (!document.getElementById(mod).checked) {
                     currentMultiplier /= modifiers[mod];
                 }
-            });
+            }
         }
         
         function calculateStats() {
@@ -502,6 +475,7 @@
             resultSection.classList.add('show');
         }
         
+        // Event listeners
         document.getElementById('numberInput').addEventListener('keypress', e => {
             if (e.key === 'Enter') calculateStats();
         });
@@ -517,6 +491,9 @@
                 settingsPanel.classList.remove('show');
             }
         });
+
+        // Initialize shiny stats on page load
+        generateShinyStats();
     </script>
 </body>
 </html>
