@@ -392,6 +392,14 @@
                         <span class="slider"></span>
                     </label>
                 </div>
+
+                <div class="modifier-item">
+                    <span class="modifier-label">Void (x2)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="void" checked onchange="updateMultiplier()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
             
             <div class="input-section">
@@ -417,9 +425,9 @@
     <div class="signature">Микола</div>
 
     <script>
-        const baseMultiplier = 89.127084;
-        const modifiers = { goliath: 2.25, slime: 3.15, cosmic: 2.25, shiny: 1.15, pristine: 1.08, maxlvl: 2.25 };
-        let currentMultiplier = baseMultiplier;
+        const baseMultiplier = 1;
+        const modifiers = { goliath: 2.25, slime: 3.15, cosmic: 2.25, shiny: 1.15, pristine: 1.08, maxlvl: 2.25, void: 2 };
+        let currentMultiplier = 99.030094; // Базове значення з усіма модифікаторами
         
         // Generate shiny stats data programmatically
         function generateShinyStats() {
@@ -444,11 +452,10 @@
         }
 
         function updateMultiplier() {
-            currentMultiplier = baseMultiplier;
+            currentMultiplier = 99.030094; // Базове значення
             for (const mod in modifiers) {
-                if (!document.getElementById(mod).checked) {
-                    currentMultiplier /= modifiers[mod];
-                }
+                const multiplier = document.getElementById(mod).checked ? modifiers[mod] : 1;
+                currentMultiplier *= multiplier;
             }
         }
         
