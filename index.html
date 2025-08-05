@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Stats Calculator & Shiny Statistics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .nav-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Calculator Styles */
+        .calculator-page h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .settings-btn {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .settings-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .settings-panel {
+            display: none;
+            background: rgba(246, 249, 252, 0.95);
+            border: 2px solid #e1ecf4;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .settings-panel.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .settings-title {
+            color: #2c3e50;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .modifier-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .modifier-item:last-child {
+            border-bottom: none;
+        }
+
+        .modifier-label {
+            color: #555;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 25px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 25px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 19px;
+            width: 19px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #667eea;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(25px);
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-label {
+            display: block;
+            color: #555;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .number-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.2em;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .number-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            font-weight: 600;
+            min-width: 150px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f6f9fc 0%, #e9f4ff 100%);
+            border-radius: 15px;
+            border: 2px solid #e1ecf4;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-label {
+            color: #2c3e50;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .result-value {
+            font-size: 2em;
+            color: #667eea;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        /* Shiny Stats Styles */
+        .shiny-page .title {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5em;
+            font-weight: 900;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .stats-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .stats-grid::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .stats-grid::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .stat-row:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-left-color: #667eea;
+            transform: translateX(5px);
+        }
+        
+        .stat-row:nth-child(odd) {
+            background: rgba(118, 75, 162, 0.1);
+        }
+        
+        .stat-row:nth-child(odd):hover {
+            background: rgba(118, 75, 162, 0.2);
+            border-left-color: #764ba2;
+        }
+        
+        .left-value {
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .right-value {
+            font-weight: 400;
+            color: #4a5568;
+        }
+
+        .signature {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                min-width: auto;
+            }
+            
+            .calculator-page h1 {
+                font-size: 1.8em;
+            }
+            
+            .result-value {
+                font-size: 1.6em;
+            }
+
+            .header-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Calculator</button>
+            <button class="nav-btn" onclick="switchPage('shiny')">✨ Shiny Stats</button>
+        </div>
+
+        <!-- Calculator Page -->
+        <div class="page calculator-page active" id="calculatorPage">
+            <div class="header-controls">
+                <h1>Pet Stats Calculator</h1>
+                <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
+            </div>
+
+            <div class="settings-panel" id="settingsPanel">
+                <div class="settings-title">Settings</div>
+                
+                <div class="modifier-item">
+                    <span class="modifier-label">Goliath (x10)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="goliath" checked onchange="updateMultiplier()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="modifier-item">
+                    <span class="modifier-label">Slime (x1.5)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="slime" checked onchange="updateMultiplier()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="modifier-item">
+                    <span class="modifier-label">Cosmic (x3)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="cosmic" checked onchange="updateMultiplier()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="modifier-item">
+                    <span class="modifier-label">Shiny (x1.2)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="shiny" checked onchange="updateMultiplier()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="modifier-item">
+                    <span class="modifier-label">Pristine (x2.5)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="pristine" checked onchange="updateMultiplier()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="input-section">
+                <label class="input-label">If baby pet</label>
+                <input type="number" 
+                       class="number-input" 
+                       id="numberInput" 
+                       placeholder="Enter number..."
+                       step="any">
+                <button class="calculate-btn" onclick="calculateStats()">Calculate</button>
+                <div class="error" id="errorMessage"></div>
+            </div>
+
+            <div class="result-section" id="resultSection">
+                <div class="stats-label">Stats if max</div>
+                <div class="result-value" id="resultValue">0</div>
+            </div>
+        </div>
+
+        <!-- Shiny Stats Page -->
+        <div class="page shiny-page" id="shinyPage">
+            <h1 class="title">Shiny pets</h1>
+            
+            <div class="stats-grid">
+                <div class="stat-row">
+                    <span class="left-value">250%</span>
+                    <span class="right-value">≈ 287.5%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">255%</span>
+                    <span class="right-value">≈ 293.25%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">260%</span>
+                    <span class="right-value">≈ 299%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">265%</span>
+                    <span class="right-value">≈ 304.75%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">270%</span>
+                    <span class="right-value">≈ 310.5%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">275%</span>
+                    <span class="right-value">≈ 316.25%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">280%</span>
+                    <span class="right-value">≈ 322%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">285%</span>
+                    <span class="right-value">≈ 327.75%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">290%</span>
+                    <span class="right-value">≈ 333.5%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">295%</span>
+                    <span class="right-value">≈ 339.25%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">300%</span>
+                    <span class="right-value">≈ 345%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">305%</span>
+                    <span class="right-value">≈ 350.75%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">310%</span>
+                    <span class="right-value">≈ 356.5%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">315%</span>
+                    <span class="right-value">≈ 362.25%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">320%</span>
+                    <span class="right-value">≈ 368%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">325%</span>
+                    <span class="right-value">≈ 373.75%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">330%</span>
+                    <span class="right-value">≈ 379.5%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">335%</span>
+                    <span class="right-value">≈ 385.25%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">340%</span>
+                    <span class="right-value">≈ 391%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">345%</span>
+                    <span class="right-value">≈ 396.75%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">350%</span>
+                    <span class="right-value">≈ 402.5%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">355%</span>
+                    <span class="right-value">≈ 408.25%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">360%</span>
+                    <span class="right-value">≈ 414%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">365%</span>
+                    <span class="right-value">≈ 419.75%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">370%</span>
+                    <span class="right-value">≈ 425.5%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">375%</span>
+                    <span class="right-value">≈ 431.25%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">380%</span>
+                    <span class="right-value">≈ 437%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">385%</span>
+                    <span class="right-value">≈ 442.75%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">390%</span>
+                    <span class="right-value">≈ 448.5%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">395%</span>
+                    <span class="right-value">≈ 454.25%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">400%</span>
+                    <span class="right-value">≈ 460%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">405%</span>
+                    <span class="right-value">≈ 465.75%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">410%</span>
+                    <span class="right-value">≈ 471.5%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">415%</span>
+                    <span class="right-value">≈ 477.25%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">420%</span>
+                    <span class="right-value">≈ 483%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">425%</span>
+                    <span class="right-value">≈ 488.75%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">430%</span>
+                    <span class="right-value">≈ 494.5%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">435%</span>
+                    <span class="right-value">≈ 500.25%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">440%</span>
+                    <span class="right-value">≈ 506%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">445%</span>
+                    <span class="right-value">≈ 511.75%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">450%</span>
+                    <span class="right-value">≈ 517.5%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">455%</span>
+                    <span class="right-value">≈ 523.25%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">460%</span>
+                    <span class="right-value">≈ 529%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">465%</span>
+                    <span class="right-value">≈ 534.75%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">470%</span>
+                    <span class="right-value">≈ 540.5%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="left-value">475%</span>
+                    <span class="right-value">≈ 546.25%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="signature">Микола</div>
+
+    <script>
+        const baseMultiplier = 99.03009375;
+        
+        const modifiers = {
+            goliath: 10,
+            slime: 1.5,
+            cosmic: 3,
+            shiny: 1.2,
+            pristine: 2.5
+        };
+
+        let currentMultiplier = baseMultiplier;
+        
+        // Page switching functionality
+        function switchPage(page) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected page
+            if (page === 'calculator') {
+                document.getElementById('calculatorPage').classList.add('active');
+                document.querySelector('.nav-btn:first-child').classList.add('active');
+            } else if (page === 'shiny') {
+                document.getElementById('shinyPage').classList.add('active');
+                document.querySelector('.nav-btn:last-child').classList.add('active');
+            }
+        }
+        
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            panel.classList.toggle('show');
+        }
+
+        function updateMultiplier() {
+            let multiplier = baseMultiplier;
+            
+            Object.keys(modifiers).forEach(mod => {
+                const checkbox = document.getElementById(mod);
+                if (!checkbox.checked) {
+                    multiplier = multiplier / modifiers[mod];
+                }
+            });
+            
+            currentMultiplier = multiplier;
+        }
+        
+        function calculateStats() {
+            const input = document.getElementById('numberInput');
+            const resultSection = document.getElementById('resultSection');
+            const resultValue = document.getElementById('resultValue');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            errorMessage.textContent = '';
+            
+            const inputValue = parseFloat(input.value);
+            
+            if (isNaN(inputValue) || input.value.trim() === '') {
+                errorMessage.textContent = 'Please enter a valid number';
+                resultSection.classList.remove('show');
+                return;
+            }
+            
+            const result = inputValue * currentMultiplier;
+            
+            let formattedResult;
+            if (result % 1 === 0) {
+                formattedResult = result.toLocaleString('uk-UA');
+            } else {
+                formattedResult = result.toLocaleString('uk-UA', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 8
+                });
+            }
+            
+            resultValue.textContent = formattedResult;
+            resultSection.classList.add('show');
+        }
+        
+        // Event listeners
+        document.getElementById('numberInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateStats();
+            }
+        });
+        
+        document.getElementById('numberInput').addEventListener('input', function() {
+            document.getElementById('errorMessage').textContent = '';
+        });
+
+        document.addEventListener('click', function(e) {
+            const settingsPanel = document.getElementById('settingsPanel');
+            const settingsBtn = document.querySelector('.settings-btn');
+            
+            if (!settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) {
+                settingsPanel.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-label {
+            display: block;
+            color: #555;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .number-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.2em;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .number-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            font-weight: 600;
+            min-width: 150px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f6f9fc 0%, #e9f4ff 100%);
+            border-radius: 15px;
+            border: 2px solid #e1ecf4;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-label {
+            color: #2c3e50;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .result-value {
+            font-size: 2em;
+            color: #667eea;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .multiplier-info {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .result-value {
+                font-size: 1.6em;
+            }
+        }
+
+        .signature {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐾 Pet Stats Calculator</h1>
+        
+        <div class="input-section">
+            <label class="input-label">If baby pet</label>
+            <input type="number" 
+                   class="number-input" 
+                   id="numberInput" 
+                   placeholder="Enter number..."
+                   step="any">
+            <button class="calculate-btn" onclick="calculateStats()">Calculate</button>
+            <div class="error" id="errorMessage"></div>
+        </div>
+
+        <div class="result-section" id="resultSection">
+            <div class="stats-label">Stats if max</div>
+            <div class="result-value" id="resultValue">0</div>
+        </div>
+    </div>
+
+    <div class="signature">Микола</div>
+
+    <script>
+        const multiplier = 99.03009375;
+        
+        function calculateStats() {
+            const input = document.getElementById('numberInput');
+            const resultSection = document.getElementById('resultSection');
+            const resultValue = document.getElementById('resultValue');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Очищаємо попередні помилки
+            errorMessage.textContent = '';
+            
+            const inputValue = parseFloat(input.value);
+            
+            if (isNaN(inputValue) || input.value.trim() === '') {
+                errorMessage.textContent = 'Please enter a valid number';
+                resultSection.classList.remove('show');
+                return;
+            }
+            
+            const result = inputValue * multiplier;
+            
+            // Форматуємо результат
+            let formattedResult;
+            if (result % 1 === 0) {
+                formattedResult = result.toLocaleString('uk-UA');
+            } else {
+                formattedResult = result.toLocaleString('uk-UA', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 8
+                });
+            }
+            
+            resultValue.textContent = formattedResult;
+            resultSection.classList.add('show');
+        }
+        
+        // Додаємо можливість натискати Enter для обчислення
+        document.getElementById('numberInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateStats();
+            }
+        });
+        
+        // Очищаємо помилки при введенні
+        document.getElementById('numberInput').addEventListener('input', function() {
+            document.getElementById('errorMessage').textContent = '';
+        });
+    </script>
+</body>
+  </html>
