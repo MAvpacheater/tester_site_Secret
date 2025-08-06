@@ -1,216 +1,98 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Shiny Calc</title>
+  <title>Pet Multiplier Calculator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f4f4;
-      color: #333;
+      background: #f6f9ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
     }
     .container {
-      max-width: 600px;
-      margin: auto;
-      padding: 20px;
+      background: #fff;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+    h2 {
+      margin-bottom: 20px;
       text-align: center;
     }
-    .nav {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    .nav-btn {
-      padding: 10px 20px;
-      margin: 0 5px;
-      background: #ddd;
-      border: none;
-      cursor: pointer;
-    }
-    .nav-btn.active {
-      background: #333;
-      color: #fff;
-    }
-    .page {
-      display: none;
-    }
-    .page.active {
-      display: block;
-    }
-    .checkbox-group {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px 0;
-    }
-    .checkbox-group label {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    input[type="number"] {
-      padding: 10px;
-      width: 100%;
-      max-width: 300px;
-      margin: 10px 0;
-    }
-    .result {
-      display: none;
-      margin-top: 20px;
-      font-weight: bold;
-      font-size: 1.5em;
-    }
-    .result.show {
-      display: block;
-    }
-    .error-message {
-      color: red;
-    }
-    .settings-btn {
-      margin-top: 10px;
-      cursor: pointer;
-      background: #ccc;
-      padding: 5px 10px;
-      border: none;
-    }
-    .settings-panel {
-      display: none;
-      margin-top: 10px;
-      background: #eee;
-      padding: 10px;
-    }
-    .settings-panel.show {
-      display: block;
-    }
-    .stat-row {
+    label {
       display: flex;
       justify-content: space-between;
-      padding: 5px;
-      border-bottom: 1px solid #ddd;
+      margin-bottom: 12px;
     }
-    .stat-row:last-child {
-      border-bottom: none;
+    input[type="checkbox"] {
+      transform: scale(1.2);
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin: 15px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background: linear-gradient(to right, #6e57ff, #9e74f8);
+      color: white;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: linear-gradient(to right, #5a45e0, #8a65e2);
+    }
+    .result {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #4b4bff;
+      white-space: pre-line;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="nav">
-      <button class="nav-btn active" onclick="switchPage('calculator')">Калькулятор</button>
-      <button class="nav-btn" onclick="switchPage('stats')">Shiny Стати</button>
-    </div>
+    <h2>Pet Multiplier Calculator</h2>
 
-    <div id="calculatorPage" class="page active">
-      <div class="checkbox-group">
-        <label><input type="checkbox" id="shiny" checked> Shiny</label>
-        <label><input type="checkbox" id="pristine"> Pristine</label>
-        <label><input type="checkbox" id="void"> Void</label>
-        <label><input type="checkbox" id="cosmic"> Cosmic</label>
-        <label><input type="checkbox" id="slime"> Slime</label>
-        <label><input type="checkbox" id="maxlvl"> MaxLvl</label>
-        <label><input type="checkbox" id="goliath"> Goliath</label>
-      </div>
+    <form id="form">
+      <label>Shiny (x1.15) <input type="checkbox" value="1.15" /></label>
+      <label>Pristine (x1.085) <input type="checkbox" value="1.085" /></label>
+      <label>Void (x2) <input type="checkbox" value="2" /></label>
+      <label>Cosmic (x2.5) <input type="checkbox" value="2.5" /></label>
+      <label>Slime (x3.15) <input type="checkbox" value="3.15" /></label>
+      <label>Max lvl (x2.2388) <input type="checkbox" value="2.2388" /></label>
+      <label>Goliath (x2.5) <input type="checkbox" value="2.5" /></label>
 
-      <input type="number" id="numberInput" placeholder="Введіть число..."/>
-      <div class="error-message" id="errorMessage"></div>
-      <div class="result" id="resultSection">Результат: <span id="resultValue"></span></div>
-      <button class="settings-btn">⚙ Налаштування</button>
-      <div class="settings-panel" id="settingsPanel">
-        <p>Тут можуть бути додаткові налаштування.</p>
-      </div>
-    </div>
+      <input type="number" id="base" placeholder="If baby pet" value="1" step="any" min="0" />
+      <button type="submit">Calculate</button>
+    </form>
 
-    <div id="statsPage" class="page">
-      <h2>Shiny Стати</h2>
-      <div id="statsGrid"></div>
-    </div>
+    <div class="result" id="result">Stats if max</div>
   </div>
 
   <script>
-    const modifiers = { 
-      shiny: 1.15, pristine: 1.085, void: 2, 
-      cosmic: 2.5, slime: 3.15, maxlvl: 2.2388, goliath: 2.5 
-    };
-    let currentMultiplier = 1;
+    const form = document.getElementById('form');
+    const result = document.getElementById('result');
 
-    const elements = {
-      numberInput: document.getElementById('numberInput'),
-      resultSection: document.getElementById('resultSection'),
-      resultValue: document.getElementById('resultValue'),
-      errorMessage: document.getElementById('errorMessage'),
-      settingsPanel: document.getElementById('settingsPanel'),
-      settingsBtn: document.querySelector('.settings-btn'),
-      statsGrid: document.getElementById('statsGrid')
-    };
-
-    function generateShinyStats() {
-      for (let i = 250; i <= 475; i += 5) {
-        const row = document.createElement('div');
-        row.className = 'stat-row';
-        row.innerHTML = `<span class="left-value">${i}%</span><span class="right-value">≈ ${(i * modifiers.shiny).toFixed(2)}%</span>`;
-        elements.statsGrid.appendChild(row);
-      }
-    }
-
-    function updateMultiplier() {
-      currentMultiplier = Object.entries(modifiers)
-        .filter(([id]) => document.getElementById(id).checked)
-        .reduce((acc, [, val]) => acc * val, 1);
-    }
-
-    function calculateStats() {
-      const val = parseFloat(elements.numberInput.value);
-      if (isNaN(val)) {
-        elements.errorMessage.textContent = 'Please enter a valid number';
-        elements.resultSection.classList.remove('show');
-        return;
-      }
-      elements.errorMessage.textContent = '';
-      const result = val * currentMultiplier;
-      elements.resultValue.textContent = result.toLocaleString('uk-UA', {
-        minimumFractionDigits: result % 1 === 0 ? 0 : 2,
-        maximumFractionDigits: 8
-      });
-      elements.resultSection.classList.add('show');
-    }
-
-    function switchPage(page) {
-      document.querySelectorAll('.page, .nav-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById(page + 'Page').classList.add('active');
-      document.querySelector(`.nav-btn[onclick*="${page}"]`).classList.add('active');
-    }
-
-    function toggleSettings() {
-      elements.settingsPanel.classList.toggle('show');
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      generateShinyStats();
-      updateMultiplier();
-
-      document.querySelectorAll('input[type="checkbox"]').forEach(cb =>
-        cb.addEventListener('change', updateMultiplier)
-      );
-
-      elements.numberInput.addEventListener('keypress', e => {
-        if (e.key === 'Enter') calculateStats();
-      });
-
-      elements.numberInput.addEventListener('input', () => {
-        elements.errorMessage.textContent = '';
-      });
-
-      elements.settingsBtn.addEventListener('click', toggleSettings);
-
-      document.addEventListener('click', e => {
-        if (!elements.settingsPanel.contains(e.target) && !elements.settingsBtn.contains(e.target)) {
-          elements.settingsPanel.classList.remove('show');
-        }
-      });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let total = parseFloat(document.getElementById('base').value) || 1;
+      const checkboxes = form.querySelectorAll('input[type="checkbox"]:checked');
+      checkboxes.forEach(cb => total *= parseFloat(cb.value));
+      result.textContent = `Stats if max\n${total.toFixed(9)}`;
     });
   </script>
 </body>
