@@ -1,6 +1,6 @@
 const modifiers = { 
     shiny: 1.15, 
-    pristine: 1.085, 
+    pristine: 1.09, 
     void: 2, 
     cosmic: 2.5, 
     slime: 3.15, 
