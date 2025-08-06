@@ -383,11 +383,11 @@ input:checked + .slider:before {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 200px;
-    height: 300px;
-    background: linear-gradient(145deg, #f0f0f0, #d0d0d0);
+    width: 180px;
+    height: 280px;
+    background: linear-gradient(145deg, #f8f9ff, #e6ecff);
     border-radius: 15px 15px 0 0;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -395,14 +395,15 @@ input:checked + .slider:before {
     padding: 20px;
     opacity: 0;
     animation: fadeInPodium 1s ease-out 0.5s forwards;
+    border: 2px solid rgba(102, 126, 234, 0.2);
 }
 
 .podium-left {
-    left: 20px;
+    left: 30px;
 }
 
 .podium-right {
-    right: 20px;
+    right: 30px;
 }
 
 .podium-title {
@@ -434,11 +435,29 @@ input:checked + .slider:before {
 }
 
 .character-penguin {
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMjEyMTIxIi8+Cjx0ZXh0IHg9IjYwIiB5PSI2NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIzNiI+8J+QpzwvdGV4dD4KPC9zdmc+');
+    background: linear-gradient(145deg, #4a90e2, #2c5aa0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: white;
+}
+
+.character-penguin::after {
+    content: "🐧";
 }
 
 .character-spider {
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMjEyMTIxIi8+Cjx0ZXh0IHg9IjYwIiB5PSI2NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0icmVkIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMzYiPvCfVac8L3RleHQ+CjwvdGV4dD4KPC9zdmc+');
+    background: linear-gradient(145deg, #8b0000, #4d0000);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: #ff4444;
+}
+
+.character-spider::after {
+    content: "🕷️";
 }
 
 @keyframes fadeInPodium {
@@ -476,6 +495,12 @@ input:checked + .slider:before {
     font-weight: 500;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     z-index: 1000;
+}
+
+@media (max-width: 1200px) {
+    .podiums {
+        display: none;
+    }
 }
 
 @media (max-width: 480px) {
