@@ -1,10 +1,10 @@
 const modifiers = { 
     shiny: 1.15, 
-    pristine: 1.09, 
+    pristine: 1.085, 
     void: 2, 
     cosmic: 2.5, 
     slime: 3.15, 
-    maxlvl: 2.245, 
+    maxlvl: 2.2388, 
     goliath: 2.5 
 };
 let currentMultiplier = 1;
