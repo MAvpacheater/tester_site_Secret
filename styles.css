@@ -436,20 +436,16 @@ input:checked + .slider:before {
 
 .character-penguin {
     /* Замість цього коду вставте URL до вашого зображення пінгвіна */
-    background-image: url('path/to/your/penguin-image.png');
+    background-image: url('https://photos.app.goo.gl/nrENKEEBLL93qBFC6');
     background-size: cover;
     background-position: center;
-    /* Якщо потрібно видалити фон зображення, додайте: */
-    /* background-color: transparent; */
 }
 
 .character-spider {
     /* Замість цього коду вставте URL до вашого зображення павука */
-    background-image: url('path/to/your/spider-image.png');
+    background-image: url('https://photos.app.goo.gl/NXxQAytVx55A22pD7');
     background-size: cover;
     background-position: center;
-    /* Якщо потрібно видалити фон зображення, додайте: */
-    /* background-color: transparent; */
 }
 
 @keyframes fadeInPodium {
