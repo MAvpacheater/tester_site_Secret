@@ -161,13 +161,13 @@ body {
     border: 5px solid rgba(255, 255, 255, 0.8);
 }
 
-.character-penguin {
+.character-arm{
     background-image: url('https://i.postimg.cc/nzLsCmhy/myk.png');
     background-size: cover;
     background-position: center;
 }
 
-.character-spider {
+.character-pet {
     background-image: url('https://i.postimg.cc/mgw7dChn/lexapayk-removebg-preview.png');
     background-size: cover;
     background-position: center;
