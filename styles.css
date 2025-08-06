@@ -368,7 +368,7 @@ input:checked + .slider:before {
     color: #4a5568; 
 }
 
-/* Podiums */
+/* Зменшені подіуми для ноутбуків */
 .podiums {
     position: fixed;
     top: 0;
@@ -383,35 +383,35 @@ input:checked + .slider:before {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 540px; /* 180 * 3 */
-    height: 840px; /* 280 * 3 */
+    width: 280px; /* зменшено з 540px */
+    height: 450px; /* зменшено з 840px */
     background: linear-gradient(145deg, #f8f9ff, #e6ecff);
-    border-radius: 45px 45px 0 0; /* 15 * 3 */
-    box-shadow: 0 45px 120px rgba(102, 126, 234, 0.3); /* увеличено */
+    border-radius: 25px 25px 0 0; /* зменшено з 45px */
+    box-shadow: 0 25px 60px rgba(102, 126, 234, 0.3);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding: 60px; /* 20 * 3 */
+    padding: 30px; /* зменшено з 60px */
     opacity: 0;
     animation: fadeInPodium 1s ease-out 0.5s forwards;
-    border: 6px solid rgba(102, 126, 234, 0.2); /* 2 * 3 */
+    border: 3px solid rgba(102, 126, 234, 0.2); /* зменшено з 6px */
 }
 
 .podium-left {
-    left: 90px; /* больше отступ для больших подиумов */
+    left: 30px; /* зменшено з 90px */
 }
 
 .podium-right {
-    right: 90px;
+    right: 30px; /* зменшено з 90px */
 }
 
 .podium-title {
     position: absolute;
-    top: 45px; /* 15 * 3 */
+    top: 20px; /* зменшено з 45px */
     font-family: 'Orbitron', monospace;
     font-weight: 700;
-    font-size: 42px; /* 14 * 3 */
+    font-size: 22px; /* зменшено з 42px */
     color: #333;
     text-align: center;
     background: linear-gradient(45deg, #667eea, #764ba2);
@@ -421,28 +421,26 @@ input:checked + .slider:before {
 }
 
 .podium-character {
-    width: 360px; /* 120 * 3 */
-    height: 360px; /* 120 * 3 */
+    width: 200px; /* зменшено з 360px */
+    height: 200px; /* зменшено з 360px */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 30px; /* 10 * 3 */
+    border-radius: 15px; /* зменшено з 30px */
     opacity: 0;
-    transform: translateY(60px) scale(0.8); /* 20 * 3 */
+    transform: translateY(30px) scale(0.8); /* зменшено з 60px */
     animation: characterAppear 0.8s ease-out 1.5s forwards;
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.3); /* увеличено */
-    border: 9px solid rgba(255, 255, 255, 0.8); /* 3 * 3 */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border: 5px solid rgba(255, 255, 255, 0.8); /* зменшено з 9px */
 }
 
 .character-penguin {
-    /* Замість цього коду вставте URL до вашого зображення пінгвіна */
     background-image: url('https://photos.app.goo.gl/nrENKEEBLL93qBFC6');
     background-size: cover;
     background-position: center;
 }
 
 .character-spider {
-    /* Замість цього коду вставте URL до вашого зображення павука */
     background-image: url('https://photos.app.goo.gl/NXxQAytVx55A22pD7');
     background-size: cover;
     background-position: center;
@@ -451,7 +449,7 @@ input:checked + .slider:before {
 @keyframes fadeInPodium {
     from { 
         opacity: 0; 
-        transform: translateY(-50%) translateX(-60px); /* увеличено с -20px */
+        transform: translateY(-50%) translateX(-30px); /* зменшено з -60px */
     }
     to { 
         opacity: 1; 
@@ -462,7 +460,7 @@ input:checked + .slider:before {
 @keyframes characterAppear {
     0% { 
         opacity: 0; 
-        transform: translateY(60px) scale(0.8) rotateY(-180deg); /* увеличено с 20px */
+        transform: translateY(30px) scale(0.8) rotateY(-180deg); /* зменшено з 60px */
     }
     50% { 
         opacity: 0.7; 
@@ -485,7 +483,8 @@ input:checked + .slider:before {
     z-index: 1000;
 }
 
-@media (max-width: 1800px) {
+/* Оновлені медіа запити */
+@media (max-width: 1400px) {
     .podiums {
         display: none;
     }
