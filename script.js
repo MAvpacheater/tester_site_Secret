@@ -4,7 +4,7 @@ const modifiers = {
     void: 2, 
     cosmic: 2.5, 
     slime: 3.15, 
-    maxlvl: 2.2388, 
+    maxlvl: 2.245, 
     goliath: 2.5 
 };
 let currentMultiplier = 1;
