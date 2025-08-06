@@ -4,7 +4,16 @@
 function switchPage(page) {
     document.querySelectorAll('.page, .nav-btn').forEach(el => el.classList.remove('active'));
     document.getElementById(page + 'Page').classList.add('active');
-    document.querySelector(page === 'calculator' ? '.nav-btn:first-child' : '.nav-btn:last-child').classList.add('active');
+    
+    // Update active nav button
+    const navButtons = document.querySelectorAll('.nav-btn');
+    if (page === 'calculator') {
+        navButtons[0].classList.add('active');
+    } else if (page === 'arm') {
+        navButtons[1].classList.add('active');
+    } else if (page === 'shiny') {
+        navButtons[2].classList.add('active');
+    }
 }
 
 // Initialize functions when page loads
@@ -25,6 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeCalculator();
     }
 
+    // Initialize arm calculator
+    if (typeof initializeArm === 'function') {
+        initializeArm();
+    }
+
     // Initialize shiny stats
     if (typeof initializeShiny === 'function') {
         initializeShiny();
@@ -36,6 +50,11 @@ setTimeout(() => {
     // Initialize calculator functions
     if (typeof initializeCalculator === 'function') {
         initializeCalculator();
+    }
+
+    // Initialize arm calculator
+    if (typeof initializeArm === 'function') {
+        initializeArm();
     }
 
     // Initialize shiny stats
