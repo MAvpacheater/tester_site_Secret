@@ -18,11 +18,36 @@
 <body>
     
     <div class="container">
-        <div class="nav-buttons">
-            <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Calculator</button>
-            <button class="nav-btn" onclick="switchPage('arm')">💪 Arm Calculator</button>
-            <button class="nav-btn" onclick="switchPage('boosts')">🚀 Boosts</button>
-            <button class="nav-btn" onclick="switchPage('shiny')">✨ Shiny Stats</button>
+        <!-- Hamburger Menu -->
+        <div class="hamburger-container">
+            <button class="hamburger-btn" onclick="toggleMenu()">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            <h2 class="current-page-title" id="currentPageTitle">Pet Calculator</h2>
+        </div>
+
+        <!-- Navigation Menu -->
+        <div class="nav-menu" id="navMenu">
+            <div class="nav-menu-content">
+                <button class="menu-item active" onclick="switchPageFromMenu('calculator')">
+                    <span class="menu-icon">🐾</span>
+                    <span class="menu-text">Pet Calculator</span>
+                </button>
+                <button class="menu-item" onclick="switchPageFromMenu('arm')">
+                    <span class="menu-icon">💪</span>
+                    <span class="menu-text">Arm Calculator</span>
+                </button>
+                <button class="menu-item" onclick="switchPageFromMenu('boosts')">
+                    <span class="menu-icon">🚀</span>
+                    <span class="menu-text">Boosts</span>
+                </button>
+                <button class="menu-item" onclick="switchPageFromMenu('shiny')">
+                    <span class="menu-icon">✨</span>
+                    <span class="menu-text">Shiny Stats</span>
+                </button>
+            </div>
         </div>
    
         <!-- Calculator Page -->
