@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="general.css">
     <link rel="stylesheet" href="sites/calculator.css">
     <link rel="stylesheet" href="sites/arm.css">
+    <link rel="stylesheet" href="sites/boosts.css">
     <link rel="stylesheet" href="sites/shiny.css">
 </head>
 
@@ -18,8 +19,9 @@
     
     <div class="container">
         <div class="nav-buttons">
-            <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Pet Calculator</button>
+            <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Calculator</button>
             <button class="nav-btn" onclick="switchPage('arm')">💪 Arm Calculator</button>
+            <button class="nav-btn" onclick="switchPage('boosts')">🚀 Boosts</button>
             <button class="nav-btn" onclick="switchPage('shiny')">✨ Shiny Stats</button>
         </div>
    
@@ -120,6 +122,13 @@
             </div>
         </div>
 
+        <!-- Boosts Page -->
+        <div class="page boosts-page" id="boostsPage">
+            <h1 class="title">Boosts Information</h1>
+            
+            <div class="boosts-container" id="boostsContainer"></div>
+        </div>
+
         <!-- Shiny Stats Page -->
         <div class="page shiny-page" id="shinyPage">
             <h1 class="title">Shiny pets</h1>
@@ -134,13 +143,13 @@
     <!-- Podiums -->
     <div class="podiums">
         <div class="podium podium-left">
-            <div class="podium-title">Best arm in game</div>
-            <div class="podium-character character-arm"></div>
+            <div class="podium-title">Top1 of depers</div>
+            <div class="podium-character character-penguin"></div>
         </div>
         
         <div class="podium podium-right">
-            <div class="podium-title">Best pet in game</div>
-            <div class="podium-character character-pet"></div>
+            <div class="podium-title">Top1 of grinders</div>
+            <div class="podium-character character-spider"></div>
         </div>
     </div>
 
@@ -148,6 +157,7 @@
     <script src="general.js"></script>
     <script src="sites/calculator.js"></script>
     <script src="sites/arm.js"></script>
+    <script src="sites/boosts.js"></script>
     <script src="sites/shiny.js"></script>
 </body>
 </html>
