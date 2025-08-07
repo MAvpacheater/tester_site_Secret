@@ -161,14 +161,14 @@ body {
     border: 5px solid rgba(255, 255, 255, 0.8);
 }
 
-.character-penguin {
-    background-image: url('https://i.postimg.cc/nzLsCmhy/myk.png');
+.character-arm {
+    background-image: url('https://i.postimg.cc/3xv5Cm7Q/8964eba4-3348-4838-9230-4ea89afd3b0a-2.png');
     background-size: cover;
     background-position: center;
 }
 
-.character-spider {
-    background-image: url('https://i.postimg.cc/mgw7dChn/lexapayk-removebg-preview.png');
+.character-pet {
+    background-image: url('https://i.postimg.cc/HxJhdCxD/8964eba4-3348-4838-9230-4ea89afd3b0a-1.png');
     background-size: cover;
     background-position: center;
 }
