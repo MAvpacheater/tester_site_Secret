@@ -17,13 +17,25 @@
 
 <body>
     
-    <div class="container">
-        <div class="nav-buttons">
-            <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Calculator</button>
-            <button class="nav-btn" onclick="switchPage('arm')">💪 Arm Calculator</button>
-            <button class="nav-btn" onclick="switchPage('boosts')">🚀 Boosts</button>
-            <button class="nav-btn" onclick="switchPage('shiny')">✨ Shiny Stats</button>
-        </div>
+<!-- Mobile Menu Toggle -->
+<button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+
+<!-- Sidebar Navigation -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h3>Menu</h3>
+        <button class="close-sidebar" onclick="closeSidebar()">×</button>
+    </div>
+    <div class="nav-buttons">
+        <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Calculator</button>
+        <button class="nav-btn" onclick="switchPage('arm')">💪 Arm Calculator</button>
+        <button class="nav-btn" onclick="switchPage('boosts')">🚀 Boosts</button>
+        <button class="nav-btn" onclick="switchPage('shiny')">✨ Shiny Stats</button>
+    </div>
+</div>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
    
         <!-- Calculator Page -->
         <div class="page calculator-page active" id="calculatorPage">
