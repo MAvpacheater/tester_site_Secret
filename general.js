@@ -11,8 +11,10 @@ function switchPage(page) {
         navButtons[0].classList.add('active');
     } else if (page === 'arm') {
         navButtons[1].classList.add('active');
-    } else if (page === 'shiny') {
+    } else if (page === 'boosts') {
         navButtons[2].classList.add('active');
+    } else if (page === 'shiny') {
+        navButtons[3].classList.add('active');
     }
 }
 
@@ -39,6 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeArm();
     }
 
+    // Initialize boosts
+    if (typeof initializeBoosts === 'function') {
+        initializeBoosts();
+    }
+
     // Initialize shiny stats
     if (typeof initializeShiny === 'function') {
         initializeShiny();
@@ -55,6 +62,11 @@ setTimeout(() => {
     // Initialize arm calculator
     if (typeof initializeArm === 'function') {
         initializeArm();
+    }
+
+    // Initialize boosts
+    if (typeof initializeBoosts === 'function') {
+        initializeBoosts();
     }
 
     // Initialize shiny stats
