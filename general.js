@@ -74,3 +74,40 @@ setTimeout(() => {
         initializeShiny();
     }
 }, 100);
+// Sidebar functionality
+function toggleMobileMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+}
+
+function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+}
+
+// Update switchPage function to close sidebar after selection
+function switchPage(page) {
+    document.querySelectorAll('.page, .nav-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(page + 'Page').classList.add('active');
+    
+    // Update active nav button
+    const navButtons = document.querySelectorAll('.nav-btn');
+    if (page === 'calculator') {
+        navButtons[0].classList.add('active');
+    } else if (page === 'arm') {
+        navButtons[1].classList.add('active');
+    } else if (page === 'boosts') {
+        navButtons[2].classList.add('active');
+    } else if (page === 'shiny') {
+        navButtons[3].classList.add('active');
+    }
+    
+    // Close sidebar after selection
+    closeSidebar();
+}
