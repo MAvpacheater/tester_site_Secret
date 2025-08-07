@@ -27,153 +27,39 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Navigation - Hamburger Menu */
-.hamburger-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 30px;
-    padding: 0 5px;
-}
-
-.current-page-title {
-    font-size: 1.3em;
-    font-weight: 600;
-    color: #333;
-    margin: 0;
-}
-
-.hamburger-btn {
-    background: rgba(102, 126, 234, 0.1);
-    border: 2px solid #667eea;
-    border-radius: 8px;
-    padding: 10px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 40px;
-    height: 32px;
-    transition: all 0.3s ease;
-}
-
-.hamburger-btn:hover {
-    background: rgba(102, 126, 234, 0.2);
-    transform: scale(1.05);
-}
-
-.hamburger-line {
-    width: 100%;
-    height: 3px;
-    background: #667eea;
-    border-radius: 2px;
-    transition: all 0.3s ease;
-    transform-origin: center;
-}
-
-.hamburger-btn.active .hamburger-line:nth-child(1) {
-    transform: rotate(45deg) translate(6px, 6px);
-}
-
-.hamburger-btn.active .hamburger-line:nth-child(2) {
-    opacity: 0;
-    transform: translateX(-20px);
-}
-
-.hamburger-btn.active .hamburger-line:nth-child(3) {
-    transform: rotate(-45deg) translate(6px, -6px);
-}
-
-.nav-menu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.nav-menu.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.nav-menu-content {
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    min-width: 280px;
-    transform: translate(-50%, -50%) scale(0.8);
-    transition: all 0.3s ease;
-}
-
-.nav-menu.active .nav-menu-content {
-    transform: translate(-50%, -50%) scale(1);
-}
-
-.menu-item {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 15px 20px;
-    margin-bottom: 10px;
-    background: rgba(102, 126, 234, 0.1);
-    border: 2px solid transparent;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.1em;
-    font-weight: 600;
-    color: #333;
-}
-
-.menu-item:last-child {
-    margin-bottom: 0;
-}
-
-.menu-item:hover {
-    background: rgba(102, 126, 234, 0.2);
-    border-color: #667eea;
-    transform: translateX(5px);
-}
-
-.menu-item.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-color: #667eea;
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-}
-
-.menu-icon {
-    font-size: 1.3em;
-    margin-right: 15px;
-    width: 25px;
-    text-align: center;
-}
-
-.menu-text {
-    font-size: 1em;
-}
-
-/* Remove old navigation styles */
+/* Navigation */
 .nav-buttons {
-    display: none;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    justify-content: center;
 }
 
 .nav-btn {
-    display: none;
+    background: rgba(102, 126, 234, 0.1);
+    border: 2px solid #667eea;
+    color: #667eea;
+    padding: 10px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-width: 110px;
+    flex: 1;
+    max-width: 140px;
+}
+
+.nav-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.nav-btn.active {
+    background: #667eea;
+    color: white;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
 }
 
 /* Page Transitions */
@@ -325,30 +211,13 @@ body {
         padding: 30px 20px; 
     }
     
-    .current-page-title {
-        font-size: 1.1em;
+    .nav-buttons { 
+        flex-direction: column; 
+        gap: 10px; 
     }
     
-    .hamburger-btn {
-        width: 35px;
-        height: 28px;
-        padding: 8px;
-    }
-    
-    .nav-menu-content {
-        min-width: 250px;
-        padding: 25px;
-        top: 25%;
-    }
-    
-    .menu-item {
-        padding: 12px 15px;
-        font-size: 1em;
-    }
-    
-    .menu-icon {
-        font-size: 1.2em;
-        margin-right: 12px;
+    .nav-btn { 
+        min-width: auto; 
     }
     
     /* Hide podiums on mobile */
