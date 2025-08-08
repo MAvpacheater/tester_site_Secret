@@ -52,9 +52,9 @@ const infoData = [
         category: "tips"
     },
     {
-        title: "Recent Updates",
+        title: "Updates/when and wht",
         icon: "🆕",
-        description: "Stay informed about the latest game changes, new features, and balance adjustments.",
+        description: "Update every saturday",
         details: "Regular updates introduce new content, fix bugs, and rebalance existing mechanics. Stay updated for optimal play.",
         category: "updates"
     },
