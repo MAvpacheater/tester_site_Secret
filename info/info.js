@@ -10,18 +10,18 @@ const infoData = [
         category: "gameplay"
     },
     {
-        title: "Pet Evolution Guide",
-        icon: "🐾",
-        description: "Complete guide on how to evolve your pets and maximize their potential through proper training techniques.",
-        details: "Evolution requires specific stat thresholds and proper timing. Each evolution stage multiplies your pet's base stats.",
+        title: "Best arm in game",
+        icon: "🏋️‍♂️",
+        description: "Patrim - from endless pack",
+        details: "Gives 42x base and 3x event, If max 88,2x",
         category: "gameplay"
     },
     {
-        title: "Multiplier Stacking",
-        icon: "📈",
-        description: "Learn how different multipliers work together to boost your pet's stats and training efficiency.",
-        details: "Multipliers from various sources stack multiplicatively, not additively. Understanding this is crucial for optimal progression.",
-        category: "mechanics"
+        title: "Best pet in game",
+        icon: "🐕",
+        description: "Mega Cappucino Assasino ",
+        details: "Gives 450% to best pet and 2.15b if baby (have l8), If max 240b+-",
+        category: "gameplay"
     },
     {
         title: "Training Optimization",
