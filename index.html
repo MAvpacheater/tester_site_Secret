@@ -9,12 +9,14 @@
     
     <!-- CSS Files -->
     <link rel="stylesheet" href="general.css">
-    <link rel="stylesheet" href="sites/calculator.css">
-    <link rel="stylesheet" href="sites/arm.css">
-    <link rel="stylesheet" href="sites/grind.css">
+    <link rel="stylesheet" href="calc/calculator.css">
+    <link rel="stylesheet" href="calc/arm.css">
+    <link rel="stylesheet" href="calc/grind.css">
     <link rel="stylesheet" href="sites/boosts.css">
     <link rel="stylesheet" href="sites/shiny.css">
     <link rel="stylesheet" href="sites/codes.css">
+    <link rel="stylesheet" href="sites/aura.css">
+    <link rel="stylesheet" href="sites/info.css">
 </head>
 
 <body>
@@ -35,6 +37,8 @@
         <button class="nav-btn" onclick="switchPage('boosts')">🚀 Boosts</button>
         <button class="nav-btn" onclick="switchPage('shiny')">✨ Shiny Stats</button>
         <button class="nav-btn" onclick="switchPage('codes')">🎁 Codes</button>
+        <button class="nav-btn" onclick="switchPage('aura')">🌟 Aura</button>
+        <button class="nav-btn" onclick="switchPage('info')">ℹ️ Info</button>
     </div>
 </div>
 
@@ -124,7 +128,54 @@
 
     <!-- Arm Calculator Page -->
     <div class="page arm-page" id="armPage">
-        <h1>Arm Stats Calculator</h1>
+        <div class="header-controls">
+            <h1>Arm Stats Calculator</h1>
+            <button class="settings-btn" onclick="toggleArmSettings()">⚙️</button>
+        </div>
+
+        <div class="settings-panel" id="settingsPanelArm">
+            <div class="settings-title">Settings</div>
+            
+            <div class="modifier-item">
+                <span class="modifier-label">1/5 golden</span>
+                <label class="switch">
+                    <input type="checkbox" id="golden1" onchange="handleGoldenSelection('golden1')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">2/5 golden</span>
+                <label class="switch">
+                    <input type="checkbox" id="golden2" onchange="handleGoldenSelection('golden2')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">3/5 golden</span>
+                <label class="switch">
+                    <input type="checkbox" id="golden3" onchange="handleGoldenSelection('golden3')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">4/5 golden</span>
+                <label class="switch">
+                    <input type="checkbox" id="golden4" onchange="handleGoldenSelection('golden4')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">5/5 golden</span>
+                <label class="switch">
+                    <input type="checkbox" id="golden5" checked onchange="handleGoldenSelection('golden5')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
         
         <div class="input-section">
             <label class="input-label">If arm base</label>
@@ -190,7 +241,7 @@
             </div>
 
             <div class="modifier-item">
-                <span class="modifier-label">Time (+170%)</span>
+                <span class="modifier-label">Time (max)</span>
                 <label class="switch">
                     <input type="checkbox" id="time" checked onchange="updateGrindMultiplier()">
                     <span class="slider"></span>
@@ -198,7 +249,7 @@
             </div>
 
             <div class="modifier-item">
-                <span class="modifier-label">Friend (8x +15%)</span>
+                <span class="modifier-label">Friend (max)</span>
                 <label class="switch">
                     <input type="checkbox" id="friend" checked onchange="calculateGrindStats()">
                     <span class="slider"></span>
@@ -256,17 +307,33 @@
         
         <div class="codes-container" id="codesContainer"></div>
     </div>
+
+    <!-- Aura Page -->
+    <div class="page aura-page" id="auraPage">
+        <h1 class="title">Aura Collection</h1>
+        
+        <div class="aura-container" id="auraContainer"></div>
+    </div>
+
+    <!-- Info Page -->
+    <div class="page info-page" id="infoPage">
+        <h1 class="title">Game Information</h1>
+        
+        <div class="info-container" id="infoContainer"></div>
+    </div>
 </div>
 
 <div class="signature">Микола</div>
 
 <!-- JavaScript Files -->
 <script src="general.js"></script>
-<script src="sites/calculator.js"></script>
-<script src="sites/arm.js"></script>
-<script src="sites/grind.js"></script>
+<script src="calc/calculator.js"></script>
+<script src="calc/arm.js"></script>
+<script src="calc/grind.js"></script>
 <script src="sites/boosts.js"></script>
 <script src="sites/shiny.js"></script>
 <script src="sites/codes.js"></script>
+<script src="sites/aura.js"></script>
+<script src="sites/info.js"></script>
 </body>
 </html>
