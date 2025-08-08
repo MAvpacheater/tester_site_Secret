@@ -26,8 +26,8 @@ const infoData = [
     {
         title: "Training Optimization",
         icon: "💪",
-        description: "Tips and strategies for maximizing your training efficiency and getting the most out of your time investment.",
-        details: "Focus on high-multiplier areas during boost periods. Use time-limited boosts strategically for maximum impact.",
+        description: "Use all boosts",
+        details: "Buy beteer pets and arms/trainers/auras",
         category: "tips"
     },
     {
