@@ -12,6 +12,7 @@ function switchPage(page) {
         targetPage.classList.add('active');
     }
     
+
     // Update active nav button
     const navButtons = document.querySelectorAll('.nav-btn');
     if (page === 'calculator' && navButtons[0]) {
@@ -22,6 +23,8 @@ function switchPage(page) {
         navButtons[2].classList.add('active');
     } else if (page === 'shiny' && navButtons[3]) {
         navButtons[3].classList.add('active');
+    } else if (page === 'codes' && navButtons[4]) {
+        navButtons[4].classList.add('active');
     }
     
     // Close sidebar after selection
