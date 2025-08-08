@@ -31,25 +31,25 @@ const infoData = [
         category: "tips"
     },
     {
-        title: "Boost Management",
-        icon: "🚀",
-        description: "How to effectively use and stack different types of boosts for maximum training benefits.",
-        details: "Some boosts stack with each other while others override. Plan your boost usage around your available playtime.",
-        category: "gameplay"
+        title: "Best tactic",
+        icon: "🏦",
+        description: "How to get tokens??.",
+        details: "Go to the server - buy cheap, then go to discord and sell - normall/overprice",
+        category: "tips"
     },
     {
-        title: "Shiny Pet Mechanics",
+        title: "How to get best rep??",
         icon: "✨",
-        description: "Everything you need to know about shiny pets, their stat bonuses, and how to obtain them.",
-        details: "Shiny pets provide a 1.15x multiplier to all stats and have unique visual effects. They're rare but worth the investment.",
-        category: "mechanics"
+        description: "Uprage arm (do golden/craft arms)",
+        details: "Uprage pets, craft to big/huge/goliath, make mutation,uprage lvl, do best slime",
+        category: "tips"
     },
     {
-        title: "Advanced Calculations",
-        icon: "🔢",
-        description: "Deep dive into the mathematical formulas used for stat calculations and progression planning.",
-        details: "Understanding the underlying math helps you make informed decisions about resource allocation and training priorities.",
-        category: "mechanics"
+        title: "Cheap team for main world",
+        icon: "🪙",
+        description: "Buy pets in bulk (sellers will make discount for bulk)",
+        details: "Buy shiny pets, its will make good boost but worth cheaper then normall (310% shiny ≈ 356% but worth 2k+-, and 355% worth 5k+-)",
+        category: "tips"
     },
     {
         title: "Recent Updates",
