@@ -1,0 +1,200 @@
+/* Codes Page Styles */
+
+.codes-page {
+    display: none !important;
+}
+
+.codes-page.active {
+    display: block !important;
+}
+
+.codes-page .title {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.5em;
+    font-weight: 900;
+    color: #4a5568;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.codes-container {
+    max-height: 450px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.codes-container::-webkit-scrollbar { 
+    width: 8px; 
+}
+
+.codes-container::-webkit-scrollbar-track { 
+    background: rgba(0, 0, 0, 0.1); 
+    border-radius: 10px; 
+}
+
+.codes-container::-webkit-scrollbar-thumb { 
+    background: #667eea; 
+    border-radius: 10px; 
+}
+
+.code-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    background: rgba(246, 249, 252, 0.8);
+    border-radius: 12px;
+    border: 2px solid rgba(102, 126, 234, 0.1);
+    transition: all 0.3s ease;
+    font-family: 'Roboto', sans-serif;
+}
+
+.code-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.3);
+    transform: translateX(5px);
+}
+
+.code-item:nth-child(even) {
+    background: rgba(118, 75, 162, 0.08);
+}
+
+.code-item:nth-child(even):hover {
+    background: rgba(118, 75, 162, 0.15);
+    border-color: rgba(118, 75, 162, 0.3);
+}
+
+.code-content {
+    flex: 1;
+    margin-right: 15px;
+}
+
+.code-name {
+    font-weight: 700;
+    color: #2d3748;
+    font-size: 1.1em;
+    margin-bottom: 4px;
+    font-family: 'Orbitron', monospace;
+}
+
+.code-description {
+    color: #4a5568;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.copy-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-width: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.copy-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.copy-btn:active {
+    transform: translateY(0);
+}
+
+.copy-btn.copied {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    animation: copySuccess 0.3s ease-out;
+}
+
+@keyframes copySuccess {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.copy-icon {
+    font-size: 0.8em;
+}
+
+/* Success message */
+.copy-success-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(72, 187, 120, 0.95);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9em;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.copy-success-message.show {
+    opacity: 1;
+    visibility: visible;
+    animation: fadeInOut 2s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .code-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .code-content {
+        margin-right: 0;
+        width: 100%;
+    }
+    
+    .copy-btn {
+        align-self: flex-end;
+        min-width: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .codes-page .title {
+        font-size: 2em;
+    }
+    
+    .code-item {
+        padding: 10px 12px;
+    }
+    
+    .code-name {
+        font-size: 1em;
+    }
+    
+    .code-description {
+        font-size: 0.85em;
+    }
+}
