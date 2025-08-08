@@ -1,0 +1,126 @@
+/* Arm Calculator Page Styles */
+
+.arm-page {
+    display: none !important;
+}
+
+.arm-page.active {
+    display: block !important;
+}
+
+.arm-page h1 {
+    color: #333;
+    margin-bottom: 40px;
+    font-size: 2.2em;
+    font-weight: 600;
+    text-align: center;
+}
+
+.arm-page .input-section { 
+    margin-bottom: 30px; 
+}
+
+.arm-page .input-label {
+    display: block;
+    color: #555;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.arm-page .number-input {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1.2em;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    outline: none;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.arm-page .number-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+.arm-page .calculate-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1em;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    font-weight: 600;
+    min-width: 150px;
+}
+
+.arm-page .calculate-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.arm-page .calculate-btn:active { 
+    transform: translateY(-1px); 
+}
+
+/* Result Section */
+.arm-page .result-section {
+    margin-top: 30px;
+    padding: 25px;
+    background: linear-gradient(135deg, #f6f9fc 0%, #e9f4ff 100%);
+    border-radius: 15px;
+    border: 2px solid #e1ecf4;
+    display: none;
+}
+
+.arm-page .result-section.show {
+    display: block;
+    animation: slideIn 0.5s ease-out;
+}
+
+.arm-page .stats-label {
+    color: #2c3e50;
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.arm-page .result-value {
+    font-size: 2em;
+    color: #667eea;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.arm-page .error {
+    color: #e74c3c;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Mobile Styles */
+@media (max-width: 480px) {
+    .arm-page h1 { 
+        font-size: 1.8em; 
+    }
+    
+    .arm-page .result-value { 
+        font-size: 1.6em; 
+    }
+}
