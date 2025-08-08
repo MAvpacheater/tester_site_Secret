@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="general.css">
     <link rel="stylesheet" href="sites/calculator.css">
     <link rel="stylesheet" href="sites/arm.css">
+    <link rel="stylesheet" href="sites/grind.css">
     <link rel="stylesheet" href="sites/boosts.css">
     <link rel="stylesheet" href="sites/shiny.css">
     <link rel="stylesheet" href="sites/codes.css">
@@ -28,8 +29,9 @@
         <button class="close-sidebar" onclick="closeSidebar()">×</button>
     </div>
     <div class="nav-buttons">
-        <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Pet Calculator</button>
+        <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Calculator</button>
         <button class="nav-btn" onclick="switchPage('arm')">💪 Arm Calculator</button>
+        <button class="nav-btn" onclick="switchPage('grind')">🏋️‍♂️ Grind Calculator</button>
         <button class="nav-btn" onclick="switchPage('boosts')">🚀 Boosts</button>
         <button class="nav-btn" onclick="switchPage('shiny')">✨ Shiny Stats</button>
         <button class="nav-btn" onclick="switchPage('codes')">🎁 Codes</button>
@@ -109,7 +111,7 @@
         
         <div class="input-section">
             <label class="input-label">If baby pet</label>
-            <input type="number" class="number-input" id="numberInput" placeholder="Enter number..." step="any">
+            <input type="number" class="number-input" id="numberInput" placeholder="Enter number..." step="any" oninput="calculateStats()">
             <button class="calculate-btn" onclick="calculateStats()">Calculate</button>
             <div class="error" id="errorMessage"></div>
         </div>
@@ -126,7 +128,7 @@
         
         <div class="input-section">
             <label class="input-label">If arm base</label>
-            <input type="number" class="number-input" id="armNumberInput" placeholder="Enter number..." step="any">
+            <input type="number" class="number-input" id="armNumberInput" placeholder="Enter number..." step="any" oninput="calculateArmStats()">
             <button class="calculate-btn" onclick="calculateArmStats()">Calculate</button>
             <div class="error" id="armErrorMessage"></div>
         </div>
@@ -134,6 +136,102 @@
         <div class="result-section" id="armResultSection">
             <div class="stats-label">Max stats</div>
             <div class="result-value" id="armResultValue">0</div>
+        </div>
+    </div>
+
+    <!-- Grind Calculator Page -->
+    <div class="page grind-page" id="grindPage">
+        <div class="header-controls">
+            <h1>Grind Stats Calculator</h1>
+            <button class="settings-btn" onclick="toggleGrindSettings()">⚙️</button>
+        </div>
+    
+        <div class="settings-panel" id="settingsPanelGrind">
+            <div class="settings-title">Settings</div>
+            
+            <div class="modifier-item">
+                <span class="modifier-label">Tp1 (x1.30)</span>
+                <label class="switch">
+                    <input type="checkbox" id="tp1" checked onchange="handleTpSelection('tp1')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+    
+            <div class="modifier-item">
+                <span class="modifier-label">Tp2 (x1.6)</span>
+                <label class="switch">
+                    <input type="checkbox" id="tp2" onchange="handleTpSelection('tp2')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+    
+            <div class="modifier-item">
+                <span class="modifier-label">Tp3 (x1.9)</span>
+                <label class="switch">
+                    <input type="checkbox" id="tp3" onchange="handleTpSelection('tp3')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+    
+            <div class="modifier-item">
+                <span class="modifier-label">Choc donut (x1.15)</span>
+                <label class="switch">
+                    <input type="checkbox" id="chocolate_donut" checked onchange="updateGrindMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+    
+            <div class="modifier-item">
+                <span class="modifier-label">Ench cookie (x1.07)</span>
+                <label class="switch">
+                    <input type="checkbox" id="ench_cookie" checked onchange="updateGrindMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Time (+170%)</span>
+                <label class="switch">
+                    <input type="checkbox" id="time" checked onchange="updateGrindMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Friend (8x +15%)</span>
+                <label class="switch">
+                    <input type="checkbox" id="friend" checked onchange="calculateGrindStats()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Member (2x)</span>
+                <label class="switch">
+                    <input type="checkbox" id="member" checked onchange="updateGrindMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Premium (1.20x)</span>
+                <label class="switch">
+                    <input type="checkbox" id="premium" checked onchange="updateGrindMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <label class="input-label">Without boosts</label>
+            <input type="number" class="number-input" id="numberInputGrind" placeholder="Enter number..." step="any">
+            <button class="calculate-btn" onclick="calculateGrindStats()">Calculate</button>
+            <div class="error" id="errorMessageGrind"></div>
+        </div>
+    
+        <div class="result-section" id="resultSectionGrind">
+            <div class="stats-label">Max</div>
+            <div class="result-value" id="resultValueGrind">0</div>
         </div>
     </div>
 
@@ -166,6 +264,7 @@
 <script src="general.js"></script>
 <script src="sites/calculator.js"></script>
 <script src="sites/arm.js"></script>
+<script src="sites/grind.js"></script>
 <script src="sites/boosts.js"></script>
 <script src="sites/shiny.js"></script>
 <script src="sites/codes.js"></script>
