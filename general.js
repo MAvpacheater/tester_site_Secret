@@ -26,6 +26,10 @@ function switchPage(page) {
         navButtons[4].classList.add('active');
     } else if (page === 'codes' && navButtons[5]) {
         navButtons[5].classList.add('active');
+    } else if (page === 'aura' && navButtons[6]) {
+        navButtons[6].classList.add('active');
+    } else if (page === 'info' && navButtons[7]) {
+        navButtons[7].classList.add('active');
     }
     
     // Close sidebar after selection
@@ -63,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Закриваємо панелі налаштувань при кліку поза ними
         const settingsPanels = [
             { panel: document.getElementById('settingsPanel'), btn: document.querySelector('#calculatorPage .settings-btn') },
+            { panel: document.getElementById('settingsPanelArm'), btn: document.querySelector('#armPage .settings-btn') },
             { panel: document.getElementById('settingsPanelGrind'), btn: document.querySelector('#grindPage .settings-btn') }
         ];
         
@@ -99,6 +104,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof initializeShiny === 'function') {
         initializeShiny();
     }
+
+    // Initialize aura
+    if (typeof initializeAura === 'function') {
+        initializeAura();
+    }
+
+    // Initialize info
+    if (typeof initializeInfo === 'function') {
+        initializeInfo();
+    }
 });
 
 // Compatibility timeout for initialization
@@ -131,5 +146,15 @@ setTimeout(() => {
     // Initialize shiny stats
     if (typeof initializeShiny === 'function') {
         initializeShiny();
+    }
+
+    // Initialize aura
+    if (typeof initializeAura === 'function') {
+        initializeAura();
+    }
+
+    // Initialize info
+    if (typeof initializeInfo === 'function') {
+        initializeInfo();
     }
 }, 100);
