@@ -3,11 +3,11 @@
 // Info data
 const infoData = [
     {
-        title: "Game Basics",
-        icon: "🎮",
-        description: "Learn the fundamental mechanics of the game including pet training, stat calculations, and progression systems.",
-        details: "Understanding these basics will help you make better decisions when training your pets and calculating optimal strategies.",
-        category: "general"
+        title: "Max lvl",
+        icon: "🍓",
+        description: "You need 6k+- ench rasb to get max lvl",
+        details: "Its 780k+- xp",
+        category: "gameplay"
     },
     {
         title: "Pet Evolution Guide",
