@@ -12,19 +12,20 @@ function switchPage(page) {
         targetPage.classList.add('active');
     }
     
-
     // Update active nav button
     const navButtons = document.querySelectorAll('.nav-btn');
     if (page === 'calculator' && navButtons[0]) {
         navButtons[0].classList.add('active');
     } else if (page === 'arm' && navButtons[1]) {
         navButtons[1].classList.add('active');
-    } else if (page === 'boosts' && navButtons[2]) {
+    } else if (page === 'grind' && navButtons[2]) {
         navButtons[2].classList.add('active');
-    } else if (page === 'shiny' && navButtons[3]) {
+    } else if (page === 'boosts' && navButtons[3]) {
         navButtons[3].classList.add('active');
-    } else if (page === 'codes' && navButtons[4]) {
+    } else if (page === 'shiny' && navButtons[4]) {
         navButtons[4].classList.add('active');
+    } else if (page === 'codes' && navButtons[5]) {
+        navButtons[5].classList.add('active');
     }
     
     // Close sidebar after selection
@@ -59,13 +60,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Click outside settings panel to close
     document.addEventListener('click', e => {
-        const settingsPanel = document.getElementById('settingsPanel');
-        const settingsBtn = document.querySelector('.settings-btn');
-        if (settingsPanel && settingsBtn) {
-            if (!settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) {
-                settingsPanel.classList.remove('show');
+        // Закриваємо панелі налаштувань при кліку поза ними
+        const settingsPanels = [
+            { panel: document.getElementById('settingsPanel'), btn: document.querySelector('#calculatorPage .settings-btn') },
+            { panel: document.getElementById('settingsPanelGrind'), btn: document.querySelector('#grindPage .settings-btn') }
+        ];
+        
+        settingsPanels.forEach(({ panel, btn }) => {
+            if (panel && btn) {
+                if (!panel.contains(e.target) && !btn.contains(e.target)) {
+                    panel.classList.remove('show');
+                }
             }
-        }
+        });
     });
 
     // Initialize calculator functions
@@ -76,6 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize arm calculator
     if (typeof initializeArm === 'function') {
         initializeArm();
+    }
+
+    // Initialize grind calculator
+    if (typeof initializeGrind === 'function') {
+        initializeGrind();
     }
 
     // Initialize boosts
@@ -104,6 +116,11 @@ setTimeout(() => {
     // Initialize arm calculator
     if (typeof initializeArm === 'function') {
         initializeArm();
+    }
+
+    // Initialize grind calculator
+    if (typeof initializeGrind === 'function') {
+        initializeGrind();
     }
 
     // Initialize boosts
