@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="sites/arm.css">
     <link rel="stylesheet" href="sites/boosts.css">
     <link rel="stylesheet" href="sites/shiny.css">
+    <link rel="stylesheet" href="sites/codes.css">
 </head>
 
 <body>
@@ -31,6 +32,7 @@
         <button class="nav-btn" onclick="switchPage('arm')">💪 Arm Calculator</button>
         <button class="nav-btn" onclick="switchPage('boosts')">🚀 Boosts</button>
         <button class="nav-btn" onclick="switchPage('shiny')">✨ Shiny Stats</button>
+        <button class="nav-btn" onclick="switchPage('codes')">🎁 Codes</button>
     </div>
 </div>
 
@@ -149,6 +151,13 @@
         <!-- Stats Grid -->
         <div class="stats-grid" id="statsGrid"></div>
     </div>
+
+    <!-- Codes Page -->
+    <div class="page codes-page" id="codesPage">
+        <h1 class="title">Game Codes</h1>
+        
+        <div class="codes-container" id="codesContainer"></div>
+    </div>
 </div>
 
 <div class="signature">Микола</div>
@@ -159,5 +168,6 @@
 <script src="sites/arm.js"></script>
 <script src="sites/boosts.js"></script>
 <script src="sites/shiny.js"></script>
+<script src="sites/codes.js"></script>
 </body>
 </html>
