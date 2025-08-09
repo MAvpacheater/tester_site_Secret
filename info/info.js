@@ -46,7 +46,7 @@ const infoData = [
     },
     {
         title: "Luck charm",
-        icon: "🟢",
+        icon: "🍀",
         description: "Adds 5% to luck",
         details: "Max stock: 16",
         category: "charm"
