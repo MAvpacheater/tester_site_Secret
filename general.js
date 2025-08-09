@@ -1,7 +1,9 @@
-ʼ// General JavaScript functions
+// General JavaScript functions
 
 // Page switching functionality
 function switchPage(page) {
+    console.log(`Switching to page: ${page}`);
+    
     // Remove active class from all pages and nav buttons
     document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
@@ -10,32 +12,68 @@ function switchPage(page) {
     const targetPage = document.getElementById(page + 'Page');
     if (targetPage) {
         targetPage.classList.add('active');
+        console.log(`Page ${page}Page activated`);
+    } else {
+        console.error(`Page ${page}Page not found`);
     }
     
-    // Update active nav button
+    // Update active nav button - використовуємо масив для правильного індексування
+    const pageMap = {
+        'calculator': 0,
+        'arm': 1,
+        'grind': 2,
+        'boosts': 3,
+        'shiny': 4,
+        'codes': 5,
+        'aura': 6,
+        'trainer': 7,
+        'info': 8
+    };
+    
     const navButtons = document.querySelectorAll('.nav-btn');
-    if (page === 'calculator' && navButtons[0]) {
-        navButtons[0].classList.add('active');
-    } else if (page === 'arm' && navButtons[1]) {
-        navButtons[1].classList.add('active');
-    } else if (page === 'grind' && navButtons[2]) {
-        navButtons[2].classList.add('active');
-    } else if (page === 'boosts' && navButtons[3]) {
-        navButtons[3].classList.add('active');
-    } else if (page === 'shiny' && navButtons[4]) {
-        navButtons[4].classList.add('active');
-    } else if (page === 'codes' && navButtons[5]) {
-        navButtons[5].classList.add('active');
-    } else if (page === 'aura' && navButtons[6]) {
-        navButtons[6].classList.add('active');
-    } else if (page === 'trainer' && navButtons[7]) {
-        navButtons[7].classList.add('active');
-    } else if (page === 'info' && navButtons[8]) {
-        navButtons[8].classList.add('active');
+    const buttonIndex = pageMap[page];
+    
+    if (buttonIndex !== undefined && navButtons[buttonIndex]) {
+        navButtons[buttonIndex].classList.add('active');
+        console.log(`Nav button ${buttonIndex} activated for ${page}`);
     }
     
     // Close sidebar after selection
     closeSidebar();
+    
+    // Trigger page-specific initialization if needed
+    initializePageContent(page);
+}
+
+// Initialize specific page content when switching
+function initializePageContent(page) {
+    switch(page) {
+        case 'shiny':
+            if (typeof initializeShiny === 'function') {
+                initializeShiny();
+            }
+            break;
+        case 'boosts':
+            if (typeof initializeBoosts === 'function') {
+                initializeBoosts();
+            }
+            break;
+        case 'trainer':
+            if (typeof initializeTrainer === 'function') {
+                initializeTrainer();
+            }
+            break;
+        case 'aura':
+            if (typeof initializeAura === 'function') {
+                initializeAura();
+            }
+            break;
+        case 'codes':
+            if (typeof initializeCodes === 'function') {
+                initializeCodes();
+            }
+            break;
+    }
 }
 
 // Sidebar functionality
@@ -64,7 +102,7 @@ let appInitialized = false;
 
 // Головна функція ініціалізації (викликається після завантаження контенту)
 function initializeApp() {
-    if (appInitialized) {
+    if (typeof appInitialized !== 'undefined' && appInitialized) {
         console.log('⚠️ Додаток вже ініціалізовано');
         return;
     }
@@ -114,6 +152,10 @@ function initializeApp() {
     // Initialize all modules
     initializeAllModules();
     
+    // Set the flag AFTER initialization
+    if (typeof window !== 'undefined') {
+        window.appInitialized = true;
+    }
     appInitialized = true;
     console.log('✅ Ініціалізація додатка завершена');
 }
@@ -144,3 +186,19 @@ function initializeAllModules() {
         }
     });
 }
+
+// Debug function to check page states
+function debugPageStates() {
+    console.log('=== DEBUG PAGE STATES ===');
+    document.querySelectorAll('.page').forEach(page => {
+        console.log(`${page.id}: ${page.classList.contains('active') ? 'ACTIVE' : 'INACTIVE'}`);
+    });
+    console.log('========================');
+}
+
+// Make functions globally available
+window.switchPage = switchPage;
+window.toggleMobileMenu = toggleMobileMenu;
+window.closeSidebar = closeSidebar;
+window.initializeApp = initializeApp;
+window.debugPageStates = debugPageStates;
