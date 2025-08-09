@@ -1,4 +1,4 @@
-// General JavaScript functions
+ʼ// General JavaScript functions
 
 // Page switching functionality
 function switchPage(page) {
@@ -34,23 +34,6 @@ function switchPage(page) {
         navButtons[8].classList.add('active');
     }
     
-    // Initialize page-specific content when switching
-    setTimeout(() => {
-        if (page === 'boosts' && typeof generateBoostsContent === 'function') {
-            generateBoostsContent();
-        } else if (page === 'shiny' && typeof generateShinyStats === 'function') {
-            generateShinyStats();
-        } else if (page === 'codes' && typeof generateCodesContent === 'function') {
-            generateCodesContent();
-        } else if (page === 'aura' && typeof generateAuraContent === 'function') {
-            generateAuraContent();
-        } else if (page === 'trainer' && typeof generateAllTrainerContent === 'function') {
-            generateAllTrainerContent();
-        } else if (page === 'info' && typeof generateInfoContent === 'function') {
-            generateInfoContent();
-        }
-    }, 50);
-    
     // Close sidebar after selection
     closeSidebar();
 }
@@ -76,53 +59,29 @@ function closeSidebar() {
     }
 }
 
-// Safe initialization function
-function safeInitialize(funcName, name) {
-    try {
-        if (typeof window[funcName] === 'function') {
-            window[funcName]();
-            console.log(`✅ ${name} initialized successfully`);
-        } else {
-            console.log(`⚠️ ${funcName} function not found, skipping ${name}`);
-        }
-    } catch (error) {
-        console.error(`❌ Error initializing ${name}:`, error);
+// Прапорець для запобігання повторної ініціалізації
+let appInitialized = false;
+
+// Головна функція ініціалізації (викликається після завантаження контенту)
+function initializeApp() {
+    if (appInitialized) {
+        console.log('⚠️ Додаток вже ініціалізовано');
+        return;
     }
-}
-
-// Initialize all functions
-function initializeAll() {
-    console.log('🚀 Starting application initialization...');
     
-    // Initialize calculators
-    safeInitialize('initializeCalculator', 'Pet Calculator');
-    safeInitialize('initializeArm', 'Arm Calculator');
-    safeInitialize('initializeGrind', 'Grind Calculator');
+    console.log('🚀 Початок ініціалізації додатка...');
     
-    // Initialize info pages
-    safeInitialize('initializeBoosts', 'Boosts');
-    safeInitialize('initializeShiny', 'Shiny Stats');
-    safeInitialize('initializeAura', 'Aura');
-    safeInitialize('initializeTrainer', 'Trainer');
-    safeInitialize('initializeInfo', 'Info');
-    
-    // Generate content for info pages
-    safeInitialize('generateCodesContent', 'Codes Content');
-    
-    console.log('✅ Application initialization completed');
-}
-
-// Initialize functions when page loads
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('📄 DOM Content Loaded');
+    // Перевіряємо чи контент завантажився
+    const appContent = document.getElementById('app-content');
+    if (!appContent || !appContent.innerHTML.trim()) {
+        console.error('❌ Контент не завантажено');
+        return;
+    }
     
     // Make sure calculator page is active by default
-    setTimeout(() => {
-        switchPage('calculator');
-        initializeAll();
-    }, 100);
+    switchPage('calculator');
     
-    // Click outside settings panel to close
+    // Click outside settings panel to close - ВИПРАВЛЕНА ВЕРСІЯ
     document.addEventListener('click', e => {
         // Закриваємо панелі налаштувань при кліку поза ними
         const settingsPanels = [
@@ -133,25 +92,55 @@ document.addEventListener('DOMContentLoaded', () => {
         
         settingsPanels.forEach(({ panel, btn }) => {
             if (panel && btn) {
-                if (!panel.contains(e.target) && !btn.contains(e.target)) {
+                // Перевіряємо чи клік був НЕ всередині панелі і НЕ на кнопці налаштувань
+                // Також перевіряємо чи це не клік на category-button або back-btn
+                const isClickInsidePanel = panel.contains(e.target);
+                const isClickOnSettingsBtn = btn.contains(e.target);
+                const isClickOnCategoryButton = e.target.closest('.category-button');
+                const isClickOnBackButton = e.target.closest('.back-btn');
+                const isClickOnCategorySwitch = e.target.closest('.category-switch');
+                const isClickOnSimpleModifier = e.target.closest('.simple-modifier');
+                
+                // Закриваємо панель тільки якщо клік був поза всіма інтерактивними елементами
+                if (!isClickInsidePanel && !isClickOnSettingsBtn && 
+                    !isClickOnCategoryButton && !isClickOnBackButton && 
+                    !isClickOnCategorySwitch && !isClickOnSimpleModifier) {
                     panel.classList.remove('show');
                 }
             }
         });
     });
-});
 
-// Compatibility timeout for initialization
-setTimeout(() => {
-    // Make sure calculator page is active by default
-    if (!document.querySelector('.page.active')) {
-        console.log('🔄 Fallback initialization triggered');
-        switchPage('calculator');
-        initializeAll();
-    }
-}, 500);
+    // Initialize all modules
+    initializeAllModules();
+    
+    appInitialized = true;
+    console.log('✅ Ініціалізація додатка завершена');
+}
 
-// Make functions available globally
-window.switchPage = switchPage;
-window.toggleMobileMenu = toggleMobileMenu;
-window.closeSidebar = closeSidebar;
+// Ініціалізація всіх модулів
+function initializeAllModules() {
+    const modules = [
+        'initializeCalculator',
+        'initializeArm', 
+        'initializeGrind',
+        'initializeBoosts',
+        'initializeShiny',
+        'initializeAura',
+        'initializeTrainer',
+        'initializeInfo'
+    ];
+
+    modules.forEach(moduleName => {
+        if (typeof window[moduleName] === 'function') {
+            try {
+                window[moduleName]();
+                console.log(`✅ ${moduleName} ініціалізовано`);
+            } catch (error) {
+                console.error(`❌ Помилка ініціалізації ${moduleName}:`, error);
+            }
+        } else {
+            console.warn(`⚠️ Функція ${moduleName} не знайдена`);
+        }
+    });
+}
