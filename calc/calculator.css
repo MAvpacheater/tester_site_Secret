@@ -46,14 +46,51 @@
     background: rgba(246, 249, 252, 0.95);
     border: 2px solid #e1ecf4;
     border-radius: 15px;
-    padding: 20px;
+    padding: 25px;
     margin-bottom: 20px;
     text-align: left;
+    max-width: 500px;
+    width: 100%;
 }
 
 .settings-panel.show {
     display: block;
     animation: slideDown 0.3s ease-out;
+}
+
+/* Settings Header */
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e1ecf4;
+}
+
+.settings-title {
+    color: #2c3e50;
+    font-size: 1.3em;
+    font-weight: 600;
+    margin: 0;
+}
+
+.back-btn {
+    background: rgba(231, 76, 60, 0.1);
+    border: 2px solid #e74c3c;
+    color: #e74c3c;
+    padding: 8px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background: #e74c3c;
+    color: white;
+    transform: translateY(-1px);
 }
 
 @keyframes slideDown {
@@ -75,12 +112,60 @@
     text-align: center;
 }
 
+/* Category Button - компактна кнопка */
+.category-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.category-button:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+}
+
+.category-button-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.category-name {
+    font-size: 1em;
+}
+
+.category-selected {
+    font-size: 0.85em;
+    opacity: 0.8;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.category-arrow {
+    font-size: 1em;
+    margin-left: 10px;
+}
+
+/* Modifier Item */
 .modifier-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .modifier-item:last-child { 
@@ -91,9 +176,65 @@
     color: #555;
     font-size: 1.1em;
     font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
 }
 
-/* Toggle Switches */
+.modifier-multiplier {
+    color: #667eea;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+/* Radio Button Styles - тепер використовуємо toggle switches */
+.category-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+}
+
+.category-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.category-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 25px;
+}
+
+.category-slider:before {
+    position: absolute;
+    content: "";
+    height: 19px; 
+    width: 19px;
+    left: 3px; 
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .category-slider { 
+    background-color: #667eea; 
+}
+
+input:checked + .category-slider:before { 
+    transform: translateX(25px); 
+}
+
+/* Toggle Switches для simple modifiers */
 .switch {
     position: relative;
     display: inline-block;
@@ -137,6 +278,27 @@ input:checked + .slider {
 
 input:checked + .slider:before { 
     transform: translateX(25px); 
+}
+
+/* Simple modifier item for shiny and maxlvl */
+.simple-modifier {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.simple-modifier-label {
+    color: #555;
+    font-size: 1.1em;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 }
 
 /* Input Section */
@@ -251,5 +413,18 @@ input:checked + .slider:before {
     .header-controls { 
         flex-direction: column; 
         gap: 15px; 
+    }
+
+    .category-header {
+        padding: 10px 12px;
+        font-size: 0.9em;
+    }
+
+    .modifier-item {
+        padding: 10px 12px;
+    }
+
+    .modifier-label {
+        font-size: 0.9em;
     }
 }
