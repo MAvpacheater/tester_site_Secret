@@ -80,9 +80,35 @@ function generateBoostsContent() {
         section.appendChild(grid);
         container.appendChild(section);
     });
+    
+    console.log('Boosts content generated successfully');
 }
 
 // Initialize boosts
 function initializeBoosts() {
+    console.log('Initializing boosts...');
     generateBoostsContent();
 }
+
+// Make sure content is generated when boosts page becomes active
+document.addEventListener('DOMContentLoaded', () => {
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const boostsPage = document.getElementById('boostsPage');
+                if (boostsPage && boostsPage.classList.contains('active')) {
+                    console.log('Boosts page became active, generating content...');
+                    generateBoostsContent();
+                }
+            }
+        });
+    });
+    
+    // Observe changes to pages
+    document.querySelectorAll('.page').forEach(page => {
+        observer.observe(page, { attributes: true });
+    });
+});
+
+// Global function for window object (fallback)
+window.generateBoostsContent = generateBoostsContent;
