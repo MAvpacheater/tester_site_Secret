@@ -10,13 +10,14 @@
     <!-- CSS Files -->
     <link rel="stylesheet" href="general.css">
     <link rel="stylesheet" href="calc/calculator.css">
-    <link rel="stylesheet" href="calc/arm.css">
+    <link rel="stylesheet" href="calc/arms.css">
     <link rel="stylesheet" href="calc/grind.css">
-    <link rel="stylesheet" href="info/boosts.css">
-    <link rel="stylesheet" href="info/shiny.css">
-    <link rel="stylesheet" href="info/codes.css">
-    <link rel="stylesheet" href="info/aura.css">
-    <link rel="stylesheet" href="info/info.css">
+    <link rel="stylesheet" href="sites/boosts.css">
+    <link rel="stylesheet" href="sites/shiny.css">
+    <link rel="stylesheet" href="sites/codes.css">
+    <link rel="stylesheet" href="sites/aura.css">
+    <link rel="stylesheet" href="sites/trainer.css">
+    <link rel="stylesheet" href="sites/info.css">
 </head>
 
 <body>
@@ -38,6 +39,7 @@
         <button class="nav-btn" onclick="switchPage('shiny')">✨ Shiny Stats</button>
         <button class="nav-btn" onclick="switchPage('codes')">🎁 Codes</button>
         <button class="nav-btn" onclick="switchPage('aura')">🌟 Aura</button>
+        <button class="nav-btn" onclick="switchPage('trainer')">🏆 Trainer</button>
         <button class="nav-btn" onclick="switchPage('info')">ℹ️ Info</button>
     </div>
 </div>
@@ -315,6 +317,25 @@
         <div class="aura-container" id="auraContainer"></div>
     </div>
 
+    <!-- Trainer Page -->
+    <div class="page trainer-page" id="trainerPage">
+        <h1 class="title">Trainer Collection</h1>
+        
+        <!-- Trainer Type Switcher -->
+        <div class="trainer-switcher">
+            <button class="trainer-switch-btn active" data-type="free" onclick="switchTrainerType('free')">Free</button>
+            <button class="trainer-switch-btn" data-type="donate" onclick="switchTrainerType('donate')">Donate</button>
+        </div>
+        
+        <div class="trainer-container">
+            <!-- Free Trainers Section -->
+            <div class="trainer-section active" id="freeTrainers"></div>
+            
+            <!-- Donate Trainers Section -->
+            <div class="trainer-section" id="donateTrainers"></div>
+        </div>
+    </div>
+
     <!-- Info Page -->
     <div class="page info-page" id="infoPage">
         <h1 class="title">Game Information</h1>
@@ -330,10 +351,11 @@
 <script src="calc/calculator.js"></script>
 <script src="calc/arm.js"></script>
 <script src="calc/grind.js"></script>
-<script src="info/boosts.js"></script>
-<script src="info/shiny.js"></script>
-<script src="info/codes.js"></script>
-<script src="info/aura.js"></script>
-<script src="info/info.js"></script>
+<script src="sites/boosts.js"></script>
+<script src="sites/shiny.js"></script>
+<script src="sites/codes.js"></script>
+<script src="sites/aura.js"></script>
+<script src="sites/trainer.js"></script>
+<script src="sites/info.js"></script>
 </body>
 </html>
