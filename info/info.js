@@ -7,70 +7,70 @@ const infoData = [
         icon: "🍓",
         description: "You need 6k+- ench rasb to get max lvl",
         details: "Its 780k+- xp",
-        category: "gameplay"
+        category: "tips"
     },
     {
         title: "Best arm in game",
         icon: "🏋️‍♂️",
         description: "Patrim - from endless pack",
         details: "Gives 42x base and 3x event, If max 88,2x",
-        category: "gameplay"
+        category: "info"
     },
     {
         title: "Best pet in game",
         icon: "🐕",
         description: "Mega Cappucino Assasino ",
         details: "Gives 450% to best pet and 2.15b if baby (have l8), If max 240b+-",
-        category: "gameplay"
+        category: "info"
     },
     {
-        title: "Training Optimization",
-        icon: "💪",
-        description: "Use all boosts",
-        details: "Buy beteer pets and arms/trainers/auras",
-        category: "tips"
-    },
-    {
-        title: "Best tactic",
-        icon: "🏦",
-        description: "How to get tokens??.",
-        details: "Go to the server - buy cheap, then go to discord and sell - normall/overprice",
-        category: "tips"
-    },
-    {
-        title: "How to get best rep??",
-        icon: "✨",
-        description: "Uprage arm (do golden/craft arms)",
-        details: "Uprage pets, craft to big/huge/goliath, make mutation,uprage lvl, do best slime",
-        category: "tips"
-    },
-    {
-        title: "Cheap team for main world",
-        icon: "🪙",
-        description: "Buy pets in bulk (sellers will make discount for bulk)",
-        details: "Buy shiny pets, its will make good boost but worth cheaper then normall (310% shiny ≈ 356% but worth 2k+-, and 355% worth 5k+-)",
-        category: "tips"
-    },
-    {
-        title: "Updates/when and wht",
+        title: "Infinite charm",
         icon: "🆕",
-        description: "Update every saturday",
-        details: "Regular updates introduce new content, fix bugs, and rebalance existing mechanics. Stay updated for optimal play.",
-        category: "updates"
+        description: "Gives 20% to training rep",
+        details: "Max stock: 5",
+        category: "Charm"
     },
     {
-        title: "Community Tips",
+        title: "Leadboard charm",
         icon: "👥",
-        description: "Valuable insights and strategies shared by experienced players in the community.",
-        details: "Learn from other players' experiences and discover new strategies that you might not have considered.",
-        category: "tips"
+        description: "Gives 18% to training rep",
+        details: "Max stock: 6",
+        category: "Charm"
     },
     {
-        title: "Resource Management",
+        title: "Endless charm",
         icon: "💰",
-        description: "How to effectively manage your in-game resources for long-term progression and success.",
-        details: "Prioritize upgrades that provide the highest return on investment. Save premium resources for critical moments.",
-        category: "gameplay"
+        description: "Gives 15% to training rep",
+        details: "Max stock: 10",
+        category: "Charm"
+    },
+    {
+        title: "Luck charm",
+        icon: "💪",
+        description: "Adds 5% to luck",
+        details: "Max stock: 16",
+        category: "Charm"
+    },
+    {
+        title: "Training charms",
+        icon: "🏦",
+        description: "Gives 5% to training rep",
+        details: "Max stock: 16",
+        category: "Charm"
+    },
+    {
+        title: "Loot charm",
+        icon: "✨",
+        description: "Gives 5% to find loot from boss",
+        details: "Max stock: 16",
+        category: "Charm"
+    },
+    {
+        title: "Winner charm",
+        icon: "🪙",
+        description: "Gives 5% more winns from boss",
+        details: "Max stock: 16",
+        category: "Charm"
     }
 ];
 
