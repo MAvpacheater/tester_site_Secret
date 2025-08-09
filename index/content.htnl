@@ -1,0 +1,321 @@
+<!-- Mobile Menu Toggle -->
+<button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+
+<!-- Sidebar Navigation -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h3>Menu</h3>
+        <button class="close-sidebar" onclick="closeSidebar()">×</button>
+    </div>
+    <div class="nav-buttons">
+        <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Calculator</button>
+        <button class="nav-btn" onclick="switchPage('arm')">💪 Arm Calculator</button>
+        <button class="nav-btn" onclick="switchPage('grind')">🏋️‍♂️ Grind Calculator</button>
+        <button class="nav-btn" onclick="switchPage('boosts')">🚀 Boosts</button>
+        <button class="nav-btn" onclick="switchPage('shiny')">✨ Shiny Stats</button>
+        <button class="nav-btn" onclick="switchPage('codes')">🎁 Codes</button>
+        <button class="nav-btn" onclick="switchPage('aura')">🌟 Aura</button>
+        <button class="nav-btn" onclick="switchPage('trainer')">🏆 Trainer</button>
+        <button class="nav-btn" onclick="switchPage('info')">ℹ️ Info</button>
+    </div>
+</div>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+   
+<div class="container">
+    <!-- Calculator Page -->
+    <div class="page calculator-page active" id="calculatorPage">
+        <div class="header-controls">
+            <h1>Pet Stats Calculator</h1>
+            <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
+        </div>
+
+        <div class="settings-panel" id="settingsPanel">
+            <div class="settings-title">Settings</div>
+            
+            <div class="modifier-item">
+                <span class="modifier-label">Shiny (x1.15)</span>
+                <label class="switch">
+                    <input type="checkbox" id="shiny" checked onchange="updateMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Pristine (x1.085)</span>
+                <label class="switch">
+                    <input type="checkbox" id="pristine" checked onchange="updateMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Void (x2)</span>
+                <label class="switch">
+                    <input type="checkbox" id="void" checked onchange="updateMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Cosmic (x2.5)</span>
+                <label class="switch">
+                    <input type="checkbox" id="cosmic" checked onchange="updateMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Slime (x3.15)</span>
+                <label class="switch">
+                    <input type="checkbox" id="slime" checked onchange="updateMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Max lvl (x2.2388)</span>
+                <label class="switch">
+                    <input type="checkbox" id="maxlvl" checked onchange="updateMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Goliath (x2.5)</span>
+                <label class="switch">
+                    <input type="checkbox" id="goliath" checked onchange="updateMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <label class="input-label">If baby pet</label>
+            <input type="number" class="number-input" id="numberInput" placeholder="Enter number..." step="any" oninput="calculateStats()">
+            <button class="calculate-btn" onclick="calculateStats()">Calculate</button>
+            <div class="error" id="errorMessage"></div>
+        </div>
+
+        <div class="result-section" id="resultSection">
+            <div class="stats-label">Stats if max</div>
+            <div class="result-value" id="resultValue">0</div>
+        </div>
+    </div>
+
+    <!-- Arm Calculator Page -->
+    <div class="page arm-page" id="armPage">
+        <div class="header-controls">
+            <h1>Arm Stats Calculator</h1>
+            <button class="settings-btn" onclick="toggleArmSettings()">⚙️</button>
+        </div>
+
+        <div class="settings-panel" id="settingsPanelArm">
+            <div class="settings-title">Settings</div>
+            
+            <div class="modifier-item">
+                <span class="modifier-label">1/5 golden</span>
+                <label class="switch">
+                    <input type="checkbox" id="golden1" onchange="handleGoldenSelection('golden1')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">2/5 golden</span>
+                <label class="switch">
+                    <input type="checkbox" id="golden2" onchange="handleGoldenSelection('golden2')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">3/5 golden</span>
+                <label class="switch">
+                    <input type="checkbox" id="golden3" onchange="handleGoldenSelection('golden3')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">4/5 golden</span>
+                <label class="switch">
+                    <input type="checkbox" id="golden4" onchange="handleGoldenSelection('golden4')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">5/5 golden</span>
+                <label class="switch">
+                    <input type="checkbox" id="golden5" checked onchange="handleGoldenSelection('golden5')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <label class="input-label">If arm base</label>
+            <input type="number" class="number-input" id="armNumberInput" placeholder="Enter number..." step="any" oninput="calculateArmStats()">
+            <button class="calculate-btn" onclick="calculateArmStats()">Calculate</button>
+            <div class="error" id="armErrorMessage"></div>
+        </div>
+
+        <div class="result-section" id="armResultSection">
+            <div class="stats-label">Max stats</div>
+            <div class="result-value" id="armResultValue">0</div>
+        </div>
+    </div>
+
+    <!-- Grind Calculator Page -->
+    <div class="page grind-page" id="grindPage">
+        <div class="header-controls">
+            <h1>Grind Stats Calculator</h1>
+            <button class="settings-btn" onclick="toggleGrindSettings()">⚙️</button>
+        </div>
+    
+        <div class="settings-panel" id="settingsPanelGrind">
+            <div class="settings-title">Settings</div>
+            
+            <div class="modifier-item">
+                <span class="modifier-label">Tp1 (x1.30)</span>
+                <label class="switch">
+                    <input type="checkbox" id="tp1" checked onchange="handleTpSelection('tp1')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+    
+            <div class="modifier-item">
+                <span class="modifier-label">Tp2 (x1.6)</span>
+                <label class="switch">
+                    <input type="checkbox" id="tp2" onchange="handleTpSelection('tp2')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+    
+            <div class="modifier-item">
+                <span class="modifier-label">Tp3 (x1.9)</span>
+                <label class="switch">
+                    <input type="checkbox" id="tp3" onchange="handleTpSelection('tp3')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+    
+            <div class="modifier-item">
+                <span class="modifier-label">Choc donut (x1.15)</span>
+                <label class="switch">
+                    <input type="checkbox" id="chocolate_donut" checked onchange="updateGrindMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+    
+            <div class="modifier-item">
+                <span class="modifier-label">Ench cookie (x1.07)</span>
+                <label class="switch">
+                    <input type="checkbox" id="ench_cookie" checked onchange="updateGrindMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Time (max)</span>
+                <label class="switch">
+                    <input type="checkbox" id="time" checked onchange="updateGrindMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Friend (max)</span>
+                <label class="switch">
+                    <input type="checkbox" id="friend" checked onchange="calculateGrindStats()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Member (2x)</span>
+                <label class="switch">
+                    <input type="checkbox" id="member" checked onchange="updateGrindMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="modifier-item">
+                <span class="modifier-label">Premium (1.20x)</span>
+                <label class="switch">
+                    <input type="checkbox" id="premium" checked onchange="updateGrindMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <label class="input-label">Without boosts</label>
+            <input type="number" class="number-input" id="numberInputGrind" placeholder="Enter number..." step="any">
+            <button class="calculate-btn" onclick="calculateGrindStats()">Calculate</button>
+            <div class="error" id="errorMessageGrind"></div>
+        </div>
+    
+        <div class="result-section" id="resultSectionGrind">
+            <div class="stats-label">Max</div>
+            <div class="result-value" id="resultValueGrind">0</div>
+        </div>
+    </div>
+
+    <!-- Boosts Page -->
+    <div class="page boosts-page" id="boostsPage">
+        <h1 class="title">Boosts Information</h1>
+        
+        <div class="boosts-container" id="boostsContainer"></div>
+    </div>
+
+    <!-- Shiny Stats Page -->
+    <div class="page shiny-page" id="shinyPage">
+        <h1 class="title">Shiny pets</h1>
+        
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="statsGrid"></div>
+    </div>
+
+    <!-- Codes Page -->
+    <div class="page codes-page" id="codesPage">
+        <h1 class="title">Game Codes</h1>
+        
+        <div class="codes-container" id="codesContainer"></div>
+    </div>
+
+    <!-- Aura Page -->
+    <div class="page aura-page" id="auraPage">
+        <h1 class="title">Aura Collection</h1>
+        
+        <div class="aura-container" id="auraContainer"></div>
+    </div>
+
+    <!-- Trainer Page -->
+    <div class="page trainer-page" id="trainerPage">
+        <h1 class="title">Trainer Collection</h1>
+        
+        <!-- Trainer Type Switcher -->
+        <div class="trainer-switcher">
+            <button class="trainer-switch-btn active" data-type="free" onclick="switchTrainerType('free')">Free</button>
+            <button class="trainer-switch-btn" data-type="donate" onclick="switchTrainerType('donate')">Donate</button>
+        </div>
+        
+        <div class="trainer-container">
+            <!-- Free Trainers Section -->
+            <div class="trainer-section active" id="freeTrainers"></div>
+            
+            <!-- Donate Trainers Section -->
+            <div class="trainer-section" id="donateTrainers"></div>
+        </div>
+    </div>
+
+    <!-- Info Page -->
+    <div class="page info-page" id="infoPage">
+        <h1 class="title">Game Information</h1>
+        
+        <div class="info-container" id="infoContainer"></div>
+    </div>
+</div>
