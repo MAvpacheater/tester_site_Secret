@@ -28,7 +28,7 @@ const boostsData = {
         { name: "", multiplier: "", separator: true },
         { name: "Golden", multiplier: "1.5x" },
         { name: "Void", multiplier: "2x" },
-        { name: "Pristine", multiplier: "1.08x" }
+        { name: "Pristine", multiplier: "2.17x" }
     ]
 };
 
