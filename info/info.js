@@ -28,49 +28,49 @@ const infoData = [
         icon: "🟠",
         description: "Gives 20% to training rep",
         details: "Max stock: 5",
-        category: "Charm"
+        category: "charm"
     },
     {
         title: "Leadboard charm",
         icon: "🟩",
         description: "Gives 18% to training rep",
         details: "Max stock: 6",
-        category: "Charm"
+        category: "charm"
     },
     {
         title: "Endless charm",
         icon: "⚪",
         description: "Gives 15% to training rep",
         details: "Max stock: 10",
-        category: "Charm"
+        category: "charm"
     },
     {
         title: "Luck charm",
         icon: "🟢",
         description: "Adds 5% to luck",
         details: "Max stock: 16",
-        category: "Charm"
+        category: "charm"
     },
     {
         title: "Training charms",
         icon: "🔴",
         description: "Gives 5% to training rep",
         details: "Max stock: 16",
-        category: "Charm"
+        category: "charm"
     },
     {
         title: "Loot charm",
         icon: "🔵",
         description: "Gives 5% to find loot from boss",
         details: "Max stock: 16",
-        category: "Charm"
+        category: "charm"
     },
     {
         title: "Winner charm",
         icon: "🟡",
         description: "Gives 5% more winns from boss",
         details: "Max stock: 16",
-        category: "Charm"
+        category: "charm"
     }
 ];
 
