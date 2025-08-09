@@ -1,7 +1,7 @@
 /* Shiny Stats Page Styles */
 
 .shiny-page {
-    display: none !important;
+    display: none;
 }
 
 .shiny-page.active {
