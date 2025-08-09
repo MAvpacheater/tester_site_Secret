@@ -28,8 +28,10 @@ function switchPage(page) {
         navButtons[5].classList.add('active');
     } else if (page === 'aura' && navButtons[6]) {
         navButtons[6].classList.add('active');
-    } else if (page === 'info' && navButtons[7]) {
+    } else if (page === 'trainer' && navButtons[7]) {
         navButtons[7].classList.add('active');
+    } else if (page === 'info' && navButtons[8]) {
+        navButtons[8].classList.add('active');
     }
     
     // Close sidebar after selection
@@ -110,6 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeAura();
     }
 
+    // Initialize trainer
+    if (typeof initializeTrainer === 'function') {
+        initializeTrainer();
+    }
+
     // Initialize info
     if (typeof initializeInfo === 'function') {
         initializeInfo();
@@ -151,6 +158,11 @@ setTimeout(() => {
     // Initialize aura
     if (typeof initializeAura === 'function') {
         initializeAura();
+    }
+
+    // Initialize trainer
+    if (typeof initializeTrainer === 'function') {
+        initializeTrainer();
     }
 
     // Initialize info
