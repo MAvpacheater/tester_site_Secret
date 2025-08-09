@@ -1,7 +1,7 @@
 /* Boosts Page Styles */
 
 .boosts-page {
-    display: none !important;
+    display: none;
 }
 
 .boosts-page.active {
