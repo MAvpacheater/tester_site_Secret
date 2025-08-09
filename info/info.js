@@ -6,7 +6,7 @@ const infoData = [
         title: "Max lvl",
         icon: "🍓",
         description: "You need 6k+- ench rasb to get max lvl",
-        details: "Its 780k+- xp",
+        details: "Its 780k+- xp, you can use potion x2 xp",
         category: "tips"
     },
     {
