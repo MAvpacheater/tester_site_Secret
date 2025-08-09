@@ -11,7 +11,7 @@ const infoData = [
     },
     {
         title: "Best arm in game",
-        icon: "🏋️‍♂️",
+        icon: "💪",
         description: "Patrim - from endless pack",
         details: "Gives 42x base and 3x event, If max 88,2x",
         category: "info"
@@ -25,49 +25,49 @@ const infoData = [
     },
     {
         title: "Infinite charm",
-        icon: "🆕",
+        icon: "🟠",
         description: "Gives 20% to training rep",
         details: "Max stock: 5",
         category: "Charm"
     },
     {
         title: "Leadboard charm",
-        icon: "👥",
+        icon: "🟩",
         description: "Gives 18% to training rep",
         details: "Max stock: 6",
         category: "Charm"
     },
     {
         title: "Endless charm",
-        icon: "💰",
+        icon: "⚪",
         description: "Gives 15% to training rep",
         details: "Max stock: 10",
         category: "Charm"
     },
     {
         title: "Luck charm",
-        icon: "💪",
+        icon: "🟢",
         description: "Adds 5% to luck",
         details: "Max stock: 16",
         category: "Charm"
     },
     {
         title: "Training charms",
-        icon: "🏦",
+        icon: "🔴",
         description: "Gives 5% to training rep",
         details: "Max stock: 16",
         category: "Charm"
     },
     {
         title: "Loot charm",
-        icon: "✨",
+        icon: "🔵",
         description: "Gives 5% to find loot from boss",
         details: "Max stock: 16",
         category: "Charm"
     },
     {
         title: "Winner charm",
-        icon: "🪙",
+        icon: "🟡",
         description: "Gives 5% more winns from boss",
         details: "Max stock: 16",
         category: "Charm"
