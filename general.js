@@ -34,6 +34,23 @@ function switchPage(page) {
         navButtons[8].classList.add('active');
     }
     
+    // Initialize page-specific content when switching
+    setTimeout(() => {
+        if (page === 'boosts' && typeof generateBoostsContent === 'function') {
+            generateBoostsContent();
+        } else if (page === 'shiny' && typeof generateShinyStats === 'function') {
+            generateShinyStats();
+        } else if (page === 'codes' && typeof generateCodesContent === 'function') {
+            generateCodesContent();
+        } else if (page === 'aura' && typeof generateAuraContent === 'function') {
+            generateAuraContent();
+        } else if (page === 'trainer' && typeof generateAllTrainerContent === 'function') {
+            generateAllTrainerContent();
+        } else if (page === 'info' && typeof generateInfoContent === 'function') {
+            generateInfoContent();
+        }
+    }, 50);
+    
     // Close sidebar after selection
     closeSidebar();
 }
@@ -59,10 +76,51 @@ function closeSidebar() {
     }
 }
 
+// Safe initialization function
+function safeInitialize(funcName, name) {
+    try {
+        if (typeof window[funcName] === 'function') {
+            window[funcName]();
+            console.log(`✅ ${name} initialized successfully`);
+        } else {
+            console.log(`⚠️ ${funcName} function not found, skipping ${name}`);
+        }
+    } catch (error) {
+        console.error(`❌ Error initializing ${name}:`, error);
+    }
+}
+
+// Initialize all functions
+function initializeAll() {
+    console.log('🚀 Starting application initialization...');
+    
+    // Initialize calculators
+    safeInitialize('initializeCalculator', 'Pet Calculator');
+    safeInitialize('initializeArm', 'Arm Calculator');
+    safeInitialize('initializeGrind', 'Grind Calculator');
+    
+    // Initialize info pages
+    safeInitialize('initializeBoosts', 'Boosts');
+    safeInitialize('initializeShiny', 'Shiny Stats');
+    safeInitialize('initializeAura', 'Aura');
+    safeInitialize('initializeTrainer', 'Trainer');
+    safeInitialize('initializeInfo', 'Info');
+    
+    // Generate content for info pages
+    safeInitialize('generateCodesContent', 'Codes Content');
+    
+    console.log('✅ Application initialization completed');
+}
+
 // Initialize functions when page loads
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('📄 DOM Content Loaded');
+    
     // Make sure calculator page is active by default
-    switchPage('calculator');
+    setTimeout(() => {
+        switchPage('calculator');
+        initializeAll();
+    }, 100);
     
     // Click outside settings panel to close
     document.addEventListener('click', e => {
@@ -81,92 +139,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-
-    // Initialize calculator functions
-    if (typeof initializeCalculator === 'function') {
-        initializeCalculator();
-    }
-
-    // Initialize arm calculator
-    if (typeof initializeArm === 'function') {
-        initializeArm();
-    }
-
-    // Initialize grind calculator
-    if (typeof initializeGrind === 'function') {
-        initializeGrind();
-    }
-
-    // Initialize boosts
-    if (typeof initializeBoosts === 'function') {
-        initializeBoosts();
-    }
-
-    // Initialize shiny stats
-    if (typeof initializeShiny === 'function') {
-        initializeShiny();
-    }
-
-    // Initialize aura
-    if (typeof initializeAura === 'function') {
-        initializeAura();
-    }
-
-    // Initialize trainer
-    if (typeof initializeTrainer === 'function') {
-        initializeTrainer();
-    }
-
-    // Initialize info
-    if (typeof initializeInfo === 'function') {
-        initializeInfo();
-    }
 });
 
 // Compatibility timeout for initialization
 setTimeout(() => {
     // Make sure calculator page is active by default
     if (!document.querySelector('.page.active')) {
+        console.log('🔄 Fallback initialization triggered');
         switchPage('calculator');
+        initializeAll();
     }
-    
-    // Initialize calculator functions
-    if (typeof initializeCalculator === 'function') {
-        initializeCalculator();
-    }
+}, 500);
 
-    // Initialize arm calculator
-    if (typeof initializeArm === 'function') {
-        initializeArm();
-    }
-
-    // Initialize grind calculator
-    if (typeof initializeGrind === 'function') {
-        initializeGrind();
-    }
-
-    // Initialize boosts
-    if (typeof initializeBoosts === 'function') {
-        initializeBoosts();
-    }
-
-    // Initialize shiny stats
-    if (typeof initializeShiny === 'function') {
-        initializeShiny();
-    }
-
-    // Initialize aura
-    if (typeof initializeAura === 'function') {
-        initializeAura();
-    }
-
-    // Initialize trainer
-    if (typeof initializeTrainer === 'function') {
-        initializeTrainer();
-    }
-
-    // Initialize info
-    if (typeof initializeInfo === 'function') {
-        initializeInfo();
-    }
-}, 100);
+// Make functions available globally
+window.switchPage = switchPage;
+window.toggleMobileMenu = toggleMobileMenu;
+window.closeSidebar = closeSidebar;
