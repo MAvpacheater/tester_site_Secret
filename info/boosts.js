@@ -24,7 +24,7 @@ const boostsData = {
         { name: "Baby", multiplier: "1x" },
         { name: "Big", multiplier: "1.5x" },
         { name: "Huge", multiplier: "2x" },
-        { name: "Goliath", multiplier: "1.25x" },
+        { name: "Goliath", multiplier: "2.5x" },
         { name: "", multiplier: "", separator: true },
         { name: "Golden", multiplier: "1.5x" },
         { name: "Void", multiplier: "2x" },
