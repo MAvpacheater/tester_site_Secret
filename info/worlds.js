@@ -89,25 +89,25 @@ const worldsData = [
     {
         title: "World 14: Orc Paradise",
         icon: "🍄",
-        description: "Floating islands in the sky with flying pets and aerial training grounds.",
+        description: "Paradise merchant | Vault goblin",
         details: "Flying pets like Eagles, Cloud Dragons, and Wind Spirits. The Sky Temple and Cloud Platform offer heavenly training."
     },
     {
         title: "World 15: Heavenly Island",
         icon: "☁️",
-        description: "Volcanic world with fire pets and molten training environments.",
+        description: "Divine fortune | Wrestle Trial",
         details: "Fire Dragons, Lava Hounds, and Phoenix pets. Train in the Volcano Core and Magma Pools for fiery stat increases."
     },
     {
         title: "World 16: The Rift",
         icon: "⭐",
-        description: "Crystalline dimension with gem pets and sparkling training areas.",
+        description: "Rift Cave | Rift machine | Rift leadboard",
         details: "Crystal Cats, Diamond Dogs, and Ruby Birds. The Crystal Cave and Gem Mine offer precious training opportunities."
     },
     {
         title: "World 17: Matrix",
         icon: "💻",
-        description: "Shadow realm with dark pets and mysterious training locations.",
+        description: "Matrix merchant | Matrix case",
         details: "Shadow creatures, Dark Knights, and Void pets. Train in the Shadow Temple and Dark Portal for mysterious powers."
     },
     {
