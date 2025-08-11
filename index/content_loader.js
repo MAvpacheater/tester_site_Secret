@@ -43,6 +43,7 @@ async function loadContent() {
                         <button class="nav-btn" onclick="switchPage('aura')">🌟 Aura</button>
                         <button class="nav-btn" onclick="switchPage('trainer')">🏆 Trainer</button>
                         <button class="nav-btn" onclick="switchPage('info')">ℹ️ Info</button>
+                        <button class="nav-btn" onclick="switchPage('worlds')">🌍 Worlds</button>
                     </div>
                 </div>
 
