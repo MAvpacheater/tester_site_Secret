@@ -83,7 +83,7 @@ const worldsData = [
     {
         title: "World 13: Lost Kingdom",
         icon: "⚔️",
-        description: "Wrestle trial | ",
+        description: "Wrestle trial | Orc merchant | Chest master",
         details: "Sharks, Whales, and Sea Turtles. Train in the Deep Trench and Coral Reef for aquatic mastery and water-based bonuses."
     },
     {
