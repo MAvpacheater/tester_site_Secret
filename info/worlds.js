@@ -113,19 +113,19 @@ const worldsData = [
     {
         title: "World 18: The Field",
         icon: "🏈",
-        description: "Colorful world with rainbow pets and vibrant training facilities.",
+        description: "Super Wrestle",
         details: "Rainbow Unicorns, Colorful Birds, and Prism Cats. The Rainbow Bridge and Color Palace provide spectacular training."
     },
     {
         title: "World 19: Magic Castle",
         icon: "🏰",
-        description: "High-energy world with electric pets and charged training stations.",
+        description: "Pristine machine | Boost decoration",
         details: "Lightning pets, Electric Eels, and Thunder Birds. Train in the Power Plant and Lightning Rod for electrifying results."
     },
     {
         title: "World 20: Sakura Temple",
         icon: "🌸",
-        description: "The ultimate endgame world with the rarest pets and most challenging training.",
+        description: "Prestige shrine | Sakura fortune | Alchemist machine",
         details: "Legendary Void creatures and Cosmic entities. The Void Chamber and Reality Rift offer the ultimate training experience for masters only."
     }
 ];
