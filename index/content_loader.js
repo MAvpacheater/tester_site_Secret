@@ -4,17 +4,59 @@ console.log('🔄 Завантаження контенту...');
 // Function to load content
 async function loadContent() {
     try {
-        const response = await fetch('index/content.html');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        // Load both content files
+        const [calcResponse, infoResponse] = await Promise.all([
+            fetch('index/content_calc.html'),
+            fetch('index/content_info.html')
+        ]);
+
+        if (!calcResponse.ok || !infoResponse.ok) {
+            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}`);
         }
         
-        const content = await response.text();
+        const [calcContent, infoContent] = await Promise.all([
+            calcResponse.text(),
+            infoResponse.text()
+        ]);
+
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            appContent.innerHTML = content;
-            console.log('✅ Контент завантажено успішно');
+            // Create the main structure with navigation and combine content
+            const fullContent = `
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+
+                <!-- Sidebar Navigation -->
+                <div class="sidebar" id="sidebar">
+                    <div class="sidebar-header">
+                        <h3>Menu</h3>
+                        <button class="close-sidebar" onclick="closeSidebar()">×</button>
+                    </div>
+                    <div class="nav-buttons">
+                        <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Calculator</button>
+                        <button class="nav-btn" onclick="switchPage('arm')">💪 Arm Calculator</button>
+                        <button class="nav-btn" onclick="switchPage('grind')">🏋️‍♂️ Grind Calculator</button>
+                        <button class="nav-btn" onclick="switchPage('boosts')">🚀 Boosts</button>
+                        <button class="nav-btn" onclick="switchPage('shiny')">✨ Shiny Stats</button>
+                        <button class="nav-btn" onclick="switchPage('codes')">🎁 Codes</button>
+                        <button class="nav-btn" onclick="switchPage('aura')">🌟 Aura</button>
+                        <button class="nav-btn" onclick="switchPage('trainer')">🏆 Trainer</button>
+                        <button class="nav-btn" onclick="switchPage('info')">ℹ️ Info</button>
+                    </div>
+                </div>
+
+                <!-- Sidebar Overlay -->
+                <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+                   
+                <div class="container">
+                    ${calcContent}
+                    ${infoContent}
+                </div>
+            `;
+
+            appContent.innerHTML = fullContent;
+            console.log('✅ Контент завантажено успішно (calc + info)');
             
             // Wait a bit for DOM to be ready, then initialize
             setTimeout(() => {
