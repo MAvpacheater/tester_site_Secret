@@ -27,7 +27,8 @@ function switchPage(page) {
         'codes': 5,
         'aura': 6,
         'trainer': 7,
-        'info': 8
+        'info': 8,
+        'worlds': 9
     };
     
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -71,6 +72,11 @@ function initializePageContent(page) {
         case 'codes':
             if (typeof initializeCodes === 'function') {
                 initializeCodes();
+            }
+            break;
+        case 'worlds':
+            if (typeof initializeWorlds === 'function') {
+                initializeWorlds();
             }
             break;
     }
@@ -170,7 +176,8 @@ function initializeAllModules() {
         'initializeShiny',
         'initializeAura',
         'initializeTrainer',
-        'initializeInfo'
+        'initializeInfo',
+        'initializeWorlds'
     ];
 
     modules.forEach(moduleName => {
