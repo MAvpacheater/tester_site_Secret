@@ -78,55 +78,55 @@ const worldsData = [
         title: "World 12: Dusty Tawern",
         icon: "🌵",
         description: "Medal merchant | Cave fortune",
-        details: "To advance to World 3, you need to defeat the 'rogue ai' and have 10m wins"
+        details: "To advance to World 12, you need to defeat the 'Glaciator' and have 1qt wins"
     },
     {
         title: "World 13: Lost Kingdom",
         icon: "⚔️",
         description: "Wrestle trial | Orc merchant | Chest master",
-        details: "To advance to World 3, you need to defeat the 'rogue ai' and have 10m wins"
+        details: "To advance to World 13, you need to defeat the 'Mr lizard' and have 50qt wins"
     },
     {
         title: "World 14: Orc Paradise",
         icon: "🍄",
         description: "Paradise merchant | Vault goblin",
-        details: "To advance to World 3, you need to defeat the 'rogue ai' and have 10m wins"
+        details: "To advance to World 14, you need to defeat the 'Shiny Knight' and have 200qt wins"
     },
     {
         title: "World 15: Heavenly Island",
         icon: "☁️",
         description: "Divine fortune | Wrestle Trial",
-        details: "To advance to World 3, you need to defeat the 'rogue ai' and have 10m wins"
+        details: "To advance to World 15, you need to defeat the 'Leader Orc' and have 1qd wins"
     },
     {
         title: "World 16: The Rift",
         icon: "⭐",
         description: "Rift Cave | Rift machine | Rift leadboard",
-        details: "Crystal Cats, Diamond Dogs, and Ruby Birds. The Crystal Cave and Gem Mine offer precious training opportunities."
+        details: "To advance to World 16, you need to defeat the 'Emprion' and have 5qd wins"
     },
     {
         title: "World 17: Matrix",
         icon: "💻",
         description: "Matrix merchant | Matrix case",
-        details: "Shadow creatures, Dark Knights, and Void pets. Train in the Shadow Temple and Dark Portal for mysterious powers."
+        details: "To advance to World 17, you need to defeat the 'Light Bringer'"
     },
     {
         title: "World 18: The Field",
         icon: "🏈",
         description: "Super Wrestle",
-        details: "Rainbow Unicorns, Colorful Birds, and Prism Cats. The Rainbow Bridge and Color Palace provide spectacular training."
+        details: "To advance to World 18, you need to defeat the 'Corrupt Guess'"
     },
     {
         title: "World 19: Magic Castle",
         icon: "🏰",
         description: "Pristine machine | Boost decoration",
-        details: "Lightning pets, Electric Eels, and Thunder Birds. Train in the Power Plant and Lightning Rod for electrifying results."
+        details: "To advance to World 19, you need to defeat the 'Manager Mike'"
     },
     {
         title: "World 20: Sakura Temple",
         icon: "🌸",
         description: "Prestige shrine | Sakura fortune | Alchemist machine",
-        details: "Legendary Void creatures and Cosmic entities. The Void Chamber and Reality Rift offer the ultimate training experience for masters only."
+        details: "To advance to World 20, you need to defeat the 'Flaming Reaper'"
     }
 ];
 
