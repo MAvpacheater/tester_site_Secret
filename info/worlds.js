@@ -5,85 +5,85 @@ const worldsData = [
     {
         title: "World 0: Garden",
         icon: "🌳",
-        description: "The ultimate endgame world with the rarest pets and most challenging training.",
-        details: "Legendary Void creatures and Cosmic entities. The Void Chamber and Reality Rift offer the ultimate training experience for masters only."
+        description: "Weekly leadboard | Mail | Token store | Garden",
+        details: "To get here you need to open 3 worlds"
     },
     {
         title: "World 1: Spawn",
         icon: "🏠",
-        description: "The beginning of your adventure. A peaceful starting area with basic pets and simple training spots.",
+        description: "Event teleport | Index machine",
         details: "First pets: Dog, Cat, Rabbit. Training areas include the Tutorial Field and Beginner's Ground. Perfect place to learn game mechanics and start your collection."
     },
     {
         title: "World 2: Space Gym",
         icon: "🏋️",
-        description: "A magical realm filled with mythical creatures and enchanted forests.",
+        description: "Golden machine | Echant table",
         details: "Home to Dragons, Unicorns, and Phoenix pets. Features the Enchanted Grove and Magic Tower training spots. First world where you can find rare magical pets."
     },
     {
         title: "World 3: Beach",
         icon: "🌟",
-        description: "A futuristic cyberpunk world with robotic pets and high-tech training facilities.",
+        description: "Garden teleport |Tokens leadboard | Void machine | Trainers machine",
         details: "Robot pets, Cyber Dogs, and AI companions await. Training in the Data Center and Cyber Gym provides unique technological boosts."
     },
     {
         title: "World 4: Bunker",
         icon: "🟢",
-        description: "Sweet wonderland where everything is made of candy and sugar.",
+        description: "Mutate machine | Cure Machine | ",
         details: "Candy Cats, Chocolate Dogs, and Gummy Bears roam freely. The Sugar Factory and Candy Castle offer delicious training experiences."
     },
     {
         title: "World 5: Dino",
         icon: "💀",
-        description: "Explore the cosmos with alien pets and zero-gravity training.",
+        description: "Goliath machine",
         details: "Alien creatures, Space Cats, and Cosmic Dogs. Train in the Space Station and Moon Base for out-of-this-world stats."
     },
     {
         title: "World 6: Void",
         icon: "⭐",
-        description: "Tropical paradise with ocean pets and sandy training grounds.",
+        description: "Aura machine",
         details: "Dolphins, Tropical Fish, and Beach Crabs. The Ocean Depths and Sandy Shore provide refreshing training environments."
     },
     {
         title: "World 7: Space Center",
         icon: "🌙 ",
-        description: "Haunted realm filled with ghostly pets and eerie training locations.",
+        description: "Slime machine",
         details: "Ghost pets, Skeleton Dogs, and Vampire Cats lurk in the shadows. Train in the Haunted Mansion and Graveyard for spooky bonuses."
     },
     {
         title: "World 8: Roman Empire",
         icon: "🗡️",
-        description: "Retro gaming world with 8-bit style pets and arcade training.",
+        description: "Forge machine",
         details: "Pixel pets inspired by classic games. The Arcade Hall and Retro Zone offer nostalgic training with pixelated rewards."
     },
     {
         title: "World 9: Underworld",
         icon: "🔥",
-        description: "Victorian-era industrial world with mechanical pets and steam-powered training.",
+        description: "Molten machine | Magma merchant",
         details: "Clockwork animals and Steam-powered creatures. Train in the Gear Factory and Steam Workshop for mechanical advantages."
     },
     {
         title: "World 10: Magic Forest",
         icon: "🪄",
-        description: "Dense tropical jungle with exotic pets and natural training grounds.",
+        description: "Sorcerey | Magic Merchant",
         details: "Tigers, Parrots, and Monkeys swing through the trees. The Jungle Canopy and Ancient Ruins offer wild training experiences."
     },
     {
         title: "World 11: Showy Peaks",
         icon: "❄️",
-        description: "Frozen tundra with ice pets and cold-weather training facilities.",
+        description: "Frosty merchant",
         details: "Polar Bears, Ice Dragons, and Snow Foxes. Train in the Ice Castle and Frozen Lake for chilling stat boosts."
     },
     {
         title: "World 12: Dusty Tawern",
         icon: "🌵",
-        description: "Vast desert with heat-resistant pets and sandy training spots.",
+        description: "Medal merchant | Cave fortune",
         details: "Camels, Scorpions, and Desert Foxes. The Oasis and Sand Dunes provide hot training conditions for tough pets."
     },
     {
         title: "World 13: Lost Kingdom",
         icon: "⚔️",
-        description: "Deep ocean world with aquatic pets and underwater training facilities.",
+        description: "Wrestle trial | ",
         details: "Sharks, Whales, and Sea Turtles. Train in the Deep Trench and Coral Reef for aquatic mastery and water-based bonuses."
     },
     {
