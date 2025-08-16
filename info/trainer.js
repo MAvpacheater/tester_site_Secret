@@ -11,6 +11,7 @@ const trainerData = {
         { name: "Vampire [1/50k]", description: "145%/217.5% Strength -- 50%/75% luck -- 52%/78% wins", type: "free" }
     ],
     donate: [
+        { name: "Tung Tung Tung Sahur", description: "300%/450% Strength -- 118%%/177% luck -- 128%/192% wins", type: "donate" },
         { name: "Manager guard", description: "280%/420% Strength -- 108%/162% luck -- 118%/177% wins", type: "donate" },
         { name: "Octo guard", description: "270%/405% Strength -- 98%/147% luck -- 108%/162% wins", type: "donate" },
         { name: "Island surfer", description: "250%/375% Strength -- 95%/142.5% luck -- 20%/30% wins", type: "donate" },
