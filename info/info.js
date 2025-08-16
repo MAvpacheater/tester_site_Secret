@@ -19,8 +19,8 @@ const infoData = [
     {
         title: "Best pet in game",
         icon: "🐕",
-        description: "Mega Cappucino Assasino ",
-        details: "Gives 450% to best pet and 2.15b if baby (have l8), If max 240b+-",
+        description: "Retro Mega Heavenly La Vaca Saturno Saturnito",
+        details: "Gives 460% to best pet and 2.2b if baby, If max 243+-",
         category: "info"
     },
     {
