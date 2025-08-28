@@ -1,14 +1,14 @@
-/* Info Page Styles */
+/* Charms Page Styles */
 
-.info-page {
+.charms-page {
     display: none !important;
 }
 
-.info-page.active {
+.charms-page.active {
     display: block !important;
 }
 
-.info-page .title {
+.charms-page .title {
     font-family: 'Orbitron', monospace;
     font-size: 2.5em;
     font-weight: 900;
@@ -22,27 +22,27 @@
     background-clip: text;
 }
 
-.info-container {
+.charms-container {
     max-height: 450px;
     overflow-y: auto;
     padding-right: 10px;
 }
 
-.info-container::-webkit-scrollbar { 
+.charms-container::-webkit-scrollbar { 
     width: 8px; 
 }
 
-.info-container::-webkit-scrollbar-track { 
+.charms-container::-webkit-scrollbar-track { 
     background: rgba(0, 0, 0, 0.1); 
     border-radius: 10px; 
 }
 
-.info-container::-webkit-scrollbar-thumb { 
+.charms-container::-webkit-scrollbar-thumb { 
     background: #667eea; 
     border-radius: 10px; 
 }
 
-.info-item {
+.charm-item {
     padding: 16px 20px;
     margin-bottom: 12px;
     background: rgba(246, 249, 252, 0.8);
@@ -52,22 +52,22 @@
     font-family: 'Roboto', sans-serif;
 }
 
-.info-item:hover {
+.charm-item:hover {
     background: rgba(102, 126, 234, 0.1);
     border-color: rgba(102, 126, 234, 0.3);
     transform: translateX(5px);
 }
 
-.info-item:nth-child(even) {
+.charm-item:nth-child(even) {
     background: rgba(118, 75, 162, 0.08);
 }
 
-.info-item:nth-child(even):hover {
+.charm-item:nth-child(even):hover {
     background: rgba(118, 75, 162, 0.15);
     border-color: rgba(118, 75, 162, 0.3);
 }
 
-.info-title {
+.charm-title {
     font-weight: 700;
     color: #2d3748;
     font-size: 1.2em;
@@ -78,25 +78,25 @@
     gap: 8px;
 }
 
-.info-icon {
+.charm-icon {
     font-size: 1.1em;
 }
 
-.info-description {
+.charm-description {
     color: #4a5568;
     font-size: 0.95em;
     line-height: 1.5;
     margin-bottom: 8px;
 }
 
-.info-details {
+.charm-details {
     color: #6b7280;
     font-size: 0.85em;
     line-height: 1.4;
     font-style: italic;
 }
 
-.info-category {
+.charm-category {
     display: inline-block;
     padding: 4px 12px;
     border-radius: 15px;
@@ -107,63 +107,63 @@
     letter-spacing: 0.5px;
 }
 
-.info-category.gameplay {
+.charm-category.gameplay {
     background: rgba(34, 197, 94, 0.2);
     color: #16a34a;
 }
 
-.info-category.info {
+.charm-category.info {
     background: rgba(59, 130, 246, 0.2);
     color: #2563eb;
 }
 
-.info-category.tips {
+.charm-category.tips {
     background: rgba(245, 158, 11, 0.2);
     color: #d97706;
 }
 
-.info-category.charm {
+.charm-category.charm {
     background: rgba(168, 85, 247, 0.2);
     color: #9333ea;
 }
 
-.info-category.general {
+.charm-category.general {
     background: rgba(156, 163, 175, 0.2);
     color: #4b5563;
 }
 
 /* Mobile Styles */
 @media (max-width: 768px) {
-    .info-item {
+    .charm-item {
         padding: 12px 16px;
     }
     
-    .info-title {
+    .charm-title {
         font-size: 1.1em;
     }
 }
 
 @media (max-width: 480px) {
-    .info-page .title {
+    .charms-page .title {
         font-size: 2em;
     }
     
-    .info-item {
+    .charm-item {
         padding: 10px 12px;
     }
     
-    .info-title {
+    .charm-title {
         font-size: 1em;
         flex-direction: column;
         align-items: flex-start;
         gap: 4px;
     }
     
-    .info-description {
+    .charm-description {
         font-size: 0.9em;
     }
     
-    .info-details {
+    .charm-details {
         font-size: 0.8em;
     }
 }
