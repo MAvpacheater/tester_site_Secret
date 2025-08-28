@@ -1,7 +1,7 @@
-// Info functionality
+// Charms functionality
 
-// Info data
-const infoData = [
+// Charms data
+const charmsData = [
     {
         title: "Max lvl",
         icon: "🍓",
@@ -74,40 +74,40 @@ const infoData = [
     }
 ];
 
-// Generate info content
-function generateInfoContent() {
-    const container = document.getElementById('infoContainer');
+// Generate charms content
+function generateCharmsContent() {
+    const container = document.getElementById('charmsContainer');
     if (!container) return;
     
     container.innerHTML = '';
     
-    infoData.forEach(item => {
-        const infoItem = document.createElement('div');
-        infoItem.className = 'info-item';
-        infoItem.innerHTML = `
-            <div class="info-title">
-                <span class="info-icon">${item.icon}</span>
+    charmsData.forEach(item => {
+        const charmItem = document.createElement('div');
+        charmItem.className = 'charm-item';
+        charmItem.innerHTML = `
+            <div class="charm-title">
+                <span class="charm-icon">${item.icon}</span>
                 ${item.title}
             </div>
-            <div class="info-description">${item.description}</div>
-            <div class="info-details">${item.details}</div>
-            <div class="info-category ${item.category}">${item.category}</div>
+            <div class="charm-description">${item.description}</div>
+            <div class="charm-details">${item.details}</div>
+            <div class="charm-category ${item.category}">${item.category}</div>
         `;
-        container.appendChild(infoItem);
+        container.appendChild(charmItem);
     });
 }
 
 // Initialize when page loads
-function initializeInfo() {
-    generateInfoContent();
+function initializeCharms() {
+    generateCharmsContent();
 }
 
-// Track when user switches to "info" page
+// Track when user switches to "charms" page
 document.addEventListener("DOMContentLoaded", () => {
     const observer = new MutationObserver(() => {
-        const infoPage = document.getElementById('infoPage');
-        if (infoPage && infoPage.classList.contains('active')) {
-            generateInfoContent();
+        const charmsPage = document.getElementById('charmsPage');
+        if (charmsPage && charmsPage.classList.contains('active')) {
+            generateCharmsContent();
         }
     });
     observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
