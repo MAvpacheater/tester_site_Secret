@@ -27,7 +27,7 @@ function switchPage(page) {
         'codes': 5,
         'aura': 6,
         'trainer': 7,
-        'info': 8,
+        'charms': 8,
         'worlds': 9
     };
     
@@ -72,6 +72,11 @@ function initializePageContent(page) {
         case 'codes':
             if (typeof initializeCodes === 'function') {
                 initializeCodes();
+            }
+            break;
+        case 'charms':
+            if (typeof initializeCharms === 'function') {
+                initializeCharms();
             }
             break;
         case 'worlds':
@@ -176,7 +181,7 @@ function initializeAllModules() {
         'initializeShiny',
         'initializeAura',
         'initializeTrainer',
-        'initializeInfo',
+        'initializeCharms',
         'initializeWorlds'
     ];
 
