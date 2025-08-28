@@ -3,27 +3,6 @@
 // Charms data
 const charmsData = [
     {
-        title: "Max lvl",
-        icon: "🍓",
-        description: "You need 6k+- ench rasb to get max lvl",
-        details: "Its 780k+- xp, you can use potion x2 xp",
-        category: "tips"
-    },
-    {
-        title: "Best arm in game",
-        icon: "💪",
-        description: "Patrim - from endless pack",
-        details: "Gives 42x base and 3x event, If max 88,2x",
-        category: "info"
-    },
-    {
-        title: "Best pet in game",
-        icon: "🐕",
-        description: "Retro Mega Heavenly La Vaca Saturno Saturnito",
-        details: "Gives 460% to best pet and 2.2b if baby, If max 243+-",
-        category: "info"
-    },
-    {
         title: "Infinite charm",
         icon: "🟠",
         description: "Gives 20% to training rep",
