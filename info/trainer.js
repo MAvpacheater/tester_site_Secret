@@ -4,6 +4,7 @@
 const trainerData = {
     free: [
         { name: "Overseer [1/12.5m]", description: "270%/405% Strength -- 91%/136.5% luck -- 94%/141% wins", type: "free" },
+        { name: "Mr Robot [1/1.5m]", description: "220%/330% Strength -- 71%/106,5% luck -- 77%/115.5% wins", type: "free" },
         { name: "Pirate Peanguin [1/500k]", description: "205%/307.5% Strength -- 65%/97,5% luck -- 69%/103.5% wins", type: "free" },
         { name: "Princes [1/150k]", description: "190%/285% Strength -- 59%/88.5% luck -- 61%/91.5% wins", type: "free" },
         { name: "Sensei [1/100k]", description: "180%/270% Strength -- 56%/84% luck -- 58%/87% wins", type: "free" },
