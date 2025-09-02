@@ -7,12 +7,43 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: 
+        linear-gradient(rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)),
+        url('https://i.postimg.cc/50ZMnt66/image.png') center center / cover no-repeat;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Desktop background - fixed full cover */
+@media (min-width: 769px) {
+    body {
+        background: 
+            linear-gradient(rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2)),
+            url('https://i.postimg.cc/50ZMnt66/image.png') center center / cover no-repeat fixed;
+    }
+}
+
+/* Mobile background - scrolling parallax effect */
+@media (max-width: 768px) {
+    body {
+        background: 
+            linear-gradient(rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)),
+            url('https://i.postimg.cc/50ZMnt66/image.png') center top / cover no-repeat;
+        background-attachment: scroll;
+        animation: mobileBackgroundScroll 20s ease-in-out infinite;
+    }
+    
+    @keyframes mobileBackgroundScroll {
+        0%, 100% { background-position: center top; }
+        25% { background-position: center 20%; }
+        50% { background-position: center 40%; }
+        75% { background-position: center 60%; }
+    }
 }
 
 .container {
