@@ -1,16 +1,32 @@
 /* Calculator Page Styles with Custom Background */
 
-/* Фонове зображення тільки для калькулятора */
-.calculator-page.active {
-    background: url('https://i.postimg.cc/NFCb1dbt/Chat-GPT-Image-6-2025-11-23-00.png') no-repeat center center fixed;
-    background-size: cover;
+/* Початковий стан калькулятора - компактний */
+.calculator-page {
     position: relative;
-    min-height: 100vh;
-    padding: 20px;
+    transition: all 0.4s ease;
 }
 
-/* Overlay для кращої читабельності тексту тільки в калькуляторі */
-.calculator-page.active::before {
+.calculator-page.active {
+    position: relative;
+    transition: all 0.4s ease;
+}
+
+/* Фонове зображення тільки коли калькулятор розгорнутий */
+.calculator-page.active.expanded {
+    background: url('https://i.postimg.cc/NFCb1dbt/Chat-GPT-Image-6-2025-11-23-00.png') no-repeat center center;
+    background-size: cover;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+/* Overlay для кращої читабельності тексту тільки коли розгорнуто */
+.calculator-page.active.expanded::before {
     content: '';
     position: absolute;
     top: 0;
@@ -20,7 +36,6 @@
     background: rgba(0, 0, 0, 0.3);
     z-index: -1;
     pointer-events: none;
-    border-radius: 20px;
 }
 
 .calculator-page {
@@ -32,13 +47,21 @@
     display: block !important;
 }
 
-/* Стилі заголовку тільки для калькулятора */
-.calculator-page.active h1 {
+/* Стилі заголовку в різних режимах */
+.calculator-page.active.expanded h1 {
     color: #fff;
     margin-bottom: 30px;
-    font-size: 2.2em;
+    font-size: 2.5em;
     font-weight: 600;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    text-align: center;
+}
+
+.calculator-page.active:not(.expanded) h1 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 2.2em;
+    font-weight: 600;
 }
 
 .calculator-page:not(.active) h1 {
@@ -55,8 +78,8 @@
     margin-bottom: 30px;
 }
 
-/* Кнопка налаштувань тільки для активного калькулятора */
-.calculator-page.active .settings-btn {
+/* Кнопка налаштувань в різних режимах */
+.calculator-page.active.expanded .settings-btn {
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.4);
     color: white;
@@ -69,14 +92,15 @@
     backdrop-filter: blur(10px);
 }
 
-.calculator-page.active .settings-btn:hover {
+.calculator-page.active.expanded .settings-btn:hover {
     background: rgba(255, 255, 255, 0.3);
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Звичайні стилі для неактивного калькулятора */
+/* Звичайні стилі для компактного та неактивного калькулятора */
+.calculator-page.active:not(.expanded) .settings-btn,
 .calculator-page:not(.active) .settings-btn {
     background: rgba(102, 126, 234, 0.1);
     border: 2px solid #667eea;
@@ -89,13 +113,64 @@
     transition: all 0.3s ease;
 }
 
+.calculator-page.active:not(.expanded) .settings-btn:hover,
 .calculator-page:not(.active) .settings-btn:hover {
     background: #667eea;
     color: white;
     transform: translateY(-2px);
 }
 
-/* Settings Panel */
+/* Кнопка розгортання/згортання */
+.expand-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1em;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.expand-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Кнопка закриття для розгорнутого режиму */
+.close-fullscreen-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(231, 76, 60, 0.9);
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    z-index: 1001;
+    backdrop-filter: blur(10px);
+}
+
+.close-fullscreen-btn:hover {
+    background: #e74c3c;
+    transform: scale(1.1);
+}
+
+/* Контент калькулятора в розгорнутому режимі */
+.calculator-page.expanded .calculator-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding-top: 60px;
+}
 .settings-panel {
     display: none;
     background: rgba(255, 255, 255, 0.95);
