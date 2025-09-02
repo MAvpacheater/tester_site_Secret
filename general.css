@@ -9,7 +9,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: 
         linear-gradient(rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)),
-        url('https://i.postimg.cc/50ZMnt66/image.png') center center / cover no-repeat;
+        url('https://i.postimg.cc/rmW86W6S/Gemini-Generated-Image-fh66csfh66csfh66.png') center center / cover no-repeat;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -24,7 +24,7 @@ body {
     body {
         background: 
             linear-gradient(rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2)),
-            url('https://i.postimg.cc/50ZMnt66/image.png') center center / cover no-repeat fixed;
+            url('https://i.postimg.cc/rmW86W6S/Gemini-Generated-Image-fh66csfh66csfh66.png') center center / cover no-repeat fixed;
     }
 }
 
@@ -33,7 +33,7 @@ body {
     body {
         background: 
             linear-gradient(rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3)),
-            url('https://i.postimg.cc/50ZMnt66/image.png') center top / cover no-repeat;
+            url('https://i.postimg.cc/rmW86W6S/Gemini-Generated-Image-fh66csfh66csfh66.png') center top / cover no-repeat;
         background-attachment: scroll;
         animation: mobileBackgroundScroll 20s ease-in-out infinite;
     }
