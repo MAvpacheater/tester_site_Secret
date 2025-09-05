@@ -19,16 +19,17 @@ function switchPage(page) {
     
     // Update active nav button - використовуємо масив для правильного індексування
     const pageMap = {
-        'calculator': 0,
-        'arm': 1,
-        'grind': 2,
-        'boosts': 3,
-        'shiny': 4,
-        'codes': 5,
-        'aura': 6,
-        'trainer': 7,
-        'charms': 8,
-        'worlds': 9
+        'login': 0,
+        'calculator': 1,
+        'arm': 2,
+        'grind': 3,
+        'boosts': 4,
+        'shiny': 5,
+        'codes': 6,
+        'aura': 7,
+        'trainer': 8,
+        'charms': 9,
+        'worlds': 10
     };
     
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -49,6 +50,11 @@ function switchPage(page) {
 // Initialize specific page content when switching
 function initializePageContent(page) {
     switch(page) {
+        case 'login':
+            if (typeof initializeAuth === 'function') {
+                initializeAuth();
+            }
+            break;
         case 'shiny':
             if (typeof initializeShiny === 'function') {
                 initializeShiny();
@@ -108,6 +114,56 @@ function closeSidebar() {
     }
 }
 
+// Auth action handler for sidebar button
+function handleAuthAction() {
+    const currentUser = AuthSystem?.currentUser;
+    
+    if (currentUser) {
+        // User is logged in - logout
+        logout();
+    } else {
+        // User is not logged in - go to login page
+        switchPage('login');
+    }
+}
+
+// Update sidebar user info
+function updateSidebarUserInfo(user = null) {
+    const userInfo = document.getElementById('userInfo');
+    const authButton = document.getElementById('authButton');
+    const sidebarUserNickname = document.getElementById('sidebarUserNickname');
+    
+    if (user && userInfo && authButton && sidebarUserNickname) {
+        // Show user info
+        userInfo.style.display = 'block';
+        sidebarUserNickname.textContent = user.nickname || 'User';
+        
+        // Change button to logout
+        authButton.textContent = 'Вийти';
+        authButton.classList.add('logout-btn');
+        
+        console.log('✅ Sidebar user info updated for logged in user');
+    } else if (userInfo && authButton) {
+        // Hide user info
+        userInfo.style.display = 'none';
+        
+        // Change button to login
+        authButton.textContent = 'Увійти';
+        authButton.classList.remove('logout-btn');
+        
+        console.log('✅ Sidebar user info updated for logged out user');
+    }
+}
+
+// Check and update user status
+function checkUserStatus() {
+    if (typeof AuthSystem !== 'undefined' && AuthSystem.currentUser) {
+        updateSidebarUserInfo(AuthSystem.currentUser);
+    } else {
+        updateSidebarUserInfo(null);
+    }
+}
+
 // Прапорець для запобігання повторної ініціалізації
 let appInitialized = false;
 
@@ -127,8 +183,30 @@ function initializeApp() {
         return;
     }
     
-    // Make sure calculator page is active by default
-    switchPage('calculator');
+    // Initialize auth system first
+    if (typeof initializeAuth === 'function') {
+        initializeAuth();
+    }
+    
+    // Check if user is already logged in and update sidebar
+    setTimeout(() => {
+        checkUserStatus();
+    }, 200);
+    
+    // Determine starting page based on login status
+    let startingPage = 'login';
+    if (typeof AuthSystem !== 'undefined' && AuthSystem.currentUser) {
+        startingPage = 'calculator';
+    } else {
+        // Check if there's a saved user
+        const savedUser = localStorage.getItem('armHelper_currentUser');
+        if (savedUser) {
+            startingPage = 'calculator';
+        }
+    }
+    
+    // Make sure starting page is active
+    switchPage(startingPage);
     
     // Click outside settings panel to close - ВИПРАВЛЕНА ВЕРСІЯ
     document.addEventListener('click', e => {
@@ -174,6 +252,7 @@ function initializeApp() {
 // Ініціалізація всіх модулів
 function initializeAllModules() {
     const modules = [
+        'initializeAuth',
         'initializeCalculator',
         'initializeArm', 
         'initializeGrind',
@@ -208,9 +287,45 @@ function debugPageStates() {
     console.log('========================');
 }
 
+// Override logout function to update sidebar
+const originalLogout = typeof logout !== 'undefined' ? logout : function() {};
+function logout() {
+    if (confirm('Ви впевнені, що хочете вийти?')) {
+        // Call original logout logic
+        if (typeof AuthSystem !== 'undefined') {
+            AuthSystem.currentUser = null;
+            localStorage.removeItem('armHelper_currentUser');
+        }
+        
+        // Update sidebar
+        updateSidebarUserInfo(null);
+        
+        // Go to login page
+        switchPage('login');
+        
+        // Show message if AuthSystem is available
+        if (typeof AuthSystem !== 'undefined' && typeof AuthSystem.showMessage === 'function') {
+            AuthSystem.showMessage('Ви успішно вийшли з системи', 'success');
+        }
+        
+        console.log('✅ Користувач вийшов з системи');
+    }
+}
+
+// Listen for login events to update sidebar
+document.addEventListener('userLoggedIn', function(event) {
+    const user = event.detail;
+    updateSidebarUserInfo(user);
+    console.log('✅ User logged in event received, sidebar updated');
+});
+
 // Make functions globally available
 window.switchPage = switchPage;
 window.toggleMobileMenu = toggleMobileMenu;
 window.closeSidebar = closeSidebar;
+window.handleAuthAction = handleAuthAction;
+window.updateSidebarUserInfo = updateSidebarUserInfo;
+window.checkUserStatus = checkUserStatus;
 window.initializeApp = initializeApp;
+window.logout = logout;
 window.debugPageStates = debugPageStates;
