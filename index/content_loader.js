@@ -34,7 +34,7 @@ async function loadContent() {
                         <button class="close-sidebar" onclick="closeSidebar()">×</button>
                     </div>
                     <div class="nav-buttons">
-                        <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Calculator</button>
+                        <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Pets Calculator</button>
                         <button class="nav-btn" onclick="switchPage('arm')">💪 Arm Calculator</button>
                         <button class="nav-btn" onclick="switchPage('grind')">🏋️‍♂️ Grind Calculator</button>
                         <button class="nav-btn" onclick="switchPage('boosts')">🚀 Boosts</button>
