@@ -1,0 +1,519 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Linq;
+
+namespace ArmHelper.Login
+{
+    public class UserData
+    {
+        public string UserId { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string Phone { get; set; } = "";
+        public string Nickname { get; set; } = "";
+        public string PasswordHash { get; set; } = "";
+        public DateTime RegistrationDate { get; set; }
+        public bool IsActive { get; set; } = true;
+        public DateTime? LastLogin { get; set; }
+    }
+
+    public class RegistrationResult
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; } = "";
+        public string Error { get; set; } = "";
+        public string UserId { get; set; } = "";
+        public string Nickname { get; set; } = "";
+    }
+
+    public class AuthenticationResult
+    {
+        public bool Success { get; set; }
+        public string Error { get; set; } = "";
+        public string UserId { get; set; } = "";
+        public string Nickname { get; set; } = "";
+        public string Email { get; set; } = "";
+    }
+
+    public class UserStats
+    {
+        public int TotalUsers { get; set; }
+        public int ActiveUsers { get; set; }
+        public string UsersDirectory { get; set; } = "";
+    }
+
+    public class UserRegistrationSystem
+    {
+        private readonly string _usersDirectory;
+        private readonly string _usersIndexFile;
+        private Dictionary<string, UserData> _usersIndex;
+
+        public UserRegistrationSystem(string usersDirectory = "users")
+        {
+            _usersDirectory = Path.GetFullPath(usersDirectory);
+            _usersIndexFile = Path.Combine(_usersDirectory, "users_index.json");
+            
+            // Створюємо директорію якщо не існує
+            Directory.CreateDirectory(_usersDirectory);
+            
+            LoadUsersIndex();
+        }
+
+        private void LoadUsersIndex()
+        {
+            try
+            {
+                if (File.Exists(_usersIndexFile))
+                {
+                    var json = File.ReadAllText(_usersIndexFile, Encoding.UTF8);
+                    _usersIndex = JsonSerializer.Deserialize<Dictionary<string, UserData>>(json) 
+                                  ?? new Dictionary<string, UserData>();
+                }
+                else
+                {
+                    _usersIndex = new Dictionary<string, UserData>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Помилка завантаження індексу: {ex.Message}");
+                _usersIndex = new Dictionary<string, UserData>();
+            }
+        }
+
+        private bool SaveUsersIndex()
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                };
+                
+                var json = JsonSerializer.Serialize(_usersIndex, options);
+                File.WriteAllText(_usersIndexFile, json, Encoding.UTF8);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Помилка збереження індексу: {ex.Message}");
+                return false;
+            }
+        }
+
+        private string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return Convert.ToHexString(bytes).ToLower();
+            }
+        }
+
+        private string GenerateUserId()
+        {
+            string userId;
+            do
+            {
+                userId = Guid.NewGuid().ToString("N")[..12]; // Перші 12 символів
+            }
+            while (_usersIndex.ContainsKey(userId));
+            
+            return userId;
+        }
+
+        private bool ValidateEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+                
+            var pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+            return Regex.IsMatch(email, pattern);
+        }
+
+        private bool ValidatePhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone))
+                return false;
+                
+            var cleanPhone = Regex.Replace(phone, @"[^\d+]", "");
+            var pattern = @"^\+?[\d]{10,15}$";
+            return Regex.IsMatch(cleanPhone, pattern);
+        }
+
+        private bool EmailExists(string email)
+        {
+            return _usersIndex.Values.Any(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private bool PhoneExists(string phone)
+        {
+            return _usersIndex.Values.Any(u => u.Phone == phone);
+        }
+
+        private bool NicknameExists(string nickname)
+        {
+            return _usersIndex.Values.Any(u => u.Nickname.Equals(nickname, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private bool CreateUserJsFile(UserData userData)
+        {
+            try
+            {
+                var jsContent = $@"// User data for {userData.Nickname} (ID: {userData.UserId})
+// Generated on {DateTime.Now:yyyy-MM-dd HH:mm:ss}
+
+const userData = {{
+    userId: '{userData.UserId}',
+    email: '{userData.Email}',
+    phone: '{userData.Phone}',
+    nickname: '{userData.Nickname}',
+    registrationDate: '{userData.RegistrationDate:yyyy-MM-ddTHH:mm:ss.fffZ}',
+    isActive: true,
+    
+    // User preferences (can be modified)
+    preferences: {{
+        theme: 'default',
+        language: 'uk',
+        notifications: true,
+        autoSave: true
+    }},
+    
+    // User stats and progress
+    stats: {{
+        calculationsPerformed: 0,
+        lastLogin: null,
+        totalSessions: 0,
+        favoriteCalculator: null
+    }},
+    
+    // Calculator settings
+    calculatorSettings: {{
+        defaultModifiers: {{
+            // Pet Calculator
+            petCalculator: {{
+                shinyChance: false,
+                goldenChance: false,
+                rainbowChance: false
+            }},
+            
+            // Arm Calculator  
+            armCalculator: {{
+                goldenLevel: 5 // 1-5, default max golden
+            }},
+            
+            // Grind Calculator
+            grindCalculator: {{
+                tp: 1, // 1, 2, or 3
+                chocolateDonut: true,
+                enchCookie: true,
+                time: true,
+                friend: true,
+                member: true,
+                premium: true
+            }}
+        }}
+    }}
+}};
+
+// Utility functions for user data management
+const userUtils = {{
+    // Update user stats
+    updateStats: function(statName, value) {{
+        if (userData.stats.hasOwnProperty(statName)) {{
+            userData.stats[statName] = value;
+            this.saveUserData();
+        }}
+    }},
+    
+    // Update preferences
+    updatePreference: function(prefName, value) {{
+        if (userData.preferences.hasOwnProperty(prefName)) {{
+            userData.preferences[prefName] = value;
+            this.saveUserData();
+        }}
+    }},
+    
+    // Update calculator settings
+    updateCalculatorSettings: function(calculator, settings) {{
+        if (userData.calculatorSettings.defaultModifiers[calculator]) {{
+            Object.assign(userData.calculatorSettings.defaultModifiers[calculator], settings);
+            this.saveUserData();
+        }}
+    }},
+    
+    // Save user data (placeholder - would need server implementation)
+    saveUserData: function() {{
+        console.log('User data updated:', userData);
+        // В реальному застосунку тут був би AJAX запит до сервера
+        localStorage.setItem('armHelper_userData', JSON.stringify(userData));
+    }},
+    
+    // Load user data from localStorage as backup
+    loadUserData: function() {{
+        const saved = localStorage.getItem('armHelper_userData');
+        if (saved) {{
+            try {{
+                const savedData = JSON.parse(saved);
+                // Merge saved data with current data, keeping structure
+                Object.assign(userData.stats, savedData.stats || {{}});
+                Object.assign(userData.preferences, savedData.preferences || {{}});
+                Object.assign(userData.calculatorSettings, savedData.calculatorSettings || {{}});
+            }} catch (e) {{
+                console.warn('Failed to load saved user data:', e);
+            }}
+        }}
+    }},
+    
+    // Get user info
+    getUserInfo: function() {{
+        return {{
+            id: userData.userId,
+            nickname: userData.nickname,
+            email: userData.email,
+            registrationDate: userData.registrationDate,
+            isActive: userData.isActive
+        }};
+    }}
+}};
+
+// Auto-load saved data on script load
+userUtils.loadUserData();
+
+// Make userData globally available
+if (typeof window !== 'undefined') {{
+    window.userData = userData;
+    window.userUtils = userUtils;
+}}
+
+// Export for Node.js environment
+if (typeof module !== 'undefined' && module.exports) {{
+    module.exports = {{ userData, userUtils }};
+}}
+";
+
+                var userFilePath = Path.Combine(_usersDirectory, $"{userData.UserId}.js");
+                File.WriteAllText(userFilePath, jsContent, Encoding.UTF8);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Помилка створення JS файлу: {ex.Message}");
+                return false;
+            }
+        }
+
+        public RegistrationResult RegisterUser(string email, string phone, string password, string nickname)
+        {
+            // Валідація даних
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(phone) || 
+                string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(nickname))
+            {
+                return new RegistrationResult 
+                { 
+                    Success = false, 
+                    Error = "Всі поля обов'язкові для заповнення" 
+                };
+            }
+
+            if (!ValidateEmail(email))
+            {
+                return new RegistrationResult 
+                { 
+                    Success = false, 
+                    Error = "Невірний формат email адреси" 
+                };
+            }
+
+            if (!ValidatePhone(phone))
+            {
+                return new RegistrationResult 
+                { 
+                    Success = false, 
+                    Error = "Невірний формат номера телефону" 
+                };
+            }
+
+            if (password.Length < 6)
+            {
+                return new RegistrationResult 
+                { 
+                    Success = false, 
+                    Error = "Пароль повинен містити мінімум 6 символів" 
+                };
+            }
+
+            if (nickname.Length < 3)
+            {
+                return new RegistrationResult 
+                { 
+                    Success = false, 
+                    Error = "Нікнейм повинен містити мінімум 3 символи" 
+                };
+            }
+
+            // Перевірка унікальності
+            if (EmailExists(email))
+            {
+                return new RegistrationResult 
+                { 
+                    Success = false, 
+                    Error = "Користувач з таким email вже існує" 
+                };
+            }
+
+            if (PhoneExists(phone))
+            {
+                return new RegistrationResult 
+                { 
+                    Success = false, 
+                    Error = "Користувач з таким номером телефону вже існує" 
+                };
+            }
+
+            if (NicknameExists(nickname))
+            {
+                return new RegistrationResult 
+                { 
+                    Success = false, 
+                    Error = "Користувач з таким нікнеймом вже існує" 
+                };
+            }
+
+            // Створення користувача
+            var userId = GenerateUserId();
+            var hashedPassword = HashPassword(password);
+
+            var userData = new UserData
+            {
+                UserId = userId,
+                Email = email,
+                Phone = phone,
+                Nickname = nickname,
+                PasswordHash = hashedPassword,
+                RegistrationDate = DateTime.UtcNow,
+                IsActive = true,
+                LastLogin = null
+            };
+
+            // Додаємо в індекс
+            _usersIndex[userId] = userData;
+
+            // Зберігаємо індекс
+            if (!SaveUsersIndex())
+            {
+                return new RegistrationResult 
+                { 
+                    Success = false, 
+                    Error = "Помилка збереження даних користувача" 
+                };
+            }
+
+            // Створюємо JS файл
+            if (!CreateUserJsFile(userData))
+            {
+                return new RegistrationResult 
+                { 
+                    Success = false, 
+                    Error = "Помилка створення файлу користувача" 
+                };
+            }
+
+            return new RegistrationResult
+            {
+                Success = true,
+                Message = "Користувач успішно зареєстрований",
+                UserId = userId,
+                Nickname = nickname
+            };
+        }
+
+        public AuthenticationResult AuthenticateUser(string login, string password)
+        {
+            var hashedPassword = HashPassword(password);
+
+            var user = _usersIndex.Values.FirstOrDefault(u =>
+                (u.Email.Equals(login, StringComparison.OrdinalIgnoreCase) || u.Phone == login) &&
+                u.PasswordHash == hashedPassword && u.IsActive);
+
+            if (user != null)
+            {
+                // Оновлюємо час останнього входу
+                user.LastLogin = DateTime.UtcNow;
+                SaveUsersIndex();
+
+                return new AuthenticationResult
+                {
+                    Success = true,
+                    UserId = user.UserId,
+                    Nickname = user.Nickname,
+                    Email = user.Email
+                };
+            }
+
+            return new AuthenticationResult
+            {
+                Success = false,
+                Error = "Невірний логін або пароль"
+            };
+        }
+
+        public UserStats GetUserStats()
+        {
+            var totalUsers = _usersIndex.Count;
+            var activeUsers = _usersIndex.Values.Count(u => u.IsActive);
+
+            return new UserStats
+            {
+                TotalUsers = totalUsers,
+                ActiveUsers = activeUsers,
+                UsersDirectory = _usersDirectory
+            };
+        }
+    }
+
+    // Демонстраційний клас
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            Console.OutputEncoding = Encoding.UTF8;
+            DemoRegistration();
+        }
+
+        private static void DemoRegistration()
+        {
+            var system = new UserRegistrationSystem();
+
+            Console.WriteLine("=== Демо системи реєстрації ===");
+            Console.WriteLine($"Директорія користувачів: {system.GetUserStats().UsersDirectory}");
+            Console.WriteLine();
+
+            // Тестові дані
+            var testUsers = new[]
+            {
+                new { Email = "user1@example.com", Phone = "+380501234567", Password = "password123", Nickname = "TestUser1" },
+                new { Email = "user2@example.com", Phone = "+380671234567", Password = "password456", Nickname = "TestUser2" }
+            };
+
+            // Реєстрація тестових користувачів
+            for (int i = 0; i < testUsers.Length; i++)
+            {
+                var user = testUsers[i];
+                Console.WriteLine($"Реєстрація користувача {i + 1}:");
+                var result = system.RegisterUser(user.Email, user.Phone, user.Password, user.Nickname);
+                
+                if (result.Success)
+                {
+                    Console.WriteLine($"✅ {result.Message}");
+                    Console.WriteLine($"   ID: {result.UserId}");
+                    Console.WriteLine($"   Nickname: {result.Nickname}");
+                }
+                else
+                {
+                    Console.WriteLine($"❌
