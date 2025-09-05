@@ -110,6 +110,8 @@ body {
     box-shadow: 2px 0 30px rgba(0, 0, 0, 0.4);
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar.open {
@@ -166,7 +168,7 @@ body {
     gap: 12px;
     padding: 30px 20px;
     overflow-y: auto;
-    height: calc(100vh - 100px);
+    flex: 1;
 }
 
 .nav-btn {
@@ -237,6 +239,63 @@ body {
     50% { opacity: 0.7; transform: translateY(-50%) scale(1.2); }
 }
 
+/* Sidebar User Section */
+.sidebar-user {
+    padding: 20px;
+    border-top: 1px solid rgba(102, 126, 234, 0.3);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    margin-top: auto;
+}
+
+.user-info {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.user-nickname {
+    font-weight: 600;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.user-status {
+    font-size: 0.9em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.auth-btn-sidebar {
+    width: 100%;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border: 2px solid rgba(102, 126, 234, 0.4);
+    color: #ffffff;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.auth-btn-sidebar:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.6), rgba(118, 75, 162, 0.6));
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.logout-btn {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.6), rgba(233, 30, 99, 0.6)) !important;
+    border-color: rgba(244, 67, 54, 0.5) !important;
+}
+
+.logout-btn:hover {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.8), rgba(233, 30, 99, 0.8)) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+}
+
 /* Sidebar Overlay */
 .sidebar-overlay {
     position: fixed;
@@ -266,4 +325,25 @@ body {
     font-weight: 500;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     z-index: 1000;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .nav-buttons {
+        padding: 20px 15px;
+    }
+    
+    .sidebar-user {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        width: 280px;
+    }
+    
+    .sidebar-user {
+        padding: 15px 10px;
+    }
 }
