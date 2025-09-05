@@ -28,7 +28,8 @@ function switchPage(page) {
         'aura': 6,
         'trainer': 7,
         'charms': 8,
-        'worlds': 9
+        'worlds': 9,
+        'soon': 10  // додаємо Soon сторінку
     };
     
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -89,6 +90,9 @@ function initializePageContent(page) {
                 initializeWorlds();
             }
             break;
+        case 'soon':
+            // Soon page doesn't need special initialization
+            break;
     }
 }
 
@@ -113,54 +117,30 @@ function closeSidebar() {
     }
 }
 
-// Auth action handler for sidebar button
+// Auth action handler for sidebar button - updated for "Soon" functionality
 function handleAuthAction() {
-    const currentUser = AuthSystem?.currentUser;
-    
-    if (currentUser) {
-        // User is logged in - logout
-        logout();
-    } else {
-        // User is not logged in - go to login page
-        switchPage('login');
-    }
+    // Always go to Soon page now
+    switchPage('soon');
 }
 
-// Update sidebar user info
+// Update sidebar user info - simplified since we're not using auth
 function updateSidebarUserInfo(user = null) {
     const userInfo = document.getElementById('userInfo');
     const authButton = document.getElementById('authButton');
-    const sidebarUserNickname = document.getElementById('sidebarUserNickname');
     
-    if (user && userInfo && authButton && sidebarUserNickname) {
-        // Show user info
-        userInfo.style.display = 'block';
-        sidebarUserNickname.textContent = user.nickname || 'User';
-        
-        // Change button to logout
-        authButton.textContent = 'Вийти';
-        authButton.classList.add('logout-btn');
-        
-        console.log('✅ Sidebar user info updated for logged in user');
-    } else if (userInfo && authButton) {
-        // Hide user info
+    if (userInfo && authButton) {
+        // Always hide user info and show Soon button
         userInfo.style.display = 'none';
-        
-        // Change button to login
-        authButton.textContent = 'Увійти';
+        authButton.textContent = 'Soon..';
         authButton.classList.remove('logout-btn');
         
-        console.log('✅ Sidebar user info updated for logged out user');
+        console.log('✅ Sidebar updated with Soon button');
     }
 }
 
-// Check and update user status
+// Check and update user status - simplified
 function checkUserStatus() {
-    if (typeof AuthSystem !== 'undefined' && AuthSystem.currentUser) {
-        updateSidebarUserInfo(AuthSystem.currentUser);
-    } else {
-        updateSidebarUserInfo(null);
-    }
+    updateSidebarUserInfo(null);
 }
 
 // Прапорець для запобігання повторної ініціалізації
@@ -182,7 +162,7 @@ function initializeApp() {
         return;
     }
     
-    // Initialize auth system first
+    // Initialize auth system first (optional now)
     if (typeof initializeAuth === 'function') {
         initializeAuth();
     }
@@ -192,17 +172,8 @@ function initializeApp() {
         checkUserStatus();
     }, 200);
     
-    // Determine starting page based on login status
-    let startingPage = 'login';
-    if (typeof AuthSystem !== 'undefined' && AuthSystem.currentUser) {
-        startingPage = 'calculator';
-    } else {
-        // Check if there's a saved user
-        const savedUser = localStorage.getItem('armHelper_currentUser');
-        if (savedUser) {
-            startingPage = 'calculator';
-        }
-    }
+    // Always start with calculator page now
+    let startingPage = 'calculator';
     
     // Make sure starting page is active
     switchPage(startingPage);
@@ -286,37 +257,11 @@ function debugPageStates() {
     console.log('========================');
 }
 
-// Override logout function to update sidebar
-const originalLogout = typeof logout !== 'undefined' ? logout : function() {};
+// Simplified logout function (not needed but keeping for compatibility)
 function logout() {
-    if (confirm('Ви впевнені, що хочете вийти?')) {
-        // Call original logout logic
-        if (typeof AuthSystem !== 'undefined') {
-            AuthSystem.currentUser = null;
-            localStorage.removeItem('armHelper_currentUser');
-        }
-        
-        // Update sidebar
-        updateSidebarUserInfo(null);
-        
-        // Go to login page
-        switchPage('login');
-        
-        // Show message if AuthSystem is available
-        if (typeof AuthSystem !== 'undefined' && typeof AuthSystem.showMessage === 'function') {
-            AuthSystem.showMessage('Ви успішно вийшли з системи', 'success');
-        }
-        
-        console.log('✅ Користувач вийшов з системи');
-    }
+    switchPage('soon');
+    console.log('✅ Redirect to Soon page');
 }
-
-// Listen for login events to update sidebar
-document.addEventListener('userLoggedIn', function(event) {
-    const user = event.detail;
-    updateSidebarUserInfo(user);
-    console.log('✅ User logged in event received, sidebar updated');
-});
 
 // Make functions globally available
 window.switchPage = switchPage;
