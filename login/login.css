@@ -1,519 +1,322 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Linq;
+/* Login/Registration Page Styles */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
 
-namespace ArmHelper.Login
-{
-    public class UserData
-    {
-        public string UserId { get; set; } = "";
-        public string Email { get; set; } = "";
-        public string Phone { get; set; } = "";
-        public string Nickname { get; set; } = "";
-        public string PasswordHash { get; set; } = "";
-        public DateTime RegistrationDate { get; set; }
-        public bool IsActive { get; set; } = true;
-        public DateTime? LastLogin { get; set; }
+.login-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    max-width: 450px;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-title {
+    font-size: 2.5em;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+.login-subtitle {
+    color: #666;
+    font-size: 1em;
+    margin: 0;
+}
+
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+}
+
+.form-title {
+    font-size: 1.8em;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+.form-input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.auth-btn:hover {
+    background: linear-gradient(135deg, #5a6fd8, #6a4190);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.auth-btn:active {
+    transform: translateY(0);
+}
+
+.auth-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.form-switch {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.switch-link {
+    color: #667eea;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.switch-link:hover {
+    color: #5a6fd8;
+}
+
+.skip-login {
+    text-align: center;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+}
+
+.skip-btn {
+    background: transparent;
+    color: #666;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.skip-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.auth-message {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 500;
+    display: none;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
     }
-
-    public class RegistrationResult
-    {
-        public bool Success { get; set; }
-        public string Message { get; set; } = "";
-        public string Error { get; set; } = "";
-        public string UserId { get; set; } = "";
-        public string Nickname { get; set; } = "";
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
+}
 
-    public class AuthenticationResult
-    {
-        public bool Success { get; set; }
-        public string Error { get; set; } = "";
-        public string UserId { get; set; } = "";
-        public string Nickname { get; set; } = "";
-        public string Email { get; set; } = "";
+.auth-message.success {
+    background: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    display: block;
+}
+
+.auth-message.error {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    display: block;
+}
+
+/* User Profile Styles */
+.user-profile {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, rgba(30, 30, 45, 0.9), rgba(45, 35, 60, 0.9));
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 15px 20px;
+    color: white;
+    border: 2px solid rgba(102, 126, 234, 0.5);
+    z-index: 1000;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
     }
-
-    public class UserStats
-    {
-        public int TotalUsers { get; set; }
-        public int ActiveUsers { get; set; }
-        public string UsersDirectory { get; set; } = "";
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
+}
 
-    public class UserRegistrationSystem
-    {
-        private readonly string _usersDirectory;
-        private readonly string _usersIndexFile;
-        private Dictionary<string, UserData> _usersIndex;
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 
-        public UserRegistrationSystem(string usersDirectory = "users")
-        {
-            _usersDirectory = Path.GetFullPath(usersDirectory);
-            _usersIndexFile = Path.Combine(_usersDirectory, "users_index.json");
-            
-            // Створюємо директорію якщо не існує
-            Directory.CreateDirectory(_usersDirectory);
-            
-            LoadUsersIndex();
-        }
+.user-nickname {
+    font-weight: 600;
+    font-size: 14px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
 
-        private void LoadUsersIndex()
-        {
-            try
-            {
-                if (File.Exists(_usersIndexFile))
-                {
-                    var json = File.ReadAllText(_usersIndexFile, Encoding.UTF8);
-                    _usersIndex = JsonSerializer.Deserialize<Dictionary<string, UserData>>(json) 
-                                  ?? new Dictionary<string, UserData>();
-                }
-                else
-                {
-                    _usersIndex = new Dictionary<string, UserData>();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Помилка завантаження індексу: {ex.Message}");
-                _usersIndex = new Dictionary<string, UserData>();
-            }
-        }
+.logout-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-        private bool SaveUsersIndex()
-        {
-            try
-            {
-                var options = new JsonSerializerOptions
-                {
-                    WriteIndented = true,
-                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-                };
-                
-                var json = JsonSerializer.Serialize(_usersIndex, options);
-                File.WriteAllText(_usersIndexFile, json, Encoding.UTF8);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Помилка збереження індексу: {ex.Message}");
-                return false;
-            }
-        }
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.05);
+}
 
-        private string HashPassword(string password)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return Convert.ToHexString(bytes).ToLower();
-            }
-        }
+/* Form Validation Styles */
+.form-input.error {
+    border-color: #f44336;
+    background: rgba(244, 67, 54, 0.05);
+}
 
-        private string GenerateUserId()
-        {
-            string userId;
-            do
-            {
-                userId = Guid.NewGuid().ToString("N")[..12]; // Перші 12 символів
-            }
-            while (_usersIndex.ContainsKey(userId));
-            
-            return userId;
-        }
+.form-input.success {
+    border-color: #4caf50;
+    background: rgba(76, 175, 80, 0.05);
+}
 
-        private bool ValidateEmail(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-                return false;
-                
-            var pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
-            return Regex.IsMatch(email, pattern);
-        }
+/* Loading State */
+.auth-btn.loading {
+    position: relative;
+    color: transparent;
+}
 
-        private bool ValidatePhone(string phone)
-        {
-            if (string.IsNullOrWhiteSpace(phone))
-                return false;
-                
-            var cleanPhone = Regex.Replace(phone, @"[^\d+]", "");
-            var pattern = @"^\+?[\d]{10,15}$";
-            return Regex.IsMatch(cleanPhone, pattern);
-        }
+.auth-btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
 
-        private bool EmailExists(string email)
-        {
-            return _usersIndex.Values.Any(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
-        }
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
-        private bool PhoneExists(string phone)
-        {
-            return _usersIndex.Values.Any(u => u.Phone == phone);
-        }
-
-        private bool NicknameExists(string nickname)
-        {
-            return _usersIndex.Values.Any(u => u.Nickname.Equals(nickname, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private bool CreateUserJsFile(UserData userData)
-        {
-            try
-            {
-                var jsContent = $@"// User data for {userData.Nickname} (ID: {userData.UserId})
-// Generated on {DateTime.Now:yyyy-MM-dd HH:mm:ss}
-
-const userData = {{
-    userId: '{userData.UserId}',
-    email: '{userData.Email}',
-    phone: '{userData.Phone}',
-    nickname: '{userData.Nickname}',
-    registrationDate: '{userData.RegistrationDate:yyyy-MM-ddTHH:mm:ss.fffZ}',
-    isActive: true,
-    
-    // User preferences (can be modified)
-    preferences: {{
-        theme: 'default',
-        language: 'uk',
-        notifications: true,
-        autoSave: true
-    }},
-    
-    // User stats and progress
-    stats: {{
-        calculationsPerformed: 0,
-        lastLogin: null,
-        totalSessions: 0,
-        favoriteCalculator: null
-    }},
-    
-    // Calculator settings
-    calculatorSettings: {{
-        defaultModifiers: {{
-            // Pet Calculator
-            petCalculator: {{
-                shinyChance: false,
-                goldenChance: false,
-                rainbowChance: false
-            }},
-            
-            // Arm Calculator  
-            armCalculator: {{
-                goldenLevel: 5 // 1-5, default max golden
-            }},
-            
-            // Grind Calculator
-            grindCalculator: {{
-                tp: 1, // 1, 2, or 3
-                chocolateDonut: true,
-                enchCookie: true,
-                time: true,
-                friend: true,
-                member: true,
-                premium: true
-            }}
-        }}
-    }}
-}};
-
-// Utility functions for user data management
-const userUtils = {{
-    // Update user stats
-    updateStats: function(statName, value) {{
-        if (userData.stats.hasOwnProperty(statName)) {{
-            userData.stats[statName] = value;
-            this.saveUserData();
-        }}
-    }},
-    
-    // Update preferences
-    updatePreference: function(prefName, value) {{
-        if (userData.preferences.hasOwnProperty(prefName)) {{
-            userData.preferences[prefName] = value;
-            this.saveUserData();
-        }}
-    }},
-    
-    // Update calculator settings
-    updateCalculatorSettings: function(calculator, settings) {{
-        if (userData.calculatorSettings.defaultModifiers[calculator]) {{
-            Object.assign(userData.calculatorSettings.defaultModifiers[calculator], settings);
-            this.saveUserData();
-        }}
-    }},
-    
-    // Save user data (placeholder - would need server implementation)
-    saveUserData: function() {{
-        console.log('User data updated:', userData);
-        // В реальному застосунку тут був би AJAX запит до сервера
-        localStorage.setItem('armHelper_userData', JSON.stringify(userData));
-    }},
-    
-    // Load user data from localStorage as backup
-    loadUserData: function() {{
-        const saved = localStorage.getItem('armHelper_userData');
-        if (saved) {{
-            try {{
-                const savedData = JSON.parse(saved);
-                // Merge saved data with current data, keeping structure
-                Object.assign(userData.stats, savedData.stats || {{}});
-                Object.assign(userData.preferences, savedData.preferences || {{}});
-                Object.assign(userData.calculatorSettings, savedData.calculatorSettings || {{}});
-            }} catch (e) {{
-                console.warn('Failed to load saved user data:', e);
-            }}
-        }}
-    }},
-    
-    // Get user info
-    getUserInfo: function() {{
-        return {{
-            id: userData.userId,
-            nickname: userData.nickname,
-            email: userData.email,
-            registrationDate: userData.registrationDate,
-            isActive: userData.isActive
-        }};
-    }}
-}};
-
-// Auto-load saved data on script load
-userUtils.loadUserData();
-
-// Make userData globally available
-if (typeof window !== 'undefined') {{
-    window.userData = userData;
-    window.userUtils = userUtils;
-}}
-
-// Export for Node.js environment
-if (typeof module !== 'undefined' && module.exports) {{
-    module.exports = {{ userData, userUtils }};
-}}
-";
-
-                var userFilePath = Path.Combine(_usersDirectory, $"{userData.UserId}.js");
-                File.WriteAllText(userFilePath, jsContent, Encoding.UTF8);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Помилка створення JS файлу: {ex.Message}");
-                return false;
-            }
-        }
-
-        public RegistrationResult RegisterUser(string email, string phone, string password, string nickname)
-        {
-            // Валідація даних
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(phone) || 
-                string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(nickname))
-            {
-                return new RegistrationResult 
-                { 
-                    Success = false, 
-                    Error = "Всі поля обов'язкові для заповнення" 
-                };
-            }
-
-            if (!ValidateEmail(email))
-            {
-                return new RegistrationResult 
-                { 
-                    Success = false, 
-                    Error = "Невірний формат email адреси" 
-                };
-            }
-
-            if (!ValidatePhone(phone))
-            {
-                return new RegistrationResult 
-                { 
-                    Success = false, 
-                    Error = "Невірний формат номера телефону" 
-                };
-            }
-
-            if (password.Length < 6)
-            {
-                return new RegistrationResult 
-                { 
-                    Success = false, 
-                    Error = "Пароль повинен містити мінімум 6 символів" 
-                };
-            }
-
-            if (nickname.Length < 3)
-            {
-                return new RegistrationResult 
-                { 
-                    Success = false, 
-                    Error = "Нікнейм повинен містити мінімум 3 символи" 
-                };
-            }
-
-            // Перевірка унікальності
-            if (EmailExists(email))
-            {
-                return new RegistrationResult 
-                { 
-                    Success = false, 
-                    Error = "Користувач з таким email вже існує" 
-                };
-            }
-
-            if (PhoneExists(phone))
-            {
-                return new RegistrationResult 
-                { 
-                    Success = false, 
-                    Error = "Користувач з таким номером телефону вже існує" 
-                };
-            }
-
-            if (NicknameExists(nickname))
-            {
-                return new RegistrationResult 
-                { 
-                    Success = false, 
-                    Error = "Користувач з таким нікнеймом вже існує" 
-                };
-            }
-
-            // Створення користувача
-            var userId = GenerateUserId();
-            var hashedPassword = HashPassword(password);
-
-            var userData = new UserData
-            {
-                UserId = userId,
-                Email = email,
-                Phone = phone,
-                Nickname = nickname,
-                PasswordHash = hashedPassword,
-                RegistrationDate = DateTime.UtcNow,
-                IsActive = true,
-                LastLogin = null
-            };
-
-            // Додаємо в індекс
-            _usersIndex[userId] = userData;
-
-            // Зберігаємо індекс
-            if (!SaveUsersIndex())
-            {
-                return new RegistrationResult 
-                { 
-                    Success = false, 
-                    Error = "Помилка збереження даних користувача" 
-                };
-            }
-
-            // Створюємо JS файл
-            if (!CreateUserJsFile(userData))
-            {
-                return new RegistrationResult 
-                { 
-                    Success = false, 
-                    Error = "Помилка створення файлу користувача" 
-                };
-            }
-
-            return new RegistrationResult
-            {
-                Success = true,
-                Message = "Користувач успішно зареєстрований",
-                UserId = userId,
-                Nickname = nickname
-            };
-        }
-
-        public AuthenticationResult AuthenticateUser(string login, string password)
-        {
-            var hashedPassword = HashPassword(password);
-
-            var user = _usersIndex.Values.FirstOrDefault(u =>
-                (u.Email.Equals(login, StringComparison.OrdinalIgnoreCase) || u.Phone == login) &&
-                u.PasswordHash == hashedPassword && u.IsActive);
-
-            if (user != null)
-            {
-                // Оновлюємо час останнього входу
-                user.LastLogin = DateTime.UtcNow;
-                SaveUsersIndex();
-
-                return new AuthenticationResult
-                {
-                    Success = true,
-                    UserId = user.UserId,
-                    Nickname = user.Nickname,
-                    Email = user.Email
-                };
-            }
-
-            return new AuthenticationResult
-            {
-                Success = false,
-                Error = "Невірний логін або пароль"
-            };
-        }
-
-        public UserStats GetUserStats()
-        {
-            var totalUsers = _usersIndex.Count;
-            var activeUsers = _usersIndex.Values.Count(u => u.IsActive);
-
-            return new UserStats
-            {
-                TotalUsers = totalUsers,
-                ActiveUsers = activeUsers,
-                UsersDirectory = _usersDirectory
-            };
-        }
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .login-container {
+        padding: 30px 20px;
+        margin: 20px;
     }
+    
+    .login-title {
+        font-size: 2em;
+    }
+    
+    .user-profile {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        padding: 12px 15px;
+    }
+    
+    .profile-info {
+        justify-content: space-between;
+    }
+    
+    .form-input {
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+}
 
-    // Демонстраційний клас
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            Console.OutputEncoding = Encoding.UTF8;
-            DemoRegistration();
-        }
-
-        private static void DemoRegistration()
-        {
-            var system = new UserRegistrationSystem();
-
-            Console.WriteLine("=== Демо системи реєстрації ===");
-            Console.WriteLine($"Директорія користувачів: {system.GetUserStats().UsersDirectory}");
-            Console.WriteLine();
-
-            // Тестові дані
-            var testUsers = new[]
-            {
-                new { Email = "user1@example.com", Phone = "+380501234567", Password = "password123", Nickname = "TestUser1" },
-                new { Email = "user2@example.com", Phone = "+380671234567", Password = "password456", Nickname = "TestUser2" }
-            };
-
-            // Реєстрація тестових користувачів
-            for (int i = 0; i < testUsers.Length; i++)
-            {
-                var user = testUsers[i];
-                Console.WriteLine($"Реєстрація користувача {i + 1}:");
-                var result = system.RegisterUser(user.Email, user.Phone, user.Password, user.Nickname);
-                
-                if (result.Success)
-                {
-                    Console.WriteLine($"✅ {result.Message}");
-                    Console.WriteLine($"   ID: {result.UserId}");
-                    Console.WriteLine($"   Nickname: {result.Nickname}");
-                }
-                else
-                {
-                    Console.WriteLine($"❌
+@media (max-width: 480px) {
+    .login-container {
+        padding: 25px 15px;
+        margin: 15px;
+    }
+    
+    .login-title {
+        font-size: 1.8em;
+    }
+    
+    .form-title {
+        font-size: 1.5em;
+    }
+}
