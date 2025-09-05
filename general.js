@@ -19,17 +19,16 @@ function switchPage(page) {
     
     // Update active nav button - використовуємо масив для правильного індексування
     const pageMap = {
-        'login': 0,
-        'calculator': 1,
-        'arm': 2,
-        'grind': 3,
-        'boosts': 4,
-        'shiny': 5,
-        'codes': 6,
-        'aura': 7,
-        'trainer': 8,
-        'charms': 9,
-        'worlds': 10
+        'calculator': 0,
+        'arm': 1,
+        'grind': 2,
+        'boosts': 3,
+        'shiny': 4,
+        'codes': 5,
+        'aura': 6,
+        'trainer': 7,
+        'charms': 8,
+        'worlds': 9
     };
     
     const navButtons = document.querySelectorAll('.nav-btn');
