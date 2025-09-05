@@ -4,19 +4,21 @@ console.log('🔄 Завантаження контенту...');
 // Function to load content
 async function loadContent() {
     try {
-        // Load both content files
-        const [calcResponse, infoResponse] = await Promise.all([
+        // Load all content files including login
+        const [calcResponse, infoResponse, loginResponse] = await Promise.all([
             fetch('index/content_calc.html'),
-            fetch('index/content_info.html')
+            fetch('index/content_info.html'),
+            fetch('index/content_login.html')
         ]);
 
-        if (!calcResponse.ok || !infoResponse.ok) {
-            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}`);
+        if (!calcResponse.ok || !infoResponse.ok || !loginResponse.ok) {
+            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, login: ${loginResponse.status}`);
         }
         
-        const [calcContent, infoContent] = await Promise.all([
+        const [calcContent, infoContent, loginContent] = await Promise.all([
             calcResponse.text(),
-            infoResponse.text()
+            infoResponse.text(),
+            loginResponse.text()
         ]);
 
         const appContent = document.getElementById('app-content');
@@ -34,6 +36,7 @@ async function loadContent() {
                         <button class="close-sidebar" onclick="closeSidebar()">×</button>
                     </div>
                     <div class="nav-buttons">
+                        <button class="nav-btn" onclick="switchPage('login')">🔐 Login</button>
                         <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Calculator</button>
                         <button class="nav-btn" onclick="switchPage('arm')">💪 Arm Calculator</button>
                         <button class="nav-btn" onclick="switchPage('grind')">🏋️‍♂️ Grind Calculator</button>
@@ -45,19 +48,29 @@ async function loadContent() {
                         <button class="nav-btn" onclick="switchPage('charms')">🔮 Charms</button>
                         <button class="nav-btn" onclick="switchPage('worlds')">🌍 Worlds</button>
                     </div>
+                    
+                    <!-- User Section in Sidebar -->
+                    <div class="sidebar-user" id="sidebarUser">
+                        <div class="user-info" id="userInfo" style="display: none;">
+                            <div class="user-nickname" id="sidebarUserNickname"></div>
+                            <div class="user-status">Увійшов в систему</div>
+                        </div>
+                        <button class="auth-btn-sidebar" id="authButton" onclick="handleAuthAction()">Увійти</button>
+                    </div>
                 </div>
 
                 <!-- Sidebar Overlay -->
                 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
                    
                 <div class="container">
+                    ${loginContent}
                     ${calcContent}
                     ${infoContent}
                 </div>
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Контент завантажено успішно (calc + info)');
+            console.log('✅ Контент завантажено успішно (login + calc + info)');
             
             // Wait a bit for DOM to be ready, then initialize
             setTimeout(() => {
