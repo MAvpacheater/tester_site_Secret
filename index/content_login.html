@@ -1,0 +1,87 @@
+<!-- Login/Registration Page -->
+<div class="page login-page active" id="loginPage">
+    <div class="login-container">
+        <div class="login-header">
+            <h1 class="login-title">Arm Helper</h1>
+            <p class="login-subtitle">Увійдіть або зареєструйтеся для збереження налаштувань</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="auth-form active" id="loginForm">
+            <h2 class="form-title">Увійти</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label for="loginEmail" class="input-label">Email або телефон</label>
+                    <input type="text" id="loginEmail" class="form-input" placeholder="Введіть email або номер телефону" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="loginPassword" class="input-label">Пароль</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="Введіть пароль" required>
+                </div>
+                
+                <button type="submit" class="auth-btn">Увійти</button>
+                
+                <div class="form-switch">
+                    <p>Немає акаунту? <span class="switch-link" onclick="switchToRegister()">Зареєструватися</span></p>
+                </div>
+                
+                <div class="skip-login">
+                    <button type="button" class="skip-btn" onclick="skipLogin()">Продовжити без входу</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="auth-form" id="registerForm">
+            <h2 class="form-title">Реєстрація</h2>
+            <form onsubmit="handleRegister(event)">
+                <div class="input-group">
+                    <label for="registerEmail" class="input-label">Email</label>
+                    <input type="email" id="registerEmail" class="form-input" placeholder="Введіть email" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="registerPhone" class="input-label">Номер телефону</label>
+                    <input type="tel" id="registerPhone" class="form-input" placeholder="+380501234567" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="registerNickname" class="input-label">Нікнейм</label>
+                    <input type="text" id="registerNickname" class="form-input" placeholder="Введіть нікнейм" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="registerPassword" class="input-label">Пароль</label>
+                    <input type="password" id="registerPassword" class="form-input" placeholder="Мінімум 6 символів" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="confirmPassword" class="input-label">Підтвердження пароля</label>
+                    <input type="password" id="confirmPassword" class="form-input" placeholder="Повторіть пароль" required>
+                </div>
+                
+                <button type="submit" class="auth-btn">Зареєструватися</button>
+                
+                <div class="form-switch">
+                    <p>Вже є акаунт? <span class="switch-link" onclick="switchToLogin()">Увійти</span></p>
+                </div>
+                
+                <div class="skip-login">
+                    <button type="button" class="skip-btn" onclick="skipLogin()">Продовжити без входу</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Error/Success Messages -->
+        <div class="auth-message" id="authMessage"></div>
+    </div>
+</div>
+
+<!-- User Profile (показується після входу) -->
+<div class="user-profile" id="userProfile" style="display: none;">
+    <div class="profile-info">
+        <span class="user-nickname" id="userNickname"></span>
+        <button class="logout-btn" onclick="logout()">Вийти</button>
+    </div>
+</div>
