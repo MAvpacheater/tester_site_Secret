@@ -128,7 +128,7 @@ function updateSidebarUserInfo(user = null) {
     if (userInfo && authButton) {
         // Always hide user info and show Soon button
         userInfo.style.display = 'none';
-        authButton.textContent = 'Soon..';
+        authButton.textContent = 'Login (Soon..)';
         authButton.classList.remove('logout-btn');
         
         console.log('✅ Sidebar updated with Soon button');
