@@ -4,27 +4,25 @@ console.log('🔄 Завантаження контенту...');
 // Function to load content
 async function loadContent() {
     try {
-        // Load all content files including login
-        const [calcResponse, infoResponse, loginResponse] = await Promise.all([
+        // Load content files (removed login, added soon)
+        const [calcResponse, infoResponse] = await Promise.all([
             fetch('index/content_calc.html'),
-            fetch('index/content_info.html'),
-            fetch('index/content_login.html')
+            fetch('index/content_info.html')
         ]);
 
-        if (!calcResponse.ok || !infoResponse.ok || !loginResponse.ok) {
-            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, login: ${loginResponse.status}`);
+        if (!calcResponse.ok || !infoResponse.ok) {
+            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}`);
         }
         
-        const [calcContent, infoContent, loginContent] = await Promise.all([
+        const [calcContent, infoContent] = await Promise.all([
             calcResponse.text(),
-            infoResponse.text(),
-            loginResponse.text()
+            infoResponse.text()
         ]);
 
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with navigation and combine content (БЕЗ кнопки Login в навігації)
+            // Create the main structure with navigation and combine content + Soon page
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -54,7 +52,7 @@ async function loadContent() {
                             <div class="user-nickname" id="sidebarUserNickname"></div>
                             <div class="user-status">Увійшов в систему</div>
                         </div>
-                        <button class="auth-btn-sidebar" id="authButton" onclick="handleAuthAction()">Увійти</button>
+                        <button class="auth-btn-sidebar" id="authButton" onclick="handleAuthAction()">Soon..</button>
                     </div>
                 </div>
 
@@ -62,14 +60,23 @@ async function loadContent() {
                 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
                    
                 <div class="container">
-                    ${loginContent}
                     ${calcContent}
                     ${infoContent}
                 </div>
+
+                <style>
+                    .auth-btn-sidebar.disabled {
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                        background: rgba(255, 255, 255, 0.1);
+                        color: rgba(255, 255, 255, 0.7);
+                        pointer-events: none;
+                    }
+                </style>
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Контент завантажено успішно (login + calc + info)');
+            console.log('✅ Контент завантажено успішно (calc + info + soon)');
             
             // Wait a bit for DOM to be ready, then initialize
             setTimeout(() => {
