@@ -24,7 +24,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with navigation and combine content
+            // Create the main structure with navigation and combine content (БЕЗ кнопки Login в навігації)
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -36,7 +36,6 @@ async function loadContent() {
                         <button class="close-sidebar" onclick="closeSidebar()">×</button>
                     </div>
                     <div class="nav-buttons">
-                        <button class="nav-btn" onclick="switchPage('login')">🔐 Login</button>
                         <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Calculator</button>
                         <button class="nav-btn" onclick="switchPage('arm')">💪 Arm Calculator</button>
                         <button class="nav-btn" onclick="switchPage('grind')">🏋️‍♂️ Grind Calculator</button>
