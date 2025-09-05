@@ -90,9 +90,6 @@ function initializePageContent(page) {
                 initializeWorlds();
             }
             break;
-        case 'soon':
-            // Soon page doesn't need special initialization
-            break;
     }
 }
 
