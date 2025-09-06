@@ -1,421 +1,187 @@
-// Profile Management Functions
-console.log('📱 Profile functions loading...');
+<!-- Profile Page -->
+<div class="page profile-page" id="profilePage">
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <img src="https://i.postimg.cc/gjmcXwV9/file-000000008fd461f4826bd65e36dbc3d2.png/80x80/667eea/ffffff?text=👤" alt="Avatar" class="avatar-img" id="profileAvatar">
+            </div>
+            <div class="profile-info">
+                <h2 class="profile-nickname" id="profileNickname">User</h2>
+                <p class="profile-status">Member since <span id="profileJoinDate">Recently</span></p>
+            </div>
+        </div>
 
-// Open profile page
-function openProfile() {
-    console.log('👤 Opening profile...');
-    
-    // Check if user is authenticated
-    const currentUser = getCurrentUser();
-    if (!currentUser) {
-        console.warn('❌ No user logged in, redirecting to login');
-        switchPage('login');
-        return;
-    }
-    
-    // Update profile data before showing
-    updateProfileData(currentUser);
-    
-    // Switch to profile page
-    switchPage('profile');
-    
-    // Close sidebar on mobile after opening profile
-    if (window.innerWidth <= 768) {
-        closeSidebar();
-    }
-}
+        <!-- Profile Actions -->
+        <div class="profile-actions">
+            <button class="action-btn settings-btn" onclick="toggleSettingsMenu()">
+                <span class="btn-icon">⚙️</span>
+                Settings
+            </button>
+            <button class="action-btn stats-btn" onclick="toggleStatsView()">
+                <span class="btn-icon">📊</span>
+                Statistics
+            </button>
+            <button class="action-btn back-btn" onclick="goBackFromProfile()">
+                <span class="btn-icon">←</span>
+                Back
+            </button>
+        </div>
 
-// Update profile data
-function updateProfileData(user) {
-    console.log('📊 Updating profile data for:', user.nickname || user.email);
-    
-    // Update nickname
-    const profileNickname = document.getElementById('profileNickname');
-    if (profileNickname) {
-        profileNickname.textContent = user.nickname || user.email?.split('@')[0] || 'User';
-    }
-    
-    // Update join date
-    const profileJoinDate = document.getElementById('profileJoinDate');
-    if (profileJoinDate) {
-        const joinDate = user.joinDate ? new Date(user.joinDate).toLocaleDateString() : 'Recently';
-        profileJoinDate.textContent = joinDate;
-    }
-    
-    // Update avatar if available
-    const profileAvatar = document.getElementById('profileAvatar');
-    if (profileAvatar && user.avatar) {
-        profileAvatar.src = user.avatar;
-    }
-    
-    // Update current nickname in change form
-    const currentNickname = document.getElementById('currentNickname');
-    if (currentNickname) {
-        currentNickname.value = user.nickname || user.email?.split('@')[0] || 'User';
-    }
-    
-    // Update statistics
-    updateProfileStats(user);
-}
+        <!-- Settings Menu (Hidden by default) -->
+        <div class="settings-menu" id="settingsMenu" style="display: none;">
+            <div class="settings-header">
+                <h3>Settings</h3>
+                <button class="close-btn" onclick="closeSettingsMenu()">×</button>
+            </div>
+            
+            <div class="settings-options">
+                <button class="settings-option-btn" onclick="showChangePassword()">
+                    <span class="option-icon">🔒</span>
+                    <div class="option-info">
+                        <div class="option-title">Change Password</div>
+                        <div class="option-desc">Update your account password</div>
+                    </div>
+                    <span class="option-arrow">→</span>
+                </button>
+                
+                <button class="settings-option-btn" onclick="showChangeNickname()">
+                    <span class="option-icon">✏️</span>
+                    <div class="option-info">
+                        <div class="option-title">Change Nickname</div>
+                        <div class="option-desc">Update your display name</div>
+                    </div>
+                    <span class="option-arrow">→</span>
+                </button>
+                
+                <button class="settings-option-btn" onclick="showPreferences()">
+                    <span class="option-icon">🎛️</span>
+                    <div class="option-info">
+                        <div class="option-title">Preferences</div>
+                        <div class="option-desc">App settings and preferences</div>
+                    </div>
+                    <span class="option-arrow">→</span>
+                </button>
+                
+                <button class="settings-option-btn danger-option" onclick="confirmDeleteAccount()">
+                    <span class="option-icon">⚠️</span>
+                    <div class="option-info">
+                        <div class="option-title">Delete Account</div>
+                        <div class="option-desc">Permanently delete your account</div>
+                    </div>
+                    <span class="option-arrow">→</span>
+                </button>
+            </div>
+        </div>
 
-// Update profile statistics
-function updateProfileStats(user) {
-    // Update calculations count
-    const calculationsCount = document.getElementById('calculationsCount');
-    if (calculationsCount) {
-        const savedCalcs = localStorage.getItem('armHelper_savedCalculations');
-        const count = savedCalcs ? JSON.parse(savedCalcs).length : 0;
-        calculationsCount.textContent = count;
-    }
-    
-    // Update login count
-    const loginCount = document.getElementById('loginCount');
-    if (loginCount) {
-        const count = user.loginCount || 1;
-        loginCount.textContent = count;
-    }
-    
-    // Update last login date
-    const lastLoginDate = document.getElementById('lastLoginDate');
-    if (lastLoginDate) {
-        const lastLogin = user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Today';
-        lastLoginDate.textContent = lastLogin;
-    }
-}
+        <!-- Change Password Form (Hidden by default) -->
+        <div class="settings-form" id="changePasswordForm" style="display: none;">
+            <div class="form-header">
+                <button class="back-form-btn" onclick="backToSettingsMenu()">←</button>
+                <h3>Change Password</h3>
+                <button class="close-btn" onclick="closeSettingsMenu()">×</button>
+            </div>
+            
+            <form onsubmit="handleChangePassword(event)">
+                <div class="input-group">
+                    <label for="currentPassword" class="input-label">Current Password</label>
+                    <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="newPassword" class="input-label">New Password</label>
+                    <input type="password" id="newPassword" class="form-input" placeholder="Enter new password (min 6 chars)" required minlength="6">
+                </div>
+                
+                <div class="input-group">
+                    <label for="confirmNewPassword" class="input-label">Confirm New Password</label>
+                    <input type="password" id="confirmNewPassword" class="form-input" placeholder="Confirm new password" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Update Password</button>
+            </form>
+        </div>
 
-// Get current user from auth manager or localStorage
-function getCurrentUser() {
-    // Try auth manager first
-    if (window.authManager && window.authManager.currentUser) {
-        return window.authManager.currentUser;
-    }
-    
-    // Fallback to localStorage
-    const savedUser = localStorage.getItem('armHelper_currentUser');
-    if (savedUser) {
-        try {
-            return JSON.parse(savedUser);
-        } catch (e) {
-            console.warn('❌ Invalid saved user data');
-            localStorage.removeItem('armHelper_currentUser');
-            return null;
-        }
-    }
-    
-    return null;
-}
+        <!-- Change Nickname Form (Hidden by default) -->
+        <div class="settings-form" id="changeNicknameForm" style="display: none;">
+            <div class="form-header">
+                <button class="back-form-btn" onclick="backToSettingsMenu()">←</button>
+                <h3>Change Nickname</h3>
+                <button class="close-btn" onclick="closeSettingsMenu()">×</button>
+            </div>
+            
+            <form onsubmit="handleChangeNickname(event)">
+                <div class="input-group">
+                    <label for="currentNickname" class="input-label">Current Nickname</label>
+                    <input type="text" id="currentNickname" class="form-input" readonly>
+                </div>
+                
+                <div class="input-group">
+                    <label for="newNickname" class="input-label">New Nickname</label>
+                    <input type="text" id="newNickname" class="form-input" placeholder="Enter new nickname" required minlength="3" maxlength="20">
+                </div>
+                
+                <button type="submit" class="submit-btn">Update Nickname</button>
+            </form>
+        </div>
 
-// Go back from profile
-function goBackFromProfile() {
-    console.log('⬅️ Going back from profile');
-    
-    // Go back to previous page or default to calculator
-    const previousPage = sessionStorage.getItem('previousPage') || 'calculator';
-    switchPage(previousPage);
-}
+        <!-- Preferences Form (Hidden by default) -->
+        <div class="settings-form" id="preferencesForm" style="display: none;">
+            <div class="form-header">
+                <button class="back-form-btn" onclick="backToSettingsMenu()">←</button>
+                <h3>Preferences</h3>
+                <button class="close-btn" onclick="closeSettingsMenu()">×</button>
+            </div>
+            
+            <div class="preferences-content">
+                <div class="settings-row">
+                    <div class="setting-info">
+                        <h4>Auto-save calculations</h4>
+                        <p>Automatically save your calculator settings</p>
+                    </div>
+                    <label class="setting-toggle">
+                        <input type="checkbox" id="autoSaveToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="settings-row">
+                    <div class="setting-info">
+                        <h4>Show calculation history</h4>
+                        <p>Display recent calculations in calculators</p>
+                    </div>
+                    <label class="setting-toggle">
+                        <input type="checkbox" id="historyToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
 
-// Toggle settings menu
-function toggleSettingsMenu() {
-    const settingsMenu = document.getElementById('settingsMenu');
-    const statsView = document.getElementById('statsView');
-    
-    if (settingsMenu) {
-        const isVisible = settingsMenu.style.display !== 'none';
-        settingsMenu.style.display = isVisible ? 'none' : 'block';
-        
-        // Hide stats view if it's open
-        if (statsView) {
-            statsView.style.display = 'none';
-        }
-        
-        // Hide all forms
-        hideAllSettingsForms();
-    }
-}
+        <!-- Statistics View (Hidden by default) -->
+        <div class="stats-view" id="statsView" style="display: none;">
+            <div class="stats-header">
+                <h3>Statistics</h3>
+                <button class="close-btn" onclick="closeStatsView()">×</button>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="calculationsCount">0</div>
+                    <div class="stat-label">Calculations Saved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="loginCount">1</div>
+                    <div class="stat-label">Total Logins</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="lastLoginDate">Today</div>
+                    <div class="stat-label">Last Login</div>
+                </div>
+            </div>
+        </div>
 
-// Close settings menu
-function closeSettingsMenu() {
-    const settingsMenu = document.getElementById('settingsMenu');
-    if (settingsMenu) {
-        settingsMenu.style.display = 'none';
-    }
-    hideAllSettingsForms();
-}
-
-// Toggle stats view
-function toggleStatsView() {
-    const statsView = document.getElementById('statsView');
-    const settingsMenu = document.getElementById('settingsMenu');
-    
-    if (statsView) {
-        const isVisible = statsView.style.display !== 'none';
-        statsView.style.display = isVisible ? 'none' : 'block';
-        
-        // Hide settings menu if it's open
-        if (settingsMenu) {
-            settingsMenu.style.display = 'none';
-        }
-        
-        // Update stats when showing
-        if (!isVisible) {
-            const currentUser = getCurrentUser();
-            if (currentUser) {
-                updateProfileStats(currentUser);
-            }
-        }
-    }
-}
-
-// Close stats view
-function closeStatsView() {
-    const statsView = document.getElementById('statsView');
-    if (statsView) {
-        statsView.style.display = 'none';
-    }
-}
-
-// Show change password form
-function showChangePassword() {
-    hideAllSettingsForms();
-    const form = document.getElementById('changePasswordForm');
-    if (form) {
-        form.style.display = 'block';
-        // Clear previous values
-        document.getElementById('currentPassword').value = '';
-        document.getElementById('newPassword').value = '';
-        document.getElementById('confirmNewPassword').value = '';
-    }
-}
-
-// Show change nickname form
-function showChangeNickname() {
-    hideAllSettingsForms();
-    const form = document.getElementById('changeNicknameForm');
-    if (form) {
-        form.style.display = 'block';
-        // Update current nickname
-        const currentUser = getCurrentUser();
-        const currentNickname = document.getElementById('currentNickname');
-        if (currentNickname && currentUser) {
-            currentNickname.value = currentUser.nickname || currentUser.email?.split('@')[0] || 'User';
-        }
-        // Clear new nickname
-        document.getElementById('newNickname').value = '';
-    }
-}
-
-// Show preferences
-function showPreferences() {
-    hideAllSettingsForms();
-    const form = document.getElementById('preferencesForm');
-    if (form) {
-        form.style.display = 'block';
-        // Load current preferences
-        loadUserPreferences();
-    }
-}
-
-// Hide all settings forms
-function hideAllSettingsForms() {
-    const forms = ['changePasswordForm', 'changeNicknameForm', 'preferencesForm'];
-    forms.forEach(formId => {
-        const form = document.getElementById(formId);
-        if (form) {
-            form.style.display = 'none';
-        }
-    });
-}
-
-// Back to settings menu
-function backToSettingsMenu() {
-    hideAllSettingsForms();
-    const settingsMenu = document.getElementById('settingsMenu');
-    if (settingsMenu) {
-        settingsMenu.style.display = 'block';
-    }
-}
-
-// Handle change password
-function handleChangePassword(event) {
-    event.preventDefault();
-    
-    const currentPassword = document.getElementById('currentPassword').value;
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmPassword = document.getElementById('confirmNewPassword').value;
-    
-    // Validate passwords
-    if (newPassword !== confirmPassword) {
-        showProfileMessage('New passwords do not match!', 'error');
-        return;
-    }
-    
-    if (newPassword.length < 6) {
-        showProfileMessage('Password must be at least 6 characters long!', 'error');
-        return;
-    }
-    
-    // Here you would typically call your auth service
-    // For now, we'll simulate success
-    showProfileMessage('Password updated successfully!', 'success');
-    closeSettingsMenu();
-    
-    // Clear form
-    document.getElementById('currentPassword').value = '';
-    document.getElementById('newPassword').value = '';
-    document.getElementById('confirmNewPassword').value = '';
-}
-
-// Handle change nickname
-function handleChangeNickname(event) {
-    event.preventDefault();
-    
-    const newNickname = document.getElementById('newNickname').value.trim();
-    
-    if (newNickname.length < 3) {
-        showProfileMessage('Nickname must be at least 3 characters long!', 'error');
-        return;
-    }
-    
-    if (newNickname.length > 20) {
-        showProfileMessage('Nickname must be less than 20 characters!', 'error');
-        return;
-    }
-    
-    // Update user data
-    const currentUser = getCurrentUser();
-    if (currentUser) {
-        currentUser.nickname = newNickname;
-        
-        // Update in localStorage
-        localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
-        
-        // Update auth manager if available
-        if (window.authManager) {
-            window.authManager.currentUser = currentUser;
-        }
-        
-        // Update UI
-        updateProfileData(currentUser);
-        updateSidebarForAuthenticatedUser(currentUser, currentUser);
-        
-        showProfileMessage('Nickname updated successfully!', 'success');
-        closeSettingsMenu();
-    }
-}
-
-// Load user preferences
-function loadUserPreferences() {
-    const preferences = JSON.parse(localStorage.getItem('armHelper_userPreferences') || '{}');
-    
-    const autoSaveToggle = document.getElementById('autoSaveToggle');
-    const historyToggle = document.getElementById('historyToggle');
-    
-    if (autoSaveToggle) {
-        autoSaveToggle.checked = preferences.autoSave !== false; // Default to true
-    }
-    
-    if (historyToggle) {
-        historyToggle.checked = preferences.showHistory !== false; // Default to true
-    }
-}
-
-// Save user preferences
-function saveUserPreferences() {
-    const autoSaveToggle = document.getElementById('autoSaveToggle');
-    const historyToggle = document.getElementById('historyToggle');
-    
-    const preferences = {
-        autoSave: autoSaveToggle ? autoSaveToggle.checked : true,
-        showHistory: historyToggle ? historyToggle.checked : true
-    };
-    
-    localStorage.setItem('armHelper_userPreferences', JSON.stringify(preferences));
-}
-
-// Confirm delete account
-function confirmDeleteAccount() {
-    if (confirm('Are you sure you want to delete your account? This action cannot be undone!')) {
-        // Here you would typically call your auth service to delete the account
-        // For now, we'll simulate account deletion
-        localStorage.removeItem('armHelper_currentUser');
-        localStorage.removeItem('armHelper_userPreferences');
-        localStorage.removeItem('armHelper_savedCalculations');
-        
-        // Sign out user
-        if (window.authManager) {
-            window.authManager.signOut();
-        } else {
-            updateSidebarForSignedOutUser();
-        }
-        
-        // Redirect to login
-        switchPage('login');
-        
-        showMessage('Account deleted successfully!', 'success');
-    }
-}
-
-// Show profile message
-function showProfileMessage(message, type = 'info') {
-    const messageElement = document.getElementById('profileMessage');
-    if (messageElement) {
-        messageElement.textContent = message;
-        messageElement.className = `profile-message ${type}`;
-        messageElement.style.display = 'block';
-        
-        // Hide message after 3 seconds
-        setTimeout(() => {
-            messageElement.style.display = 'none';
-        }, 3000);
-    }
-}
-
-// Add event listeners for preference toggles
-document.addEventListener('contentLoaded', () => {
-    const autoSaveToggle = document.getElementById('autoSaveToggle');
-    const historyToggle = document.getElementById('historyToggle');
-    
-    if (autoSaveToggle) {
-        autoSaveToggle.addEventListener('change', saveUserPreferences);
-    }
-    
-    if (historyToggle) {
-        historyToggle.addEventListener('change', saveUserPreferences);
-    }
-});
-
-// Update login stats when user logs in
-function updateLoginStats() {
-    const currentUser = getCurrentUser();
-    if (currentUser) {
-        // Update login count and last login
-        currentUser.loginCount = (currentUser.loginCount || 0) + 1;
-        currentUser.lastLogin = new Date().toISOString();
-        
-        // Save updated user data
-        localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
-        
-        // Update auth manager if available
-        if (window.authManager) {
-            window.authManager.currentUser = currentUser;
-        }
-    }
-}
-
-// Make functions globally available
-window.openProfile = openProfile;
-window.goBackFromProfile = goBackFromProfile;
-window.toggleSettingsMenu = toggleSettingsMenu;
-window.closeSettingsMenu = closeSettingsMenu;
-window.toggleStatsView = toggleStatsView;
-window.closeStatsView = closeStatsView;
-window.showChangePassword = showChangePassword;
-window.showChangeNickname = showChangeNickname;
-window.showPreferences = showPreferences;
-window.backToSettingsMenu = backToSettingsMenu;
-window.handleChangePassword = handleChangePassword;
-window.handleChangeNickname = handleChangeNickname;
-window.confirmDeleteAccount = confirmDeleteAccount;
-window.updateLoginStats = updateLoginStats;
-
-console.log('✅ Profile functions loaded successfully');
+        <!-- Success/Error Messages -->
+        <div class="profile-message" id="profileMessage"></div>
+    </div>
+</div>
