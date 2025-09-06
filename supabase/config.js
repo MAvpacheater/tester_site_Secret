@@ -1,9 +1,9 @@
 // supabase/config.js
-// Updated Supabase configuration for nickname-based authentication
+// Fixed Supabase configuration - nickname only, no email/phone storage
 
 // Supabase URL and Anon Key (replace with your actual values)
-const SUPABASE_URL = 'http://localhost:3000'; // replace with your URL
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnb21ocnJicmpzYXpxdHF5Y3NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNDU2MzgsImV4cCI6MjA3MjcyMTYzOH0.0IX8h2acPlEe_liU0OOTi99YG5l384p_yk6oRMW26sY'; // replace with your key
+const SUPABASE_URL = 'https://aws-info-post-app.vercel.app/'; // replace with your URL
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmcGh2d3RsZmZ5bHZpd3hiZmNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNDUxNDksImV4cCI6MjA3MjcyMTE0OX0.9VF-YQK6JTvlfkfuj7X9fJHuANcXHBN_vNi2DAjdSI4'; // replace with your key
 
 // Initialize Supabase client
 let supabase;
@@ -30,7 +30,7 @@ function initializeSupabase() {
     }
 }
 
-// Enhanced Supabase Authentication Manager for nickname-based auth
+// Enhanced Supabase Authentication Manager - NICKNAME ONLY
 class SupabaseAuthManager {
     constructor() {
         this.supabase = initializeSupabase();
@@ -124,7 +124,7 @@ class SupabaseAuthManager {
         }
     }
 
-    // Register new user with nickname
+    // Register new user with nickname ONLY
     async registerUser(nickname, password) {
         try {
             // Check if nickname is already taken
@@ -138,8 +138,8 @@ class SupabaseAuthManager {
                 throw new Error('Nickname is already taken');
             }
 
-            // Create a temporary email for Supabase auth (since it requires email)
-            const tempEmail = `${nickname}@armhelper.local`;
+            // Create a temporary email for Supabase auth (required by Supabase)
+            const tempEmail = `${nickname}@armhelper.temp`;
             
             // Register with Supabase Auth using temp email
             const { data: authData, error: authError } = await this.supabase.auth.signUp({
@@ -153,7 +153,6 @@ class SupabaseAuthManager {
             });
 
             if (authError) {
-                // Handle specific Supabase errors
                 if (authError.message.includes('email')) {
                     throw new Error('Registration failed. Please try again.');
                 }
@@ -164,7 +163,7 @@ class SupabaseAuthManager {
                 throw new Error('Registration failed - no user data returned');
             }
 
-            // Create user profile in our custom table
+            // Create user profile in our custom table (NICKNAME ONLY)
             await this.createUserProfile(authData.user, nickname);
 
             return {
@@ -192,19 +191,12 @@ class SupabaseAuthManager {
                 throw new Error('Invalid nickname or password');
             }
 
-            // Get the auth user's email
-            const { data: authUser, error: authError } = await this.supabase
-                .from('auth.users')
-                .select('email')
-                .eq('id', userData.auth_id)
-                .single();
+            // Use temp email format for login
+            const tempEmail = `${nickname}@armhelper.temp`;
 
-            // If we can't get the auth user, try with temp email format
-            const emailToUse = authUser?.email || `${nickname}@armhelper.local`;
-
-            // Sign in with email and password
+            // Sign in with temp email and password
             const { data, error } = await this.supabase.auth.signInWithPassword({
-                email: emailToUse,
+                email: tempEmail,
                 password: password
             });
 
@@ -227,7 +219,7 @@ class SupabaseAuthManager {
         }
     }
 
-    // Create user profile in custom table
+    // Create user profile in custom table (NICKNAME ONLY)
     async createUserProfile(user, nickname) {
         try {
             const { data, error } = await this.supabase
@@ -236,7 +228,7 @@ class SupabaseAuthManager {
                     {
                         auth_id: user.id,
                         nickname: nickname,
-                        email: user.email,
+                        // NO EMAIL OR PHONE FIELDS
                         preferences: {
                             theme: 'default',
                             language: 'en',
@@ -261,16 +253,22 @@ class SupabaseAuthManager {
         }
     }
 
-    // Update user profile
+    // Update user profile (NICKNAME ONLY)
     async updateUserProfile(updates) {
         if (!this.currentUser || !this.userProfile) {
             throw new Error('User not authenticated');
         }
 
         try {
+            // Only allow updating nickname and preferences, no email/phone
+            const allowedUpdates = {};
+            if (updates.nickname) allowedUpdates.nickname = updates.nickname;
+            if (updates.preferences) allowedUpdates.preferences = updates.preferences;
+            if (updates.settings) allowedUpdates.settings = updates.settings;
+
             const { data, error } = await this.supabase
                 .from('users')
-                .update(updates)
+                .update(allowedUpdates)
                 .eq('auth_id', this.currentUser.id)
                 .select()
                 .single();
