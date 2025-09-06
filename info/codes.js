@@ -2,7 +2,9 @@
 
 // Codes data
 const codesData = [
-    { code: "21iscoming", description: "Use for 3x stat boost for 48 hours (NEW)" },
+    { code: "pyramids", description: "Use for 3x stat boost for 72 hours (NEW)" },
+    { code: "egyptian", description: "Use for 3x stat boost for 72 hours (NEW)" },
+    { code: "21iscoming", description: "Use for 3x stat boost for 48 hours" },
     { code: "brainrot", description: "Use for 3x stat boost for 48 hours" },
     { code: "removal", description: "Use for 3x stat boost for 48 hours" },
     { code: "octogames", description: "Use for 3x stat boost for 48 hours" },
