@@ -1,4 +1,4 @@
-// Enhanced content loader script with English text and login support
+// Enhanced content loader script - БЕЗ ВЕРХНЬОГО ПРОФІЛЮ
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -24,7 +24,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with navigation and combine all content
+            // Create the main structure with navigation and combine all content - БЕЗ ВЕРХНЬОГО ПРОФІЛЮ
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -48,7 +48,7 @@ async function loadContent() {
                         <button class="nav-btn" onclick="switchPage('worlds')">🌍 Worlds</button>
                     </div>
                     
-                    <!-- User Section in Sidebar -->
+                    <!-- User Section in Sidebar - ТІЛЬКИ ТУТ ІНФОРМАЦІЯ ПРО КОРИСТУВАЧА -->
                     <div class="sidebar-user" id="sidebarUser">
                         <div class="user-info" id="userInfo" style="display: none;">
                             <div class="user-nickname" id="sidebarUserNickname"></div>
@@ -90,11 +90,14 @@ async function loadContent() {
                         border: none;
                         padding: 0;
                     }
+
+                    /* ВИДАЛЕНО: Усі стилі для верхнього user-profile */
+                    /* Тепер інформація про користувача тільки в сайдбарі */
                 </style>
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully (calc + info + login)');
+            console.log('✅ Content loaded successfully (without top profile)');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -127,9 +130,9 @@ async function loadContent() {
     }
 }
 
-// Enhanced initialization with better auth integration
+// Enhanced initialization with better auth integration - БЕЗ ВЕРХНЬОГО ПРОФІЛЮ
 function enhanceInitialization() {
-    // Listen for authentication events to update sidebar
+    // Listen for authentication events to update ONLY sidebar
     document.addEventListener('userAuthenticated', (event) => {
         const { user, profile } = event.detail;
         updateSidebarForAuthenticatedUser(user, profile);
@@ -140,7 +143,7 @@ function enhanceInitialization() {
     });
 }
 
-// Update sidebar for authenticated user
+// Update ONLY sidebar for authenticated user - БЕЗ ВЕРХНЬОГО ПРОФІЛЮ
 function updateSidebarForAuthenticatedUser(user, profile) {
     const userInfo = document.getElementById('userInfo');
     const authButton = document.getElementById('authButton');
@@ -165,10 +168,10 @@ function updateSidebarForAuthenticatedUser(user, profile) {
         }
     }
     
-    console.log('✅ Sidebar updated for authenticated user');
+    console.log('✅ Sidebar updated for authenticated user (no top profile)');
 }
 
-// Update sidebar for signed out user
+// Update ONLY sidebar for signed out user - БЕЗ ВЕРХНЬОГО ПРОФІЛЮ
 function updateSidebarForSignedOutUser() {
     const userInfo = document.getElementById('userInfo');
     const authButton = document.getElementById('authButton');
@@ -180,7 +183,7 @@ function updateSidebarForSignedOutUser() {
         authButton.onclick = handleAuthAction;
     }
     
-    console.log('✅ Sidebar updated for signed out user');
+    console.log('✅ Sidebar updated for signed out user (no top profile)');
 }
 
 // Enhanced auth action handler
@@ -202,7 +205,7 @@ function handleAuthAction() {
     }
 }
 
-// Check if user is already authenticated
+// Check if user is already authenticated - БЕЗ ПОКАЗУ ВЕРХНЬОГО ПРОФІЛЮ
 function checkInitialAuthState() {
     // Wait for auth manager to be ready
     setTimeout(() => {
