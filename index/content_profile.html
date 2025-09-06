@@ -1,95 +1,174 @@
-<!-- Profile Page Content -->
-<div class="page profile-page" id="profilePage" style="display: none;">
+<!-- Profile Page -->
+<div class="page profile-page" id="profilePage">
     <div class="profile-container">
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-avatar">
-                <img id="profileAvatar" class="avatar-img" src="https://via.placeholder.com/100x100/667eea/ffffff?text=U" alt="User Avatar">
+                <img src="https://i.postimg.cc/gjmcXwV9/file-000000008fd461f4826bd65e36dbc3d2.png/80x80/667eea/ffffff?text=👤" alt="Avatar" class="avatar-img" id="profileAvatar">
             </div>
             <div class="profile-info">
-                <h1 class="profile-nickname" id="profileNickname">User</h1>
+                <h2 class="profile-nickname" id="profileNickname">User</h2>
                 <p class="profile-status">Member since <span id="profileJoinDate">Recently</span></p>
             </div>
         </div>
 
         <!-- Profile Actions -->
         <div class="profile-actions">
-            <button class="action-btn" onclick="toggleSettingsMenu()">
+            <button class="action-btn settings-btn" onclick="toggleSettingsMenu()">
                 <span class="btn-icon">⚙️</span>
                 Settings
             </button>
-            <button class="action-btn" onclick="toggleStatsView()">
+            <button class="action-btn stats-btn" onclick="toggleStatsView()">
                 <span class="btn-icon">📊</span>
                 Statistics
             </button>
-            
-            <!-- Log Out Button -->
-            <button class="action-btn logout-action-btn" onclick="handleProfileLogout()">
-                <span class="btn-icon">🚪</span>
-                Log Out
-            </button>
-            
             <button class="action-btn back-btn" onclick="goBackFromProfile()">
                 <span class="btn-icon">←</span>
                 Back
             </button>
         </div>
 
-        <!-- Settings Menu -->
+        <!-- Settings Menu (Hidden by default) -->
         <div class="settings-menu" id="settingsMenu" style="display: none;">
             <div class="settings-header">
                 <h3>Settings</h3>
                 <button class="close-btn" onclick="closeSettingsMenu()">×</button>
             </div>
+            
             <div class="settings-options">
-                <button class="settings-option-btn" onclick="showChangeNickname()">
-                    <div class="option-icon">✏️</div>
-                    <div class="option-info">
-                        <div class="option-title">Change Nickname</div>
-                        <div class="option-desc">Update your display name</div>
-                    </div>
-                    <div class="option-arrow">›</div>
-                </button>
-                
                 <button class="settings-option-btn" onclick="showChangePassword()">
-                    <div class="option-icon">🔒</div>
+                    <span class="option-icon">🔒</span>
                     <div class="option-info">
                         <div class="option-title">Change Password</div>
                         <div class="option-desc">Update your account password</div>
                     </div>
-                    <div class="option-arrow">›</div>
+                    <span class="option-arrow">→</span>
+                </button>
+                
+                <button class="settings-option-btn" onclick="showChangeNickname()">
+                    <span class="option-icon">✏️</span>
+                    <div class="option-info">
+                        <div class="option-title">Change Nickname</div>
+                        <div class="option-desc">Update your display name</div>
+                    </div>
+                    <span class="option-arrow">→</span>
                 </button>
                 
                 <button class="settings-option-btn" onclick="showPreferences()">
-                    <div class="option-icon">🎛️</div>
+                    <span class="option-icon">🎛️</span>
                     <div class="option-info">
                         <div class="option-title">Preferences</div>
                         <div class="option-desc">App settings and preferences</div>
                     </div>
-                    <div class="option-arrow">›</div>
+                    <span class="option-arrow">→</span>
                 </button>
                 
                 <button class="settings-option-btn danger-option" onclick="confirmDeleteAccount()">
-                    <div class="option-icon">🗑️</div>
+                    <span class="option-icon">⚠️</span>
                     <div class="option-info">
                         <div class="option-title">Delete Account</div>
                         <div class="option-desc">Permanently delete your account</div>
                     </div>
-                    <div class="option-arrow">›</div>
+                    <span class="option-arrow">→</span>
                 </button>
             </div>
         </div>
 
-        <!-- Stats View -->
+        <!-- Change Password Form (Hidden by default) -->
+        <div class="settings-form" id="changePasswordForm" style="display: none;">
+            <div class="form-header">
+                <button class="back-form-btn" onclick="backToSettingsMenu()">←</button>
+                <h3>Change Password</h3>
+                <button class="close-btn" onclick="closeSettingsMenu()">×</button>
+            </div>
+            
+            <form onsubmit="handleChangePassword(event)">
+                <div class="input-group">
+                    <label for="currentPassword" class="input-label">Current Password</label>
+                    <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="newPassword" class="input-label">New Password</label>
+                    <input type="password" id="newPassword" class="form-input" placeholder="Enter new password (min 6 chars)" required minlength="6">
+                </div>
+                
+                <div class="input-group">
+                    <label for="confirmNewPassword" class="input-label">Confirm New Password</label>
+                    <input type="password" id="confirmNewPassword" class="form-input" placeholder="Confirm new password" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Update Password</button>
+            </form>
+        </div>
+
+        <!-- Change Nickname Form (Hidden by default) -->
+        <div class="settings-form" id="changeNicknameForm" style="display: none;">
+            <div class="form-header">
+                <button class="back-form-btn" onclick="backToSettingsMenu()">←</button>
+                <h3>Change Nickname</h3>
+                <button class="close-btn" onclick="closeSettingsMenu()">×</button>
+            </div>
+            
+            <form onsubmit="handleChangeNickname(event)">
+                <div class="input-group">
+                    <label for="currentNickname" class="input-label">Current Nickname</label>
+                    <input type="text" id="currentNickname" class="form-input" readonly>
+                </div>
+                
+                <div class="input-group">
+                    <label for="newNickname" class="input-label">New Nickname</label>
+                    <input type="text" id="newNickname" class="form-input" placeholder="Enter new nickname" required minlength="3" maxlength="20">
+                </div>
+                
+                <button type="submit" class="submit-btn">Update Nickname</button>
+            </form>
+        </div>
+
+        <!-- Preferences Form (Hidden by default) -->
+        <div class="settings-form" id="preferencesForm" style="display: none;">
+            <div class="form-header">
+                <button class="back-form-btn" onclick="backToSettingsMenu()">←</button>
+                <h3>Preferences</h3>
+                <button class="close-btn" onclick="closeSettingsMenu()">×</button>
+            </div>
+            
+            <div class="preferences-content">
+                <div class="settings-row">
+                    <div class="setting-info">
+                        <h4>Auto-save calculations</h4>
+                        <p>Automatically save your calculator settings</p>
+                    </div>
+                    <label class="setting-toggle">
+                        <input type="checkbox" id="autoSaveToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="settings-row">
+                    <div class="setting-info">
+                        <h4>Show calculation history</h4>
+                        <p>Display recent calculations in calculators</p>
+                    </div>
+                    <label class="setting-toggle">
+                        <input type="checkbox" id="historyToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics View (Hidden by default) -->
         <div class="stats-view" id="statsView" style="display: none;">
             <div class="stats-header">
                 <h3>Statistics</h3>
                 <button class="close-btn" onclick="closeStatsView()">×</button>
             </div>
+            
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-number" id="calculationsCount">0</div>
-                    <div class="stat-label">Saved Calculations</div>
+                    <div class="stat-label">Calculations Saved</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" id="loginCount">1</div>
@@ -102,82 +181,7 @@
             </div>
         </div>
 
-        <!-- Change Nickname Form -->
-        <div class="settings-form" id="changeNicknameForm" style="display: none;">
-            <div class="form-header">
-                <button class="back-form-btn" onclick="backToSettingsMenu()">←</button>
-                <h3>Change Nickname</h3>
-                <button class="close-btn" onclick="closeSettingsMenu()">×</button>
-            </div>
-            <form onsubmit="handleChangeNickname(event)">
-                <div class="input-group">
-                    <label class="input-label">Current Nickname</label>
-                    <input type="text" id="currentNickname" class="form-input" readonly>
-                </div>
-                <div class="input-group">
-                    <label class="input-label">New Nickname</label>
-                    <input type="text" id="newNickname" class="form-input" placeholder="Enter new nickname" maxlength="20">
-                </div>
-                <button type="submit" class="submit-btn">Update Nickname</button>
-            </form>
-        </div>
-
-        <!-- Change Password Form -->
-        <div class="settings-form" id="changePasswordForm" style="display: none;">
-            <div class="form-header">
-                <button class="back-form-btn" onclick="backToSettingsMenu()">←</button>
-                <h3>Change Password</h3>
-                <button class="close-btn" onclick="closeSettingsMenu()">×</button>
-            </div>
-            <form onsubmit="handleChangePassword(event)">
-                <div class="input-group">
-                    <label class="input-label">Current Password</label>
-                    <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password">
-                </div>
-                <div class="input-group">
-                    <label class="input-label">New Password</label>
-                    <input type="password" id="newPassword" class="form-input" placeholder="Enter new password" minlength="6">
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Confirm New Password</label>
-                    <input type="password" id="confirmNewPassword" class="form-input" placeholder="Confirm new password">
-                </div>
-                <button type="submit" class="submit-btn">Update Password</button>
-            </form>
-        </div>
-
-        <!-- Preferences Form -->
-        <div class="settings-form" id="preferencesForm" style="display: none;">
-            <div class="form-header">
-                <button class="back-form-btn" onclick="backToSettingsMenu()">←</button>
-                <h3>Preferences</h3>
-                <button class="close-btn" onclick="closeSettingsMenu()">×</button>
-            </div>
-            <div class="preferences-content">
-                <div class="settings-row">
-                    <div class="setting-info">
-                        <h4>Auto-save calculations</h4>
-                        <p>Automatically save calculator settings</p>
-                    </div>
-                    <label class="setting-toggle">
-                        <input type="checkbox" id="autoSaveToggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="settings-row">
-                    <div class="setting-info">
-                        <h4>Show calculation history</h4>
-                        <p>Display previous calculations</p>
-                    </div>
-                    <label class="setting-toggle">
-                        <input type="checkbox" id="historyToggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-        </div>
+        <!-- Success/Error Messages -->
+        <div class="profile-message" id="profileMessage"></div>
     </div>
-
-    <!-- Profile Message -->
-    <div class="profile-message" id="profileMessage" style="display: none;"></div>
 </div>
