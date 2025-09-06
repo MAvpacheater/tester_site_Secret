@@ -1,11 +1,11 @@
-// Compact Profile System - profile.js
+// Complete Enhanced Profile System - profile.js
 const ProfileSystem = {
     currentUser: null,
     authManager: null,
 
     // Initialize profile system
     init() {
-        console.log('👤 Initializing Compact Profile System...');
+        console.log('👤 Initializing Enhanced Profile System...');
         this.authManager = window.authManager;
         this.bindEvents();
         this.setupFormValidation();
@@ -30,20 +30,60 @@ const ProfileSystem = {
     handleUserAuthenticated(detail) {
         const { user, profile } = detail;
         this.currentUser = { user, profile };
-        this.updateProfileDisplay();
+        console.log('✅ User authenticated in ProfileSystem:', user?.email || profile?.nickname);
     },
 
     // Handle user signed out
     handleUserSignedOut() {
+        console.log('🔄 User signed out in ProfileSystem');
         this.currentUser = null;
     },
 
-    // Update profile display
+    // Enhanced update profile display
     updateProfileDisplay() {
-        if (!this.currentUser) return;
+        // Get current user from multiple sources
+        let currentUser = this.currentUser;
+        
+        if (!currentUser) {
+            // Try from auth manager
+            if (window.authManager && window.authManager.currentUser) {
+                currentUser = {
+                    user: window.authManager.currentUser,
+                    profile: window.authManager.userProfile || window.authManager.currentUser
+                };
+                this.currentUser = currentUser;
+            } else {
+                // Try from localStorage
+                const savedUser = localStorage.getItem('armHelper_currentUser');
+                if (savedUser) {
+                    try {
+                        const user = JSON.parse(savedUser);
+                        currentUser = { user, profile: user };
+                        this.currentUser = currentUser;
+                    } catch (e) {
+                        console.warn('Invalid saved user data');
+                        return;
+                    }
+                }
+            }
+        }
+        
+        if (!currentUser) {
+            console.warn('No user data available for profile display');
+            return;
+        }
 
-        const { user, profile } = this.currentUser;
-        const nickname = profile?.nickname || user?.email?.split('@')[0] || 'User';
+        const { user, profile } = currentUser;
+        
+        // Get nickname from multiple sources with better fallback
+        const nickname = profile?.nickname || 
+                        user?.nickname || 
+                        user?.user_metadata?.nickname ||
+                        user?.user_metadata?.full_name ||
+                        user?.email?.split('@')[0] || 
+                        'User';
+
+        console.log('🔄 Updating profile display for:', nickname);
 
         // Update profile info
         const profileNickname = document.getElementById('profileNickname');
@@ -56,8 +96,9 @@ const ProfileSystem = {
         }
 
         if (profileAvatar) {
-            // For now using placeholder, you can change this to your avatar URL later
-            profileAvatar.src = `https://via.placeholder.com/100x100/667eea/ffffff?text=${nickname.charAt(0).toUpperCase()}`;
+            // Generate avatar with first letter of nickname
+            const firstLetter = nickname.charAt(0).toUpperCase();
+            profileAvatar.src = `https://via.placeholder.com/100x100/667eea/ffffff?text=${firstLetter}`;
             profileAvatar.alt = `${nickname}'s avatar`;
         }
 
@@ -72,6 +113,8 @@ const ProfileSystem = {
 
         // Update stats
         this.updateProfileStats();
+        
+        console.log('✅ Profile display updated successfully');
     },
 
     // Format join date
@@ -112,7 +155,7 @@ const ProfileSystem = {
                 calculationsEl.textContent = calculationsCount;
             }
 
-            // Update login count (mock data for now)
+            // Update login count
             const loginCountEl = document.getElementById('loginCount');
             if (loginCountEl) {
                 const loginCount = parseInt(localStorage.getItem('armHelper_loginCount') || '1');
@@ -292,6 +335,85 @@ const ProfileSystem = {
     }
 };
 
+// Enhanced Profile Logout Function
+function handleProfileLogout() {
+    const isConfirmed = confirm('Are you sure you want to log out?');
+    
+    if (isConfirmed) {
+        try {
+            console.log('🔄 Logging out from profile...');
+            
+            // Use the auth manager if available
+            if (window.authManager && typeof window.authManager.signOut === 'function') {
+                window.authManager.signOut();
+            } else if (typeof logout === 'function') {
+                logout();
+            } else {
+                // Fallback logout for localStorage
+                performFallbackLogout();
+            }
+            
+            // Show logout message
+            if (ProfileSystem && typeof ProfileSystem.showMessage === 'function') {
+                ProfileSystem.showMessage('Successfully logged out!', 'success');
+            }
+            
+            // Small delay before redirect to show message
+            setTimeout(() => {
+                if (typeof switchPage === 'function') {
+                    switchPage('login');
+                }
+            }, 1500);
+            
+        } catch (error) {
+            console.error('❌ Logout error:', error);
+            
+            // If main logout fails, try fallback
+            performFallbackLogout();
+            
+            if (ProfileSystem && typeof ProfileSystem.showMessage === 'function') {
+                ProfileSystem.showMessage('Logged out (with errors)', 'error');
+            }
+            
+            setTimeout(() => {
+                if (typeof switchPage === 'function') {
+                    switchPage('login');
+                }
+            }, 1500);
+        }
+    }
+}
+
+// Fallback logout function
+function performFallbackLogout() {
+    try {
+        console.log('🔄 Performing fallback logout...');
+        
+        // Clear user data
+        localStorage.removeItem('armHelper_currentUser');
+        localStorage.removeItem('armHelper_userSession');
+        localStorage.removeItem('armHelper_authToken');
+        
+        // Clear profile system current user
+        if (window.ProfileSystem) {
+            window.ProfileSystem.currentUser = null;
+        }
+        
+        // Update sidebar UI
+        if (typeof updateSidebarForSignedOutUser === 'function') {
+            updateSidebarForSignedOutUser();
+        }
+        
+        // Dispatch sign out event
+        document.dispatchEvent(new CustomEvent('userSignedOut'));
+        
+        console.log('✅ Fallback logout completed');
+        
+    } catch (error) {
+        console.error('❌ Fallback logout error:', error);
+    }
+}
+
 // Menu Management Functions
 function toggleSettingsMenu() {
     const settingsMenu = document.getElementById('settingsMenu');
@@ -412,7 +534,192 @@ async function handleChangePassword(event) {
                 setTimeout(() => closeSettingsMenu(), 2000);
             }
         } else {
-            // Fallback for localStorage (development mode)
+            // Fallback for localStorage
+            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+            
+            // Remove user from saved users
+            const updatedUsers = savedUsers.filter(u => u.nickname !== currentUser.nickname);
+            localStorage.setItem('armHelper_users', JSON.stringify(updatedUsers));
+            
+            // Clear current user data
+            localStorage.removeItem('armHelper_currentUser');
+            
+            // Clear all user settings
+            const settingsKeys = ['calculator', 'arm', 'grind'];
+            settingsKeys.forEach(key => {
+                localStorage.removeItem(`armHelper_${key}_settings`);
+            });
+            
+            alert('Your account has been successfully deleted (Development mode).');
+            
+            setTimeout(() => {
+                if (typeof switchPage === 'function') {
+                    switchPage('login');
+                }
+            }, 1000);
+        }
+
+    } catch (error) {
+        console.error('Delete account error:', error);
+        ProfileSystem.showMessage('Failed to delete account. Please try again.', 'error');
+    }
+}
+
+// Enhanced Open Profile Function
+function openProfile() {
+    // Check if user is authenticated from multiple sources
+    let isAuthenticated = false;
+    let currentUser = null;
+    
+    if (window.ProfileSystem && window.ProfileSystem.currentUser) {
+        isAuthenticated = true;
+        currentUser = window.ProfileSystem.currentUser;
+    } else if (window.authManager && window.authManager.currentUser) {
+        isAuthenticated = true;
+        currentUser = {
+            user: window.authManager.currentUser,
+            profile: window.authManager.userProfile || window.authManager.currentUser
+        };
+        if (window.ProfileSystem) {
+            window.ProfileSystem.currentUser = currentUser;
+        }
+    } else if (localStorage.getItem('armHelper_currentUser')) {
+        isAuthenticated = true;
+        try {
+            const savedUser = JSON.parse(localStorage.getItem('armHelper_currentUser'));
+            currentUser = { user: savedUser, profile: savedUser };
+            if (window.ProfileSystem) {
+                window.ProfileSystem.currentUser = currentUser;
+            }
+        } catch (e) {
+            console.warn('Invalid saved user data');
+            localStorage.removeItem('armHelper_currentUser');
+            isAuthenticated = false;
+        }
+    }
+    
+    if (!isAuthenticated) {
+        if (window.ProfileSystem && typeof window.ProfileSystem.showMessage === 'function') {
+            window.ProfileSystem.showMessage('Please login to view your profile', 'error');
+        } else {
+            alert('Please login to view your profile');
+        }
+        return;
+    }
+
+    const userIdentifier = currentUser?.user?.email || 
+                          currentUser?.profile?.nickname || 
+                          currentUser?.user?.nickname || 
+                          'Unknown';
+    console.log('🔄 Opening profile for user:', userIdentifier);
+
+    if (typeof switchPage === 'function') {
+        switchPage('profile');
+        
+        // Small delay to ensure page is loaded, then update display
+        setTimeout(() => {
+            if (window.ProfileSystem && typeof window.ProfileSystem.updateProfileDisplay === 'function') {
+                window.ProfileSystem.updateProfileDisplay();
+            }
+        }, 150);
+    }
+}
+
+// Update login stats
+function updateLoginStats() {
+    // Increment login count
+    const currentCount = parseInt(localStorage.getItem('armHelper_loginCount') || '0');
+    localStorage.setItem('armHelper_loginCount', (currentCount + 1).toString());
+    
+    // Update last login time
+    localStorage.setItem('armHelper_lastLogin', new Date().toISOString());
+    
+    console.log('✅ Login stats updated:', { count: currentCount + 1 });
+}
+
+// Initialize profile system
+function initializeProfile() {
+    console.log('👤 Initializing Enhanced Profile system...');
+    
+    const profilePage = document.getElementById('profilePage');
+    if (!profilePage) {
+        console.warn('⚠️ Profile page not found');
+        return;
+    }
+
+    ProfileSystem.init();
+    
+    // Check if user is already authenticated and update display
+    setTimeout(() => {
+        if (window.ProfileSystem && typeof window.ProfileSystem.updateProfileDisplay === 'function') {
+            window.ProfileSystem.updateProfileDisplay();
+        }
+    }, 500);
+    
+    console.log('✅ Enhanced Profile system initialized');
+}
+
+// Close any open menus when clicking outside
+document.addEventListener('click', (e) => {
+    const settingsMenu = document.getElementById('settingsMenu');
+    const statsView = document.getElementById('statsView');
+    const settingsForms = document.querySelectorAll('.settings-form');
+    
+    if (settingsMenu && settingsMenu.style.display === 'block') {
+        if (!settingsMenu.contains(e.target) && !e.target.classList.contains('settings-btn')) {
+            closeSettingsMenu();
+        }
+    }
+    
+    if (statsView && statsView.style.display === 'block') {
+        if (!statsView.contains(e.target) && !e.target.classList.contains('stats-btn')) {
+            closeStatsView();
+        }
+    }
+});
+
+// Export functions for global use
+if (typeof window !== 'undefined') {
+    window.ProfileSystem = ProfileSystem;
+    window.initializeProfile = initializeProfile;
+    window.handleChangePassword = handleChangePassword;
+    window.handleChangeNickname = handleChangeNickname;
+    window.goBackFromProfile = goBackFromProfile;
+    window.confirmDeleteAccount = confirmDeleteAccount;
+    window.deleteUserAccount = deleteUserAccount;
+    window.openProfile = openProfile;
+    window.updateLoginStats = updateLoginStats;
+    window.toggleSettingsMenu = toggleSettingsMenu;
+    window.closeSettingsMenu = closeSettingsMenu;
+    window.backToSettingsMenu = backToSettingsMenu;
+    window.showChangePassword = showChangePassword;
+    window.showChangeNickname = showChangeNickname;
+    window.showPreferences = showPreferences;
+    window.toggleStatsView = toggleStatsView;
+    window.closeStatsView = closeStatsView;
+    window.handleProfileLogout = handleProfileLogout;
+    window.performFallbackLogout = performFallbackLogout;
+}
+
+// Auto-initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        if (typeof initializeProfile === 'function') {
+            initializeProfile();
+        }
+    }, 100);
+});
+
+// Listen for authentication events to update profile display
+document.addEventListener('userAuthenticated', (event) => {
+    console.log('🔄 User authenticated event received in profile system');
+    setTimeout(() => {
+        if (window.ProfileSystem && typeof window.ProfileSystem.updateProfileDisplay === 'function') {
+            window.ProfileSystem.updateProfileDisplay();
+        }
+    }, 100);
+}); (development mode)
             const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
             const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
             
@@ -524,8 +831,8 @@ async function handleChangeNickname(event) {
             ProfileSystem.updateProfileDisplay();
             
             // Update sidebar
-            if (typeof updateSidebarUserInfo === 'function') {
-                updateSidebarUserInfo(currentUser);
+            if (typeof updateSidebarForAuthenticatedUser === 'function') {
+                updateSidebarForAuthenticatedUser(currentUser, currentUser);
             }
             
             form.reset();
@@ -587,123 +894,3 @@ async function deleteUserAccount() {
             }
         } else {
             // Fallback for localStorage
-            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
-            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
-            
-            // Remove user from saved users
-            const updatedUsers = savedUsers.filter(u => u.nickname !== currentUser.nickname);
-            localStorage.setItem('armHelper_users', JSON.stringify(updatedUsers));
-            
-            // Clear current user data
-            localStorage.removeItem('armHelper_currentUser');
-            
-            // Clear all user settings
-            const settingsKeys = ['calculator', 'arm', 'grind'];
-            settingsKeys.forEach(key => {
-                localStorage.removeItem(`armHelper_${key}_settings`);
-            });
-            
-            alert('Your account has been successfully deleted (Development mode).');
-            
-            setTimeout(() => {
-                if (typeof switchPage === 'function') {
-                    switchPage('login');
-                }
-            }, 1000);
-        }
-
-    } catch (error) {
-        console.error('Delete account error:', error);
-        ProfileSystem.showMessage('Failed to delete account. Please try again.', 'error');
-    }
-}
-
-// Open profile page
-function openProfile() {
-    if (!ProfileSystem.currentUser && !localStorage.getItem('armHelper_currentUser')) {
-        ProfileSystem.showMessage('Please login to view your profile', 'error');
-        return;
-    }
-
-    if (typeof switchPage === 'function') {
-        switchPage('profile');
-        
-        // Small delay to ensure page is loaded, then update display
-        setTimeout(() => {
-            ProfileSystem.updateProfileDisplay();
-        }, 100);
-    }
-}
-
-// Update login stats
-function updateLoginStats() {
-    // Increment login count
-    const currentCount = parseInt(localStorage.getItem('armHelper_loginCount') || '0');
-    localStorage.setItem('armHelper_loginCount', (currentCount + 1).toString());
-    
-    // Update last login time
-    localStorage.setItem('armHelper_lastLogin', new Date().toISOString());
-}
-
-// Initialize profile system
-function initializeProfile() {
-    console.log('👤 Initializing Compact Profile system...');
-    
-    const profilePage = document.getElementById('profilePage');
-    if (!profilePage) {
-        console.warn('⚠️ Profile page not found');
-        return;
-    }
-
-    ProfileSystem.init();
-    console.log('✅ Compact Profile system initialized');
-}
-
-// Close any open menus when clicking outside
-document.addEventListener('click', (e) => {
-    const settingsMenu = document.getElementById('settingsMenu');
-    const statsView = document.getElementById('statsView');
-    const settingsForms = document.querySelectorAll('.settings-form');
-    
-    if (settingsMenu && settingsMenu.style.display === 'block') {
-        if (!settingsMenu.contains(e.target) && !e.target.classList.contains('settings-btn')) {
-            closeSettingsMenu();
-        }
-    }
-    
-    if (statsView && statsView.style.display === 'block') {
-        if (!statsView.contains(e.target) && !e.target.classList.contains('stats-btn')) {
-            closeStatsView();
-        }
-    }
-});
-
-// Export functions for global use
-if (typeof window !== 'undefined') {
-    window.ProfileSystem = ProfileSystem;
-    window.initializeProfile = initializeProfile;
-    window.handleChangePassword = handleChangePassword;
-    window.handleChangeNickname = handleChangeNickname;
-    window.goBackFromProfile = goBackFromProfile;
-    window.confirmDeleteAccount = confirmDeleteAccount;
-    window.deleteUserAccount = deleteUserAccount;
-    window.openProfile = openProfile;
-    window.updateLoginStats = updateLoginStats;
-    window.toggleSettingsMenu = toggleSettingsMenu;
-    window.closeSettingsMenu = closeSettingsMenu;
-    window.backToSettingsMenu = backToSettingsMenu;
-    window.showChangePassword = showChangePassword;
-    window.showChangeNickname = showChangeNickname;
-    window.showPreferences = showPreferences;
-    window.toggleStatsView = toggleStatsView;
-    window.closeStatsView = closeStatsView;
-}
-
-// Auto-initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        if (typeof initializeProfile === 'function') {
-            initializeProfile();
-        }
-    }, 100);
-});
