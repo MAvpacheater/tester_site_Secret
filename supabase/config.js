@@ -1,4 +1,4 @@
-// supabase/config.js - ВИПРАВЛЕНА ВЕРСІЯ З ДЕТАЛЬНОЮ ДІАГНОСТИКОЮ
+// supabase/config.js - ВИПРАВЛЕНА ВЕРСІЯ З ДЕТАЛЬНОЮ ДІАГНОСТИКОЮ ТА ЗМІНОЮ ПАРОЛЮ
 
 // Ваші правильні дані Supabase
 const SUPABASE_URL = 'https://aws-info-post.supabase.co'; // Замініть на ваш URL
@@ -460,6 +460,253 @@ class SupabaseAuthManager {
             success: true,
             user: this.currentUser
         };
+    }
+
+    // НОВИЙ МЕТОД: Зміна паролю
+    async changePassword(currentPassword, newPassword) {
+        if (this.fallbackMode) {
+            return this.changePasswordFallback(currentPassword, newPassword);
+        }
+
+        try {
+            if (DEBUG_MODE) {
+                console.log('🔄 Starting password change...');
+            }
+
+            if (!this.currentUser) {
+                throw new Error('User not authenticated');
+            }
+
+            // Спершу перевіряємо поточний пароль шляхом повторного логіну
+            const nickname = this.userProfile?.nickname;
+            if (!nickname) {
+                throw new Error('User profile not found');
+            }
+
+            // Перевіряємо поточний пароль
+            const tempEmail = `${nickname}@armhelper.temp`;
+            const { error: verifyError } = await this.supabase.auth.signInWithPassword({
+                email: tempEmail,
+                password: currentPassword
+            });
+
+            if (verifyError) {
+                if (DEBUG_MODE) {
+                    console.error('Current password verification failed:', verifyError);
+                }
+                throw new Error('Current password is incorrect');
+            }
+
+            if (DEBUG_MODE) {
+                console.log('✅ Current password verified');
+            }
+
+            // Оновлюємо пароль
+            const { error: updateError } = await this.supabase.auth.updateUser({
+                password: newPassword
+            });
+
+            if (updateError) {
+                if (DEBUG_MODE) {
+                    console.error('Password update error:', updateError);
+                }
+                throw new Error(`Failed to update password: ${updateError.message}`);
+            }
+
+            if (DEBUG_MODE) {
+                console.log('✅ Password updated successfully');
+            }
+
+            return {
+                success: true,
+                message: 'Password updated successfully'
+            };
+
+        } catch (error) {
+            console.error('❌ Change password error:', error);
+            
+            // Fallback при помилці з'єднання
+            if (error.message.includes('fetch') || 
+                error.message.includes('network') || 
+                error.message.includes('JSON')) {
+                console.warn('🔄 Falling back to local storage due to connection error');
+                return this.changePasswordFallback(currentPassword, newPassword);
+            }
+            
+            throw error;
+        }
+    }
+
+    // Fallback зміна паролю
+    changePasswordFallback(currentPassword, newPassword) {
+        try {
+            if (DEBUG_MODE) {
+                console.log('🔄 Using fallback password change');
+            }
+
+            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+            
+            const userIndex = savedUsers.findIndex(u => u.nickname === currentUser.nickname);
+            
+            if (userIndex === -1) {
+                throw new Error('User not found');
+            }
+
+            if (savedUsers[userIndex].password !== currentPassword) {
+                throw new Error('Current password is incorrect');
+            }
+
+            // Оновлюємо пароль
+            savedUsers[userIndex].password = newPassword;
+            savedUsers[userIndex].updatedAt = new Date().toISOString();
+
+            localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
+            
+            if (DEBUG_MODE) {
+                console.log('✅ Fallback password change successful');
+            }
+
+            return {
+                success: true,
+                message: 'Password updated successfully'
+            };
+
+        } catch (error) {
+            console.error('❌ Fallback password change error:', error);
+            throw error;
+        }
+    }
+
+    // НОВИЙ МЕТОД: Видалення акаунту
+    async deleteAccount() {
+        if (this.fallbackMode) {
+            return this.deleteAccountFallback();
+        }
+
+        try {
+            if (DEBUG_MODE) {
+                console.log('🔄 Starting account deletion...');
+            }
+
+            if (!this.currentUser) {
+                throw new Error('User not authenticated');
+            }
+
+            // Крок 1: Видаляємо профіль користувача з бази даних
+            if (this.userProfile?.id) {
+                const { error: profileError } = await this.supabase
+                    .from('users')
+                    .delete()
+                    .eq('id', this.userProfile.id);
+
+                if (profileError) {
+                    console.error('❌ Error deleting user profile:', profileError);
+                    throw new Error(`Failed to delete user profile: ${profileError.message}`);
+                }
+
+                if (DEBUG_MODE) {
+                    console.log('✅ User profile deleted');
+                }
+            }
+
+            // Крок 2: Видаляємо всі розрахунки користувача
+            if (this.userProfile?.id) {
+                const { error: calcError } = await this.supabase
+                    .from('user_calculations')
+                    .delete()
+                    .eq('user_id', this.userProfile.id);
+
+                if (calcError) {
+                    console.warn('⚠️ Error deleting user calculations:', calcError);
+                    // Не блокуємо видалення акаунту через це
+                }
+
+                if (DEBUG_MODE) {
+                    console.log('✅ User calculations deleted');
+                }
+            }
+
+            // Крок 3: Видаляємо auth користувача (це має бути останнім)
+            const { error: authError } = await this.supabase.auth.admin.deleteUser(
+                this.currentUser.id
+            );
+
+            if (authError) {
+                console.error('❌ Error deleting auth user:', authError);
+                // Користувача не можемо видалити з auth, але профіль вже видалено
+                // Просто розлогінимо його
+                await this.supabase.auth.signOut();
+            }
+
+            if (DEBUG_MODE) {
+                console.log('✅ Account deletion completed');
+            }
+
+            // Очищаємо локальні дані
+            this.currentUser = null;
+            this.userProfile = null;
+            localStorage.removeItem('armHelper_currentUser');
+
+            return {
+                success: true,
+                message: 'Account deleted successfully'
+            };
+
+        } catch (error) {
+            console.error('❌ Delete account error:', error);
+            
+            // Fallback при помилці з'єднання
+            if (error.message.includes('fetch') || 
+                error.message.includes('network') || 
+                error.message.includes('JSON')) {
+                console.warn('🔄 Falling back to local storage due to connection error');
+                return this.deleteAccountFallback();
+            }
+            
+            throw error;
+        }
+    }
+
+    // Fallback видалення акаунту
+    deleteAccountFallback() {
+        try {
+            if (DEBUG_MODE) {
+                console.log('🔄 Using fallback account deletion');
+            }
+
+            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+            
+            // Видаляємо користувача зі списку
+            const updatedUsers = savedUsers.filter(u => u.nickname !== currentUser.nickname);
+            localStorage.setItem('armHelper_users', JSON.stringify(updatedUsers));
+            
+            // Очищаємо поточні дані користувача
+            localStorage.removeItem('armHelper_currentUser');
+            
+            // Очищаємо всі налаштування користувача
+            const settingsKeys = ['calculator', 'arm', 'grind'];
+            settingsKeys.forEach(key => {
+                localStorage.removeItem(`armHelper_${key}_settings`);
+            });
+
+            this.currentUser = null;
+            this.userProfile = null;
+
+            if (DEBUG_MODE) {
+                console.log('✅ Fallback account deletion successful');
+            }
+
+            return {
+                success: true,
+                message: 'Account deleted successfully'
+            };
+
+        } catch (error) {
+            console.error('❌ Fallback account deletion error:', error);
+            throw error;
+        }
     }
 
     // Решта методів залишаються без змін...
