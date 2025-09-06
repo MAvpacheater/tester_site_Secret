@@ -1,37 +1,95 @@
-// Login/Registration JavaScript
+// Updated login/login.js with Supabase integration
 
-// Authentication system object
+// Authentication system object - updated for Supabase
 const AuthSystem = {
-    currentUser: null,
-    registrationType: 'email', // 'email' or 'phone'
+    authManager: null,
     
     // Initialize
     init() {
-        this.checkExistingLogin();
+        console.log('🔐 Initializing AuthSystem...');
+        
+        // Initialize Supabase auth manager
+        if (typeof initializeSupabaseAuth === 'function') {
+            this.authManager = initializeSupabaseAuth();
+            window.authManager = this.authManager; // Make globally available
+        } else {
+            console.error('❌ Supabase auth not available, falling back to local storage');
+            this.initializeFallback();
+            return;
+        }
+        
         this.bindEvents();
+        this.setupFormValidation();
+    },
+    
+    // Fallback initialization for local development
+    initializeFallback() {
+        console.warn('⚠️ Using fallback authentication');
+        this.checkExistingLoginFallback();
     },
     
     // Bind events
     bindEvents() {
+        // Listen for authentication events
+        document.addEventListener('userAuthenticated', (event) => {
+            console.log('✅ User authenticated:', event.detail);
+            this.handleUserAuthenticated(event.detail);
+        });
+        
+        document.addEventListener('userSignedOut', () => {
+            console.log('👋 User signed out');
+            this.handleUserSignedOut();
+        });
+        
         // Auto-hide messages after 5 seconds
         setTimeout(() => {
-            const message = document.getElementById('authMessage');
-            if (message && message.style.display === 'block') {
-                message.style.display = 'none';
-            }
+            this.hideMessage();
         }, 5000);
+    },
+    
+    // Handle user authenticated
+    handleUserAuthenticated(detail) {
+        const { user, profile } = detail;
         
-        // Setup form validation
-        this.setupFormValidation();
+        // Update UI
+        this.showUserProfile(profile || { nickname: user.email?.split('@')[0] || 'User' });
+        
+        // Switch to calculator page
+        setTimeout(() => {
+            if (typeof switchPage === 'function') {
+                switchPage('calculator');
+            }
+        }, 500);
+        
+        // Show success message
+        this.showMessage('Successfully logged in!', 'success');
+    },
+    
+    // Handle user signed out
+    handleUserSignedOut() {
+        this.hideUserProfile();
+        
+        // Optionally switch to login page
+        // if (typeof switchPage === 'function') {
+        //     switchPage('login');
+        // }
     },
     
     // Setup form validation
     setupFormValidation() {
         // Email validation
-        const emailInputs = document.querySelectorAll('#loginIdentifier, #registerEmailOrPhone');
+        const emailInputs = document.querySelectorAll('#loginEmail, #registerEmail');
         emailInputs.forEach(input => {
-            input.addEventListener('blur', () => this.validateEmailOrPhone(input));
+            if (input) {
+                input.addEventListener('blur', () => this.validateEmail(input));
+            }
         });
+        
+        // Phone validation
+        const phoneInput = document.getElementById('registerPhone');
+        if (phoneInput) {
+            phoneInput.addEventListener('blur', () => this.validatePhone(phoneInput));
+        }
         
         // Password confirmation
         const confirmPassword = document.getElementById('confirmPassword');
@@ -43,8 +101,8 @@ const AuthSystem = {
         }
     },
     
-    // Validate email or phone
-    validateEmailOrPhone(input) {
+    // Validate email
+    validateEmail(input) {
         const value = input.value.trim();
         if (!value) {
             input.classList.remove('error', 'success');
@@ -52,9 +110,29 @@ const AuthSystem = {
         }
         
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        
+        if (emailRegex.test(value)) {
+            input.classList.add('success');
+            input.classList.remove('error');
+            return true;
+        } else {
+            input.classList.add('error');
+            input.classList.remove('success');
+            return false;
+        }
+    },
+    
+    // Validate phone
+    validatePhone(input) {
+        const value = input.value.trim();
+        if (!value) {
+            input.classList.remove('error', 'success');
+            return true;
+        }
+        
         const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/;
         
-        if (emailRegex.test(value) || phoneRegex.test(value)) {
+        if (phoneRegex.test(value)) {
             input.classList.add('success');
             input.classList.remove('error');
             return true;
@@ -81,22 +159,18 @@ const AuthSystem = {
         return true;
     },
     
-    // Check existing login
-    checkExistingLogin() {
+    // Fallback: Check existing login from localStorage
+    checkExistingLoginFallback() {
         const savedUser = localStorage.getItem('armHelper_currentUser');
         if (savedUser) {
             try {
-                this.currentUser = JSON.parse(savedUser);
-                this.showUserProfile();
-                // Automatically go to calculator if user is logged in
+                const user = JSON.parse(savedUser);
+                this.showUserProfile(user);
+                
                 setTimeout(() => {
                     if (typeof switchPage === 'function') {
                         switchPage('calculator');
                     }
-                    // Dispatch login event for sidebar update
-                    document.dispatchEvent(new CustomEvent('userLoggedIn', { 
-                        detail: this.currentUser 
-                    }));
                 }, 500);
             } catch (e) {
                 console.warn('Invalid saved user data');
@@ -106,17 +180,35 @@ const AuthSystem = {
     },
     
     // Show user profile
-    showUserProfile() {
+    showUserProfile(user) {
         const loginPage = document.getElementById('loginPage');
         const userProfile = document.getElementById('userProfile');
         const userNickname = document.getElementById('userNickname');
         
         if (loginPage) loginPage.style.display = 'none';
-        if (userProfile && this.currentUser) {
+        if (userProfile && user) {
             userProfile.style.display = 'block';
             if (userNickname) {
-                userNickname.textContent = this.currentUser.nickname || 'User';
+                userNickname.textContent = user.nickname || user.email?.split('@')[0] || 'User';
             }
+        }
+        
+        // Update sidebar
+        if (typeof updateSidebarUserInfo === 'function') {
+            updateSidebarUserInfo(user);
+        }
+    },
+    
+    // Hide user profile
+    hideUserProfile() {
+        const userProfile = document.getElementById('userProfile');
+        if (userProfile) {
+            userProfile.style.display = 'none';
+        }
+        
+        // Update sidebar
+        if (typeof updateSidebarUserInfo === 'function') {
+            updateSidebarUserInfo(null);
         }
     },
     
@@ -130,8 +222,16 @@ const AuthSystem = {
             
             // Hide after 5 seconds
             setTimeout(() => {
-                messageEl.style.display = 'none';
+                this.hideMessage();
             }, 5000);
+        }
+    },
+    
+    // Hide message
+    hideMessage() {
+        const messageEl = document.getElementById('authMessage');
+        if (messageEl) {
+            messageEl.style.display = 'none';
         }
     },
     
@@ -144,139 +244,6 @@ const AuthSystem = {
             button.classList.remove('loading');
             button.disabled = false;
         }
-    },
-    
-    // Switch registration type
-    switchRegistrationType(type) {
-        this.registrationType = type;
-        const emailBtn = document.querySelector('.reg-type-btn[data-type="email"]');
-        const phoneBtn = document.querySelector('.reg-type-btn[data-type="phone"]');
-        const input = document.getElementById('registerEmailOrPhone');
-        const label = document.querySelector('label[for="registerEmailOrPhone"]');
-        
-        if (emailBtn) emailBtn.classList.toggle('active', type === 'email');
-        if (phoneBtn) phoneBtn.classList.toggle('active', type === 'phone');
-        
-        if (input && label) {
-            if (type === 'email') {
-                input.type = 'email';
-                input.placeholder = 'Enter your email';
-                label.textContent = 'Email';
-            } else {
-                input.type = 'tel';
-                input.placeholder = '+380501234567';
-                label.textContent = 'Phone number';
-            }
-            input.value = '';
-            input.classList.remove('error', 'success');
-        }
-    },
-    
-    // Simulate registration (should be server request)
-    async simulateRegister(userData) {
-        // Simulate server delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // Basic validation
-        if (userData.password !== userData.confirmPassword) {
-            throw new Error('Passwords do not match');
-        }
-        
-        if (userData.password.length < 6) {
-            throw new Error('Password must contain at least 6 characters');
-        }
-        
-        if (userData.nickname.length < 3) {
-            throw new Error('Nickname must contain at least 3 characters');
-        }
-        
-        // Email or phone validation
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/;
-        
-        if (!emailRegex.test(userData.emailOrPhone) && !phoneRegex.test(userData.emailOrPhone)) {
-            throw new Error('Invalid email or phone number format');
-        }
-        
-        // Check if user already exists (locally)
-        const existingUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
-        const isEmail = emailRegex.test(userData.emailOrPhone);
-        
-        const userExists = existingUsers.some(user => {
-            if (isEmail) {
-                return user.email && user.email.toLowerCase() === userData.emailOrPhone.toLowerCase();
-            } else {
-                return user.phone === userData.emailOrPhone;
-            }
-        });
-        
-        const nicknameExists = existingUsers.some(user => 
-            user.nickname.toLowerCase() === userData.nickname.toLowerCase()
-        );
-        
-        if (userExists) {
-            throw new Error(isEmail ? 
-                'User with this email already exists' : 
-                'User with this phone number already exists'
-            );
-        }
-        if (nicknameExists) throw new Error('User with this nickname already exists');
-        
-        // "Register" user
-        const newUser = {
-            id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-            email: isEmail ? userData.emailOrPhone.toLowerCase() : null,
-            phone: !isEmail ? userData.emailOrPhone : null,
-            nickname: userData.nickname,
-            registrationDate: new Date().toISOString(),
-            lastLogin: new Date().toISOString(),
-            preferences: {
-                theme: 'default',
-                language: 'en',
-                notifications: true
-            }
-        };
-        
-        existingUsers.push(newUser);
-        localStorage.setItem('armHelper_users', JSON.stringify(existingUsers));
-        
-        return newUser;
-    },
-    
-    // Simulate login
-    async simulateLogin(identifier, password) {
-        // Simulate server delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const existingUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
-        const user = existingUsers.find(user => {
-            const lowerIdentifier = identifier.toLowerCase();
-            return (
-                (user.email && user.email.toLowerCase() === lowerIdentifier) ||
-                (user.phone === identifier) ||
-                (user.nickname.toLowerCase() === lowerIdentifier)
-            );
-        });
-        
-        if (!user) {
-            throw new Error('User not found');
-        }
-        
-        // In real app, password hash verification would be here
-        // For demo, just check that password is not empty and has minimum length
-        if (!password || password.length < 6) {
-            throw new Error('Invalid password');
-        }
-        
-        // Update last login time
-        user.lastLogin = new Date().toISOString();
-        const userIndex = existingUsers.findIndex(u => u.id === user.id);
-        if (userIndex !== -1) {
-            existingUsers[userIndex] = user;
-            localStorage.setItem('armHelper_users', JSON.stringify(existingUsers));
-        }
-        
-        return user;
     }
 };
 
@@ -288,12 +255,7 @@ function switchToRegister() {
     if (loginForm && registerForm) {
         loginForm.classList.remove('active');
         registerForm.classList.add('active');
-        
-        // Clear messages
-        const message = document.getElementById('authMessage');
-        if (message) {
-            message.style.display = 'none';
-        }
+        AuthSystem.hideMessage();
     }
 }
 
@@ -304,95 +266,138 @@ function switchToLogin() {
     if (registerForm && loginForm) {
         registerForm.classList.remove('active');
         loginForm.classList.add('active');
-        
-        // Clear messages
-        const message = document.getElementById('authMessage');
-        if (message) {
-            message.style.display = 'none';
-        }
+        AuthSystem.hideMessage();
     }
 }
 
+// Handle login with Supabase
 async function handleLogin(event) {
     event.preventDefault();
     
     const submitBtn = event.target.querySelector('.auth-btn');
-    const identifier = document.getElementById('loginIdentifier').value.trim();
-    const password = document.getElementById('loginPassword').value;
+    const email = document.getElementById('loginEmail')?.value.trim();
+    const password = document.getElementById('loginPassword')?.value;
     
     // Validation
-    if (!identifier || !password) {
+    if (!email || !password) {
         AuthSystem.showMessage('All fields are required', 'error');
+        return;
+    }
+    
+    if (!AuthSystem.validateEmail(document.getElementById('loginEmail'))) {
+        AuthSystem.showMessage('Please enter a valid email', 'error');
         return;
     }
     
     try {
         AuthSystem.showLoading(submitBtn, true);
-        const user = await AuthSystem.simulateLogin(identifier, password);
         
-        AuthSystem.currentUser = user;
-        localStorage.setItem('armHelper_currentUser', JSON.stringify(user));
-        
-        AuthSystem.showMessage('Login successful!', 'success');
-        
-        // Dispatch login event for sidebar update
-        document.dispatchEvent(new CustomEvent('userLoggedIn', { 
-            detail: user 
-        }));
-        
-        setTimeout(() => {
-            AuthSystem.showUserProfile();
-            if (typeof switchPage === 'function') {
-                switchPage('calculator');
+        if (AuthSystem.authManager) {
+            // Use Supabase
+            const result = await AuthSystem.authManager.loginUser(email, password);
+            if (result.success) {
+                AuthSystem.showMessage('Login successful!', 'success');
+                // AuthManager will handle UI updates via events
             }
-        }, 1500);
+        } else {
+            // Fallback to local storage (for development)
+            console.warn('Using fallback authentication');
+            AuthSystem.showMessage('Login successful! (Development mode)', 'success');
+            const mockUser = { nickname: email.split('@')[0], email: email };
+            localStorage.setItem('armHelper_currentUser', JSON.stringify(mockUser));
+            AuthSystem.showUserProfile(mockUser);
+            
+            setTimeout(() => {
+                if (typeof switchPage === 'function') {
+                    switchPage('calculator');
+                }
+            }, 1000);
+        }
+        
     } catch (error) {
-        AuthSystem.showMessage(error.message, 'error');
+        console.error('Login error:', error);
+        AuthSystem.showMessage(error.message || 'Login failed', 'error');
     } finally {
         AuthSystem.showLoading(submitBtn, false);
     }
 }
 
+// Handle registration with Supabase
 async function handleRegister(event) {
     event.preventDefault();
     
     const submitBtn = event.target.querySelector('.auth-btn');
-    const userData = {
-        emailOrPhone: document.getElementById('registerEmailOrPhone').value.trim(),
-        nickname: document.getElementById('registerNickname').value.trim(),
-        password: document.getElementById('registerPassword').value,
-        confirmPassword: document.getElementById('confirmPassword').value
-    };
+    const email = document.getElementById('registerEmail')?.value.trim();
+    const phone = document.getElementById('registerPhone')?.value.trim();
+    const nickname = document.getElementById('registerNickname')?.value.trim();
+    const password = document.getElementById('registerPassword')?.value;
+    const confirmPassword = document.getElementById('confirmPassword')?.value;
     
-    // Check required fields
-    if (!userData.emailOrPhone || !userData.nickname || 
-        !userData.password || !userData.confirmPassword) {
-        AuthSystem.showMessage('All fields are required', 'error');
+    // Validation
+    if (!email || !nickname || !password || !confirmPassword) {
+        AuthSystem.showMessage('All required fields must be filled', 'error');
+        return;
+    }
+    
+    if (!AuthSystem.validateEmail(document.getElementById('registerEmail'))) {
+        AuthSystem.showMessage('Please enter a valid email', 'error');
+        return;
+    }
+    
+    if (phone && !AuthSystem.validatePhone(document.getElementById('registerPhone'))) {
+        AuthSystem.showMessage('Please enter a valid phone number', 'error');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        AuthSystem.showMessage('Passwords do not match', 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        AuthSystem.showMessage('Password must be at least 6 characters long', 'error');
+        return;
+    }
+    
+    if (nickname.length < 3) {
+        AuthSystem.showMessage('Nickname must be at least 3 characters long', 'error');
         return;
     }
     
     try {
         AuthSystem.showLoading(submitBtn, true);
-        const user = await AuthSystem.simulateRegister(userData);
         
-        AuthSystem.currentUser = user;
-        localStorage.setItem('armHelper_currentUser', JSON.stringify(user));
-        
-        AuthSystem.showMessage('Registration successful!', 'success');
-        
-        // Dispatch login event for sidebar update
-        document.dispatchEvent(new CustomEvent('userLoggedIn', { 
-            detail: user 
-        }));
-        
-        setTimeout(() => {
-            AuthSystem.showUserProfile();
-            if (typeof switchPage === 'function') {
-                switchPage('calculator');
+        if (AuthSystem.authManager) {
+            // Use Supabase
+            const result = await AuthSystem.authManager.registerUser(email, password, nickname, phone || null);
+            
+            if (result.success) {
+                if (result.needsConfirmation) {
+                    AuthSystem.showMessage(result.message, 'success');
+                    switchToLogin();
+                } else {
+                    AuthSystem.showMessage('Registration successful!', 'success');
+                    // AuthManager will handle UI updates via events
+                }
             }
-        }, 1500);
+        } else {
+            // Fallback for development
+            console.warn('Using fallback authentication');
+            AuthSystem.showMessage('Registration successful! (Development mode)', 'success');
+            const mockUser = { nickname: nickname, email: email, phone: phone };
+            localStorage.setItem('armHelper_currentUser', JSON.stringify(mockUser));
+            AuthSystem.showUserProfile(mockUser);
+            
+            setTimeout(() => {
+                if (typeof switchPage === 'function') {
+                    switchPage('calculator');
+                }
+            }, 1000);
+        }
+        
     } catch (error) {
-        AuthSystem.showMessage(error.message, 'error');
+        console.error('Registration error:', error);
+        AuthSystem.showMessage(error.message || 'Registration failed', 'error');
     } finally {
         AuthSystem.showLoading(submitBtn, false);
     }
@@ -409,27 +414,27 @@ function skipLogin() {
     }
 }
 
-function logout() {
-    if (confirm('Are you sure you want to logout?')) {
-        AuthSystem.currentUser = null;
-        localStorage.removeItem('armHelper_currentUser');
-        
-        const userProfile = document.getElementById('userProfile');
-        
-        if (userProfile) userProfile.style.display = 'none';
-        
-        // Go to login page
-        if (typeof switchPage === 'function') {
-            switchPage('login');
+// Handle logout
+async function logout() {
+    if (!confirm('Are you sure you want to logout?')) {
+        return;
+    }
+    
+    try {
+        if (AuthSystem.authManager) {
+            // Use Supabase
+            await AuthSystem.authManager.signOut();
         } else {
-            // Fallback - show login page
-            const loginPage = document.getElementById('loginPage');
-            if (loginPage) {
-                loginPage.style.display = 'block';
-            }
+            // Fallback
+            localStorage.removeItem('armHelper_currentUser');
+            AuthSystem.hideUserProfile();
         }
         
-        AuthSystem.showMessage('You have successfully logged out', 'success');
+        AuthSystem.showMessage('Successfully logged out', 'success');
+        
+    } catch (error) {
+        console.error('Logout error:', error);
+        AuthSystem.showMessage('Logout failed', 'error');
     }
 }
 
@@ -440,8 +445,7 @@ function initializeAuth() {
     // Check if required elements exist
     const loginPage = document.getElementById('loginPage');
     if (!loginPage) {
-        console.warn('⚠️ Login page not found');
-        return;
+        console.warn('⚠️ Login page not found, auth system will work without login UI');
     }
     
     AuthSystem.init();
