@@ -1,6 +1,6 @@
-// Enhanced General JavaScript functions with auth integration
+// Enhanced General JavaScript functions with auth integration and profile support
 
-// Page switching functionality - enhanced
+// Page switching functionality - enhanced with profile support
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
     
@@ -20,6 +20,7 @@ function switchPage(page) {
     // Update active nav button
     const pageMap = {
         'login': -1,        // Special case - no nav button
+        'profile': -1,      // Special case - no nav button (opened via nickname click)
         'calculator': 0,
         'arm': 1,
         'grind': 2,
@@ -111,12 +112,17 @@ async function saveUserSettingsForPage(page, settings) {
     }
 }
 
-// Initialize specific page content when switching
+// Initialize specific page content when switching - WITH PROFILE SUPPORT
 function initializePageContent(page) {
     switch(page) {
         case 'login':
             if (typeof initializeAuth === 'function') {
                 initializeAuth();
+            }
+            break;
+        case 'profile':
+            if (typeof initializeProfile === 'function') {
+                initializeProfile();
             }
             break;
         case 'calculator':
@@ -227,9 +233,17 @@ function updateSidebarUserInfo(user = null) {
                 sidebarUserNickname.textContent = user.nickname || 
                                                  user.email?.split('@')[0] || 
                                                  'User';
+                // Ensure profile click handler is set
+                sidebarUserNickname.onclick = () => {
+                    if (typeof openProfile === 'function') {
+                        openProfile();
+                    } else {
+                        console.error('openProfile function not found');
+                    }
+                };
             }
             
-            console.log('✅ Sidebar updated with user info');
+            console.log('✅ Sidebar updated with user info (profile clickable)');
         } else {
             // User is not logged in
             userInfo.style.display = 'none';
@@ -298,7 +312,7 @@ function loadSettingsFromStorage(key) {
 // Прапорець для запобігання повторної ініціалізації
 let appInitialized = false;
 
-// Головна функція ініціалізації
+// Головна функція ініціалізації - WITH PROFILE SUPPORT
 function initializeApp() {
     if (typeof appInitialized !== 'undefined' && appInitialized) {
         console.log('⚠️ Додаток вже ініціалізовано');
@@ -399,10 +413,11 @@ function setupAuthEventListeners() {
     });
 }
 
-// Ініціалізація всіх модулів
+// Ініціалізація всіх модулів - WITH PROFILE SUPPORT
 function initializeAllModules() {
     const modules = [
         'initializeAuth',
+        'initializeProfile',  // Add profile initialization
         'initializeCalculator',
         'initializeArm', 
         'initializeGrind',
