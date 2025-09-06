@@ -40,7 +40,8 @@
     ">
         <div style="text-align: center;">
             <div style="font-size: 24px; margin-bottom: 20px;">🚀</div>
-            <div>Upade Arm Helper...</div>
+            <div>Loading Arm Helper...</div>
+            <div style="font-size: 14px; margin-top: 10px; opacity: 0.8;">Connecting to database...</div>
         </div>
     </div>
 
@@ -49,12 +50,24 @@
     
     <div class="signature">Your ideas on @privatefanat_dep (telegram)</div>
     
-    <!-- JavaScript Files - General first, then modules -->
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- JavaScript Files - Load in order -->
     <script src="general.js"></script>
+    
+    <!-- Supabase Configuration - Load before login -->
+    <script src="supabase/config.js"></script>
+    
+    <!-- Login/Auth system -->
     <script src="login/login.js"></script>
+    
+    <!-- Calculator modules -->
     <script src="calc/calculator.js"></script>
     <script src="calc/arm.js"></script>
     <script src="calc/grind.js"></script>
+    
+    <!-- Info modules -->
     <script src="info/boosts.js"></script>
     <script src="info/shiny.js"></script>
     <script src="info/codes.js"></script>
@@ -67,32 +80,91 @@
     <script src="index/content_loader.js"></script>
     
     <script>
-        // Hide loading screen when content is fully loaded
+        // Enhanced loading screen with database connection info
         document.addEventListener('DOMContentLoaded', function() {
-            // Wait a bit for content to load, then hide loading screen
+            // Update loading text
+            const loadingDiv = document.querySelector('#loading-screen div div:last-child');
+            if (loadingDiv) {
+                loadingDiv.textContent = 'Initializing application...';
+            }
+            
+            // Wait for content to load, then hide loading screen
             setTimeout(function() {
                 const loadingScreen = document.getElementById('loading-screen');
                 if (loadingScreen) {
-                    loadingScreen.style.opacity = '0';
-                    setTimeout(function() {
-                        loadingScreen.remove();
-                    }, 500);
+                    const loadingDiv = document.querySelector('#loading-screen div div:last-child');
+                    if (loadingDiv) {
+                        loadingDiv.textContent = 'Ready!';
+                    }
+                    
+                    setTimeout(() => {
+                        loadingScreen.style.opacity = '0';
+                        setTimeout(function() {
+                            loadingScreen.remove();
+                        }, 500);
+                    }, 300);
                 }
-            }, 1000);
+            }, 1200);
         });
 
-        // Error handling for failed loads
+        // Enhanced error handling for Supabase connection
         window.addEventListener('error', function(e) {
-            console.error('❌ Criticale error', e.error);
+            console.error('❌ Critical error:', e.error);
+            
             const loadingScreen = document.getElementById('loading-screen');
             if (loadingScreen) {
+                const isSupabaseError = e.error?.message?.includes('supabase') || 
+                                      e.error?.message?.includes('database') ||
+                                      e.error?.message?.includes('SUPABASE');
+                
                 loadingScreen.innerHTML = `
                     <div style="text-align: center; color: #ff6b6b;">
                         <div style="font-size: 24px; margin-bottom: 20px;">⚠️</div>
-                        <div>Помилка завантаження</div>
-                        <div style="font-size: 14px; margin-top: 10px;">Перезавантажте сторінку</div>
+                        <div>Loading Error</div>
+                        <div style="font-size: 14px; margin-top: 10px;">
+                            ${isSupabaseError ? 
+                                'Database connection failed<br>Working in offline mode' : 
+                                'Please refresh the page'}
+                        </div>
+                        <button onclick="location.reload()" style="
+                            margin-top: 15px;
+                            padding: 8px 16px;
+                            background: rgba(255, 255, 255, 0.2);
+                            border: 1px solid rgba(255, 255, 255, 0.3);
+                            color: white;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">Refresh Page</button>
                     </div>
                 `;
+                
+                // If it's not a critical error, hide loading screen after delay
+                if (!isSupabaseError) {
+                    setTimeout(() => {
+                        loadingScreen.style.opacity = '0';
+                        setTimeout(() => {
+                            loadingScreen.remove();
+                        }, 500);
+                    }, 3000);
+                }
+            }
+        });
+
+        // Listen for Supabase connection events
+        document.addEventListener('supabaseConnected', function() {
+            console.log('✅ Supabase connected successfully');
+            const loadingDiv = document.querySelector('#loading-screen div div:last-child');
+            if (loadingDiv) {
+                loadingDiv.textContent = 'Database connected!';
+            }
+        });
+
+        document.addEventListener('supabaseError', function(e) {
+            console.warn('⚠️ Supabase connection issue:', e.detail);
+            const loadingDiv = document.querySelector('#loading-screen div div:last-child');
+            if (loadingDiv) {
+                loadingDiv.textContent = 'Working in offline mode...';
             }
         });
     </script>
