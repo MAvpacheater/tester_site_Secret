@@ -1,4 +1,4 @@
-// Updated login/login.js with nickname-based authentication
+// login/login.js - ОНОВЛЕНА ВЕРСІЯ БЕЗ ВЕРХНЬОГО ПРОФІЛЮ
 
 // Authentication system object - updated for nickname-based auth
 const AuthSystem = {
@@ -47,12 +47,12 @@ const AuthSystem = {
         }, 5000);
     },
     
-    // Handle user authenticated
+    // Handle user authenticated - БЕЗ ПОКАЗУ ВЕРХНЬОГО ПРОФІЛЮ
     handleUserAuthenticated(detail) {
         const { user, profile } = detail;
         
-        // Update UI
-        this.showUserProfile(profile || { nickname: user.nickname || 'User' });
+        // НE показуємо верхній профіль - тільки ховаємо login page
+        this.hideLoginPage();
         
         // Switch to calculator page
         setTimeout(() => {
@@ -65,8 +65,9 @@ const AuthSystem = {
         this.showMessage('Successfully logged in!', 'success');
     },
     
-    // Handle user signed out
+    // Handle user signed out - БЕЗ ПОКАЗУ ВЕРХНЬОГО ПРОФІЛЮ  
     handleUserSignedOut() {
+        // Просто ховаємо верхній профіль (якщо він є)
         this.hideUserProfile();
     },
     
@@ -134,7 +135,8 @@ const AuthSystem = {
         if (savedUser) {
             try {
                 const user = JSON.parse(savedUser);
-                this.showUserProfile(user);
+                // НЕ показуємо верхній профіль - тільки ховаємо login page
+                this.hideLoginPage();
                 
                 setTimeout(() => {
                     if (typeof switchPage === 'function') {
@@ -148,37 +150,52 @@ const AuthSystem = {
         }
     },
     
-    // Show user profile
-    showUserProfile(user) {
+    // ОНОВЛЕНО: Тільки ховаємо login page, БЕЗ показу верхнього профілю
+    hideLoginPage() {
         const loginPage = document.getElementById('loginPage');
-        const userProfile = document.getElementById('userProfile');
-        const userNickname = document.getElementById('userNickname');
-        
-        if (loginPage) loginPage.style.display = 'none';
-        if (userProfile && user) {
-            userProfile.style.display = 'block';
-            if (userNickname) {
-                userNickname.textContent = user.nickname || 'User';
-            }
+        if (loginPage) {
+            loginPage.style.display = 'none';
         }
         
-        // Update sidebar
+        // Оновлюємо sidebar (головне меню залишається)
         if (typeof updateSidebarUserInfo === 'function') {
+            const user = this.getCurrentUserData();
             updateSidebarUserInfo(user);
         }
     },
     
-    // Hide user profile
+    // ОНОВЛЕНО: Ховаємо верхній профіль (якщо він існує)
     hideUserProfile() {
         const userProfile = document.getElementById('userProfile');
         if (userProfile) {
             userProfile.style.display = 'none';
         }
         
-        // Update sidebar
+        // Оновлюємо sidebar
         if (typeof updateSidebarUserInfo === 'function') {
             updateSidebarUserInfo(null);
         }
+    },
+    
+    // Отримуємо дані поточного користувача
+    getCurrentUserData() {
+        if (this.authManager && this.authManager.currentUser) {
+            return this.authManager.userProfile || {
+                nickname: this.authManager.currentUser.email?.split('@')[0] || 'User'
+            };
+        }
+        
+        // Fallback до localStorage
+        const savedUser = localStorage.getItem('armHelper_currentUser');
+        if (savedUser) {
+            try {
+                return JSON.parse(savedUser);
+            } catch (e) {
+                return null;
+            }
+        }
+        
+        return null;
     },
     
     // Show message
@@ -274,7 +291,7 @@ async function handleLogin(event) {
             AuthSystem.showMessage('Login successful! (Development mode)', 'success');
             const mockUser = { nickname: nickname };
             localStorage.setItem('armHelper_currentUser', JSON.stringify(mockUser));
-            AuthSystem.showUserProfile(mockUser);
+            AuthSystem.hideLoginPage();
             
             setTimeout(() => {
                 if (typeof switchPage === 'function') {
@@ -338,7 +355,7 @@ async function handleRegister(event) {
             AuthSystem.showMessage('Registration successful! (Development mode)', 'success');
             const mockUser = { nickname: nickname };
             localStorage.setItem('armHelper_currentUser', JSON.stringify(mockUser));
-            AuthSystem.showUserProfile(mockUser);
+            AuthSystem.hideLoginPage();
             
             setTimeout(() => {
                 if (typeof switchPage === 'function') {
