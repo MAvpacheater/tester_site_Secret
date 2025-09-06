@@ -1,30 +1,32 @@
-// Enhanced content loader script - БЕЗ ВЕРХНЬОГО ПРОФІЛЮ
+// Enhanced content loader script - З ПРОФІЛЬНОЮ СИСТЕМОЮ
 console.log('🔄 Loading content...');
 
 // Function to load content
 async function loadContent() {
     try {
-        // Load content files (including login page)
-        const [calcResponse, infoResponse, loginResponse] = await Promise.all([
+        // Load content files (including login and profile pages)
+        const [calcResponse, infoResponse, loginResponse, profileResponse] = await Promise.all([
             fetch('index/content_calc.html'),
             fetch('index/content_info.html'),
-            fetch('index/content_login.html')
+            fetch('index/content_login.html'),
+            fetch('index/content_profile.html')
         ]);
 
-        if (!calcResponse.ok || !infoResponse.ok || !loginResponse.ok) {
-            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, login: ${loginResponse.status}`);
+        if (!calcResponse.ok || !infoResponse.ok || !loginResponse.ok || !profileResponse.ok) {
+            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, login: ${loginResponse.status}, profile: ${profileResponse.status}`);
         }
         
-        const [calcContent, infoContent, loginContent] = await Promise.all([
+        const [calcContent, infoContent, loginContent, profileContent] = await Promise.all([
             calcResponse.text(),
             infoResponse.text(),
-            loginResponse.text()
+            loginResponse.text(),
+            profileResponse.text()
         ]);
 
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with navigation and combine all content - БЕЗ ВЕРХНЬОГО ПРОФІЛЮ
+            // Create the main structure with navigation and combine all content - З КЛІКОМ НА НІК
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -48,10 +50,10 @@ async function loadContent() {
                         <button class="nav-btn" onclick="switchPage('worlds')">🌍 Worlds</button>
                     </div>
                     
-                    <!-- User Section in Sidebar - ТІЛЬКИ ТУТ ІНФОРМАЦІЯ ПРО КОРИСТУВАЧА -->
+                    <!-- User Section in Sidebar - З КЛІКОМ НА НІК ДЛЯ ПРОФІЛЮ -->
                     <div class="sidebar-user" id="sidebarUser">
                         <div class="user-info" id="userInfo" style="display: none;">
-                            <div class="user-nickname" id="sidebarUserNickname"></div>
+                            <div class="user-nickname clickable-nickname" id="sidebarUserNickname" onclick="openProfile()" title="Click to view profile"></div>
                             <div class="user-status">Logged in</div>
                         </div>
                         <button class="auth-btn-sidebar" id="authButton" onclick="handleAuthAction()">Login</button>
@@ -63,6 +65,7 @@ async function loadContent() {
                    
                 <div class="container">
                     ${loginContent}
+                    ${profileContent}
                     ${calcContent}
                     ${infoContent}
                 </div>
@@ -91,13 +94,71 @@ async function loadContent() {
                         padding: 0;
                     }
 
-                    /* ВИДАЛЕНО: Усі стилі для верхнього user-profile */
-                    /* Тепер інформація про користувача тільки в сайдбарі */
+                    /* Profile page integration */
+                    .profile-page {
+                        background: none;
+                        min-height: auto;
+                        padding: 0;
+                    }
+                    
+                    .profile-page .container {
+                        background: none;
+                        box-shadow: none;
+                        backdrop-filter: none;
+                        border: none;
+                        padding: 0;
+                    }
+
+                    /* Clickable nickname styling */
+                    .clickable-nickname {
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        border-radius: 8px;
+                        padding: 4px 8px;
+                        margin: -4px -8px;
+                    }
+                    
+                    .clickable-nickname:hover {
+                        background: rgba(255, 255, 255, 0.1);
+                        transform: scale(1.02);
+                        color: #ffffff;
+                    }
+                    
+                    .clickable-nickname:active {
+                        transform: scale(0.98);
+                    }
+
+                    /* Tooltip for nickname */
+                    .clickable-nickname::after {
+                        content: '👤 Click to view profile';
+                        position: absolute;
+                        top: -35px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        background: rgba(0, 0, 0, 0.8);
+                        color: white;
+                        padding: 6px 10px;
+                        border-radius: 6px;
+                        font-size: 12px;
+                        white-space: nowrap;
+                        opacity: 0;
+                        pointer-events: none;
+                        transition: opacity 0.2s ease;
+                        z-index: 1000;
+                    }
+                    
+                    .clickable-nickname:hover::after {
+                        opacity: 1;
+                    }
+                    
+                    .user-info {
+                        position: relative;
+                    }
                 </style>
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully (without top profile)');
+            console.log('✅ Content loaded successfully (with profile system)');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -130,12 +191,16 @@ async function loadContent() {
     }
 }
 
-// Enhanced initialization with better auth integration - БЕЗ ВЕРХНЬОГО ПРОФІЛЮ
+// Enhanced initialization with better auth integration - З ПРОФІЛЬНОЮ СИСТЕМОЮ
 function enhanceInitialization() {
     // Listen for authentication events to update ONLY sidebar
     document.addEventListener('userAuthenticated', (event) => {
         const { user, profile } = event.detail;
         updateSidebarForAuthenticatedUser(user, profile);
+        // Update login stats
+        if (typeof updateLoginStats === 'function') {
+            updateLoginStats();
+        }
     });
     
     document.addEventListener('userSignedOut', () => {
@@ -143,7 +208,7 @@ function enhanceInitialization() {
     });
 }
 
-// Update ONLY sidebar for authenticated user - БЕЗ ВЕРХНЬОГО ПРОФІЛЮ
+// Update ONLY sidebar for authenticated user - З КЛІКОМ НА НІК
 function updateSidebarForAuthenticatedUser(user, profile) {
     const userInfo = document.getElementById('userInfo');
     const authButton = document.getElementById('authButton');
@@ -164,11 +229,20 @@ function updateSidebarForAuthenticatedUser(user, profile) {
         if (sidebarUserNickname) {
             sidebarUserNickname.textContent = (profile?.nickname) || 
                                             user.nickname || 
+                                            user.email?.split('@')[0] || 
                                             'User';
+            // Ensure click handler is set
+            sidebarUserNickname.onclick = () => {
+                if (typeof openProfile === 'function') {
+                    openProfile();
+                } else {
+                    console.error('openProfile function not found');
+                }
+            };
         }
     }
     
-    console.log('✅ Sidebar updated for authenticated user (no top profile)');
+    console.log('✅ Sidebar updated for authenticated user (with profile link)');
 }
 
 // Update ONLY sidebar for signed out user - БЕЗ ВЕРХНЬОГО ПРОФІЛЮ
@@ -183,7 +257,7 @@ function updateSidebarForSignedOutUser() {
         authButton.onclick = handleAuthAction;
     }
     
-    console.log('✅ Sidebar updated for signed out user (no top profile)');
+    console.log('✅ Sidebar updated for signed out user (no profile link)');
 }
 
 // Enhanced auth action handler
