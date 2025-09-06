@@ -1,9 +1,9 @@
 // supabase/config.js
-// Supabase configuration and initialization
+// Updated Supabase configuration for nickname-based authentication
 
-// Supabase URL and Anon Key (ці дані ви отримаєте в своєму Supabase проекті)
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // замініть на ваш URL
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // замініть на ваш ключ
+// Supabase URL and Anon Key (replace with your actual values)
+const SUPABASE_URL = 'http://localhost:3000'; // replace with your URL
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnb21ocnJicmpzYXpxdHF5Y3NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNDU2MzgsImV4cCI6MjA3MjcyMTYzOH0.0IX8h2acPlEe_liU0OOTi99YG5l384p_yk6oRMW26sY'; // replace with your key
 
 // Initialize Supabase client
 let supabase;
@@ -19,14 +19,18 @@ function initializeSupabase() {
 
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log('✅ Supabase initialized successfully');
+        
+        // Dispatch connection event
+        document.dispatchEvent(new CustomEvent('supabaseConnected'));
         return supabase;
     } catch (error) {
         console.error('❌ Failed to initialize Supabase:', error);
+        document.dispatchEvent(new CustomEvent('supabaseError', { detail: error.message }));
         return null;
     }
 }
 
-// Supabase Authentication Manager
+// Enhanced Supabase Authentication Manager for nickname-based auth
 class SupabaseAuthManager {
     constructor() {
         this.supabase = initializeSupabase();
@@ -120,22 +124,39 @@ class SupabaseAuthManager {
         }
     }
 
-    // Register new user
-    async registerUser(email, password, nickname, phone = null) {
+    // Register new user with nickname
+    async registerUser(nickname, password) {
         try {
-            // First, sign up with Supabase Auth
+            // Check if nickname is already taken
+            const { data: existingUser, error: checkError } = await this.supabase
+                .from('users')
+                .select('id')
+                .eq('nickname', nickname)
+                .single();
+
+            if (existingUser) {
+                throw new Error('Nickname is already taken');
+            }
+
+            // Create a temporary email for Supabase auth (since it requires email)
+            const tempEmail = `${nickname}@armhelper.local`;
+            
+            // Register with Supabase Auth using temp email
             const { data: authData, error: authError } = await this.supabase.auth.signUp({
-                email: email,
+                email: tempEmail,
                 password: password,
                 options: {
                     data: {
-                        nickname: nickname,
-                        phone: phone
+                        nickname: nickname
                     }
                 }
             });
 
             if (authError) {
+                // Handle specific Supabase errors
+                if (authError.message.includes('email')) {
+                    throw new Error('Registration failed. Please try again.');
+                }
                 throw new Error(authError.message);
             }
 
@@ -143,21 +164,11 @@ class SupabaseAuthManager {
                 throw new Error('Registration failed - no user data returned');
             }
 
-            // Check if user needs to confirm email
-            if (!authData.session) {
-                return {
-                    success: true,
-                    needsConfirmation: true,
-                    message: 'Please check your email for confirmation link'
-                };
-            }
-
-            // If auto-confirmed, create profile
-            await this.createUserProfile(authData.user, nickname, phone);
+            // Create user profile in our custom table
+            await this.createUserProfile(authData.user, nickname);
 
             return {
                 success: true,
-                needsConfirmation: false,
                 user: authData.user
             };
 
@@ -167,15 +178,40 @@ class SupabaseAuthManager {
         }
     }
 
-    // Login user
-    async loginUser(email, password) {
+    // Login user with nickname
+    async loginUser(nickname, password) {
         try {
+            // Find user by nickname first
+            const { data: userData, error: userError } = await this.supabase
+                .from('users')
+                .select('auth_id')
+                .eq('nickname', nickname)
+                .single();
+
+            if (userError || !userData) {
+                throw new Error('Invalid nickname or password');
+            }
+
+            // Get the auth user's email
+            const { data: authUser, error: authError } = await this.supabase
+                .from('auth.users')
+                .select('email')
+                .eq('id', userData.auth_id)
+                .single();
+
+            // If we can't get the auth user, try with temp email format
+            const emailToUse = authUser?.email || `${nickname}@armhelper.local`;
+
+            // Sign in with email and password
             const { data, error } = await this.supabase.auth.signInWithPassword({
-                email: email,
+                email: emailToUse,
                 password: password
             });
 
             if (error) {
+                if (error.message.includes('Invalid login credentials')) {
+                    throw new Error('Invalid nickname or password');
+                }
                 throw new Error(error.message);
             }
 
@@ -192,7 +228,7 @@ class SupabaseAuthManager {
     }
 
     // Create user profile in custom table
-    async createUserProfile(user, nickname, phone = null) {
+    async createUserProfile(user, nickname) {
         try {
             const { data, error } = await this.supabase
                 .from('users')
@@ -201,10 +237,9 @@ class SupabaseAuthManager {
                         auth_id: user.id,
                         nickname: nickname,
                         email: user.email,
-                        phone: phone,
                         preferences: {
                             theme: 'default',
-                            language: 'uk',
+                            language: 'en',
                             notifications: true
                         }
                     }
@@ -274,7 +309,7 @@ class SupabaseAuthManager {
                 // Update existing
                 result = await this.supabase
                     .from('user_calculations')
-                    .update({ settings: settings })
+                    .update({ settings: settings, updated_at: new Date().toISOString() })
                     .eq('id', existing.id);
             } else {
                 // Insert new
@@ -289,12 +324,14 @@ class SupabaseAuthManager {
 
             if (result.error) {
                 console.error('Error saving calculator settings:', result.error);
+                throw new Error('Failed to save settings');
             } else {
                 console.log(`✅ ${calculatorType} settings saved successfully`);
             }
 
         } catch (error) {
             console.error('Error in saveCalculatorSettings:', error);
+            throw error;
         }
     }
 
@@ -331,9 +368,11 @@ class SupabaseAuthManager {
             const { error } = await this.supabase.auth.signOut();
             if (error) {
                 console.error('Sign out error:', error);
+                throw new Error('Failed to sign out');
             }
         } catch (error) {
             console.error('Error in signOut:', error);
+            throw error;
         }
     }
 
