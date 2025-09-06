@@ -130,7 +130,7 @@ const worldsData = [
     },
     {
         title: "World 21: The Pyramids",
-        icon: "🌸",
+        icon: "🛕",
         description: "Egyptian fortune | Sandstorm event (x2)",
         details: "To advance to World 20, you need to defeat the 'Gold Champion'"
     }
