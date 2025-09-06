@@ -1,0 +1,140 @@
+<!-- Profile Page -->
+<div class="page profile-page" id="profilePage">
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <span class="avatar-text" id="avatarText">U</span>
+            </div>
+            <div class="profile-info">
+                <h2 class="profile-nickname" id="profileNickname">User</h2>
+                <p class="profile-status">Member since <span id="profileJoinDate">Recently</span></p>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <!-- Account Section -->
+            <div class="profile-section">
+                <h3 class="section-title">
+                    <span class="section-icon">🔐</span>
+                    Account Settings
+                </h3>
+                
+                <div class="profile-card">
+                    <div class="card-header">
+                        <h4>Change Password</h4>
+                        <p class="card-description">Update your account password</p>
+                    </div>
+                    
+                    <div class="password-form">
+                        <form id="changePasswordForm" onsubmit="handleChangePassword(event)">
+                            <div class="input-group">
+                                <label for="currentPassword" class="input-label">Current Password</label>
+                                <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password" required>
+                                <span class="input-icon">🔒</span>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="newPassword" class="input-label">New Password</label>
+                                <input type="password" id="newPassword" class="form-input" placeholder="Enter new password (min 6 chars)" required minlength="6">
+                                <span class="input-icon">🔑</span>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="confirmNewPassword" class="input-label">Confirm New Password</label>
+                                <input type="password" id="confirmNewPassword" class="form-input" placeholder="Confirm new password" required>
+                                <span class="input-icon">✅</span>
+                            </div>
+                            
+                            <button type="submit" class="change-password-btn">Update Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Stats Section -->
+            <div class="profile-section">
+                <h3 class="section-title">
+                    <span class="section-icon">📊</span>
+                    Profile Statistics
+                </h3>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="calculationsCount">0</div>
+                        <div class="stat-label">Calculations Saved</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="loginCount">1</div>
+                        <div class="stat-label">Total Logins</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="lastLoginDate">Today</div>
+                        <div class="stat-label">Last Login</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div class="profile-section">
+                <h3 class="section-title">
+                    <span class="section-icon">⚙️</span>
+                    Preferences
+                </h3>
+                
+                <div class="profile-card">
+                    <div class="settings-row">
+                        <div class="setting-info">
+                            <h4>Save calculations automatically</h4>
+                            <p>Automatically save your calculator settings</p>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="autoSaveToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <div class="setting-info">
+                            <h4>Show calculation history</h4>
+                            <p>Display recent calculations in calculators</p>
+                        </div>
+                        <label class="setting-toggle">
+                            <input type="checkbox" id="historyToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="profile-section danger-section">
+                <h3 class="section-title">
+                    <span class="section-icon">⚠️</span>
+                    Danger Zone
+                </h3>
+                
+                <div class="profile-card danger-card">
+                    <div class="card-header">
+                        <h4>Delete Account</h4>
+                        <p class="card-description">Permanently delete your account and all data</p>
+                    </div>
+                    
+                    <button class="danger-btn" onclick="confirmDeleteAccount()">
+                        Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="profile-actions">
+            <button class="back-btn" onclick="goBackFromProfile()">
+                <span class="btn-icon">←</span>
+                Back to Calculator
+            </button>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div class="profile-message" id="profileMessage"></div>
+    </div>
+</div>
