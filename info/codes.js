@@ -1,4 +1,4 @@
-// Codes functionality
+// Codes functionality with user-specific toggle states
 
 // Codes data
 const codesData = [
@@ -60,6 +60,9 @@ const codesData = [
     { code: "axel", description: "Use for 50 Wins" }
 ];
 
+// Current user's used codes state
+let userUsedCodes = {};
+
 // Copy code to clipboard
 async function copyCode(code, button) {
     try {
@@ -75,6 +78,94 @@ async function copyCode(code, button) {
     } catch (err) {
         console.error('Failed to copy code:', err);
     }
+}
+
+// Toggle code used state
+async function toggleCodeUsed(code, checkbox) {
+    const currentUser = getCurrentUser();
+    
+    if (!currentUser) {
+        // Show message that login is required
+        showLoginRequiredMessage();
+        checkbox.checked = !checkbox.checked; // Revert the change
+        return;
+    }
+
+    const isUsed = checkbox.checked;
+    userUsedCodes[code] = isUsed;
+    
+    // Update visual state of the code item
+    const codeItem = checkbox.closest('.code-item');
+    if (codeItem) {
+        if (isUsed) {
+            codeItem.classList.add('used');
+        } else {
+            codeItem.classList.remove('used');
+        }
+    }
+    
+    // Save to storage
+    await saveUsedCodesState();
+    
+    // Update statistics
+    updateCodesStatistics();
+    
+    console.log(`Code "${code}" marked as ${isUsed ? 'used' : 'unused'}`);
+}
+
+// Save used codes state for current user
+async function saveUsedCodesState() {
+    const currentUser = getCurrentUser();
+    
+    if (!currentUser) return;
+    
+    try {
+        if (window.authManager && window.authManager.currentUser) {
+            // Save to Supabase
+            await window.authManager.saveUserData('used_codes', userUsedCodes);
+            console.log('✅ Used codes state saved to database');
+        } else {
+            // Fallback to localStorage
+            localStorage.setItem('armHelper_used_codes', JSON.stringify(userUsedCodes));
+            console.log('✅ Used codes state saved to localStorage');
+        }
+    } catch (error) {
+        console.error('❌ Error saving used codes state:', error);
+        // Fallback to localStorage
+        localStorage.setItem('armHelper_used_codes', JSON.stringify(userUsedCodes));
+    }
+}
+
+// Load used codes state for current user
+async function loadUsedCodesState() {
+    const currentUser = getCurrentUser();
+    
+    if (!currentUser) {
+        userUsedCodes = {};
+        return;
+    }
+    
+    try {
+        if (window.authManager && window.authManager.currentUser) {
+            // Load from Supabase
+            const data = await window.authManager.loadUserData('used_codes');
+            userUsedCodes = data || {};
+            console.log('✅ Used codes state loaded from database:', Object.keys(userUsedCodes).length + ' codes');
+        } else {
+            // Fallback to localStorage
+            const saved = localStorage.getItem('armHelper_used_codes');
+            userUsedCodes = saved ? JSON.parse(saved) : {};
+            console.log('✅ Used codes state loaded from localStorage');
+        }
+    } catch (error) {
+        console.error('❌ Error loading used codes state:', error);
+        userUsedCodes = {};
+    }
+}
+
+// Show message that login is required for code tracking
+function showLoginRequiredMessage() {
+    showCopyMessage('Login required to track used codes');
 }
 
 // Show copy success message
@@ -93,35 +184,155 @@ function showCopyMessage(message) {
     }, 2000);
 }
 
-// Generate codes content
-function generateCodesContent() {
-    const container = document.getElementById('codesContainer');
-    if (!container) return;
-    container.innerHTML = '';
-    codesData.forEach(item => {
-        const codeItem = document.createElement('div');
-        codeItem.className = 'code-item';
-        codeItem.innerHTML = `
-            <div class="code-content">
-                <div class="code-name">${item.code}</div>
-                <div class="code-description">${item.description}</div>
-            </div>
-            <button class="copy-btn" onclick="copyCode('${item.code}', this)">
-                <span class="copy-icon">📋</span>
-                Copy
-            </button>
-        `;
-        container.appendChild(codeItem);
-    });
+// Update codes statistics
+function updateCodesStatistics() {
+    const statsContainer = document.getElementById('codesStats');
+    if (!statsContainer) return;
+    
+    const totalCodes = codesData.length;
+    const usedCount = Object.values(userUsedCodes).filter(used => used).length;
+    const unusedCount = totalCodes - usedCount;
+    const usagePercentage = Math.round((usedCount / totalCodes) * 100);
+    
+    statsContainer.innerHTML = `
+        <div class="stat-item">
+            <div class="stat-number">${totalCodes}</div>
+            <div class="stat-label">Total Codes</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" style="color: #48bb78;">${usedCount}</div>
+            <div class="stat-label">Used</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" style="color: #667eea;">${unusedCount}</div>
+            <div class="stat-label">Available</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" style="color: #764ba2;">${usagePercentage}%</div>
+            <div class="stat-label">Progress</div>
+        </div>
+    `;
 }
 
-// Відслідковуємо, коли користувач переходить на сторінку "codes"
-document.addEventListener("DOMContentLoaded", () => {
-    const observer = new MutationObserver(() => {
-        const codesPage = document.getElementById('codesPage');
-        if (codesPage && codesPage.classList.contains('active')) {
-            generateCodesContent();
-        }
+// Generate auth notice for non-authenticated users
+function generateAuthNotice() {
+    return `
+        <div class="codes-auth-notice">
+            <h3>🔐 Track Your Used Codes</h3>
+            <p>Login to your account to track which codes you've already used and sync your progress across devices!</p>
+            <button class="auth-link-btn" onclick="switchPage('login')">Login to Track Codes</button>
+        </div>
+    `;
+}
+
+// Generate codes content
+async function generateCodesContent() {
+    const container = document.getElementById('codesContainer');
+    if (!container) return;
+
+    // Load user's used codes state
+    await loadUsedCodesState();
+    
+    const currentUser = getCurrentUser();
+    let content = '';
+    
+    // Add statistics for authenticated users
+    if (currentUser) {
+        content += '<div class="codes-stats" id="codesStats"></div>';
+    } else {
+        // Show auth notice for non-authenticated users
+        content += generateAuthNotice();
+    }
+    
+    // Generate code items
+    codesData.forEach(item => {
+        const isUsed = userUsedCodes[item.code] || false;
+        const usedClass = isUsed ? 'used' : '';
+        
+        content += `
+            <div class="code-item ${usedClass}">
+                <div class="code-content">
+                    <div class="code-name">${item.code}</div>
+                    <div class="code-description">${item.description}</div>
+                </div>
+                <div class="code-actions">
+                    ${currentUser ? `
+                        <label class="code-toggle" data-tooltip="${isUsed ? 'Mark as unused' : 'Mark as used'}">
+                            <input type="checkbox" ${isUsed ? 'checked' : ''} 
+                                   onchange="toggleCodeUsed('${item.code}', this)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    ` : ''}
+                    <button class="copy-btn" onclick="copyCode('${item.code}', this)">
+                        <span class="copy-icon">📋</span>
+                        Copy
+                    </button>
+                </div>
+            </div>
+        `;
     });
-    observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
+    
+    container.innerHTML = content;
+    
+    // Update statistics if user is authenticated
+    if (currentUser) {
+        updateCodesStatistics();
+    }
+    
+    console.log('✅ Codes content generated with toggle states');
+}
+
+// Initialize codes page when it becomes active
+function initializeCodes() {
+    const codesPage = document.getElementById('codesPage');
+    if (!codesPage) return;
+    
+    // Listen for page activation
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const target = mutation.target;
+                if (target.id === 'codesPage' && target.classList.contains('active')) {
+                    generateCodesContent();
+                }
+            }
+        });
+    });
+    
+    observer.observe(codesPage, { attributes: true });
+    
+    // Generate content if page is already active
+    if (codesPage.classList.contains('active')) {
+        generateCodesContent();
+    }
+    
+    console.log('✅ Codes page initialized');
+}
+
+// Listen for authentication events to update codes page
+document.addEventListener('userAuthenticated', (event) => {
+    console.log('🔐 User authenticated - updating codes page');
+    const codesPage = document.getElementById('codesPage');
+    if (codesPage && codesPage.classList.contains('active')) {
+        generateCodesContent();
+    }
 });
+
+document.addEventListener('userSignedOut', () => {
+    console.log('👋 User signed out - updating codes page');
+    userUsedCodes = {};
+    const codesPage = document.getElementById('codesPage');
+    if (codesPage && codesPage.classList.contains('active')) {
+        generateCodesContent();
+    }
+});
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    initializeCodes();
+});
+
+// Global functions
+window.copyCode = copyCode;
+window.toggleCodeUsed = toggleCodeUsed;
+window.initializeCodes = initializeCodes;
