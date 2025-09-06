@@ -32,7 +32,7 @@ const charmsData = [
     },
     {
         title: "Training charms",
-        imageUrl: "https://example.com/training-charm.jpg", // Замініть на ваш URL
+        imageUrl: "https://i.postimg.cc/FRZLQ0bY/telegram-cloud-photo-size-2-5190785500309485773-m.jpg", // Замініть на ваш URL
         description: "Gives 5% to training rep",
         details: "Max stock: 16",
         category: "charm"
