@@ -1,6 +1,6 @@
-// General JavaScript functions
+// Enhanced General JavaScript functions with auth integration
 
-// Page switching functionality
+// Page switching functionality - enhanced
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
     
@@ -17,8 +17,9 @@ function switchPage(page) {
         console.error(`Page ${page}Page not found`);
     }
     
-    // Update active nav button - використовуємо масив для правильного індексування
+    // Update active nav button
     const pageMap = {
+        'login': -1,        // Special case - no nav button
         'calculator': 0,
         'arm': 1,
         'grind': 2,
@@ -28,14 +29,13 @@ function switchPage(page) {
         'aura': 6,
         'trainer': 7,
         'charms': 8,
-        'worlds': 9,
-        'soon': 10  // додаємо Soon сторінку
+        'worlds': 9
     };
     
     const navButtons = document.querySelectorAll('.nav-btn');
     const buttonIndex = pageMap[page];
     
-    if (buttonIndex !== undefined && navButtons[buttonIndex]) {
+    if (buttonIndex !== undefined && buttonIndex >= 0 && navButtons[buttonIndex]) {
         navButtons[buttonIndex].classList.add('active');
         console.log(`Nav button ${buttonIndex} activated for ${page}`);
     }
@@ -45,6 +45,70 @@ function switchPage(page) {
     
     // Trigger page-specific initialization if needed
     initializePageContent(page);
+    
+    // Load user settings for calculators if user is authenticated
+    loadUserSettingsForPage(page);
+}
+
+// Load user settings for specific page
+async function loadUserSettingsForPage(page) {
+    if (!window.authManager || !window.authManager.currentUser) {
+        return; // No user authenticated
+    }
+    
+    const calculatorPages = ['calculator', 'arm', 'grind'];
+    if (!calculatorPages.includes(page)) {
+        return; // Not a calculator page
+    }
+    
+    try {
+        const settings = await window.authManager.loadCalculatorSettings(page);
+        if (settings) {
+            console.log(`✅ Loaded settings for ${page}:`, settings);
+            applySettingsToPage(page, settings);
+        }
+    } catch (error) {
+        console.error(`❌ Error loading settings for ${page}:`, error);
+    }
+}
+
+// Apply settings to page
+function applySettingsToPage(page, settings) {
+    switch(page) {
+        case 'calculator':
+            if (typeof applyCalculatorSettings === 'function') {
+                applyCalculatorSettings(settings);
+            }
+            break;
+        case 'arm':
+            if (typeof applyArmSettings === 'function') {
+                applyArmSettings(settings);
+            }
+            break;
+        case 'grind':
+            if (typeof applyGrindSettings === 'function') {
+                applyGrindSettings(settings);
+            }
+            break;
+    }
+}
+
+// Save user settings for page
+async function saveUserSettingsForPage(page, settings) {
+    if (!window.authManager || !window.authManager.currentUser) {
+        // Fallback to localStorage if not authenticated
+        localStorage.setItem(`armHelper_${page}_settings`, JSON.stringify(settings));
+        return;
+    }
+    
+    try {
+        await window.authManager.saveCalculatorSettings(page, settings);
+        console.log(`✅ Settings saved for ${page}`);
+    } catch (error) {
+        console.error(`❌ Error saving settings for ${page}:`, error);
+        // Fallback to localStorage
+        localStorage.setItem(`armHelper_${page}_settings`, JSON.stringify(settings));
+    }
 }
 
 // Initialize specific page content when switching
@@ -53,6 +117,21 @@ function initializePageContent(page) {
         case 'login':
             if (typeof initializeAuth === 'function') {
                 initializeAuth();
+            }
+            break;
+        case 'calculator':
+            if (typeof initializeCalculator === 'function') {
+                initializeCalculator();
+            }
+            break;
+        case 'arm':
+            if (typeof initializeArm === 'function') {
+                initializeArm();
+            }
+            break;
+        case 'grind':
+            if (typeof initializeGrind === 'function') {
+                initializeGrind();
             }
             break;
         case 'shiny':
@@ -114,36 +193,112 @@ function closeSidebar() {
     }
 }
 
-// Auth action handler for sidebar button - updated for "Soon" functionality
+// Enhanced auth action handler
 function handleAuthAction() {
-    // Always go to Soon page now
-    switchPage('soon');
-}
-
-// Update sidebar user info - simplified since we're not using auth
-function updateSidebarUserInfo(user = null) {
-    const userInfo = document.getElementById('userInfo');
     const authButton = document.getElementById('authButton');
     
-    if (userInfo && authButton) {
-        // Always hide user info and show Soon button
-        userInfo.style.display = 'none';
-        authButton.textContent = 'Login (Soon..)';
-        authButton.classList.remove('logout-btn');
-        
-        console.log('✅ Sidebar updated with Soon button');
+    if (authButton && authButton.classList.contains('logout-btn')) {
+        // User is logged in, handle logout
+        if (window.authManager) {
+            window.authManager.signOut();
+        } else if (typeof logout === 'function') {
+            logout();
+        }
+    } else {
+        // User is not logged in, go to login page
+        switchPage('login');
     }
 }
 
-// Check and update user status - simplified
+// Update sidebar user info - enhanced for Supabase integration
+function updateSidebarUserInfo(user = null) {
+    const userInfo = document.getElementById('userInfo');
+    const authButton = document.getElementById('authButton');
+    const sidebarUserNickname = document.getElementById('sidebarUserNickname');
+    
+    if (userInfo && authButton) {
+        if (user) {
+            // User is logged in
+            userInfo.style.display = 'block';
+            authButton.textContent = 'Sign Out';
+            authButton.classList.add('logout-btn');
+            
+            if (sidebarUserNickname) {
+                sidebarUserNickname.textContent = user.nickname || 
+                                                 user.email?.split('@')[0] || 
+                                                 'User';
+            }
+            
+            console.log('✅ Sidebar updated with user info');
+        } else {
+            // User is not logged in
+            userInfo.style.display = 'none';
+            authButton.textContent = 'Login';
+            authButton.classList.remove('logout-btn');
+            
+            console.log('✅ Sidebar updated for guest user');
+        }
+    }
+}
+
+// Check and update user status - enhanced
 function checkUserStatus() {
-    updateSidebarUserInfo(null);
+    // Check if Supabase auth manager is available
+    if (window.authManager && window.authManager.currentUser) {
+        const profile = window.authManager.userProfile;
+        const user = profile || {
+            nickname: window.authManager.currentUser.email?.split('@')[0] || 'User',
+            email: window.authManager.currentUser.email
+        };
+        updateSidebarUserInfo(user);
+    } else {
+        // Fallback to localStorage
+        const savedUser = localStorage.getItem('armHelper_currentUser');
+        if (savedUser) {
+            try {
+                const user = JSON.parse(savedUser);
+                updateSidebarUserInfo(user);
+            } catch (e) {
+                console.warn('Invalid saved user data');
+                localStorage.removeItem('armHelper_currentUser');
+                updateSidebarUserInfo(null);
+            }
+        } else {
+            updateSidebarUserInfo(null);
+        }
+    }
+}
+
+// Settings persistence helpers
+function saveSettingsToStorage(key, settings) {
+    if (window.authManager && window.authManager.currentUser) {
+        // Save to Supabase if authenticated
+        saveUserSettingsForPage(key, settings);
+    } else {
+        // Fallback to localStorage
+        localStorage.setItem(`armHelper_${key}_settings`, JSON.stringify(settings));
+    }
+}
+
+function loadSettingsFromStorage(key) {
+    // Try localStorage first for immediate response
+    const localSettings = localStorage.getItem(`armHelper_${key}_settings`);
+    if (localSettings) {
+        try {
+            return JSON.parse(localSettings);
+        } catch (e) {
+            console.warn('Invalid local settings data');
+        }
+    }
+    
+    // If authenticated, settings will be loaded asynchronously via loadUserSettingsForPage
+    return null;
 }
 
 // Прапорець для запобігання повторної ініціалізації
 let appInitialized = false;
 
-// Головна функція ініціалізації (викликається після завантаження контенту)
+// Головна функція ініціалізації
 function initializeApp() {
     if (typeof appInitialized !== 'undefined' && appInitialized) {
         console.log('⚠️ Додаток вже ініціалізовано');
@@ -159,23 +314,29 @@ function initializeApp() {
         return;
     }
     
-    // Initialize auth system first (optional now)
+    // Initialize auth system first
     if (typeof initializeAuth === 'function') {
         initializeAuth();
     }
     
-    // Check if user is already logged in and update sidebar
+    // Check user status and update sidebar
     setTimeout(() => {
         checkUserStatus();
     }, 200);
     
-    // Always start with calculator page now
-    let startingPage = 'calculator';
+    // Determine starting page based on auth status
+    let startingPage = 'calculator'; // Default to calculator
+    
+    // Check if we should show login page
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('page') === 'login') {
+        startingPage = 'login';
+    }
     
     // Make sure starting page is active
     switchPage(startingPage);
     
-    // Click outside settings panel to close - ВИПРАВЛЕНА ВЕРСІЯ
+    // Enhanced click outside settings panel handler
     document.addEventListener('click', e => {
         // Закриваємо панелі налаштувань при кліку поза ними
         const settingsPanels = [
@@ -186,8 +347,6 @@ function initializeApp() {
         
         settingsPanels.forEach(({ panel, btn }) => {
             if (panel && btn) {
-                // Перевіряємо чи клік був НЕ всередині панелі і НЕ на кнопці налаштувань
-                // Також перевіряємо чи це не клік на category-button або back-btn
                 const isClickInsidePanel = panel.contains(e.target);
                 const isClickOnSettingsBtn = btn.contains(e.target);
                 const isClickOnCategoryButton = e.target.closest('.category-button');
@@ -195,7 +354,6 @@ function initializeApp() {
                 const isClickOnCategorySwitch = e.target.closest('.category-switch');
                 const isClickOnSimpleModifier = e.target.closest('.simple-modifier');
                 
-                // Закриваємо панель тільки якщо клік був поза всіма інтерактивними елементами
                 if (!isClickInsidePanel && !isClickOnSettingsBtn && 
                     !isClickOnCategoryButton && !isClickOnBackButton && 
                     !isClickOnCategorySwitch && !isClickOnSimpleModifier) {
@@ -208,12 +366,37 @@ function initializeApp() {
     // Initialize all modules
     initializeAllModules();
     
+    // Set up auth event listeners
+    setupAuthEventListeners();
+    
     // Set the flag AFTER initialization
     if (typeof window !== 'undefined') {
         window.appInitialized = true;
     }
     appInitialized = true;
     console.log('✅ Ініціалізація додатка завершена');
+}
+
+// Setup authentication event listeners
+function setupAuthEventListeners() {
+    // Listen for authentication events
+    document.addEventListener('userAuthenticated', (event) => {
+        console.log('🔐 User authenticated event received');
+        const { user, profile } = event.detail;
+        updateSidebarUserInfo(profile || user);
+        
+        // Load settings for current page
+        const activePage = document.querySelector('.page.active');
+        if (activePage) {
+            const pageId = activePage.id.replace('Page', '');
+            loadUserSettingsForPage(pageId);
+        }
+    });
+    
+    document.addEventListener('userSignedOut', () => {
+        console.log('👋 User signed out event received');
+        updateSidebarUserInfo(null);
+    });
 }
 
 // Ініціалізація всіх модулів
@@ -254,10 +437,38 @@ function debugPageStates() {
     console.log('========================');
 }
 
-// Simplified logout function (not needed but keeping for compatibility)
+// Enhanced logout function
 function logout() {
-    switchPage('soon');
-    console.log('✅ Redirect to Soon page');
+    if (window.authManager) {
+        window.authManager.signOut();
+    } else {
+        // Fallback for localStorage
+        localStorage.removeItem('armHelper_currentUser');
+        updateSidebarUserInfo(null);
+        console.log('✅ Logged out (localStorage cleared)');
+    }
+}
+
+// Utility function to get current user
+function getCurrentUser() {
+    if (window.authManager && window.authManager.currentUser) {
+        return {
+            auth: window.authManager.currentUser,
+            profile: window.authManager.userProfile
+        };
+    }
+    
+    // Fallback to localStorage
+    const savedUser = localStorage.getItem('armHelper_currentUser');
+    if (savedUser) {
+        try {
+            return { profile: JSON.parse(savedUser) };
+        } catch (e) {
+            return null;
+        }
+    }
+    
+    return null;
 }
 
 // Make functions globally available
@@ -270,3 +481,8 @@ window.checkUserStatus = checkUserStatus;
 window.initializeApp = initializeApp;
 window.logout = logout;
 window.debugPageStates = debugPageStates;
+window.saveSettingsToStorage = saveSettingsToStorage;
+window.loadSettingsFromStorage = loadSettingsFromStorage;
+window.getCurrentUser = getCurrentUser;
+window.saveUserSettingsForPage = saveUserSettingsForPage;
+window.loadUserSettingsForPage = loadUserSettingsForPage;
