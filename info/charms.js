@@ -1,52 +1,52 @@
 // Charms functionality
 
-// Charms data
+// Charms data - замініть URL на ваші зображення
 const charmsData = [
     {
         title: "Infinite charm",
-        icon: "🟠",
+        imageUrl: "https://example.com/infinite-charm.jpg", // Замініть на ваш URL
         description: "Gives 20% to training rep",
         details: "Max stock: 5",
         category: "charm"
     },
     {
         title: "Leadboard charm",
-        icon: "🟩",
+        imageUrl: "https://example.com/leadboard-charm.jpg", // Замініть на ваш URL
         description: "Gives 18% to training rep",
         details: "Max stock: 6",
         category: "charm"
     },
     {
         title: "Endless charm",
-        icon: "⚪",
+        imageUrl: "https://example.com/endless-charm.jpg", // Замініть на ваш URL
         description: "Gives 15% to training rep",
         details: "Max stock: 10",
         category: "charm"
     },
     {
         title: "Luck charm",
-        icon: "🍀",
+        imageUrl: "https://example.com/luck-charm.jpg", // Замініть на ваш URL
         description: "Adds 5% to luck",
         details: "Max stock: 16",
         category: "charm"
     },
     {
         title: "Training charms",
-        icon: "🔴",
+        imageUrl: "https://example.com/training-charm.jpg", // Замініть на ваш URL
         description: "Gives 5% to training rep",
         details: "Max stock: 16",
         category: "charm"
     },
     {
         title: "Loot charm",
-        icon: "🔵",
+        imageUrl: "https://example.com/loot-charm.jpg", // Замініть на ваш URL
         description: "Gives 5% to find loot from boss",
         details: "Max stock: 16",
         category: "charm"
     },
     {
         title: "Winner charm",
-        icon: "🟡",
+        imageUrl: "https://example.com/winner-charm.jpg", // Замініть на ваш URL
         description: "Gives 5% more winns from boss",
         details: "Max stock: 16",
         category: "charm"
@@ -64,13 +64,15 @@ function generateCharmsContent() {
         const charmItem = document.createElement('div');
         charmItem.className = 'charm-item';
         charmItem.innerHTML = `
-            <div class="charm-title">
-                <span class="charm-icon">${item.icon}</span>
-                ${item.title}
+            <div class="charm-image-container">
+                <img src="${item.imageUrl}" alt="${item.title}" class="charm-image" loading="lazy">
             </div>
-            <div class="charm-description">${item.description}</div>
-            <div class="charm-details">${item.details}</div>
-            <div class="charm-category ${item.category}">${item.category}</div>
+            <div class="charm-content">
+                <div class="charm-title">${item.title}</div>
+                <div class="charm-description">${item.description}</div>
+                <div class="charm-details">${item.details}</div>
+                <div class="charm-category ${item.category}">${item.category}</div>
+            </div>
         `;
         container.appendChild(charmItem);
     });
