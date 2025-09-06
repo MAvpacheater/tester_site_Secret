@@ -13,7 +13,7 @@ const charmsData = [
         title: "Leadboard charm",
         imageUrl: "https://i.postimg.cc/wTxk3j7K/2025-09-06-22-18-50.png", // Замініть на ваш URL
         description: "Gives 18% to training rep",
-        details: "Max stock: 6",
+        details: "Max stock: 7",
         category: "charm"
     },
     {
