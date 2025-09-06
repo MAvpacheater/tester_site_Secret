@@ -22,6 +22,46 @@
     background-clip: text;
 }
 
+/* Auth Notice для неавторизованих користувачів */
+.codes-auth-notice {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.codes-auth-notice h3 {
+    color: #4a5568;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.codes-auth-notice p {
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.codes-auth-notice .auth-link-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.codes-auth-notice .auth-link-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
 .codes-container {
     max-height: 450px;
     overflow-y: auto;
@@ -53,6 +93,7 @@
     border: 2px solid rgba(102, 126, 234, 0.1);
     transition: all 0.3s ease;
     font-family: 'Roboto', sans-serif;
+    position: relative;
 }
 
 .code-item:hover {
@@ -70,6 +111,27 @@
     border-color: rgba(118, 75, 162, 0.3);
 }
 
+/* Стилі для використаних кодів */
+.code-item.used {
+    opacity: 0.6;
+    background: rgba(160, 174, 192, 0.15);
+    border-color: rgba(160, 174, 192, 0.3);
+}
+
+.code-item.used:hover {
+    background: rgba(160, 174, 192, 0.25);
+    transform: translateX(2px);
+}
+
+.code-item.used .code-name {
+    text-decoration: line-through;
+    color: #a0aec0;
+}
+
+.code-item.used .code-description {
+    color: #a0aec0;
+}
+
 .code-content {
     flex: 1;
     margin-right: 15px;
@@ -81,12 +143,98 @@
     font-size: 1.1em;
     margin-bottom: 4px;
     font-family: 'Orbitron', monospace;
+    transition: all 0.3s ease;
 }
 
 .code-description {
     color: #4a5568;
     font-size: 0.9em;
     line-height: 1.4;
+    transition: all 0.3s ease;
+}
+
+.code-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Стилі для toggle switch */
+.code-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.code-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.code-toggle .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(160, 174, 192, 0.3);
+    border: 2px solid rgba(160, 174, 192, 0.5);
+    transition: 0.3s;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2px;
+}
+
+.code-toggle .toggle-slider:before {
+    content: "";
+    height: 16px;
+    width: 16px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.code-toggle input:checked + .toggle-slider {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    border-color: #38a169;
+}
+
+.code-toggle input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+}
+
+.code-toggle .toggle-slider:hover {
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+}
+
+/* Tooltip для toggle */
+.code-toggle::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+}
+
+.code-toggle:hover::after {
+    opacity: 1;
 }
 
 .copy-btn {
@@ -162,6 +310,36 @@
     100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
 }
 
+/* Statistics Summary */
+.codes-stats {
+    background: rgba(246, 249, 252, 0.8);
+    border: 2px solid rgba(102, 126, 234, 0.1);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+.codes-stats .stat-item {
+    flex: 1;
+}
+
+.codes-stats .stat-number {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: #667eea;
+    font-family: 'Orbitron', monospace;
+}
+
+.codes-stats .stat-label {
+    font-size: 0.9em;
+    color: #4a5568;
+    margin-top: 5px;
+}
+
 /* Mobile Styles */
 @media (max-width: 768px) {
     .code-item {
@@ -175,9 +353,21 @@
         width: 100%;
     }
     
-    .copy-btn {
+    .code-actions {
         align-self: flex-end;
-        min-width: 80px;
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .codes-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .codes-stats .stat-item {
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 8px;
     }
 }
 
@@ -196,5 +386,9 @@
     
     .code-description {
         font-size: 0.85em;
+    }
+    
+    .codes-stats .stat-number {
+        font-size: 1.5em;
     }
 }
