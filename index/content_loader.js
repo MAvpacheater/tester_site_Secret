@@ -1,5 +1,5 @@
-// Enhanced content loader script with login support
-console.log('🔄 Завантаження контенту...');
+// Enhanced content loader script with English text and login support
+console.log('🔄 Loading content...');
 
 // Function to load content
 async function loadContent() {
@@ -36,7 +36,7 @@ async function loadContent() {
                         <button class="close-sidebar" onclick="closeSidebar()">×</button>
                     </div>
                     <div class="nav-buttons">
-                        <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Pets Calculator</button>
+                        <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Pet Calculator</button>
                         <button class="nav-btn" onclick="switchPage('arm')">💪 Arm Calculator</button>
                         <button class="nav-btn" onclick="switchPage('grind')">🏋️‍♂️ Grind Calculator</button>
                         <button class="nav-btn" onclick="switchPage('boosts')">🚀 Boosts</button>
@@ -94,7 +94,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Контент завантажено успішно (calc + info + login)');
+            console.log('✅ Content loaded successfully (calc + info + login)');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -111,7 +111,7 @@ async function loadContent() {
             console.error('❌ app-content element not found');
         }
     } catch (error) {
-        console.error('❌ Помилка завантаження контенту:', error);
+        console.error('❌ Error loading content:', error);
         
         // Dispatch error event
         document.dispatchEvent(new CustomEvent('contentLoadError', { 
@@ -160,7 +160,7 @@ function updateSidebarForAuthenticatedUser(user, profile) {
 
         if (sidebarUserNickname) {
             sidebarUserNickname.textContent = (profile?.nickname) || 
-                                            user.email?.split('@')[0] || 
+                                            user.nickname || 
                                             'User';
         }
     }
