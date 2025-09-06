@@ -1,7 +1,7 @@
 // supabase/config.js - ВИПРАВЛЕНА ВЕРСІЯ З ДЕТАЛЬНОЮ ДІАГНОСТИКОЮ
 
 // Ваші правильні дані Supabase
-const SUPABASE_URL = 'https://efphvwtlffylviwxbfcl.supabase.co'; // Замініть на ваш URL
+const SUPABASE_URL = 'https://aws-info-post.supabase.co'; // Замініть на ваш URL
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmcGh2d3RsZmZ5bHZpd3hiZmNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNDUxNDksImV4cCI6MjA3MjcyMTE0OX0.9VF-YQK6JTvlfkfuj7X9fJHuANcXHBN_vNi2DAjdSI4'; // Замініть на ваш ключ
 
 // Налагодження - встановіть в true для детальних логів
