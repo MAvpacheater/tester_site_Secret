@@ -1,4 +1,4 @@
-/* Compact Profile Page Styles */
+/* Enhanced Profile Page Styles with Logout Button */
 .profile-page {
     min-height: 100vh;
     display: flex;
@@ -81,7 +81,7 @@
     font-weight: 300;
 }
 
-/* Profile Actions */
+/* Enhanced Profile Actions with proper grid layout */
 .profile-actions {
     padding: 30px;
     display: grid;
@@ -89,6 +89,52 @@
     gap: 15px;
 }
 
+/* First row: Settings and Statistics buttons */
+.profile-actions .action-btn:nth-child(1),
+.profile-actions .action-btn:nth-child(2) {
+    /* Settings and Statistics buttons - default grid positioning */
+}
+
+/* Second row: Log Out button spanning both columns */
+.logout-action-btn {
+    grid-column: 1 / -1; /* Span both columns */
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    border: 2px solid rgba(244, 67, 54, 0.2);
+    border-radius: 15px;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+    justify-content: center;
+}
+
+.logout-action-btn:hover {
+    background: rgba(244, 67, 54, 0.2);
+    border-color: rgba(244, 67, 54, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(244, 67, 54, 0.2);
+}
+
+/* Third row: Back button spanning both columns */
+.back-btn {
+    grid-column: 1 / -1; /* Span both columns */
+    background: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+    border-color: rgba(108, 117, 125, 0.2);
+}
+
+.back-btn:hover {
+    background: rgba(108, 117, 125, 0.2);
+    border-color: rgba(108, 117, 125, 0.4);
+}
+
+/* Base action button styles */
 .action-btn {
     background: rgba(102, 126, 234, 0.1);
     color: #667eea;
@@ -111,18 +157,6 @@
     border-color: rgba(102, 126, 234, 0.4);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
-}
-
-.back-btn {
-    grid-column: 1 / -1;
-    background: rgba(108, 117, 125, 0.1);
-    color: #6c757d;
-    border-color: rgba(108, 117, 125, 0.2);
-}
-
-.back-btn:hover {
-    background: rgba(108, 117, 125, 0.2);
-    border-color: rgba(108, 117, 125, 0.4);
 }
 
 .btn-icon {
@@ -358,6 +392,69 @@
     transform: none;
 }
 
+/* Stats View */
+.stats-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+    overflow-y: auto;
+    animation: slideInRight 0.3s ease-out;
+}
+
+.stats-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 25px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.stats-header h3 {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.stats-grid {
+    padding: 30px;
+    display: grid;
+    gap: 20px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+.stat-number {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.stat-label {
+    color: #666;
+    font-weight: 500;
+    font-size: 0.95em;
+}
+
 /* Settings Rows (for preferences) */
 .settings-row {
     display: flex;
@@ -426,69 +523,6 @@
 
 .setting-toggle input:checked + .toggle-slider:before {
     transform: translateX(26px);
-}
-
-/* Stats View */
-.stats-view {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(10px);
-    z-index: 10;
-    overflow-y: auto;
-    animation: slideInRight 0.3s ease-out;
-}
-
-.stats-header {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    padding: 25px 30px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.stats-header h3 {
-    margin: 0;
-    font-size: 1.5em;
-    font-weight: 600;
-}
-
-.stats-grid {
-    padding: 30px;
-    display: grid;
-    gap: 20px;
-}
-
-.stat-card {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-    border: 2px solid rgba(102, 126, 234, 0.2);
-    border-radius: 15px;
-    padding: 25px;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
-    border-color: rgba(102, 126, 234, 0.3);
-}
-
-.stat-number {
-    font-size: 2.5em;
-    font-weight: 700;
-    color: #667eea;
-    margin-bottom: 10px;
-}
-
-.stat-label {
-    color: #666;
-    font-weight: 500;
-    font-size: 0.95em;
 }
 
 /* Profile Messages */
@@ -576,8 +610,9 @@
         font-size: 14px;
     }
     
+    .logout-action-btn,
     .back-btn {
-        grid-column: 1;
+        grid-column: 1; /* Single column on mobile */
     }
     
     .settings-form form,
