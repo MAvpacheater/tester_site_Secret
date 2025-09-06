@@ -4,7 +4,7 @@
 const charmsData = [
     {
         title: "Infinite charm",
-        imageUrl: "https://example.com/infinite-charm.jpg", // Замініть на ваш URL
+        imageUrl: "https://i.postimg.cc/5N3bqn4Y/2025-09-06-22-22-27.png", // Замініть на ваш URL
         description: "Gives 20% to training rep",
         details: "Max stock: 5",
         category: "charm"
