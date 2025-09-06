@@ -127,6 +127,12 @@ const worldsData = [
         icon: "🌸",
         description: "Prestige shrine | Sakura fortune | Alchemist machine",
         details: "To advance to World 20, you need to defeat the 'Flaming Reaper'"
+    },
+    {
+        title: "World 21: The Pyramids",
+        icon: "🌸",
+        description: "Egyptian fortune | Sandstorm event (x2)",
+        details: "To advance to World 20, you need to defeat the 'Gold Champion'"
     }
 ];
 
