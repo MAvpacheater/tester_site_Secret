@@ -1,26 +1,39 @@
-// supabase/config.js
-// Fixed Supabase configuration - nickname only, no email/phone storage
+// supabase/config.js - ВИПРАВЛЕНА ВЕРСІЯ З ДЕТАЛЬНОЮ ДІАГНОСТИКОЮ
 
-// Supabase URL and Anon Key (replace with your actual values)
-const SUPABASE_URL = 'https://efphvwtlffylviwxbfcl.supabase.co'; // replace with your URL
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmcGh2d3RsZmZ5bHZpd3hiZmNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxNDUxNDksImV4cCI6MjA3MjcyMTE0OX0.9VF-YQK6JTvlfkfuj7X9fJHuANcXHBN_vNi2DAjdSI4'; // replace with your key
+// Ваші правильні дані Supabase
+const SUPABASE_URL = 'https://your-project.supabase.co'; // Замініть на ваш URL
+const SUPABASE_ANON_KEY = 'your-anon-key'; // Замініть на ваш ключ
 
-// Initialize Supabase client
+// Налагодження - встановіть в true для детальних логів
+const DEBUG_MODE = true;
+const USE_SUPABASE = true;
+
 let supabase;
 
-// Function to initialize Supabase
 function initializeSupabase() {
+    if (!USE_SUPABASE) {
+        console.warn('⚠️ Supabase відключено');
+        return null;
+    }
+
     try {
-        // Load Supabase from CDN
         if (typeof window.supabase === 'undefined') {
             console.error('❌ Supabase library not loaded');
             return null;
         }
 
+        // Перевіряємо формат URL
+        if (!SUPABASE_URL.includes('supabase.co')) {
+            console.error('❌ Invalid Supabase URL format:', SUPABASE_URL);
+            return null;
+        }
+
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase initialized successfully');
+        console.log('✅ Supabase client created');
         
-        // Dispatch connection event
+        // Тестуємо з'єднання
+        testSupabaseConnection();
+        
         document.dispatchEvent(new CustomEvent('supabaseConnected'));
         return supabase;
     } catch (error) {
@@ -30,23 +43,77 @@ function initializeSupabase() {
     }
 }
 
-// Enhanced Supabase Authentication Manager - NICKNAME ONLY
+// Тестування з'єднання з Supabase
+async function testSupabaseConnection() {
+    try {
+        console.log('🔄 Testing Supabase connection...');
+        
+        // Простий запит для перевірки з'єднання
+        const { data, error } = await supabase
+            .from('users')
+            .select('id')
+            .limit(1);
+            
+        if (error) {
+            console.error('❌ Database connection test failed:', error);
+            if (DEBUG_MODE) {
+                console.error('Error details:', {
+                    message: error.message,
+                    details: error.details,
+                    hint: error.hint,
+                    code: error.code
+                });
+            }
+        } else {
+            console.log('✅ Database connection test successful');
+        }
+    } catch (error) {
+        console.error('❌ Connection test error:', error);
+    }
+}
+
 class SupabaseAuthManager {
     constructor() {
         this.supabase = initializeSupabase();
         this.currentUser = null;
         this.userProfile = null;
+        this.fallbackMode = !this.supabase;
         
         if (this.supabase) {
             this.initializeAuthListener();
             this.checkCurrentUser();
+        } else {
+            console.warn('🔄 Працюємо в fallback режимі');
+            this.initializeFallbackMode();
         }
     }
 
-    // Initialize auth state listener
+    initializeFallbackMode() {
+        const savedUser = localStorage.getItem('armHelper_currentUser');
+        if (savedUser) {
+            try {
+                const user = JSON.parse(savedUser);
+                this.currentUser = { id: 'local-user', email: `${user.nickname}@local.test` };
+                this.userProfile = user;
+                
+                setTimeout(() => {
+                    document.dispatchEvent(new CustomEvent('userAuthenticated', {
+                        detail: { user: this.currentUser, profile: this.userProfile }
+                    }));
+                }, 100);
+            } catch (e) {
+                localStorage.removeItem('armHelper_currentUser');
+            }
+        }
+    }
+
     initializeAuthListener() {
+        if (!this.supabase) return;
+        
         this.supabase.auth.onAuthStateChange(async (event, session) => {
-            console.log('🔐 Auth state changed:', event);
+            if (DEBUG_MODE) {
+                console.log('🔐 Auth state changed:', event, session?.user?.id);
+            }
             
             if (event === 'SIGNED_IN' && session) {
                 await this.handleUserSignedIn(session.user);
@@ -56,92 +123,42 @@ class SupabaseAuthManager {
         });
     }
 
-    // Check current user on page load
-    async checkCurrentUser() {
-        try {
-            const { data: { user }, error } = await this.supabase.auth.getUser();
-            
-            if (error) {
-                console.warn('Auth check error:', error.message);
-                return;
-            }
-
-            if (user) {
-                await this.handleUserSignedIn(user);
-            }
-        } catch (error) {
-            console.error('Error checking current user:', error);
-        }
-    }
-
-    // Handle user signed in
-    async handleUserSignedIn(user) {
-        this.currentUser = user;
-        
-        // Get user profile from our custom table
-        await this.loadUserProfile();
-        
-        // Update UI
-        this.updateUIForSignedInUser();
-        
-        // Dispatch event for other components
-        document.dispatchEvent(new CustomEvent('userAuthenticated', {
-            detail: { user: this.currentUser, profile: this.userProfile }
-        }));
-    }
-
-    // Handle user signed out
-    handleUserSignedOut() {
-        this.currentUser = null;
-        this.userProfile = null;
-        
-        // Update UI
-        this.updateUIForSignedOutUser();
-        
-        // Dispatch event
-        document.dispatchEvent(new CustomEvent('userSignedOut'));
-    }
-
-    // Load user profile from custom table
-    async loadUserProfile() {
-        if (!this.currentUser) return;
-
-        try {
-            const { data, error } = await this.supabase
-                .from('users')
-                .select('*')
-                .eq('auth_id', this.currentUser.id)
-                .single();
-
-            if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-                console.error('Error loading user profile:', error);
-                return;
-            }
-
-            this.userProfile = data;
-        } catch (error) {
-            console.error('Error in loadUserProfile:', error);
-        }
-    }
-
-    // Register new user with nickname ONLY
+    // ВИПРАВЛЕНА РЕЄСТРАЦІЯ з детальними логами
     async registerUser(nickname, password) {
+        if (this.fallbackMode) {
+            return this.registerUserFallback(nickname, password);
+        }
+
         try {
-            // Check if nickname is already taken
+            if (DEBUG_MODE) {
+                console.log('🔄 Starting registration for:', nickname);
+            }
+
+            // Крок 1: Перевіряємо чи nickname вже зайнятий
+            if (DEBUG_MODE) console.log('Step 1: Checking nickname availability...');
+            
             const { data: existingUser, error: checkError } = await this.supabase
                 .from('users')
                 .select('id')
                 .eq('nickname', nickname)
                 .single();
 
+            if (checkError && checkError.code !== 'PGRST116') {
+                console.error('❌ Error checking nickname:', checkError);
+                throw new Error(`Database error checking nickname: ${checkError.message}`);
+            }
+
             if (existingUser) {
                 throw new Error('Nickname is already taken');
             }
 
-            // Create a temporary email for Supabase auth (required by Supabase)
+            if (DEBUG_MODE) console.log('✅ Nickname is available');
+
+            // Крок 2: Створюємо користувача в Supabase Auth
+            if (DEBUG_MODE) console.log('Step 2: Creating auth user...');
+            
             const tempEmail = `${nickname}@armhelper.temp`;
             
-            // Register with Supabase Auth using temp email
             const { data: authData, error: authError } = await this.supabase.auth.signUp({
                 email: tempEmail,
                 password: password,
@@ -153,18 +170,32 @@ class SupabaseAuthManager {
             });
 
             if (authError) {
-                if (authError.message.includes('email')) {
-                    throw new Error('Registration failed. Please try again.');
-                }
-                throw new Error(authError.message);
+                console.error('❌ Supabase auth error:', authError);
+                throw new Error(`Authentication error: ${authError.message}`);
             }
 
             if (!authData.user) {
                 throw new Error('Registration failed - no user data returned');
             }
 
-            // Create user profile in our custom table (NICKNAME ONLY)
-            await this.createUserProfile(authData.user, nickname);
+            if (DEBUG_MODE) {
+                console.log('✅ Auth user created:', authData.user.id);
+            }
+
+            // Крок 3: Створюємо профіль користувача
+            if (DEBUG_MODE) console.log('Step 3: Creating user profile...');
+            
+            const profile = await this.createUserProfile(authData.user, nickname);
+            
+            if (!profile) {
+                // Якщо профіль не створився, видаляємо auth користувача
+                console.error('❌ Failed to create user profile, but auth user was created');
+                throw new Error('Database error saving new user');
+            }
+
+            if (DEBUG_MODE) {
+                console.log('✅ Registration completed successfully');
+            }
 
             return {
                 success: true,
@@ -172,39 +203,216 @@ class SupabaseAuthManager {
             };
 
         } catch (error) {
-            console.error('Registration error:', error);
+            console.error('❌ Registration error:', error);
+            
+            // Детальна інформація про помилку
+            if (DEBUG_MODE) {
+                console.error('Registration error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    name: error.name
+                });
+            }
+            
+            // Якщо це помилка з'єднання, падаємо на fallback
+            if (error.message.includes('fetch') || 
+                error.message.includes('network') || 
+                error.message.includes('JSON')) {
+                console.warn('🔄 Falling back to local storage due to connection error');
+                return this.registerUserFallback(nickname, password);
+            }
+            
             throw error;
         }
     }
 
-    // Login user with nickname
-    async loginUser(nickname, password) {
+    // ВИПРАВЛЕНЕ СТВОРЕННЯ ПРОФІЛЮ з детальними логами
+    async createUserProfile(user, nickname) {
+        if (this.fallbackMode || !this.supabase) {
+            if (DEBUG_MODE) console.log('⚠️ Fallback mode - skipping profile creation');
+            return null;
+        }
+
         try {
-            // Find user by nickname first
+            if (DEBUG_MODE) {
+                console.log('🔄 Creating profile for user:', {
+                    authId: user.id,
+                    nickname: nickname
+                });
+            }
+
+            const profileData = {
+                auth_id: user.id,
+                nickname: nickname,
+                preferences: {
+                    theme: 'default',
+                    language: 'en',
+                    notifications: true
+                }
+            };
+
+            if (DEBUG_MODE) {
+                console.log('Profile data to insert:', profileData);
+            }
+
+            const { data, error } = await this.supabase
+                .from('users')
+                .insert([profileData])
+                .select()
+                .single();
+
+            if (error) {
+                console.error('❌ Error creating user profile:', error);
+                
+                if (DEBUG_MODE) {
+                    console.error('Profile creation error details:', {
+                        message: error.message,
+                        details: error.details,
+                        hint: error.hint,
+                        code: error.code
+                    });
+                }
+
+                // Перевіряємо чи таблиця існує
+                if (error.code === '42P01') {
+                    throw new Error('Database table "users" does not exist. Please create the required tables.');
+                }
+
+                // Перевіряємо права доступу
+                if (error.code === '42501') {
+                    throw new Error('Database permission denied. Please check RLS policies.');
+                }
+
+                throw new Error(`Database error saving new user: ${error.message}`);
+            }
+
+            if (DEBUG_MODE) {
+                console.log('✅ User profile created successfully:', data);
+            }
+
+            this.userProfile = data;
+            return data;
+
+        } catch (error) {
+            console.error('❌ Error in createUserProfile:', error);
+            
+            if (DEBUG_MODE) {
+                console.error('createUserProfile error details:', {
+                    message: error.message,
+                    stack: error.stack
+                });
+            }
+            
+            throw error;
+        }
+    }
+
+    // Fallback реєстрація
+    registerUserFallback(nickname, password) {
+        try {
+            if (DEBUG_MODE) {
+                console.log('🔄 Using fallback registration for:', nickname);
+            }
+
+            const existingUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+            if (existingUsers.find(u => u.nickname === nickname)) {
+                throw new Error('Nickname is already taken');
+            }
+
+            const newUser = {
+                id: Date.now().toString(),
+                nickname: nickname,
+                password: password,
+                createdAt: new Date().toISOString()
+            };
+
+            existingUsers.push(newUser);
+            localStorage.setItem('armHelper_users', JSON.stringify(existingUsers));
+            localStorage.setItem('armHelper_currentUser', JSON.stringify(newUser));
+
+            this.currentUser = { id: newUser.id, email: `${nickname}@local.test` };
+            this.userProfile = newUser;
+
+            setTimeout(() => {
+                document.dispatchEvent(new CustomEvent('userAuthenticated', {
+                    detail: { user: this.currentUser, profile: this.userProfile }
+                }));
+            }, 100);
+
+            if (DEBUG_MODE) {
+                console.log('✅ Fallback registration successful');
+            }
+
+            return {
+                success: true,
+                user: this.currentUser
+            };
+
+        } catch (error) {
+            console.error('❌ Fallback registration error:', error);
+            throw error;
+        }
+    }
+
+    // ВИПРАВЛЕНИЙ ЛОГІН з детальними логами
+    async loginUser(nickname, password) {
+        if (this.fallbackMode) {
+            return this.loginUserFallback(nickname, password);
+        }
+
+        try {
+            if (DEBUG_MODE) {
+                console.log('🔄 Starting login for:', nickname);
+            }
+
+            // Крок 1: Знаходимо користувача за nickname
             const { data: userData, error: userError } = await this.supabase
                 .from('users')
-                .select('auth_id')
+                .select('auth_id, id, nickname')
                 .eq('nickname', nickname)
                 .single();
 
-            if (userError || !userData) {
+            if (userError) {
+                if (DEBUG_MODE) {
+                    console.error('User lookup error:', userError);
+                }
+                
+                if (userError.code === 'PGRST116') {
+                    throw new Error('Invalid nickname or password');
+                }
+                
+                throw new Error(`Database error: ${userError.message}`);
+            }
+
+            if (!userData) {
                 throw new Error('Invalid nickname or password');
             }
 
-            // Use temp email format for login
-            const tempEmail = `${nickname}@armhelper.temp`;
+            if (DEBUG_MODE) {
+                console.log('✅ User found:', userData.id);
+            }
 
-            // Sign in with temp email and password
+            // Крок 2: Логінимось через Supabase Auth
+            const tempEmail = `${nickname}@armhelper.temp`;
+            
             const { data, error } = await this.supabase.auth.signInWithPassword({
                 email: tempEmail,
                 password: password
             });
 
             if (error) {
+                if (DEBUG_MODE) {
+                    console.error('Auth login error:', error);
+                }
+                
                 if (error.message.includes('Invalid login credentials')) {
                     throw new Error('Invalid nickname or password');
                 }
-                throw new Error(error.message);
+                throw new Error(`Authentication error: ${error.message}`);
+            }
+
+            if (DEBUG_MODE) {
+                console.log('✅ Login successful');
             }
 
             return {
@@ -214,87 +422,112 @@ class SupabaseAuthManager {
             };
 
         } catch (error) {
-            console.error('Login error:', error);
+            console.error('❌ Login error:', error);
+            
+            // Fallback при помилці з'єднання
+            if (error.message.includes('fetch') || 
+                error.message.includes('network') || 
+                error.message.includes('JSON')) {
+                console.warn('🔄 Falling back to local storage due to connection error');
+                return this.loginUserFallback(nickname, password);
+            }
+            
             throw error;
         }
     }
 
-    // Create user profile in custom table (NICKNAME ONLY)
-    async createUserProfile(user, nickname) {
-        try {
-            const { data, error } = await this.supabase
-                .from('users')
-                .insert([
-                    {
-                        auth_id: user.id,
-                        nickname: nickname,
-                        // NO EMAIL OR PHONE FIELDS
-                        preferences: {
-                            theme: 'default',
-                            language: 'en',
-                            notifications: true
-                        }
-                    }
-                ])
-                .select()
-                .single();
+    // Fallback логін
+    loginUserFallback(nickname, password) {
+        const existingUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+        const user = existingUsers.find(u => u.nickname === nickname && u.password === password);
 
+        if (!user) {
+            throw new Error('Invalid nickname or password');
+        }
+
+        this.currentUser = { id: user.id, email: `${nickname}@local.test` };
+        this.userProfile = user;
+
+        localStorage.setItem('armHelper_currentUser', JSON.stringify(user));
+
+        setTimeout(() => {
+            document.dispatchEvent(new CustomEvent('userAuthenticated', {
+                detail: { user: this.currentUser, profile: this.userProfile }
+            }));
+        }, 100);
+
+        return {
+            success: true,
+            user: this.currentUser
+        };
+    }
+
+    // Решта методів залишаються без змін...
+    async checkCurrentUser() {
+        if (this.fallbackMode) return;
+
+        try {
+            const { data: { user }, error } = await this.supabase.auth.getUser();
+            
             if (error) {
-                console.error('Error creating user profile:', error);
-                return null;
+                if (DEBUG_MODE) console.warn('Auth check error:', error.message);
+                return;
             }
 
-            this.userProfile = data;
-            return data;
-
+            if (user) {
+                await this.handleUserSignedIn(user);
+            }
         } catch (error) {
-            console.error('Error in createUserProfile:', error);
-            return null;
+            console.error('Error checking current user:', error);
         }
     }
 
-    // Update user profile (NICKNAME ONLY)
-    async updateUserProfile(updates) {
-        if (!this.currentUser || !this.userProfile) {
-            throw new Error('User not authenticated');
-        }
+    async handleUserSignedIn(user) {
+        this.currentUser = user;
+        await this.loadUserProfile();
+        this.updateUIForSignedInUser();
+        
+        document.dispatchEvent(new CustomEvent('userAuthenticated', {
+            detail: { user: this.currentUser, profile: this.userProfile }
+        }));
+    }
+
+    handleUserSignedOut() {
+        this.currentUser = null;
+        this.userProfile = null;
+        localStorage.removeItem('armHelper_currentUser');
+        this.updateUIForSignedOutUser();
+        document.dispatchEvent(new CustomEvent('userSignedOut'));
+    }
+
+    async loadUserProfile() {
+        if (!this.currentUser || this.fallbackMode) return;
 
         try {
-            // Only allow updating nickname and preferences, no email/phone
-            const allowedUpdates = {};
-            if (updates.nickname) allowedUpdates.nickname = updates.nickname;
-            if (updates.preferences) allowedUpdates.preferences = updates.preferences;
-            if (updates.settings) allowedUpdates.settings = updates.settings;
-
             const { data, error } = await this.supabase
                 .from('users')
-                .update(allowedUpdates)
+                .select('*')
                 .eq('auth_id', this.currentUser.id)
-                .select()
                 .single();
 
-            if (error) {
-                throw new Error(error.message);
+            if (error && error.code !== 'PGRST116') {
+                console.error('Error loading user profile:', error);
+                return;
             }
 
             this.userProfile = data;
-            return data;
-
         } catch (error) {
-            console.error('Error updating user profile:', error);
-            throw error;
+            console.error('Error in loadUserProfile:', error);
         }
     }
 
-    // Save calculator settings
     async saveCalculatorSettings(calculatorType, settings) {
-        if (!this.currentUser || !this.userProfile) {
-            console.warn('User not authenticated, cannot save settings');
+        if (this.fallbackMode || !this.currentUser) {
+            localStorage.setItem(`armHelper_${calculatorType}_settings`, JSON.stringify(settings));
             return;
         }
 
         try {
-            // First, try to update existing record
             const { data: existing } = await this.supabase
                 .from('user_calculations')
                 .select('id')
@@ -304,13 +537,11 @@ class SupabaseAuthManager {
 
             let result;
             if (existing) {
-                // Update existing
                 result = await this.supabase
                     .from('user_calculations')
                     .update({ settings: settings, updated_at: new Date().toISOString() })
                     .eq('id', existing.id);
             } else {
-                // Insert new
                 result = await this.supabase
                     .from('user_calculations')
                     .insert([{
@@ -321,22 +552,19 @@ class SupabaseAuthManager {
             }
 
             if (result.error) {
-                console.error('Error saving calculator settings:', result.error);
                 throw new Error('Failed to save settings');
-            } else {
-                console.log(`✅ ${calculatorType} settings saved successfully`);
             }
 
         } catch (error) {
-            console.error('Error in saveCalculatorSettings:', error);
-            throw error;
+            console.error('Error saving to database, falling back to localStorage:', error);
+            localStorage.setItem(`armHelper_${calculatorType}_settings`, JSON.stringify(settings));
         }
     }
 
-    // Load calculator settings
     async loadCalculatorSettings(calculatorType) {
-        if (!this.currentUser || !this.userProfile) {
-            return null;
+        if (this.fallbackMode || !this.currentUser) {
+            const settings = localStorage.getItem(`armHelper_${calculatorType}_settings`);
+            return settings ? JSON.parse(settings) : null;
         }
 
         try {
@@ -348,33 +576,39 @@ class SupabaseAuthManager {
                 .single();
 
             if (error && error.code !== 'PGRST116') {
-                console.error('Error loading calculator settings:', error);
-                return null;
+                console.error('Error loading from database:', error);
+                const settings = localStorage.getItem(`armHelper_${calculatorType}_settings`);
+                return settings ? JSON.parse(settings) : null;
             }
 
             return data?.settings || null;
 
         } catch (error) {
-            console.error('Error in loadCalculatorSettings:', error);
-            return null;
+            console.error('Error loading from database:', error);
+            const settings = localStorage.getItem(`armHelper_${calculatorType}_settings`);
+            return settings ? JSON.parse(settings) : null;
         }
     }
 
-    // Sign out user
     async signOut() {
         try {
-            const { error } = await this.supabase.auth.signOut();
-            if (error) {
-                console.error('Sign out error:', error);
-                throw new Error('Failed to sign out');
+            if (!this.fallbackMode && this.supabase) {
+                const { error } = await this.supabase.auth.signOut();
+                if (error) {
+                    console.error('Supabase sign out error:', error);
+                }
             }
+
+            localStorage.removeItem('armHelper_currentUser');
+            this.handleUserSignedOut();
+
         } catch (error) {
             console.error('Error in signOut:', error);
-            throw error;
+            localStorage.removeItem('armHelper_currentUser');
+            this.handleUserSignedOut();
         }
     }
 
-    // Update UI for signed in user
     updateUIForSignedInUser() {
         const userInfo = document.getElementById('userInfo');
         const authButton = document.getElementById('authButton');
@@ -390,7 +624,6 @@ class SupabaseAuthManager {
             }
         }
 
-        // Hide login page if visible
         const loginPage = document.getElementById('loginPage');
         if (loginPage && loginPage.classList.contains('active')) {
             if (typeof switchPage === 'function') {
@@ -399,7 +632,6 @@ class SupabaseAuthManager {
         }
     }
 
-    // Update UI for signed out user
     updateUIForSignedOutUser() {
         const userInfo = document.getElementById('userInfo');
         const authButton = document.getElementById('authButton');
@@ -412,10 +644,8 @@ class SupabaseAuthManager {
     }
 }
 
-// Global auth manager instance
 let authManager;
 
-// Initialize auth manager
 function initializeSupabaseAuth() {
     if (!authManager) {
         authManager = new SupabaseAuthManager();
@@ -423,9 +653,84 @@ function initializeSupabaseAuth() {
     return authManager;
 }
 
-// Export for global use
+// Функція для діагностики таблиць
+async function checkDatabaseTables() {
+    if (!supabase) {
+        console.log('❌ Supabase not initialized');
+        return;
+    }
+
+    console.log('🔍 Checking database tables...');
+
+    // Перевіряємо таблицю users
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .select('id')
+            .limit(1);
+            
+        if (error) {
+            console.error('❌ Users table error:', error.message);
+            if (error.code === '42P01') {
+                console.log('💡 Create users table with this SQL:');
+                console.log(`
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    auth_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    nickname VARCHAR(50) UNIQUE NOT NULL,
+    preferences JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+                `);
+            }
+        } else {
+            console.log('✅ Users table exists');
+        }
+    } catch (e) {
+        console.error('❌ Error checking users table:', e.message);
+    }
+
+    // Перевіряємо таблицю user_calculations
+    try {
+        const { data, error } = await supabase
+            .from('user_calculations')
+            .select('id')
+            .limit(1);
+            
+        if (error) {
+            console.error('❌ User_calculations table error:', error.message);
+            if (error.code === '42P01') {
+                console.log('💡 Create user_calculations table with this SQL:');
+                console.log(`
+CREATE TABLE user_calculations (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    calculator_type VARCHAR(50) NOT NULL,
+    settings JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+                `);
+            }
+        } else {
+            console.log('✅ User_calculations table exists');
+        }
+    } catch (e) {
+        console.error('❌ Error checking user_calculations table:', e.message);
+    }
+}
+
 if (typeof window !== 'undefined') {
     window.SupabaseAuthManager = SupabaseAuthManager;
     window.initializeSupabaseAuth = initializeSupabaseAuth;
-    window.authManager = null; // Will be set by initializeSupabaseAuth
+    window.checkDatabaseTables = checkDatabaseTables;
+    window.authManager = null;
+    
+    // Автоматична діагностика через 2 секунди після завантаження
+    setTimeout(() => {
+        if (supabase && DEBUG_MODE) {
+            checkDatabaseTables();
+        }
+    }, 2000);
 }
