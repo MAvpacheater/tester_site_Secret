@@ -11,21 +11,21 @@ const charmsData = [
     },
     {
         title: "Leadboard charm",
-        imageUrl: "https://example.com/leadboard-charm.jpg", // Замініть на ваш URL
+        imageUrl: "https://i.postimg.cc/wTxk3j7K/2025-09-06-22-18-50.png", // Замініть на ваш URL
         description: "Gives 18% to training rep",
         details: "Max stock: 6",
         category: "charm"
     },
     {
         title: "Endless charm",
-        imageUrl: "https://example.com/endless-charm.jpg", // Замініть на ваш URL
+        imageUrl: "https://i.postimg.cc/k4rc5Ntw/2025-09-06-22-18-24.png", // Замініть на ваш URL
         description: "Gives 15% to training rep",
         details: "Max stock: 10",
         category: "charm"
     },
     {
         title: "Luck charm",
-        imageUrl: "https://example.com/luck-charm.jpg", // Замініть на ваш URL
+        imageUrl: "https://i.postimg.cc/wxXW7r2N/2025-09-06-22-18-03.png", // Замініть на ваш URL
         description: "Adds 5% to luck",
         details: "Max stock: 16",
         category: "charm"
