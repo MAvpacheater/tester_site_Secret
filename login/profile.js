@@ -1,11 +1,11 @@
-// Profile System - profile.js
+// Compact Profile System - profile.js
 const ProfileSystem = {
     currentUser: null,
     authManager: null,
 
     // Initialize profile system
     init() {
-        console.log('👤 Initializing Profile System...');
+        console.log('👤 Initializing Compact Profile System...');
         this.authManager = window.authManager;
         this.bindEvents();
         this.setupFormValidation();
@@ -47,15 +47,22 @@ const ProfileSystem = {
 
         // Update profile info
         const profileNickname = document.getElementById('profileNickname');
-        const avatarText = document.getElementById('avatarText');
+        const profileAvatar = document.getElementById('profileAvatar');
         const profileJoinDate = document.getElementById('profileJoinDate');
+        const currentNicknameInput = document.getElementById('currentNickname');
 
         if (profileNickname) {
             profileNickname.textContent = nickname;
         }
 
-        if (avatarText) {
-            avatarText.textContent = nickname.charAt(0).toUpperCase();
+        if (profileAvatar) {
+            // For now using placeholder, you can change this to your avatar URL later
+            profileAvatar.src = `https://via.placeholder.com/100x100/667eea/ffffff?text=${nickname.charAt(0).toUpperCase()}`;
+            profileAvatar.alt = `${nickname}'s avatar`;
+        }
+
+        if (currentNicknameInput) {
+            currentNicknameInput.value = nickname;
         }
 
         if (profileJoinDate) {
@@ -150,6 +157,7 @@ const ProfileSystem = {
         const currentPassword = document.getElementById('currentPassword');
         const newPassword = document.getElementById('newPassword');
         const confirmNewPassword = document.getElementById('confirmNewPassword');
+        const newNickname = document.getElementById('newNickname');
 
         if (newPassword && confirmNewPassword) {
             confirmNewPassword.addEventListener('input', () => {
@@ -161,6 +169,12 @@ const ProfileSystem = {
                 if (confirmNewPassword.value) {
                     this.validatePasswordMatch(newPassword, confirmNewPassword);
                 }
+            });
+        }
+
+        if (newNickname) {
+            newNickname.addEventListener('input', () => {
+                this.validateNickname(newNickname);
             });
         }
     },
@@ -199,6 +213,26 @@ const ProfileSystem = {
         } else {
             confirmInput.classList.add('error');
             confirmInput.classList.remove('success');
+            return false;
+        }
+    },
+
+    // Validate nickname
+    validateNickname(input) {
+        const value = input.value.trim();
+        
+        if (value.length === 0) {
+            input.classList.remove('error', 'success');
+            return true;
+        }
+
+        if (value.length >= 3 && value.length <= 20 && /^[a-zA-Z0-9_]+$/.test(value)) {
+            input.classList.add('success');
+            input.classList.remove('error');
+            return true;
+        } else {
+            input.classList.add('error');
+            input.classList.remove('success');
             return false;
         }
     },
@@ -258,12 +292,84 @@ const ProfileSystem = {
     }
 };
 
+// Menu Management Functions
+function toggleSettingsMenu() {
+    const settingsMenu = document.getElementById('settingsMenu');
+    if (settingsMenu) {
+        settingsMenu.style.display = settingsMenu.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+function closeSettingsMenu() {
+    const settingsMenu = document.getElementById('settingsMenu');
+    const settingsForms = document.querySelectorAll('.settings-form');
+    
+    if (settingsMenu) {
+        settingsMenu.style.display = 'none';
+    }
+    
+    settingsForms.forEach(form => {
+        form.style.display = 'none';
+    });
+}
+
+function backToSettingsMenu() {
+    const settingsForms = document.querySelectorAll('.settings-form');
+    const settingsMenu = document.getElementById('settingsMenu');
+    
+    settingsForms.forEach(form => {
+        form.style.display = 'none';
+    });
+    
+    if (settingsMenu) {
+        settingsMenu.style.display = 'block';
+    }
+}
+
+function showChangePassword() {
+    const settingsMenu = document.getElementById('settingsMenu');
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    
+    if (settingsMenu) settingsMenu.style.display = 'none';
+    if (changePasswordForm) changePasswordForm.style.display = 'block';
+}
+
+function showChangeNickname() {
+    const settingsMenu = document.getElementById('settingsMenu');
+    const changeNicknameForm = document.getElementById('changeNicknameForm');
+    
+    if (settingsMenu) settingsMenu.style.display = 'none';
+    if (changeNicknameForm) changeNicknameForm.style.display = 'block';
+}
+
+function showPreferences() {
+    const settingsMenu = document.getElementById('settingsMenu');
+    const preferencesForm = document.getElementById('preferencesForm');
+    
+    if (settingsMenu) settingsMenu.style.display = 'none';
+    if (preferencesForm) preferencesForm.style.display = 'block';
+}
+
+function toggleStatsView() {
+    const statsView = document.getElementById('statsView');
+    if (statsView) {
+        statsView.style.display = statsView.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+function closeStatsView() {
+    const statsView = document.getElementById('statsView');
+    if (statsView) {
+        statsView.style.display = 'none';
+    }
+}
+
 // Handle change password
 async function handleChangePassword(event) {
     event.preventDefault();
 
     const form = event.target;
-    const submitBtn = form.querySelector('.change-password-btn');
+    const submitBtn = form.querySelector('.submit-btn');
     
     const currentPassword = document.getElementById('currentPassword')?.value;
     const newPassword = document.getElementById('newPassword')?.value;
@@ -300,10 +406,10 @@ async function handleChangePassword(event) {
             if (result.success) {
                 ProfileSystem.showMessage('Password updated successfully!', 'success');
                 form.reset();
-                // Clear validation classes
                 document.querySelectorAll('.form-input').forEach(input => {
                     input.classList.remove('error', 'success');
                 });
+                setTimeout(() => closeSettingsMenu(), 2000);
             }
         } else {
             // Fallback for localStorage (development mode)
@@ -331,11 +437,104 @@ async function handleChangePassword(event) {
             document.querySelectorAll('.form-input').forEach(input => {
                 input.classList.remove('error', 'success');
             });
+            setTimeout(() => closeSettingsMenu(), 2000);
         }
 
     } catch (error) {
         console.error('Change password error:', error);
         ProfileSystem.showMessage(error.message || 'Failed to update password', 'error');
+    } finally {
+        ProfileSystem.showLoading(submitBtn, false);
+    }
+}
+
+// Handle change nickname
+async function handleChangeNickname(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const submitBtn = form.querySelector('.submit-btn');
+    
+    const currentNickname = document.getElementById('currentNickname')?.value;
+    const newNickname = document.getElementById('newNickname')?.value.trim();
+
+    // Validation
+    if (!newNickname) {
+        ProfileSystem.showMessage('New nickname is required', 'error');
+        return;
+    }
+
+    if (newNickname.length < 3 || newNickname.length > 20) {
+        ProfileSystem.showMessage('Nickname must be between 3 and 20 characters', 'error');
+        return;
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(newNickname)) {
+        ProfileSystem.showMessage('Nickname can only contain letters, numbers, and underscores', 'error');
+        return;
+    }
+
+    if (currentNickname === newNickname) {
+        ProfileSystem.showMessage('New nickname must be different from current nickname', 'error');
+        return;
+    }
+
+    try {
+        ProfileSystem.showLoading(submitBtn, true);
+
+        if (ProfileSystem.authManager && typeof ProfileSystem.authManager.updateProfile === 'function') {
+            // Use Supabase
+            const result = await ProfileSystem.authManager.updateProfile({ nickname: newNickname });
+            
+            if (result.success) {
+                ProfileSystem.showMessage('Nickname updated successfully!', 'success');
+                ProfileSystem.updateProfileDisplay();
+                form.reset();
+                setTimeout(() => closeSettingsMenu(), 2000);
+            }
+        } else {
+            // Fallback for localStorage
+            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+            
+            // Check if nickname already exists
+            const existingUser = savedUsers.find(u => u.nickname === newNickname && u.nickname !== currentUser.nickname);
+            if (existingUser) {
+                throw new Error('This nickname is already taken');
+            }
+            
+            const userIndex = savedUsers.findIndex(u => u.nickname === currentUser.nickname);
+            
+            if (userIndex === -1) {
+                throw new Error('User not found');
+            }
+
+            // Update nickname
+            savedUsers[userIndex].nickname = newNickname;
+            savedUsers[userIndex].updatedAt = new Date().toISOString();
+            
+            // Update current user
+            currentUser.nickname = newNickname;
+            currentUser.updatedAt = new Date().toISOString();
+
+            localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
+            localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
+            
+            ProfileSystem.showMessage('Nickname updated successfully! (Development mode)', 'success');
+            ProfileSystem.updateProfileDisplay();
+            
+            // Update sidebar
+            if (typeof updateSidebarUserInfo === 'function') {
+                updateSidebarUserInfo(currentUser);
+            }
+            
+            form.reset();
+            setTimeout(() => closeSettingsMenu(), 2000);
+        }
+
+    } catch (error) {
+        console.error('Change nickname error:', error);
+        ProfileSystem.showMessage(error.message || 'Failed to update nickname', 'error');
     } finally {
         ProfileSystem.showLoading(submitBtn, false);
     }
@@ -350,6 +549,8 @@ function goBackFromProfile() {
 
 // Confirm delete account
 function confirmDeleteAccount() {
+    closeSettingsMenu();
+    
     const isConfirmed = confirm(
         'Are you absolutely sure you want to delete your account?\n\n' +
         'This action cannot be undone. All your data will be permanently deleted.\n\n' +
@@ -446,7 +647,7 @@ function updateLoginStats() {
 
 // Initialize profile system
 function initializeProfile() {
-    console.log('👤 Initializing Profile system...');
+    console.log('👤 Initializing Compact Profile system...');
     
     const profilePage = document.getElementById('profilePage');
     if (!profilePage) {
@@ -455,19 +656,47 @@ function initializeProfile() {
     }
 
     ProfileSystem.init();
-    console.log('✅ Profile system initialized');
+    console.log('✅ Compact Profile system initialized');
 }
+
+// Close any open menus when clicking outside
+document.addEventListener('click', (e) => {
+    const settingsMenu = document.getElementById('settingsMenu');
+    const statsView = document.getElementById('statsView');
+    const settingsForms = document.querySelectorAll('.settings-form');
+    
+    if (settingsMenu && settingsMenu.style.display === 'block') {
+        if (!settingsMenu.contains(e.target) && !e.target.classList.contains('settings-btn')) {
+            closeSettingsMenu();
+        }
+    }
+    
+    if (statsView && statsView.style.display === 'block') {
+        if (!statsView.contains(e.target) && !e.target.classList.contains('stats-btn')) {
+            closeStatsView();
+        }
+    }
+});
 
 // Export functions for global use
 if (typeof window !== 'undefined') {
     window.ProfileSystem = ProfileSystem;
     window.initializeProfile = initializeProfile;
     window.handleChangePassword = handleChangePassword;
+    window.handleChangeNickname = handleChangeNickname;
     window.goBackFromProfile = goBackFromProfile;
     window.confirmDeleteAccount = confirmDeleteAccount;
     window.deleteUserAccount = deleteUserAccount;
     window.openProfile = openProfile;
     window.updateLoginStats = updateLoginStats;
+    window.toggleSettingsMenu = toggleSettingsMenu;
+    window.closeSettingsMenu = closeSettingsMenu;
+    window.backToSettingsMenu = backToSettingsMenu;
+    window.showChangePassword = showChangePassword;
+    window.showChangeNickname = showChangeNickname;
+    window.showPreferences = showPreferences;
+    window.toggleStatsView = toggleStatsView;
+    window.closeStatsView = closeStatsView;
 }
 
 // Auto-initialize when DOM is ready
