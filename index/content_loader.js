@@ -1,28 +1,30 @@
-// Content loader script
+// Enhanced content loader script with login support
 console.log('🔄 Завантаження контенту...');
 
 // Function to load content
 async function loadContent() {
     try {
-        // Load content files (removed login, added soon)
-        const [calcResponse, infoResponse] = await Promise.all([
+        // Load content files (including login page)
+        const [calcResponse, infoResponse, loginResponse] = await Promise.all([
             fetch('index/content_calc.html'),
-            fetch('index/content_info.html')
+            fetch('index/content_info.html'),
+            fetch('index/content_login.html')
         ]);
 
-        if (!calcResponse.ok || !infoResponse.ok) {
-            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}`);
+        if (!calcResponse.ok || !infoResponse.ok || !loginResponse.ok) {
+            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, login: ${loginResponse.status}`);
         }
         
-        const [calcContent, infoContent] = await Promise.all([
+        const [calcContent, infoContent, loginContent] = await Promise.all([
             calcResponse.text(),
-            infoResponse.text()
+            infoResponse.text(),
+            loginResponse.text()
         ]);
 
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with navigation and combine content + Soon page
+            // Create the main structure with navigation and combine all content
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -50,9 +52,9 @@ async function loadContent() {
                     <div class="sidebar-user" id="sidebarUser">
                         <div class="user-info" id="userInfo" style="display: none;">
                             <div class="user-nickname" id="sidebarUserNickname"></div>
-                            <div class="user-status">Увійшов в систему</div>
+                            <div class="user-status">Logged in</div>
                         </div>
-                        <button class="auth-btn-sidebar" id="authButton" onclick="handleAuthAction()">Soon..</button>
+                        <button class="auth-btn-sidebar" id="authButton" onclick="handleAuthAction()">Login</button>
                     </div>
                 </div>
 
@@ -60,6 +62,7 @@ async function loadContent() {
                 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
                    
                 <div class="container">
+                    ${loginContent}
                     ${calcContent}
                     ${infoContent}
                 </div>
@@ -72,11 +75,29 @@ async function loadContent() {
                         color: rgba(255, 255, 255, 0.7);
                         pointer-events: none;
                     }
+                    
+                    /* Enhanced login page integration */
+                    .login-page {
+                        background: none;
+                        min-height: auto;
+                        padding: 0;
+                    }
+                    
+                    .login-page .container {
+                        background: none;
+                        box-shadow: none;
+                        backdrop-filter: none;
+                        border: none;
+                        padding: 0;
+                    }
                 </style>
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Контент завантажено успішно (calc + info + soon)');
+            console.log('✅ Контент завантажено успішно (calc + info + login)');
+            
+            // Dispatch event that content is loaded
+            document.dispatchEvent(new CustomEvent('contentLoaded'));
             
             // Wait a bit for DOM to be ready, then initialize
             setTimeout(() => {
@@ -92,6 +113,11 @@ async function loadContent() {
     } catch (error) {
         console.error('❌ Помилка завантаження контенту:', error);
         
+        // Dispatch error event
+        document.dispatchEvent(new CustomEvent('contentLoadError', { 
+            detail: error 
+        }));
+        
         // Fallback - try to initialize anyway
         setTimeout(() => {
             if (typeof initializeApp === 'function') {
@@ -101,9 +127,123 @@ async function loadContent() {
     }
 }
 
+// Enhanced initialization with better auth integration
+function enhanceInitialization() {
+    // Listen for authentication events to update sidebar
+    document.addEventListener('userAuthenticated', (event) => {
+        const { user, profile } = event.detail;
+        updateSidebarForAuthenticatedUser(user, profile);
+    });
+    
+    document.addEventListener('userSignedOut', () => {
+        updateSidebarForSignedOutUser();
+    });
+}
+
+// Update sidebar for authenticated user
+function updateSidebarForAuthenticatedUser(user, profile) {
+    const userInfo = document.getElementById('userInfo');
+    const authButton = document.getElementById('authButton');
+    const sidebarUserNickname = document.getElementById('sidebarUserNickname');
+
+    if (userInfo && authButton) {
+        userInfo.style.display = 'block';
+        authButton.textContent = 'Sign Out';
+        authButton.classList.add('logout-btn');
+        authButton.onclick = () => {
+            if (window.authManager) {
+                window.authManager.signOut();
+            } else {
+                logout();
+            }
+        };
+
+        if (sidebarUserNickname) {
+            sidebarUserNickname.textContent = (profile?.nickname) || 
+                                            user.email?.split('@')[0] || 
+                                            'User';
+        }
+    }
+    
+    console.log('✅ Sidebar updated for authenticated user');
+}
+
+// Update sidebar for signed out user
+function updateSidebarForSignedOutUser() {
+    const userInfo = document.getElementById('userInfo');
+    const authButton = document.getElementById('authButton');
+
+    if (userInfo && authButton) {
+        userInfo.style.display = 'none';
+        authButton.textContent = 'Login';
+        authButton.classList.remove('logout-btn');
+        authButton.onclick = handleAuthAction;
+    }
+    
+    console.log('✅ Sidebar updated for signed out user');
+}
+
+// Enhanced auth action handler
+function handleAuthAction() {
+    const authButton = document.getElementById('authButton');
+    
+    if (authButton && authButton.classList.contains('logout-btn')) {
+        // User is logged in, handle logout
+        if (window.authManager) {
+            window.authManager.signOut();
+        } else if (typeof logout === 'function') {
+            logout();
+        }
+    } else {
+        // User is not logged in, go to login page
+        if (typeof switchPage === 'function') {
+            switchPage('login');
+        }
+    }
+}
+
+// Check if user is already authenticated
+function checkInitialAuthState() {
+    // Wait for auth manager to be ready
+    setTimeout(() => {
+        if (window.authManager && window.authManager.currentUser) {
+            updateSidebarForAuthenticatedUser(
+                window.authManager.currentUser, 
+                window.authManager.userProfile
+            );
+        } else {
+            // Check localStorage fallback
+            const savedUser = localStorage.getItem('armHelper_currentUser');
+            if (savedUser) {
+                try {
+                    const user = JSON.parse(savedUser);
+                    updateSidebarForAuthenticatedUser(user, user);
+                } catch (e) {
+                    console.warn('Invalid saved user data');
+                    localStorage.removeItem('armHelper_currentUser');
+                }
+            }
+        }
+    }, 500);
+}
+
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadContent);
+    document.addEventListener('DOMContentLoaded', () => {
+        loadContent();
+        enhanceInitialization();
+    });
 } else {
     loadContent();
+    enhanceInitialization();
 }
+
+// Check auth state after everything is loaded
+document.addEventListener('contentLoaded', () => {
+    checkInitialAuthState();
+});
+
+// Make functions globally available
+window.handleAuthAction = handleAuthAction;
+window.updateSidebarForAuthenticatedUser = updateSidebarForAuthenticatedUser;
+window.updateSidebarForSignedOutUser = updateSidebarForSignedOutUser;
