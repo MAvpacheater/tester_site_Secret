@@ -1,14 +1,63 @@
-// Compact Profile System - profile.js
+// Enhanced Profile System with Dynamic Nickname Loading - profile.js
 const ProfileSystem = {
     currentUser: null,
     authManager: null,
 
     // Initialize profile system
     init() {
-        console.log('👤 Initializing Compact Profile System...');
+        console.log('👤 Initializing Enhanced Profile System...');
         this.authManager = window.authManager;
         this.bindEvents();
         this.setupFormValidation();
+        
+        // Load user data immediately if available
+        this.loadCurrentUserData();
+    },
+
+    // Load current user data
+    loadCurrentUserData() {
+        // Check for authenticated user via auth manager
+        if (this.authManager && this.authManager.currentUser && this.authManager.userProfile) {
+            this.handleUserAuthenticated({
+                user: this.authManager.currentUser,
+                profile: this.authManager.userProfile
+            });
+            return;
+        }
+
+        // Fallback to localStorage
+        const savedUser = localStorage.getItem('armHelper_currentUser');
+        if (savedUser) {
+            try {
+                const user = JSON.parse(savedUser);
+                // Create user object that matches the expected structure
+                const userObj = {
+                    id: user.id || 'local-user',
+                    email: user.email || `${user.nickname}@local.test`,
+                    nickname: user.nickname
+                };
+                
+                this.handleUserAuthenticated({
+                    user: userObj,
+                    profile: user
+                });
+            } catch (e) {
+                console.warn('Error parsing saved user data:', e);
+                localStorage.removeItem('armHelper_currentUser');
+                this.setNicknameLoading();
+            }
+        } else {
+            this.setNicknameLoading();
+        }
+    },
+
+    // Set loading state for nickname
+    setNicknameLoading() {
+        const profileNickname = document.getElementById('profileNickname');
+        if (profileNickname) {
+            profileNickname.textContent = 'Not logged in';
+            profileNickname.classList.add('loading');
+        }
     },
 
     // Bind events
@@ -28,6 +77,7 @@ const ProfileSystem = {
 
     // Handle user authenticated
     handleUserAuthenticated(detail) {
+        console.log('👤 Profile System: User authenticated', detail);
         const { user, profile } = detail;
         this.currentUser = { user, profile };
         this.updateProfileDisplay();
@@ -35,29 +85,51 @@ const ProfileSystem = {
 
     // Handle user signed out
     handleUserSignedOut() {
+        console.log('👤 Profile System: User signed out');
         this.currentUser = null;
+        this.setNicknameLoading();
     },
 
-    // Update profile display
+    // Update profile display with actual nickname
     updateProfileDisplay() {
-        if (!this.currentUser) return;
+        if (!this.currentUser) {
+            this.setNicknameLoading();
+            return;
+        }
 
         const { user, profile } = this.currentUser;
-        const nickname = profile?.nickname || user?.email?.split('@')[0] || 'User';
+        
+        // Determine the nickname to display (priority order)
+        let nickname = 'User'; // fallback
+        
+        if (profile?.nickname) {
+            nickname = profile.nickname;
+        } else if (user?.nickname) {
+            nickname = user.nickname;
+        } else if (user?.email) {
+            nickname = user.email.split('@')[0];
+        }
+
+        console.log('👤 Updating profile display for:', nickname);
 
         // Update profile info
         const profileNickname = document.getElementById('profileNickname');
         const profileAvatar = document.getElementById('profileAvatar');
-        const profileJoinDate = document.getElementById('profileJoinDate');
         const currentNicknameInput = document.getElementById('currentNickname');
 
         if (profileNickname) {
             profileNickname.textContent = nickname;
+            profileNickname.classList.remove('loading');
         }
 
         if (profileAvatar) {
-            // For now using placeholder, you can change this to your avatar URL later
-            profileAvatar.src = `https://via.placeholder.com/100x100/667eea/ffffff?text=${nickname.charAt(0).toUpperCase()}`;
+            // Generate avatar with first letter of nickname
+            const firstLetter = nickname.charAt(0).toUpperCase();
+            // Create a more colorful placeholder
+            const colors = ['667eea', '764ba2', '667292', 'f093fb', 'f5576c', '4facfe', '43e97b'];
+            const color = colors[nickname.length % colors.length];
+            
+            profileAvatar.src = `https://via.placeholder.com/100x100/${color}/ffffff?text=${firstLetter}`;
             profileAvatar.alt = `${nickname}'s avatar`;
         }
 
@@ -65,34 +137,8 @@ const ProfileSystem = {
             currentNicknameInput.value = nickname;
         }
 
-        if (profileJoinDate) {
-            const joinDate = this.formatJoinDate(profile?.created_at || user?.created_at);
-            profileJoinDate.textContent = joinDate;
-        }
-
         // Update stats
         this.updateProfileStats();
-    },
-
-    // Format join date
-    formatJoinDate(dateString) {
-        if (!dateString) return 'Recently';
-        
-        try {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffTime = Math.abs(now - date);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            if (diffDays < 1) return 'Today';
-            if (diffDays < 7) return `${diffDays} days ago`;
-            if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-            if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
-            
-            return date.toLocaleDateString();
-        } catch (e) {
-            return 'Recently';
-        }
     },
 
     // Update profile stats
@@ -104,7 +150,9 @@ const ProfileSystem = {
             
             for (const type of calculatorTypes) {
                 const settings = await this.loadCalculatorSettings(type);
-                if (settings) calculationsCount++;
+                if (settings && Object.keys(settings).length > 0) {
+                    calculationsCount++;
+                }
             }
 
             const calculationsEl = document.getElementById('calculationsCount');
@@ -112,7 +160,7 @@ const ProfileSystem = {
                 calculationsEl.textContent = calculationsCount;
             }
 
-            // Update login count (mock data for now)
+            // Update login count
             const loginCountEl = document.getElementById('loginCount');
             if (loginCountEl) {
                 const loginCount = parseInt(localStorage.getItem('armHelper_loginCount') || '1');
@@ -130,7 +178,16 @@ const ProfileSystem = {
                     if (date.toDateString() === today.toDateString()) {
                         lastLoginEl.textContent = 'Today';
                     } else {
-                        lastLoginEl.textContent = date.toLocaleDateString();
+                        const diffTime = Math.abs(today - date);
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        
+                        if (diffDays === 1) {
+                            lastLoginEl.textContent = 'Yesterday';
+                        } else if (diffDays < 7) {
+                            lastLoginEl.textContent = `${diffDays} days ago`;
+                        } else {
+                            lastLoginEl.textContent = date.toLocaleDateString();
+                        }
                     }
                 } else {
                     lastLoginEl.textContent = 'Today';
@@ -488,7 +545,8 @@ async function handleChangeNickname(event) {
             
             if (result.success) {
                 ProfileSystem.showMessage('Nickname updated successfully!', 'success');
-                ProfileSystem.updateProfileDisplay();
+                // Refresh current user data to reflect changes
+                ProfileSystem.loadCurrentUserData();
                 form.reset();
                 setTimeout(() => closeSettingsMenu(), 2000);
             }
@@ -521,11 +579,13 @@ async function handleChangeNickname(event) {
             localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
             
             ProfileSystem.showMessage('Nickname updated successfully! (Development mode)', 'success');
-            ProfileSystem.updateProfileDisplay();
             
-            // Update sidebar
-            if (typeof updateSidebarUserInfo === 'function') {
-                updateSidebarUserInfo(currentUser);
+            // Refresh profile display
+            ProfileSystem.loadCurrentUserData();
+            
+            // Update sidebar if function exists
+            if (typeof updateSidebarForAuthenticatedUser === 'function') {
+                updateSidebarForAuthenticatedUser({ email: currentUser.email }, currentUser);
             }
             
             form.reset();
@@ -618,10 +678,19 @@ async function deleteUserAccount() {
     }
 }
 
-// Open profile page
+// Open profile page with immediate data loading
 function openProfile() {
-    if (!ProfileSystem.currentUser && !localStorage.getItem('armHelper_currentUser')) {
+    console.log('👤 Opening profile page...');
+    
+    // Check if user is logged in
+    const hasAuthUser = window.authManager && window.authManager.currentUser;
+    const hasLocalUser = localStorage.getItem('armHelper_currentUser');
+    
+    if (!hasAuthUser && !hasLocalUser) {
         ProfileSystem.showMessage('Please login to view your profile', 'error');
+        if (typeof switchPage === 'function') {
+            switchPage('login');
+        }
         return;
     }
 
@@ -630,6 +699,7 @@ function openProfile() {
         
         // Small delay to ensure page is loaded, then update display
         setTimeout(() => {
+            ProfileSystem.loadCurrentUserData();
             ProfileSystem.updateProfileDisplay();
         }, 100);
     }
@@ -643,11 +713,13 @@ function updateLoginStats() {
     
     // Update last login time
     localStorage.setItem('armHelper_lastLogin', new Date().toISOString());
+    
+    console.log('📊 Login stats updated:', { count: currentCount + 1 });
 }
 
 // Initialize profile system
 function initializeProfile() {
-    console.log('👤 Initializing Compact Profile system...');
+    console.log('👤 Initializing Enhanced Profile system...');
     
     const profilePage = document.getElementById('profilePage');
     if (!profilePage) {
@@ -656,7 +728,16 @@ function initializeProfile() {
     }
 
     ProfileSystem.init();
-    console.log('✅ Compact Profile system initialized');
+    console.log('✅ Enhanced Profile system initialized');
+}
+
+// Enhanced refresh profile display function
+function refreshProfileDisplay() {
+    console.log('🔄 Refreshing profile display...');
+    if (ProfileSystem) {
+        ProfileSystem.loadCurrentUserData();
+        ProfileSystem.updateProfileDisplay();
+    }
 }
 
 // Close any open menus when clicking outside
@@ -682,6 +763,7 @@ document.addEventListener('click', (e) => {
 if (typeof window !== 'undefined') {
     window.ProfileSystem = ProfileSystem;
     window.initializeProfile = initializeProfile;
+    window.refreshProfileDisplay = refreshProfileDisplay;
     window.handleChangePassword = handleChangePassword;
     window.handleChangeNickname = handleChangeNickname;
     window.goBackFromProfile = goBackFromProfile;
@@ -706,4 +788,13 @@ document.addEventListener('DOMContentLoaded', () => {
             initializeProfile();
         }
     }, 100);
+});
+
+// Listen for page switches to refresh profile data
+document.addEventListener('pageChanged', (event) => {
+    if (event.detail?.page === 'profile') {
+        setTimeout(() => {
+            refreshProfileDisplay();
+        }, 50);
+    }
 });
