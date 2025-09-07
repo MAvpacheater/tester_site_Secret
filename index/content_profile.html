@@ -1,5 +1,8 @@
-<!-- Profile Page -->
+<!-- Profile Page - HTML структура без логіки -->
 <div class="page profile-page" id="profilePage">
+    <!-- Include CSS -->
+    <link rel="stylesheet" href="login/profile.css">
+    
     <div class="profile-container">
         <!-- Profile Header -->
         <div class="profile-header">
@@ -28,7 +31,7 @@
             </button>
         </div>
 
-        <!-- Settings Menu (Hidden by default) -->
+        <!-- Settings Menu -->
         <div class="settings-menu" id="settingsMenu" style="display: none;">
             <div class="settings-header">
                 <h3>Settings</h3>
@@ -74,7 +77,7 @@
             </div>
         </div>
 
-        <!-- Change Password Form (Hidden by default) -->
+        <!-- Change Password Form -->
         <div class="settings-form" id="changePasswordForm" style="display: none;">
             <div class="form-header">
                 <button class="back-form-btn" onclick="backToSettingsMenu()">←</button>
@@ -102,7 +105,7 @@
             </form>
         </div>
 
-        <!-- Change Nickname Form (Hidden by default) -->
+        <!-- Change Nickname Form -->
         <div class="settings-form" id="changeNicknameForm" style="display: none;">
             <div class="form-header">
                 <button class="back-form-btn" onclick="backToSettingsMenu()">←</button>
@@ -125,7 +128,7 @@
             </form>
         </div>
 
-        <!-- Preferences Form (Hidden by default) -->
+        <!-- Preferences Form -->
         <div class="settings-form" id="preferencesForm" style="display: none;">
             <div class="form-header">
                 <button class="back-form-btn" onclick="backToSettingsMenu()">←</button>
@@ -158,7 +161,7 @@
             </div>
         </div>
 
-        <!-- Statistics View (Hidden by default) -->
+        <!-- Statistics View -->
         <div class="stats-view" id="statsView" style="display: none;">
             <div class="stats-header">
                 <h3>Statistics</h3>
@@ -184,4 +187,9 @@
         <!-- Success/Error Messages -->
         <div class="profile-message" id="profileMessage"></div>
     </div>
+
+    <!-- Include JavaScript files -->
+    <script src="login/profile.js"></script>
+    <script src="login/profile-open.js"></script>
+    <script src="login/profile-settings.js"></script>
 </div>
