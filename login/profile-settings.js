@@ -1,4 +1,4 @@
-// profile-settings.js - ПОВНІСТЮ БЕЗ БЛОКУВАНЬ
+// profile-settings.js - ПОВНІСТЮ ВИПРАВЛЕНА ВЕРСІЯ
 console.log('⚙️ Loading profile-settings.js - FULLY FUNCTIONAL VERSION...');
 
 // Menu Management Functions
@@ -72,34 +72,29 @@ function showChangeNickname() {
 
 // Show loading state on button
 function showLoading(button, show = true) {
+    if (!button) return;
+    
     if (show) {
         button.classList.add('loading');
         button.disabled = true;
+        if (!button.dataset.originalText) {
+            button.dataset.originalText = button.textContent;
+        }
         button.textContent = 'Processing...';
     } else {
         button.classList.remove('loading');
         button.disabled = false;
-        if (button.id === 'changePasswordSubmit') {
-            button.textContent = 'Update Password';
-        } else if (button.id === 'changeNicknameSubmit') {
-            button.textContent = 'Update Nickname';
-        } else {
-            button.textContent = button.dataset.originalText || 'Submit';
-        }
+        button.textContent = button.dataset.originalText || 'Submit';
     }
 }
 
-// Handle change password - ПРАЦЮЮЧА ВЕРСІЯ БЕЗ ОБМЕЖЕНЬ
+// Handle change password - ВИПРАВЛЕНА ВЕРСІЯ
 async function handleChangePassword(event) {
     event.preventDefault();
-    console.log('🔑 Password change initiated - NO BLOCKS');
+    console.log('🔑 Password change initiated');
 
     const form = event.target;
     const submitBtn = form.querySelector('.submit-btn');
-    
-    if (!submitBtn.dataset.originalText) {
-        submitBtn.dataset.originalText = submitBtn.textContent;
-    }
     
     const currentPassword = document.getElementById('currentPassword')?.value || '';
     const newPassword = document.getElementById('newPassword')?.value;
@@ -126,6 +121,7 @@ async function handleChangePassword(event) {
         console.log('🔄 Processing password change...');
 
         let success = false;
+        let errorMessage = '';
 
         // Спробуємо authManager
         if (window.authManager && typeof window.authManager.changePassword === 'function') {
@@ -135,24 +131,33 @@ async function handleChangePassword(event) {
                 if (result && result.success) {
                     success = true;
                     console.log('✅ Password changed via authManager');
+                } else {
+                    errorMessage = result?.message || 'AuthManager failed';
                 }
             } catch (error) {
-                console.warn('❌ AuthManager failed, trying fallback:', error.message);
+                console.warn('❌ AuthManager failed:', error.message);
+                errorMessage = error.message;
             }
         }
 
         // Якщо authManager не спрацював, використовуємо fallback
         if (!success) {
             console.log('🔄 Using fallback password change');
-            await handlePasswordChangeFallback(currentPassword, newPassword);
-            success = true;
-            console.log('✅ Password changed via fallback');
+            try {
+                await handlePasswordChangeFallback(currentPassword, newPassword);
+                success = true;
+                console.log('✅ Password changed via fallback');
+            } catch (error) {
+                errorMessage = error.message;
+            }
         }
 
         if (success) {
             showProfileMessage('Password updated successfully!', 'success');
             form.reset();
             setTimeout(() => closeSettingsMenu(), 2000);
+        } else {
+            throw new Error(errorMessage || 'Failed to update password');
         }
 
     } catch (error) {
@@ -167,6 +172,173 @@ async function handleChangePassword(event) {
 async function handlePasswordChangeFallback(currentPassword, newPassword) {
     const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
     const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+    
+    if (!currentUser.nickname) {
+        throw new Error('User not found');
+    }
+    
+    const userIndex = savedUsers.findIndex(u => u.nickname === currentUser.nickname);
+    
+    if (userIndex === -1) {
+        throw new Error('User not found');
+    }
+
+    // Оновлюємо пароль
+    savedUsers[userIndex].password = newPassword;
+    savedUsers[userIndex].updatedAt = new Date().toISOString();
+    localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
+    
+    // Оновлюємо поточного користувача
+    currentUser.password = newPassword;
+    currentUser.updatedAt = new Date().toISOString();
+    localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
+    
+    // Оновлюємо authManager якщо він є
+    if (window.authManager) {
+        window.authManager.userProfile = currentUser;
+    }
+}
+
+// Handle change nickname - ВИПРАВЛЕНА ВЕРСІЯ
+async function handleChangeNickname(event) {
+    event.preventDefault();
+    console.log('✏️ Nickname change initiated');
+
+    const form = event.target;
+    const submitBtn = form.querySelector('.submit-btn');
+    
+    const currentNickname = document.getElementById('currentNickname')?.value;
+    const newNickname = document.getElementById('newNickname')?.value?.trim();
+
+    // Базова валідація
+    if (!newNickname) {
+        showProfileMessage('New nickname is required', 'error');
+        return;
+    }
+
+    if (newNickname.length < 3 || newNickname.length > 20) {
+        showProfileMessage('Nickname must be between 3 and 20 characters', 'error');
+        return;
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(newNickname)) {
+        showProfileMessage('Nickname can only contain letters, numbers, and underscores', 'error');
+        return;
+    }
+
+    if (currentNickname === newNickname) {
+        showProfileMessage('New nickname must be different from current nickname', 'error');
+        return;
+    }
+
+    try {
+        showLoading(submitBtn, true);
+        console.log('🔄 Processing nickname change...');
+
+        let success = false;
+        let errorMessage = '';
+
+        // Спробуємо authManager
+        if (window.authManager && typeof window.authManager.updateProfile === 'function') {
+            console.log('🔄 Using authManager for nickname change');
+            try {
+                const result = await window.authManager.updateProfile({ nickname: newNickname });
+                if (result && result.success) {
+                    success = true;
+                    console.log('✅ Nickname changed via authManager');
+                    
+                    // Оновлюємо UI
+                    updateUIAfterNicknameChange(newNickname, result.profile);
+                } else {
+                    errorMessage = result?.message || 'AuthManager failed';
+                }
+            } catch (error) {
+                console.warn('❌ AuthManager failed:', error.message);
+                errorMessage = error.message;
+            }
+        }
+
+        // Якщо authManager не спрацював, використовуємо fallback
+        if (!success) {
+            console.log('🔄 Using fallback nickname change');
+            try {
+                const updatedProfile = await handleNicknameChangeFallback(currentNickname, newNickname);
+                success = true;
+                console.log('✅ Nickname changed via fallback');
+                
+                // Оновлюємо UI
+                updateUIAfterNicknameChange(newNickname, updatedProfile);
+            } catch (error) {
+                errorMessage = error.message;
+            }
+        }
+
+        if (success) {
+            showProfileMessage('Nickname updated successfully!', 'success');
+            form.reset();
+            setTimeout(() => closeSettingsMenu(), 2000);
+        } else {
+            throw new Error(errorMessage || 'Failed to update nickname');
+        }
+
+    } catch (error) {
+        console.error('❌ Nickname change error:', error);
+        showProfileMessage(error.message || 'Failed to update nickname', 'error');
+    } finally {
+        showLoading(submitBtn, false);
+    }
+}
+
+// Оновлення UI після зміни нікнейму
+function updateUIAfterNicknameChange(newNickname, profile) {
+    console.log('🔄 Updating UI after nickname change to:', newNickname);
+    
+    // Оновлюємо профіль
+    const profileNickname = document.getElementById('profileNickname');
+    if (profileNickname) {
+        profileNickname.textContent = newNickname;
+    }
+    
+    // Оновлюємо сайдбар
+    const sidebarUserNickname = document.getElementById('sidebarUserNickname');
+    if (sidebarUserNickname) {
+        sidebarUserNickname.textContent = newNickname;
+    }
+    
+    // Оновлюємо форму
+    const currentNicknameInput = document.getElementById('currentNickname');
+    if (currentNicknameInput) {
+        currentNicknameInput.value = newNickname;
+    }
+    
+    // Очищуємо поле нового нікнейму
+    const newNicknameInput = document.getElementById('newNickname');
+    if (newNicknameInput) {
+        newNicknameInput.value = '';
+    }
+    
+    // Відправляємо подію оновлення профілю
+    document.dispatchEvent(new CustomEvent('userProfileUpdated', {
+        detail: { profile: profile || { nickname: newNickname } }
+    }));
+    
+    console.log('✅ UI updated after nickname change');
+}
+
+// Fallback зміна нікнейму
+async function handleNicknameChangeFallback(currentNickname, newNickname) {
+    const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+    const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+    
+    // Перевіряємо унікальність нікнейму
+    const existingUser = savedUsers.find(u => 
+        u.nickname === newNickname && 
+        u.nickname !== currentNickname
+    );
+    
+    if (existingUser) {
+        throw new Error('This nickname is already taken');
+    }
     
     const userIndex = savedUsers.findIndex(u => u.nickname === currentNickname);
     
@@ -196,7 +368,7 @@ async function handlePasswordChangeFallback(currentPassword, newPassword) {
 
 // Confirm delete account
 function confirmDeleteAccount() {
-    console.log('⚠️ Account deletion initiated - NO BLOCKS');
+    console.log('⚠️ Account deletion initiated');
     closeSettingsMenu();
     
     const isConfirmed = confirm(
@@ -216,12 +388,13 @@ function confirmDeleteAccount() {
     }
 }
 
-// Delete user account - ПРАЦЮЮЧА ВЕРСІЯ БЕЗ ОБМЕЖЕНЬ
+// Delete user account - ВИПРАВЛЕНА ВЕРСІЯ
 async function deleteUserAccount() {
-    console.log('🗑️ Account deletion processing - NO BLOCKS');
+    console.log('🗑️ Account deletion processing');
     
     try {
         let success = false;
+        let errorMessage = '';
 
         // Спробуємо authManager
         if (window.authManager && typeof window.authManager.deleteAccount === 'function') {
@@ -231,18 +404,25 @@ async function deleteUserAccount() {
                 if (result && result.success) {
                     success = true;
                     console.log('✅ Account deleted via authManager');
+                } else {
+                    errorMessage = result?.message || 'AuthManager failed';
                 }
             } catch (error) {
-                console.warn('❌ AuthManager failed, trying fallback:', error.message);
+                console.warn('❌ AuthManager failed:', error.message);
+                errorMessage = error.message;
             }
         }
 
         // Якщо authManager не спрацював, використовуємо fallback
         if (!success) {
             console.log('🔄 Using fallback account deletion');
-            await deleteAccountFallback();
-            success = true;
-            console.log('✅ Account deleted via fallback');
+            try {
+                await deleteAccountFallback();
+                success = true;
+                console.log('✅ Account deleted via fallback');
+            } catch (error) {
+                errorMessage = error.message;
+            }
         }
 
         if (success) {
@@ -255,6 +435,8 @@ async function deleteUserAccount() {
                     window.location.reload();
                 }
             }, 1000);
+        } else {
+            throw new Error(errorMessage || 'Failed to delete account');
         }
 
     } catch (error) {
@@ -267,6 +449,10 @@ async function deleteUserAccount() {
 async function deleteAccountFallback() {
     const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
     const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+    
+    if (!currentUser.nickname) {
+        throw new Error('User not found');
+    }
     
     // Видаляємо користувача зі списку
     const updatedUsers = savedUsers.filter(u => u.nickname !== currentUser.nickname);
@@ -310,7 +496,7 @@ function showProfileMessage(text, type = 'success') {
         if (type === 'error') {
             alert('Error: ' + text);
         } else {
-            alert(text);
+            console.log('Success: ' + text);
         }
     }
 }
@@ -339,7 +525,7 @@ function setupOutsideClickListeners() {
 
 // Initialize settings
 function initializeProfileSettings() {
-    console.log('⚙️ Initializing profile settings - FULLY FUNCTIONAL');
+    console.log('⚙️ Initializing profile settings');
     setupOutsideClickListeners();
     
     // Додаємо ID до кнопок для кращого контролю
@@ -373,21 +559,47 @@ function initializeProfileSettings() {
 // Функція для тестування - можна викликати з консолі
 function testNicknameChange() {
     console.log('🧪 Testing nickname change functionality...');
-    const event = {
-        preventDefault: () => {},
-        target: document.querySelector('#changeNicknameForm')
-    };
-    handleChangeNickname(event);
+    
+    // Встановлюємо тестові дані
+    const currentNicknameInput = document.getElementById('currentNickname');
+    const newNicknameInput = document.getElementById('newNickname');
+    
+    if (currentNicknameInput && newNicknameInput) {
+        currentNicknameInput.value = 'testuser';
+        newNicknameInput.value = 'newuser123';
+        
+        const event = {
+            preventDefault: () => {},
+            target: document.querySelector('#changeNicknameForm')
+        };
+        handleChangeNickname(event);
+    } else {
+        console.error('Nickname form elements not found');
+    }
 }
 
 // Функція для тестування - можна викликати з консолі
 function testPasswordChange() {
     console.log('🧪 Testing password change functionality...');
-    const event = {
-        preventDefault: () => {},
-        target: document.querySelector('#changePasswordForm')
-    };
-    handleChangePassword(event);
+    
+    // Встановлюємо тестові дані
+    const currentPasswordInput = document.getElementById('currentPassword');
+    const newPasswordInput = document.getElementById('newPassword');
+    const confirmPasswordInput = document.getElementById('confirmNewPassword');
+    
+    if (currentPasswordInput && newPasswordInput && confirmPasswordInput) {
+        currentPasswordInput.value = 'oldpass';
+        newPasswordInput.value = 'newpass123';
+        confirmPasswordInput.value = 'newpass123';
+        
+        const event = {
+            preventDefault: () => {},
+            target: document.querySelector('#changePasswordForm')
+        };
+        handleChangePassword(event);
+    } else {
+        console.error('Password form elements not found');
+    }
 }
 
 // Export functions for global use
@@ -411,142 +623,4 @@ if (typeof window !== 'undefined') {
     window.testPasswordChange = testPasswordChange;
 }
 
-console.log('✅ profile-settings.js loaded - COMPLETELY FUNCTIONAL, NO BLOCKS ANYWHERE!');nickname === currentUser.nickname);
-    
-    if (userIndex === -1) {
-        throw new Error('User not found');
-    }
-
-    // Оновлюємо пароль
-    savedUsers[userIndex].password = newPassword;
-    savedUsers[userIndex].updatedAt = new Date().toISOString();
-    localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
-    
-    // Оновлюємо поточного користувача
-    currentUser.password = newPassword;
-    localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
-}
-
-// Handle change nickname - ПРАЦЮЮЧА ВЕРСІЯ БЕЗ ОБМЕЖЕНЬ
-async function handleChangeNickname(event) {
-    event.preventDefault();
-    console.log('✏️ Nickname change initiated - NO BLOCKS');
-
-    const form = event.target;
-    const submitBtn = form.querySelector('.submit-btn');
-    
-    if (!submitBtn.dataset.originalText) {
-        submitBtn.dataset.originalText = submitBtn.textContent;
-    }
-    
-    const currentNickname = document.getElementById('currentNickname')?.value;
-    const newNickname = document.getElementById('newNickname')?.value?.trim();
-
-    // Базова валідація
-    if (!newNickname) {
-        showProfileMessage('New nickname is required', 'error');
-        return;
-    }
-
-    if (newNickname.length < 3 || newNickname.length > 20) {
-        showProfileMessage('Nickname must be between 3 and 20 characters', 'error');
-        return;
-    }
-
-    if (!/^[a-zA-Z0-9_]+$/.test(newNickname)) {
-        showProfileMessage('Nickname can only contain letters, numbers, and underscores', 'error');
-        return;
-    }
-
-    if (currentNickname === newNickname) {
-        showProfileMessage('New nickname must be different from current nickname', 'error');
-        return;
-    }
-
-    try {
-        showLoading(submitBtn, true);
-        console.log('🔄 Processing nickname change...');
-
-        let success = false;
-
-        // Спробуємо authManager
-        if (window.authManager && typeof window.authManager.updateProfile === 'function') {
-            console.log('🔄 Using authManager for nickname change');
-            try {
-                const result = await window.authManager.updateProfile({ nickname: newNickname });
-                if (result && result.success) {
-                    success = true;
-                    console.log('✅ Nickname changed via authManager');
-                    
-                    // Оновлюємо UI
-                    updateUIAfterNicknameChange(newNickname, result.profile);
-                }
-            } catch (error) {
-                console.warn('❌ AuthManager failed, trying fallback:', error.message);
-            }
-        }
-
-        // Якщо authManager не спрацював, використовуємо fallback
-        if (!success) {
-            console.log('🔄 Using fallback nickname change');
-            const updatedProfile = await handleNicknameChangeFallback(currentNickname, newNickname);
-            success = true;
-            console.log('✅ Nickname changed via fallback');
-            
-            // Оновлюємо UI
-            updateUIAfterNicknameChange(newNickname, updatedProfile);
-        }
-
-        if (success) {
-            showProfileMessage('Nickname updated successfully!', 'success');
-            form.reset();
-            setTimeout(() => closeSettingsMenu(), 2000);
-        }
-
-    } catch (error) {
-        console.error('❌ Nickname change error:', error);
-        showProfileMessage(error.message || 'Failed to update nickname', 'error');
-    } finally {
-        showLoading(submitBtn, false);
-    }
-}
-
-// Оновлення UI після зміни нікнейму
-function updateUIAfterNicknameChange(newNickname, profile) {
-    // Оновлюємо профіль
-    const profileNickname = document.getElementById('profileNickname');
-    if (profileNickname) {
-        profileNickname.textContent = newNickname;
-    }
-    
-    // Оновлюємо сайдбар
-    const sidebarUserNickname = document.getElementById('sidebarUserNickname');
-    if (sidebarUserNickname) {
-        sidebarUserNickname.textContent = newNickname;
-    }
-    
-    // Оновлюємо форму
-    const currentNicknameInput = document.getElementById('currentNickname');
-    if (currentNicknameInput) {
-        currentNicknameInput.value = newNickname;
-    }
-    
-    console.log('✅ UI updated after nickname change');
-}
-
-// Fallback зміна нікнейму
-async function handleNicknameChangeFallback(currentNickname, newNickname) {
-    const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
-    const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
-    
-    // Перевіряємо унікальність нікнейму
-    const existingUser = savedUsers.find(u => 
-        u.nickname === newNickname && 
-        u.nickname !== currentNickname
-    );
-    
-    if (existingUser) {
-        throw new Error('This nickname is already taken');
-    }
-    
-    const userIndex = savedUsers.findIndex(u => u.
+console.log('✅ profile-settings.js loaded - COMPLETELY FUNCTIONAL!');
