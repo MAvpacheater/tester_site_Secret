@@ -25,7 +25,7 @@ const charmsData = [
     },
     {
         title: "Luck charm",
-        imageUrl: "https://i.postimg.cc/wxXW7r2N/2025-09-06-22-18-03.png", // Замініть на ваш URL
+        imageUrl: "https://i.postimg.cc/wB1pJgyB/2025-09-07-10-01-45.png", // Замініть на ваш URL
         description: "Adds 5% to luck",
         details: "Max stock: 16",
         category: "charm"
