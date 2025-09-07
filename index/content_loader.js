@@ -1,4 +1,4 @@
-// Enhanced content loader script - Clean version
+// Enhanced content loader script - Fixed version
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -53,7 +53,7 @@ async function loadContent() {
                     <!-- User Section in Sidebar -->
                     <div class="sidebar-user" id="sidebarUser">
                         <div class="user-info" id="userInfo" style="display: none;">
-                            <div class="user-nickname clickable-nickname" id="sidebarUserNickname" onclick="openProfile()" title="Click to view profile"></div>
+                            <div class="user-nickname clickable-nickname" id="sidebarUserNickname" onclick="handleProfileClick()" title="Click to view profile"></div>
                             <div class="user-status">Logged in</div>
                         </div>
                         <button class="auth-btn-sidebar" id="authButton" onclick="handleAuthAction()">Login</button>
@@ -191,6 +191,89 @@ async function loadContent() {
     }
 }
 
+// Handle profile click with fallback
+function handleProfileClick() {
+    console.log('🖱️ Profile click detected');
+    
+    // Try to use the openProfile function if available
+    if (typeof window.openProfile === 'function') {
+        window.openProfile();
+        return;
+    }
+    
+    // Fallback: try to switch to profile page directly
+    if (typeof switchPage === 'function') {
+        console.log('📄 Using switchPage fallback');
+        switchPage('profile');
+        
+        // Try to update profile display after a delay
+        setTimeout(() => {
+            if (typeof window.updateProfileDisplay === 'function') {
+                window.updateProfileDisplay();
+            } else {
+                console.log('📋 Manually updating profile display');
+                manualProfileUpdate();
+            }
+        }, 200);
+    } else {
+        console.error('❌ No profile opening method available');
+        alert('Profile functionality not available. Please refresh the page.');
+    }
+}
+
+// Manual profile update as fallback
+function manualProfileUpdate() {
+    // Get current user
+    let currentUser = null;
+    
+    // Check auth manager first
+    if (window.authManager && window.authManager.currentUser) {
+        currentUser = {
+            user: window.authManager.currentUser,
+            profile: window.authManager.userProfile
+        };
+    } else {
+        // Check localStorage fallback
+        const savedUser = localStorage.getItem('armHelper_currentUser');
+        if (savedUser) {
+            try {
+                const user = JSON.parse(savedUser);
+                currentUser = { user, profile: user };
+            } catch (e) {
+                console.warn('Invalid saved user data');
+            }
+        }
+    }
+    
+    if (!currentUser) {
+        console.warn('No user data available for profile');
+        return;
+    }
+    
+    const { user, profile } = currentUser;
+    const nickname = profile?.nickname || user?.email?.split('@')[0] || 'User';
+    
+    // Update profile elements
+    const profileNickname = document.getElementById('profileNickname');
+    const profileAvatar = document.getElementById('profileAvatar');
+    const currentNicknameInput = document.getElementById('currentNickname');
+    
+    if (profileNickname) {
+        profileNickname.textContent = nickname;
+    }
+    
+    if (profileAvatar) {
+        profileAvatar.src = `https://via.placeholder.com/100x100/667eea/ffffff?text=${nickname.charAt(0).toUpperCase()}`;
+        profileAvatar.alt = `${nickname}'s avatar`;
+    }
+    
+    if (currentNicknameInput) {
+        currentNicknameInput.value = nickname;
+    }
+    
+    console.log('✅ Manual profile update completed');
+}
+
 // Enhanced initialization with auth integration
 function enhanceInitialization() {
     // Listen for authentication events to update ONLY sidebar
@@ -231,14 +314,9 @@ function updateSidebarForAuthenticatedUser(user, profile) {
                                             user.nickname || 
                                             user.email?.split('@')[0] || 
                                             'User';
-            // Ensure click handler is set
-            sidebarUserNickname.onclick = () => {
-                if (typeof openProfile === 'function') {
-                    openProfile();
-                } else {
-                    console.error('openProfile function not found');
-                }
-            };
+            
+            // Set onclick handler using the safe function
+            sidebarUserNickname.onclick = handleProfileClick;
         }
     }
     
@@ -322,5 +400,7 @@ document.addEventListener('contentLoaded', () => {
 
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
+window.handleProfileClick = handleProfileClick;
+window.manualProfileUpdate = manualProfileUpdate;
 window.updateSidebarForAuthenticatedUser = updateSidebarForAuthenticatedUser;
 window.updateSidebarForSignedOutUser = updateSidebarForSignedOutUser;
