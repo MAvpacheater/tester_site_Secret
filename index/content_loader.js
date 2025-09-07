@@ -1,4 +1,4 @@
-// Enhanced content loader script - Fixed version
+// Enhanced content loader script - ПОВНА ВЕРСІЯ БЕЗ БЛОКУВАНЬ
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -263,7 +263,7 @@ function manualProfileUpdate() {
     }
     
     if (profileAvatar) {
-        profileAvatar.src = `https://via.placeholder.com/100x100/667eea/ffffff?text=${nickname.charAt(0).toUpperCase()}`;
+        // НЕ ЗМІНЮЄМО SRC - аватарка захищена
         profileAvatar.alt = `${nickname}'s avatar`;
     }
     
@@ -382,23 +382,7 @@ function checkInitialAuthState() {
     }, 500);
 }
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        loadContent();
-        enhanceInitialization();
-    });
-} else {
-    loadContent();
-    enhanceInitialization();
-}
-
-// Check auth state after everything is loaded
-document.addEventListener('contentLoaded', () => {
-    checkInitialAuthState();
-});
-
-// Profile settings functions - Add fallbacks for missing functions
+// Profile settings functions - Fallbacks for missing functions
 function toggleSettingsMenu() {
     console.log('⚙️ Toggle settings menu');
     const settingsMenu = document.getElementById('settingsMenu');
@@ -456,7 +440,7 @@ function goBackFromProfile() {
 }
 
 function updateStatsView() {
-    console.log('📊 Updating stats view (without calculations)');
+    console.log('📊 Updating stats view');
     try {
         // Update login count
         const loginCountEl = document.getElementById('loginCount');
@@ -572,16 +556,160 @@ function deleteUserAccount() {
     }
 }
 
-// Form handlers
+// Form handlers - ПОВНОЦІННІ БЕЗ БЛОКУВАНЬ
 function handleChangePassword(event) {
     event.preventDefault();
-    alert('Password change functionality is not fully implemented yet.');
+    console.log('🔑 Password change initiated');
+    
+    const currentPassword = document.getElementById('currentPassword')?.value || '';
+    const newPassword = document.getElementById('newPassword')?.value;
+    const confirmNewPassword = document.getElementById('confirmNewPassword')?.value;
+    
+    if (!newPassword || !confirmNewPassword) {
+        alert('All password fields are required');
+        return;
+    }
+    
+    if (newPassword.length < 6) {
+        alert('New password must be at least 6 characters long');
+        return;
+    }
+    
+    if (newPassword !== confirmNewPassword) {
+        alert('New passwords do not match');
+        return;
+    }
+    
+    // Call the profile settings handler if available
+    if (typeof window.handleChangePassword === 'function') {
+        window.handleChangePassword(event);
+    } else {
+        // Fallback implementation
+        handlePasswordChangeFallback(currentPassword, newPassword);
+    }
 }
 
 function handleChangeNickname(event) {
     event.preventDefault();
-    alert('Nickname change functionality is not fully implemented yet.');
+    console.log('✏️ Nickname change initiated');
+    
+    const currentNickname = document.getElementById('currentNickname')?.value;
+    const newNickname = document.getElementById('newNickname')?.value?.trim();
+    
+    if (!newNickname) {
+        alert('New nickname is required');
+        return;
+    }
+    
+    if (newNickname.length < 3 || newNickname.length > 20) {
+        alert('Nickname must be between 3 and 20 characters');
+        return;
+    }
+    
+    if (!/^[a-zA-Z0-9_]+$/.test(newNickname)) {
+        alert('Nickname can only contain letters, numbers, and underscores');
+        return;
+    }
+    
+    if (currentNickname === newNickname) {
+        alert('New nickname must be different from current nickname');
+        return;
+    }
+    
+    // Call the profile settings handler if available
+    if (typeof window.handleChangeNickname === 'function') {
+        window.handleChangeNickname(event);
+    } else {
+        // Fallback implementation
+        handleNicknameChangeFallback(currentNickname, newNickname);
+    }
 }
+
+// Fallback implementations
+function handlePasswordChangeFallback(currentPassword, newPassword) {
+    try {
+        const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+        const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+        
+        const userIndex = savedUsers.findIndex(u => u.nickname === currentUser.nickname);
+        
+        if (userIndex !== -1) {
+            savedUsers[userIndex].password = newPassword;
+            localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
+            
+            currentUser.password = newPassword;
+            localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
+            
+            alert('Password updated successfully!');
+            closeSettingsMenu();
+        } else {
+            alert('User not found');
+        }
+    } catch (error) {
+        console.error('Password change error:', error);
+        alert('Failed to update password');
+    }
+}
+
+function handleNicknameChangeFallback(currentNickname, newNickname) {
+    try {
+        const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+        const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+        
+        // Check if nickname is already taken
+        const existingUser = savedUsers.find(u => 
+            u.nickname === newNickname && u.nickname !== currentNickname
+        );
+        
+        if (existingUser) {
+            alert('This nickname is already taken');
+            return;
+        }
+        
+        const userIndex = savedUsers.findIndex(u => u.nickname === currentNickname);
+        
+        if (userIndex !== -1) {
+            savedUsers[userIndex].nickname = newNickname;
+            localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
+            
+            currentUser.nickname = newNickname;
+            localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
+            
+            // Update UI
+            const profileNickname = document.getElementById('profileNickname');
+            const sidebarUserNickname = document.getElementById('sidebarUserNickname');
+            const currentNicknameInput = document.getElementById('currentNickname');
+            
+            if (profileNickname) profileNickname.textContent = newNickname;
+            if (sidebarUserNickname) sidebarUserNickname.textContent = newNickname;
+            if (currentNicknameInput) currentNicknameInput.value = newNickname;
+            
+            alert('Nickname updated successfully!');
+            closeSettingsMenu();
+        } else {
+            alert('User not found');
+        }
+    } catch (error) {
+        console.error('Nickname change error:', error);
+        alert('Failed to update nickname');
+    }
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        loadContent();
+        enhanceInitialization();
+    });
+} else {
+    loadContent();
+    enhanceInitialization();
+}
+
+// Check auth state after everything is loaded
+document.addEventListener('contentLoaded', () => {
+    checkInitialAuthState();
+});
 
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
@@ -604,3 +732,5 @@ window.confirmDeleteAccount = confirmDeleteAccount;
 window.deleteUserAccount = deleteUserAccount;
 window.handleChangePassword = handleChangePassword;
 window.handleChangeNickname = handleChangeNickname;
+
+console.log('✅ content_loader.js FULLY loaded - ALL FUNCTIONALITY ENABLED');
