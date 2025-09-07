@@ -186,13 +186,159 @@
     </div>
 </div>
 
-<!-- Profile Styles -->
+<!-- КРИТИЧНО ВАЖЛИВО: Завантажуємо скрипти в правильному порядку ПЕРЕД CSS -->
+
+<!-- 1. Спочатку Profile Opening Logic -->
+<script>
+// НЕГАЙНЕ завантаження Profile Opening Logic - INLINE для гарантованого завантаження
+const ProfileOpen = {
+    openProfile() {
+        console.log('👤 Opening profile page...');
+        
+        const hasAuthUser = window.authManager && window.authManager.currentUser;
+        const hasLocalUser = localStorage.getItem('armHelper_currentUser');
+        const hasPersistentAuth = localStorage.getItem('armHelper_persistentAuth') === 'true';
+        
+        if (!hasAuthUser && (!hasLocalUser || !hasPersistentAuth)) {
+            console.log('⚠️ No authentication found, redirecting to login...');
+            if (typeof ProfileSystem !== 'undefined' && ProfileSystem.showMessage) {
+                ProfileSystem.showMessage('Please login to view your profile', 'error');
+            }
+            if (typeof switchPage === 'function') {
+                switchPage('login');
+            }
+            return;
+        }
+
+        if (typeof switchPage === 'function') {
+            switchPage('profile');
+            
+            setTimeout(() => {
+                if (typeof ProfileSystem !== 'undefined') {
+                    ProfileSystem.loadCurrentUserData();
+                    ProfileSystem.updateProfileDisplay();
+                }
+            }, 100);
+        }
+    },
+
+    goBackFromProfile() {
+        console.log('🔙 Going back from profile...');
+        if (typeof switchPage === 'function') {
+            switchPage('calculator');
+        }
+    },
+
+    updateLoginStats() {
+        console.log('📊 Updating login stats...');
+        
+        const currentCount = parseInt(localStorage.getItem('armHelper_loginCount') || '0');
+        const newCount = currentCount + 1;
+        localStorage.setItem('armHelper_loginCount', newCount.toString());
+        
+        const now = new Date().toISOString();
+        localStorage.setItem('armHelper_lastLogin', now);
+        
+        console.log('✅ Login stats updated:', { 
+            count: newCount, 
+            lastLogin: now 
+        });
+    },
+
+    isAuthenticated() {
+        const hasAuthUser = window.authManager && window.authManager.currentUser;
+        const hasLocalUser = localStorage.getItem('armHelper_currentUser');
+        const hasPersistentAuth = localStorage.getItem('armHelper_persistentAuth') === 'true';
+        
+        return hasAuthUser || (hasLocalUser && hasPersistentAuth);
+    },
+
+    getCurrentUser() {
+        if (window.authManager && window.authManager.currentUser && window.authManager.userProfile) {
+            return {
+                user: window.authManager.currentUser,
+                profile: window.authManager.userProfile
+            };
+        }
+
+        const savedUser = localStorage.getItem('armHelper_currentUser');
+        const persistentAuth = localStorage.getItem('armHelper_persistentAuth');
+        
+        if (savedUser && persistentAuth === 'true') {
+            try {
+                const user = JSON.parse(savedUser);
+                const userObj = {
+                    id: user.id || 'local-user',
+                    email: user.email || `${user.nickname}@local.test`,
+                    nickname: user.nickname
+                };
+                
+                return {
+                    user: userObj,
+                    profile: user
+                };
+            } catch (e) {
+                console.warn('⚠️ Error parsing saved user data:', e);
+                localStorage.removeItem('armHelper_currentUser');
+                localStorage.removeItem('armHelper_persistentAuth');
+            }
+        }
+
+        return null;
+    },
+
+    refreshProfileDisplay() {
+        console.log('🔄 Refreshing profile display...');
+        if (typeof ProfileSystem !== 'undefined') {
+            ProfileSystem.loadCurrentUserData();
+            ProfileSystem.updateProfileDisplay();
+        }
+    }
+};
+
+// НЕГАЙНО експортуємо глобальні функції
+function openProfile() {
+    console.log('🔄 Global openProfile called');
+    ProfileOpen.openProfile();
+}
+
+function goBackFromProfile() {
+    console.log('🔄 Global goBackFromProfile called');
+    ProfileOpen.goBackFromProfile();
+}
+
+function updateLoginStats() {
+    console.log('🔄 Global updateLoginStats called');
+    ProfileOpen.updateLoginStats();
+}
+
+function initializeProfileOpen() {
+    console.log('🔄 Global initializeProfileOpen called');
+    return true; // Вже ініціалізовано inline
+}
+
+function refreshProfileDisplay() {
+    console.log('🔄 Global refreshProfileDisplay called');
+    ProfileOpen.refreshProfileDisplay();
+}
+
+// НЕГАЙНО експортуємо в window
+window.ProfileOpen = ProfileOpen;
+window.openProfile = openProfile;
+window.goBackFromProfile = goBackFromProfile;
+window.updateLoginStats = updateLoginStats;
+window.initializeProfileOpen = initializeProfileOpen;
+window.refreshProfileDisplay = refreshProfileDisplay;
+
+console.log('✅ Profile opening functions loaded INLINE and exported to window');
+</script>
+
+<!-- 2. Потім Profile CSS -->
 <link rel="stylesheet" href="login/profile.css">
 
-<!-- Profile JavaScript Files -->
+<!-- 3. Потім Profile JavaScript Files -->
 <script src="login/profile.js"></script>
 <script src="login/profile-settings.js"></script>
-<script src="login/profile-open.js"></script>
 
 <style>
 /* Enhanced profile styles for better nickname display */
@@ -259,11 +405,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize main profile system
         if (typeof initializeProfile === 'function') {
             initializeProfile();
-        }
-        
-        // Initialize profile opening logic
-        if (typeof initializeProfileOpen === 'function') {
-            initializeProfileOpen();
         }
         
         console.log('✅ All profile components initialized');
