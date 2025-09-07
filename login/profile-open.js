@@ -166,50 +166,48 @@ const ProfileOpen = {
     }
 };
 
-// Global functions for backward compatibility
+// КРИТИЧНО ВАЖЛИВО: Визначаємо глобальні функції ОДРАЗУ
 function openProfile() {
+    console.log('🔄 Global openProfile called');
     ProfileOpen.openProfile();
 }
 
 function goBackFromProfile() {
+    console.log('🔄 Global goBackFromProfile called');
     ProfileOpen.goBackFromProfile();
 }
 
 function updateLoginStats() {
+    console.log('🔄 Global updateLoginStats called');
     ProfileOpen.updateLoginStats();
 }
 
 function initializeProfileOpen() {
+    console.log('🔄 Global initializeProfileOpen called');
     ProfileOpen.initializeProfile();
 }
 
 function refreshProfileDisplay() {
+    console.log('🔄 Global refreshProfileDisplay called');
     ProfileOpen.refreshProfileDisplay();
 }
 
-function testProfile() {
-    ProfileOpen.testProfile();
-}
+// НЕГАЙНО експортуємо в window (не чекаємо на DOM)
+window.ProfileOpen = ProfileOpen;
+window.openProfile = openProfile;
+window.goBackFromProfile = goBackFromProfile;
+window.updateLoginStats = updateLoginStats;
+window.initializeProfileOpen = initializeProfileOpen;
+window.refreshProfileDisplay = refreshProfileDisplay;
 
-function createTestUser() {
-    ProfileOpen.createTestUser();
-}
-
-// Export for global use
-if (typeof window !== 'undefined') {
-    window.ProfileOpen = ProfileOpen;
-    window.openProfile = openProfile;
-    window.goBackFromProfile = goBackFromProfile;
-    window.updateLoginStats = updateLoginStats;
-    window.initializeProfileOpen = initializeProfileOpen;
-    window.refreshProfileDisplay = refreshProfileDisplay;
-    window.testProfile = testProfile;
-    window.createTestUser = createTestUser;
-}
-
-// Auto-initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
+// Ініціалізуємо як тільки DOM готовий
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('🔄 DOM loaded, initializing profile open...');
         ProfileOpen.initializeProfile();
-    }, 100);
-});
+    });
+} else {
+    // DOM вже готовий
+    console.log('🔄 DOM already ready, initializing profile open immediately...');
+    ProfileOpen.initializeProfile();
+}
