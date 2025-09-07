@@ -380,3 +380,271 @@ function setAuthRestorationState(isRestoring) {
             authButton.classList.remove('loading');
             authButton.disabled = false;
         }
+        
+        if (sidebarUserNickname) {
+            sidebarUserNickname.classList.remove('loading');
+        }
+        
+        if (sidebarUserAvatar) {
+            sidebarUserAvatar.classList.remove('loading');
+        }
+    }
+}
+
+// Enhanced initialization with persistent authentication
+function enhanceInitialization() {
+    console.log('🔄 Enhancing initialization with persistent auth...');
+    
+    // Listen for authentication events
+    document.addEventListener('userAuthenticated', (event) => {
+        const { user, profile } = event.detail;
+        console.log('✅ User authenticated event received:', profile?.nickname);
+        setAuthRestorationState(false);
+        updateSidebarForAuthenticatedUser(user, profile);
+        
+        // Update login stats
+        if (typeof updateLoginStats === 'function') {
+            updateLoginStats();
+        }
+    });
+    
+    document.addEventListener('userSignedOut', () => {
+        console.log('👋 User signed out event received');
+        setAuthRestorationState(false);
+        updateSidebarForSignedOutUser();
+    });
+
+    // Listen for auth manager initialization
+    document.addEventListener('authManagerReady', () => {
+        console.log('🔐 Auth manager ready, checking authentication state...');
+        setTimeout(() => {
+            checkInitialAuthState();
+        }, 100);
+    });
+}
+
+// Update sidebar for authenticated user with enhanced display
+function updateSidebarForAuthenticatedUser(user, profile) {
+    console.log('🔄 Updating sidebar for authenticated user:', { 
+        userId: user?.id, 
+        profileNickname: profile?.nickname 
+    });
+    
+    const userInfo = document.getElementById('userInfo');
+    const authButton = document.getElementById('authButton');
+    const sidebarUserNickname = document.getElementById('sidebarUserNickname');
+    const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
+
+    if (userInfo && authButton) {
+        // Show user info
+        userInfo.style.display = 'flex';
+        userInfo.classList.remove('restoring');
+        
+        // Update auth button
+        authButton.textContent = 'Sign Out';
+        authButton.classList.add('logout-btn');
+        authButton.classList.remove('loading');
+        authButton.disabled = false;
+        authButton.onclick = () => {
+            if (window.authManager) {
+                window.authManager.signOut();
+            } else if (typeof logout === 'function') {
+                logout();
+            }
+        };
+
+        // Determine nickname with priority order
+        let nickname = 'User'; // fallback
+        if (profile?.nickname) {
+            nickname = profile.nickname;
+        } else if (user?.nickname) {
+            nickname = user.nickname;
+        } else if (user?.email) {
+            nickname = user.email.split('@')[0];
+        }
+
+        // Update nickname display
+        if (sidebarUserNickname) {
+            sidebarUserNickname.textContent = nickname;
+            sidebarUserNickname.classList.remove('loading');
+            
+            // БЕЗПЕЧНО прив'язуємо обробник кліку
+            sidebarUserNickname.onclick = () => {
+                console.log('🔄 Sidebar nickname clicked, opening profile safely...');
+                safeOpenProfile();
+            };
+        }
+
+        // Update avatar with first letter and dynamic color
+        if (sidebarUserAvatar) {
+            const firstLetter = nickname.charAt(0).toUpperCase();
+            sidebarUserAvatar.textContent = firstLetter;
+            sidebarUserAvatar.classList.remove('loading');
+            
+            // Generate dynamic colors based on nickname
+            const colors = [
+                ['#667eea', '#764ba2'], // purple-blue
+                ['#f093fb', '#f5576c'], // pink-red
+                ['#4facfe', '#00f2fe'], // blue-cyan
+                ['#43e97b', '#38f9d7'], // green-mint
+                ['#fa709a', '#fee140'], // pink-yellow
+                ['#a8edea', '#fed6e3'], // mint-pink
+                ['#ffecd2', '#fcb69f']  // peach-orange
+            ];
+            
+            const colorIndex = nickname.length % colors.length;
+            const [color1, color2] = colors[colorIndex];
+            
+            sidebarUserAvatar.style.background = `linear-gradient(45deg, ${color1}, ${color2})`;
+        }
+    }
+    
+    console.log('✅ Sidebar updated for authenticated user:', nickname);
+}
+
+// Update sidebar for signed out user
+function updateSidebarForSignedOutUser() {
+    const userInfo = document.getElementById('userInfo');
+    const authButton = document.getElementById('authButton');
+    const sidebarUserNickname = document.getElementById('sidebarUserNickname');
+    const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
+
+    if (userInfo && authButton) {
+        userInfo.style.display = 'none';
+        userInfo.classList.remove('restoring');
+        
+        authButton.textContent = 'Login';
+        authButton.classList.remove('logout-btn', 'loading');
+        authButton.disabled = false;
+        authButton.onclick = handleAuthAction;
+    }
+    
+    if (sidebarUserNickname) {
+        sidebarUserNickname.textContent = 'Not logged in';
+        sidebarUserNickname.classList.add('loading');
+    }
+
+    if (sidebarUserAvatar) {
+        sidebarUserAvatar.textContent = '👤';
+        sidebarUserAvatar.classList.remove('loading');
+        sidebarUserAvatar.style.background = 'linear-gradient(45deg, #667eea, #764ba2)';
+    }
+    
+    console.log('✅ Sidebar updated for signed out user');
+}
+
+// Enhanced auth action handler
+function handleAuthAction() {
+    const authButton = document.getElementById('authButton');
+    
+    if (authButton && authButton.classList.contains('logout-btn')) {
+        // User is logged in, handle logout
+        console.log('🚪 Logging out user...');
+        if (window.authManager) {
+            window.authManager.signOut();
+        } else if (typeof logout === 'function') {
+            logout();
+        }
+    } else {
+        // User is not logged in, go to login page
+        console.log('🔑 Redirecting to login...');
+        if (typeof switchPage === 'function') {
+            switchPage('login');
+        }
+    }
+}
+
+// Enhanced initial auth state checking with proper waiting
+function checkInitialAuthState() {
+    console.log('🔍 Checking initial authentication state...');
+    
+    // Use the waitForAuthManager function if available
+    if (typeof waitForAuthManager === 'function') {
+        waitForAuthManager(() => {
+            performAuthStateCheck();
+        }, 5000);
+    } else {
+        // Fallback method
+        setTimeout(() => {
+            performAuthStateCheck();
+        }, 1000);
+    }
+}
+
+// Perform the actual auth state check
+function performAuthStateCheck() {
+    console.log('🔐 Performing auth state check...');
+    
+    // Check if auth manager has current user
+    if (window.authManager && window.authManager.currentUser && window.authManager.userProfile) {
+        console.log('✅ Auth manager has current user:', window.authManager.userProfile.nickname);
+        updateSidebarForAuthenticatedUser(
+            window.authManager.currentUser, 
+            window.authManager.userProfile
+        );
+    } else {
+        // Check localStorage for persistent auth
+        const savedUser = localStorage.getItem('armHelper_currentUser');
+        const persistentAuth = localStorage.getItem('armHelper_persistentAuth');
+        
+        if (savedUser && persistentAuth === 'true') {
+            try {
+                const user = JSON.parse(savedUser);
+                console.log('✅ Found persistent auth for user:', user.nickname);
+                
+                const userObj = {
+                    id: user.id || 'local-user',
+                    email: user.email || `${user.nickname}@local.test`,
+                    nickname: user.nickname
+                };
+                
+                updateSidebarForAuthenticatedUser(userObj, user);
+                
+                // If we have auth manager, update it too
+                if (window.authManager) {
+                    window.authManager.currentUser = userObj;
+                    window.authManager.userProfile = user;
+                }
+                
+            } catch (e) {
+                console.warn('⚠️ Invalid saved user data, clearing...');
+                localStorage.removeItem('armHelper_currentUser');
+                localStorage.removeItem('armHelper_persistentAuth');
+                updateSidebarForSignedOutUser();
+            }
+        } else {
+            console.log('ℹ️ No persistent authentication found');
+            updateSidebarForSignedOutUser();
+        }
+    }
+    
+    // Clear restoration state
+    setAuthRestorationState(false);
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        loadContent();
+        enhanceInitialization();
+    });
+} else {
+    loadContent();
+    enhanceInitialization();
+}
+
+// Check auth state after content is loaded
+document.addEventListener('contentLoaded', () => {
+    console.log('📄 Content loaded, checking auth state...');
+    setTimeout(() => {
+        checkInitialAuthState();
+    }, 500);
+});
+
+// Make functions globally available
+window.safeOpenProfile = safeOpenProfile;
+window.handleAuthAction = handleAuthAction;
+window.updateSidebarForAuthenticatedUser = updateSidebarForAuthenticatedUser;
+window.updateSidebarForSignedOutUser = updateSidebarForSignedOutUser;
+window.checkInitialAuthState = checkInitialAuthState;
+window.setAuthRestorationState = setAuthRestorationState;
