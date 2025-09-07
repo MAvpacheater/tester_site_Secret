@@ -154,6 +154,67 @@ async function loadContent() {
                     .user-info {
                         position: relative;
                     }
+
+                    /* Захист аватарки від перезавантаження */
+                    .profile-avatar {
+                        position: relative;
+                    }
+
+                    .avatar-img {
+                        width: 80px;
+                        height: 80px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                        border: 3px solid rgba(255, 255, 255, 0.2);
+                        transition: all 0.3s ease;
+                        /* Фіксуємо розміри щоб уникнути "стрибання" при зміні зображення */
+                        min-width: 80px;
+                        min-height: 80px;
+                        max-width: 80px;
+                        max-height: 80px;
+                    }
+
+                    .avatar-img:hover {
+                        transform: scale(1.05);
+                        border-color: rgba(255, 255, 255, 0.4);
+                    }
+
+                    /* Індикатор завантаження аватарки */
+                    .avatar-img:not([data-initialized]) {
+                        opacity: 0.7;
+                        filter: blur(1px);
+                    }
+
+                    .avatar-img[data-initialized] {
+                        opacity: 1;
+                        filter: none;
+                    }
+
+                    /* Резервний стиль якщо зображення не завантажилось */
+                    .avatar-img[src*="placeholder"] {
+                        background: linear-gradient(135deg, #667eea, #764ba2);
+                        color: white;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 24px;
+                    }
+
+                    /* Анімація завантаження */
+                    @keyframes avatarLoad {
+                        0% {
+                            opacity: 0;
+                            transform: scale(0.8);
+                        }
+                        100% {
+                            opacity: 1;
+                            transform: scale(1);
+                        }
+                    }
+
+                    .avatar-img[data-initialized] {
+                        animation: avatarLoad 0.3s ease-out;
+                    }
                 </style>
             `;
 
@@ -206,13 +267,13 @@ function handleProfileClick() {
         console.log('📄 Using switchPage fallback');
         switchPage('profile');
         
-        // Try to update profile display after a delay
+        // Використовуємо безпечне оновлення профілю
         setTimeout(() => {
             if (typeof window.updateProfileDisplay === 'function') {
                 window.updateProfileDisplay();
             } else {
-                console.log('📋 Manually updating profile display');
-                manualProfileUpdate();
+                console.log('📋 Using safe profile update');
+                updateProfileDisplaySafe(); // Використовуємо нову функцію
             }
         }, 200);
     } else {
@@ -221,7 +282,7 @@ function handleProfileClick() {
     }
 }
 
-// Manual profile update as fallback
+// ВИПРАВЛЕНА функція manualProfileUpdate - БЕЗ ЗМІНИ АВАТАРКИ!
 function manualProfileUpdate() {
     // Get current user
     let currentUser = null;
@@ -255,23 +316,126 @@ function manualProfileUpdate() {
     
     // Update profile elements
     const profileNickname = document.getElementById('profileNickname');
-    const profileAvatar = document.getElementById('profileAvatar');
     const currentNicknameInput = document.getElementById('currentNickname');
     
     if (profileNickname) {
         profileNickname.textContent = nickname;
     }
     
-    if (profileAvatar) {
-        profileAvatar.src = `https://via.placeholder.com/100x100/667eea/ffffff?text=${nickname.charAt(0).toUpperCase()}`;
-        profileAvatar.alt = `${nickname}'s avatar`;
+    // НЕ ЗМІНЮЄМО АВАТАРКУ! Залишаємо оригінальне посилання
+    // Видалено код що змінював profileAvatar.src
+    
+    if (currentNicknameInput) {
+        currentNicknameInput.value = nickname;
+    }
+    
+    console.log('✅ Manual profile update completed - avatar preserved');
+}
+
+// Нова безпечна функція оновлення профілю без зміни аватарки
+function updateProfileDisplaySafe() {
+    console.log('🔄 Safe profile display update...');
+    
+    // Get current user
+    let currentUser = null;
+    
+    if (window.authManager && window.authManager.currentUser) {
+        currentUser = {
+            user: window.authManager.currentUser,
+            profile: window.authManager.userProfile
+        };
+    } else {
+        const savedUser = localStorage.getItem('armHelper_currentUser');
+        if (savedUser) {
+            try {
+                const user = JSON.parse(savedUser);
+                currentUser = { user, profile: user };
+            } catch (e) {
+                console.warn('Invalid saved user data');
+                return;
+            }
+        }
+    }
+    
+    if (!currentUser) {
+        console.warn('No user data for safe update');
+        return;
+    }
+    
+    const { user, profile } = currentUser;
+    const nickname = profile?.nickname || user?.email?.split('@')[0] || 'User';
+    
+    // Оновлюємо тільки текстові елементи
+    const profileNickname = document.getElementById('profileNickname');
+    const profileStatus = document.querySelector('.profile-status');
+    const currentNicknameInput = document.getElementById('currentNickname');
+    const sidebarUserNickname = document.getElementById('sidebarUserNickname');
+    
+    if (profileNickname) {
+        profileNickname.textContent = nickname;
+    }
+    
+    if (profileStatus) {
+        const joinDate = profile?.joinDate || user?.joinDate || new Date().toLocaleDateString();
+        profileStatus.innerHTML = `Lvl: 0 <span id="profileJoinDate">(${joinDate})</span>`;
     }
     
     if (currentNicknameInput) {
         currentNicknameInput.value = nickname;
     }
     
-    console.log('✅ Manual profile update completed');
+    if (sidebarUserNickname) {
+        sidebarUserNickname.textContent = nickname;
+    }
+    
+    console.log('✅ Safe profile update completed');
+}
+
+// Функція для налаштування аватарки один раз при ініціалізації
+function initializeAvatarOnce() {
+    const profileAvatar = document.getElementById('profileAvatar');
+    
+    if (profileAvatar && !profileAvatar.hasAttribute('data-initialized')) {
+        // Встановлюємо постійну аватарку
+        profileAvatar.src = 'https://i.postimg.cc/gjmcXwV9/file-000000008fd461f4826bd65e36dbc3d2.png';
+        profileAvatar.alt = 'User Avatar';
+        profileAvatar.setAttribute('data-initialized', 'true');
+        
+        // Додаємо обробник помилки завантаження
+        profileAvatar.onerror = function() {
+            this.src = 'https://via.placeholder.com/80x80/667eea/ffffff?text=👤';
+        };
+        
+        console.log('✅ Avatar initialized and protected');
+    }
+}
+
+// Захист аватарки за допомогою MutationObserver
+function protectAvatar() {
+    const profileAvatar = document.getElementById('profileAvatar');
+    if (!profileAvatar) return;
+    
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+                const currentSrc = profileAvatar.src;
+                const expectedSrc = 'https://i.postimg.cc/gjmcXwV9/file-000000008fd461f4826bd65e36dbc3d2.png';
+                
+                // Якщо зображення змінилось не на те, що ми хочемо, повертаємо назад
+                if (!currentSrc.includes('postimg.cc') && !currentSrc.includes('placeholder')) {
+                    console.log('🛡️ Protecting avatar from unwanted change');
+                    profileAvatar.src = expectedSrc;
+                }
+            }
+        });
+    });
+    
+    observer.observe(profileAvatar, {
+        attributes: true,
+        attributeFilter: ['src']
+    });
+    
+    console.log('🛡️ Avatar protection observer active');
 }
 
 // Enhanced initialization with auth integration
@@ -396,6 +560,20 @@ if (document.readyState === 'loading') {
 // Check auth state after everything is loaded
 document.addEventListener('contentLoaded', () => {
     checkInitialAuthState();
+    // Ініціалізуємо захист аватарки
+    setTimeout(() => {
+        initializeAvatarOnce();
+        protectAvatar();
+    }, 100);
+});
+
+// Також ініціалізуємо при зміні сторінки на профіль
+document.addEventListener('pageChanged', (event) => {
+    if (event.detail && event.detail.page === 'profile') {
+        setTimeout(() => {
+            initializeAvatarOnce();
+        }, 50);
+    }
 });
 
 // Profile settings functions - Add fallbacks for missing functions
@@ -610,6 +788,9 @@ function handleChangeNickname(event) {
 window.handleAuthAction = handleAuthAction;
 window.handleProfileClick = handleProfileClick;
 window.manualProfileUpdate = manualProfileUpdate;
+window.updateProfileDisplaySafe = updateProfileDisplaySafe;
+window.initializeAvatarOnce = initializeAvatarOnce;
+window.protectAvatar = protectAvatar;
 window.updateSidebarForAuthenticatedUser = updateSidebarForAuthenticatedUser;
 window.updateSidebarForSignedOutUser = updateSidebarForSignedOutUser;
 
