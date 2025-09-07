@@ -2,8 +2,8 @@
 
 // Aura data
 const auraData = [
-    { name: "Hacked [1/37.5m]", description: "Gives you 200% strength, 125% luck and 44% training speed", rarity: "legendary", image: "" },
-    { name: "Dark Matter [1/30m]", description: "Gives you 197% strength, 116% luck and 42% training speed", rarity: "legendary", image: "https://i.postimg.cc/Fzk4nnfN/2025-09-07-13-49-35.png" },
+    { name: "Hacked [1/37.5m]", description: "Gives you 200% strength, 125% luck and 44% training speed", rarity: "mythic", image: "https://i.postimg.cc/Fzk4nnfN/2025-09-07-13-49-35.png" },
+    { name: "Dark Matter [1/30m]", description: "Gives you 197% strength, 116% luck and 42% training speed", rarity: "legendary", image: "" },
     { name: "Corrupted [1/20m", description: "Gives you 192% strength, 108% luck and 40% training speed", rarity: "common", image: "https://i.postimg.cc/qRR0274t/2025-09-07-13-49-17.png" },
     { name: "Galaxy [1/10m]", description: "Gives you 184% strength, 98% luck and 38% training speed", rarity: "legendary", image: "" },
     { name: "Matrix [1/5m]", description: "Gives you 177% strength, 94% luck and 36% training speed", rarity: "epic", image: "https://i.postimg.cc/FHy94qTK/2025-09-07-13-48-49.png" },
