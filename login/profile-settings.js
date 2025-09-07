@@ -1,7 +1,7 @@
-// login/profile-settings.js - ПОВНІСТЮ ОНОВЛЕНА ВЕРСІЯ З РОБОЧОЮ ЗМІНОЮ ПАРОЛЯ
+// profile-settings.js - Логіка налаштувань
 console.log('⚙️ Loading profile-settings.js...');
 
-// УПРАВЛІННЯ МЕНЮ
+// Menu Management Functions
 function toggleSettingsMenu() {
     const settingsMenu = document.getElementById('settingsMenu');
     if (settingsMenu) {
@@ -47,12 +47,6 @@ function showChangeNickname() {
     const settingsMenu = document.getElementById('settingsMenu');
     const changeNicknameForm = document.getElementById('changeNicknameForm');
     
-    // Оновлюємо поточний nickname в полі
-    const currentNicknameInput = document.getElementById('currentNickname');
-    if (currentNicknameInput && window.authManager?.userProfile) {
-        currentNicknameInput.value = window.authManager.userProfile.nickname || '';
-    }
-    
     if (settingsMenu) settingsMenu.style.display = 'none';
     if (changeNicknameForm) changeNicknameForm.style.display = 'block';
 }
@@ -65,7 +59,7 @@ function showPreferences() {
     if (preferencesForm) preferencesForm.style.display = 'block';
 }
 
-// ВАЛІДАЦІЯ ФОРМ
+// Form Validation
 function validatePasswordStrength(input) {
     const value = input.value;
     
@@ -121,7 +115,7 @@ function validateNickname(input) {
     }
 }
 
-// НАЛАШТУВАННЯ ВАЛІДАЦІЇ ФОРМ
+// Setup form validation
 function setupFormValidation() {
     const currentPassword = document.getElementById('currentPassword');
     const newPassword = document.getElementById('newPassword');
@@ -148,7 +142,7 @@ function setupFormValidation() {
     }
 }
 
-// НАЛАШТУВАННЯ ПЕРЕМИКАЧІВ
+// Setup settings toggles
 function setupSettingsToggles() {
     const autoSaveToggle = document.getElementById('autoSaveToggle');
     const historyToggle = document.getElementById('historyToggle');
@@ -159,7 +153,9 @@ function setupSettingsToggles() {
 
         autoSaveToggle.addEventListener('change', (e) => {
             localStorage.setItem('armHelper_autoSave', e.target.checked);
-            showProfileMessage('Auto-save preference updated', 'success');
+            if (typeof showProfileMessage === 'function') {
+                showProfileMessage('Auto-save preference updated', 'success');
+            }
         });
     }
 
@@ -169,63 +165,25 @@ function setupSettingsToggles() {
 
         historyToggle.addEventListener('change', (e) => {
             localStorage.setItem('armHelper_showHistory', e.target.checked);
-            showProfileMessage('History preference updated', 'success');
+            if (typeof showProfileMessage === 'function') {
+                showProfileMessage('History preference updated', 'success');
+            }
         });
     }
 }
 
-// ПОКАЗ СТАНУ ЗАВАНТАЖЕННЯ НА КНОПЦІ
+// Show loading state on button
 function showLoading(button, show = true) {
-    if (!button) return;
-    
     if (show) {
         button.classList.add('loading');
         button.disabled = true;
-        button.setAttribute('data-original-text', button.textContent);
-        button.textContent = 'Loading...';
     } else {
         button.classList.remove('loading');
         button.disabled = false;
-        const originalText = button.getAttribute('data-original-text');
-        if (originalText) {
-            button.textContent = originalText;
-            button.removeAttribute('data-original-text');
-        }
     }
 }
 
-// ПОКАЗ ПОВІДОМЛЕНЬ ПРОФІЛЮ
-function showProfileMessage(message, type = 'info') {
-    let messageElement = document.getElementById('profileMessage');
-    
-    if (!messageElement) {
-        // Створюємо елемент повідомлення якщо його немає
-        messageElement = document.createElement('div');
-        messageElement.id = 'profileMessage';
-        messageElement.className = 'profile-message';
-        
-        const profileContainer = document.querySelector('.profile-container');
-        if (profileContainer) {
-            profileContainer.appendChild(messageElement);
-        } else {
-            console.warn('Profile container not found, cannot show message');
-            return;
-        }
-    }
-
-    messageElement.textContent = message;
-    messageElement.className = `profile-message ${type}`;
-    messageElement.style.display = 'block';
-
-    // Автоматично приховуємо через 5 секунд
-    setTimeout(() => {
-        if (messageElement) {
-            messageElement.style.display = 'none';
-        }
-    }, 5000);
-}
-
-// ОБРОБКА ЗМІНИ ПАРОЛЯ - ВИПРАВЛЕНА ВЕРСІЯ
+// Handle change password
 async function handleChangePassword(event) {
     event.preventDefault();
 
@@ -236,49 +194,53 @@ async function handleChangePassword(event) {
     const newPassword = document.getElementById('newPassword')?.value;
     const confirmNewPassword = document.getElementById('confirmNewPassword')?.value;
 
-    // Валідація
+    // Validation
     if (!currentPassword || !newPassword || !confirmNewPassword) {
-        showProfileMessage('All fields are required', 'error');
+        if (typeof showProfileMessage === 'function') {
+            showProfileMessage('All fields are required', 'error');
+        }
         return;
     }
 
     if (newPassword.length < 6) {
-        showProfileMessage('New password must be at least 6 characters long', 'error');
+        if (typeof showProfileMessage === 'function') {
+            showProfileMessage('New password must be at least 6 characters long', 'error');
+        }
         return;
     }
 
     if (newPassword !== confirmNewPassword) {
-        showProfileMessage('New passwords do not match', 'error');
+        if (typeof showProfileMessage === 'function') {
+            showProfileMessage('New passwords do not match', 'error');
+        }
         return;
     }
 
     if (currentPassword === newPassword) {
-        showProfileMessage('New password must be different from current password', 'error');
+        if (typeof showProfileMessage === 'function') {
+            showProfileMessage('New password must be different from current password', 'error');
+        }
         return;
     }
 
     try {
         showLoading(submitBtn, true);
 
-        if (window.authManager) {
-            // Викликаємо метод зміни пароля
+        if (window.authManager && typeof window.authManager.changePassword === 'function') {
             const result = await window.authManager.changePassword(currentPassword, newPassword);
             
             if (result.success) {
-                showProfileMessage('Password updated successfully!', 'success');
+                if (typeof showProfileMessage === 'function') {
+                    showProfileMessage('Password updated successfully!', 'success');
+                }
                 form.reset();
-                
-                // Очищаємо класи валідації
                 document.querySelectorAll('.form-input').forEach(input => {
                     input.classList.remove('error', 'success');
                 });
-                
                 setTimeout(() => closeSettingsMenu(), 2000);
-            } else {
-                throw new Error(result.message || 'Failed to update password');
             }
         } else {
-            // Fallback для localStorage
+            // Fallback for localStorage
             const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
             const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
             
@@ -295,33 +257,29 @@ async function handleChangePassword(event) {
             savedUsers[userIndex].password = newPassword;
             savedUsers[userIndex].updatedAt = new Date().toISOString();
 
-            // Також оновлюємо поточного користувача
-            currentUser.password = newPassword;
-            currentUser.updatedAt = new Date().toISOString();
-
             localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
-            localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
             
-            showProfileMessage('Password updated successfully!', 'success');
+            if (typeof showProfileMessage === 'function') {
+                showProfileMessage('Password updated successfully! (Development mode)', 'success');
+            }
             form.reset();
-            
-            // Очищаємо класи валідації
             document.querySelectorAll('.form-input').forEach(input => {
                 input.classList.remove('error', 'success');
             });
-            
             setTimeout(() => closeSettingsMenu(), 2000);
         }
 
     } catch (error) {
         console.error('Change password error:', error);
-        showProfileMessage(error.message || 'Failed to update password', 'error');
+        if (typeof showProfileMessage === 'function') {
+            showProfileMessage(error.message || 'Failed to update password', 'error');
+        }
     } finally {
         showLoading(submitBtn, false);
     }
 }
 
-// ОБРОБКА ЗМІНИ НІКНЕЙМУ
+// Handle change nickname
 async function handleChangeNickname(event) {
     event.preventDefault();
 
@@ -331,314 +289,53 @@ async function handleChangeNickname(event) {
     const currentNickname = document.getElementById('currentNickname')?.value;
     const newNickname = document.getElementById('newNickname')?.value.trim();
 
-    // Валідація
+    // Validation
     if (!newNickname) {
-        showProfileMessage('New nickname is required', 'error');
+        if (typeof showProfileMessage === 'function') {
+            showProfileMessage('New nickname is required', 'error');
+        }
         return;
     }
 
     if (newNickname.length < 3 || newNickname.length > 20) {
-        showProfileMessage('Nickname must be between 3 and 20 characters', 'error');
+        if (typeof showProfileMessage === 'function') {
+            showProfileMessage('Nickname must be between 3 and 20 characters', 'error');
+        }
         return;
     }
 
     if (!/^[a-zA-Z0-9_]+$/.test(newNickname)) {
-        showProfileMessage('Nickname can only contain letters, numbers, and underscores', 'error');
+        if (typeof showProfileMessage === 'function') {
+            showProfileMessage('Nickname can only contain letters, numbers, and underscores', 'error');
+        }
         return;
     }
 
     if (currentNickname === newNickname) {
-        showProfileMessage('New nickname must be different from current nickname', 'error');
+        if (typeof showProfileMessage === 'function') {
+            showProfileMessage('New nickname must be different from current nickname', 'error');
+        }
         return;
     }
 
     try {
         showLoading(submitBtn, true);
 
-        if (window.authManager && typeof window.authManager.deleteAccount === 'function') {
-            const result = await window.authManager.deleteAccount();
-            
-            if (result.success) {
-                alert('Your account has been successfully deleted.');
-                
-                setTimeout(() => {
-                    if (typeof switchPage === 'function') {
-                        switchPage('login');
-                    }
-                }, 1000);
-            } else {
-                throw new Error(result.message || 'Failed to delete account');
-            }
-        } else {
-            // Fallback для localStorage
-            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
-            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
-            
-            const updatedUsers = savedUsers.filter(u => u.nickname !== currentUser.nickname);
-            localStorage.setItem('armHelper_users', JSON.stringify(updatedUsers));
-            
-            localStorage.removeItem('armHelper_currentUser');
-            
-            const settingsKeys = ['calculator', 'arm', 'grind'];
-            settingsKeys.forEach(key => {
-                localStorage.removeItem(`armHelper_${key}_settings`);
-            });
-            
-            alert('Your account has been successfully deleted.');
-            
-            setTimeout(() => {
-                if (typeof switchPage === 'function') {
-                    switchPage('login');
-                }
-            }, 1000);
-        }
-
-    } catch (error) {
-        console.error('Delete account error:', error);
-        showProfileMessage('Failed to delete account. Please try again.', 'error');
-    }
-}
-
-// НАЛАШТУВАННЯ СЛУХАЧІВ КЛІКІВ ПОЗА МЕНЮ
-function setupOutsideClickListeners() {
-    document.addEventListener('click', (e) => {
-        const settingsMenu = document.getElementById('settingsMenu');
-        const statsView = document.getElementById('statsView');
-        const settingsForms = document.querySelectorAll('.settings-form');
-        
-        if (settingsMenu && settingsMenu.style.display === 'block') {
-            if (!settingsMenu.contains(e.target) && !e.target.classList.contains('settings-btn')) {
-                closeSettingsMenu();
-            }
-        }
-        
-        if (statsView && statsView.style.display === 'block') {
-            if (!statsView.contains(e.target) && !e.target.classList.contains('stats-btn')) {
-                if (typeof closeStatsView === 'function') {
-                    closeStatsView();
-                }
-            }
-        }
-    });
-
-    // Закриття меню при натисканні ESC
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            const settingsMenu = document.getElementById('settingsMenu');
-            const statsView = document.getElementById('statsView');
-            const settingsForms = document.querySelectorAll('.settings-form');
-            
-            if (settingsMenu && settingsMenu.style.display === 'block') {
-                closeSettingsMenu();
-            }
-            
-            if (statsView && statsView.style.display === 'block' && typeof closeStatsView === 'function') {
-                closeStatsView();
-            }
-        }
-    });
-}
-
-// УПРАВЛІННЯ СТАТИСТИКОЮ
-function toggleStatsView() {
-    const statsView = document.getElementById('statsView');
-    if (statsView) {
-        statsView.style.display = statsView.style.display === 'none' ? 'block' : 'none';
-        
-        // Оновлюємо статистику при показі
-        if (statsView.style.display === 'block') {
-            updateStatsView();
-        }
-    }
-}
-
-function closeStatsView() {
-    const statsView = document.getElementById('statsView');
-    if (statsView) {
-        statsView.style.display = 'none';
-    }
-}
-
-function updateStatsView() {
-    try {
-        // Рахуємо збережені розрахунки
-        let calculationsCount = 0;
-        const calculatorTypes = ['calculator', 'arm', 'grind'];
-        
-        for (const type of calculatorTypes) {
-            const settings = localStorage.getItem(`armHelper_${type}_settings`);
-            if (settings) calculationsCount++;
-        }
-
-        const calculationsEl = document.getElementById('calculationsCount');
-        if (calculationsEl) {
-            calculationsEl.textContent = calculationsCount;
-        }
-
-        // Оновлюємо кількість логінів
-        const loginCountEl = document.getElementById('loginCount');
-        if (loginCountEl) {
-            const loginCount = parseInt(localStorage.getItem('armHelper_loginCount') || '1');
-            loginCountEl.textContent = loginCount;
-        }
-
-        // Оновлюємо останній логін
-        const lastLoginEl = document.getElementById('lastLoginDate');
-        if (lastLoginEl) {
-            const lastLogin = localStorage.getItem('armHelper_lastLogin');
-            if (lastLogin) {
-                const date = new Date(lastLogin);
-                const today = new Date();
-                
-                if (date.toDateString() === today.toDateString()) {
-                    lastLoginEl.textContent = 'Today';
-                } else {
-                    lastLoginEl.textContent = date.toLocaleDateString();
-                }
-            } else {
-                lastLoginEl.textContent = 'Today';
-            }
-        }
-    } catch (error) {
-        console.error('Error updating stats:', error);
-    }
-}
-
-// ПОВЕРНЕННЯ З ПРОФІЛЮ
-function goBackFromProfile() {
-    if (typeof switchPage === 'function') {
-        switchPage('calculator');
-    }
-}
-
-// ОНОВЛЕННЯ СТАТИСТИК ЛОГІНУ
-function updateLoginStats() {
-    try {
-        // Збільшуємо лічильник логінів
-        const currentCount = parseInt(localStorage.getItem('armHelper_loginCount') || '0');
-        localStorage.setItem('armHelper_loginCount', (currentCount + 1).toString());
-        
-        // Зберігаємо час останнього логіну
-        localStorage.setItem('armHelper_lastLogin', new Date().toISOString());
-        
-        console.log('📊 Login stats updated');
-    } catch (error) {
-        console.error('Error updating login stats:', error);
-    }
-}
-
-// ІНІЦІАЛІЗАЦІЯ НАЛАШТУВАНЬ ПРОФІЛЮ
-function initializeProfileSettings() {
-    console.log('🔧 Initializing profile settings...');
-    
-    setupFormValidation();
-    setupSettingsToggles();
-    setupOutsideClickListeners();
-    
-    // Оновлюємо статистику при завантаженні
-    setTimeout(() => {
-        updateStatsView();
-    }, 100);
-    
-    console.log('✅ Profile settings initialized');
-}
-
-// ДОПОМІЖНІ ФУНКЦІЇ ДЛЯ РОБОТИ З ФОРМАМИ
-function clearFormErrors() {
-    document.querySelectorAll('.form-input').forEach(input => {
-        input.classList.remove('error', 'success');
-    });
-}
-
-function resetAllForms() {
-    document.querySelectorAll('.settings-form form').forEach(form => {
-        form.reset();
-    });
-    clearFormErrors();
-}
-
-// ЕКСПОРТ ФУНКЦІЙ ДЛЯ ГЛОБАЛЬНОГО ВИКОРИСТАННЯ
-if (typeof window !== 'undefined') {
-    // Основні функції управління меню
-    window.toggleSettingsMenu = toggleSettingsMenu;
-    window.closeSettingsMenu = closeSettingsMenu;
-    window.backToSettingsMenu = backToSettingsMenu;
-    window.showChangePassword = showChangePassword;
-    window.showChangeNickname = showChangeNickname;
-    window.showPreferences = showPreferences;
-    
-    // Функції валідації
-    window.validatePasswordStrength = validatePasswordStrength;
-    window.validatePasswordMatch = validatePasswordMatch;
-    window.validateNickname = validateNickname;
-    window.setupFormValidation = setupFormValidation;
-    window.setupSettingsToggles = setupSettingsToggles;
-    
-    // Допоміжні функції
-    window.showLoading = showLoading;
-    window.showProfileMessage = showProfileMessage;
-    
-    // Обробники форм
-    window.handleChangePassword = handleChangePassword;
-    window.handleChangeNickname = handleChangeNickname;
-    window.confirmDeleteAccount = confirmDeleteAccount;
-    window.deleteUserAccount = deleteUserAccount;
-    
-    // Функції статистики
-    window.toggleStatsView = toggleStatsView;
-    window.closeStatsView = closeStatsView;
-    window.updateStatsView = updateStatsView;
-    window.goBackFromProfile = goBackFromProfile;
-    window.updateLoginStats = updateLoginStats;
-    
-    // Ініціалізація
-    window.initializeProfileSettings = initializeProfileSettings;
-    window.clearFormErrors = clearFormErrors;
-    window.resetAllForms = resetAllForms;
-}
-
-// Автоматична ініціалізація після завантаження DOM
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeProfileSettings);
-} else {
-    // Якщо DOM вже завантажений, ініціалізуємо відразу
-    setTimeout(initializeProfileSettings, 100);
-}
-
-// Слухач для повторної ініціалізації при зміні сторінки
-document.addEventListener('pageChanged', (event) => {
-    if (event.detail && event.detail.page === 'profile') {
-        setTimeout(initializeProfileSettings, 50);
-    }
-});
-
-console.log('✅ profile-settings.js loaded successfully');Manager.updateProfile === 'function') {
+        if (window.authManager && typeof window.authManager.updateProfile === 'function') {
             const result = await window.authManager.updateProfile({ nickname: newNickname });
             
             if (result.success) {
-                showProfileMessage('Nickname updated successfully!', 'success');
-                
-                // Оновлюємо відображення профілю
+                if (typeof showProfileMessage === 'function') {
+                    showProfileMessage('Nickname updated successfully!', 'success');
+                }
                 if (typeof updateProfileDisplay === 'function') {
                     updateProfileDisplay();
-                } else if (typeof window.updateProfileDisplaySafe === 'function') {
-                    window.updateProfileDisplaySafe();
                 }
-                
-                // Оновлюємо sidebar
-                if (typeof updateSidebarUserInfo === 'function') {
-                    updateSidebarUserInfo(result.profile);
-                } else if (typeof window.updateSidebarForAuthenticatedUser === 'function') {
-                    window.updateSidebarForAuthenticatedUser(window.authManager.currentUser, result.profile);
-                }
-                
                 form.reset();
                 setTimeout(() => closeSettingsMenu(), 2000);
-            } else {
-                throw new Error(result.message || 'Failed to update nickname');
             }
         } else {
-            // Fallback для localStorage
+            // Fallback for localStorage
             const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
             const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
             
@@ -662,23 +359,15 @@ console.log('✅ profile-settings.js loaded successfully');Manager.updateProfile
             localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
             localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
             
-            showProfileMessage('Nickname updated successfully!', 'success');
-            
-            // Оновлюємо відображення профілю
+            if (typeof showProfileMessage === 'function') {
+                showProfileMessage('Nickname updated successfully! (Development mode)', 'success');
+            }
             if (typeof updateProfileDisplay === 'function') {
                 updateProfileDisplay();
-            } else if (typeof window.updateProfileDisplaySafe === 'function') {
-                window.updateProfileDisplaySafe();
             }
             
-            // Оновлюємо sidebar
             if (typeof updateSidebarUserInfo === 'function') {
                 updateSidebarUserInfo(currentUser);
-            } else if (typeof window.updateSidebarForAuthenticatedUser === 'function') {
-                window.updateSidebarForAuthenticatedUser(
-                    { email: `${newNickname}@local.test` },
-                    currentUser
-                );
             }
             
             form.reset();
@@ -687,20 +376,22 @@ console.log('✅ profile-settings.js loaded successfully');Manager.updateProfile
 
     } catch (error) {
         console.error('Change nickname error:', error);
-        showProfileMessage(error.message || 'Failed to update nickname', 'error');
+        if (typeof showProfileMessage === 'function') {
+            showProfileMessage(error.message || 'Failed to update nickname', 'error');
+        }
     } finally {
         showLoading(submitBtn, false);
     }
 }
 
-// ПІДТВЕРДЖЕННЯ ВИДАЛЕННЯ АКАУНТУ
+// Confirm delete account
 function confirmDeleteAccount() {
     closeSettingsMenu();
     
     const isConfirmed = confirm(
         'Are you absolutely sure you want to delete your account?\n\n' +
         'This action cannot be undone. All your data will be permanently deleted.\n\n' +
-        'Click OK to continue with deletion.'
+        'Type "DELETE" to confirm:'
     );
 
     if (isConfirmed) {
@@ -709,14 +400,109 @@ function confirmDeleteAccount() {
         if (confirmation === 'DELETE') {
             deleteUserAccount();
         } else if (confirmation !== null) {
-            showProfileMessage('Account deletion cancelled - confirmation text did not match', 'error');
+            if (typeof showProfileMessage === 'function') {
+                showProfileMessage('Account deletion cancelled - confirmation text did not match', 'error');
+            }
         }
     }
 }
 
-// ВИДАЛЕННЯ АКАУНТУ КОРИСТУВАЧА
+// Delete user account
 async function deleteUserAccount() {
     try {
-        showProfileMessage('Deleting account...', 'info');
+        if (window.authManager && typeof window.authManager.deleteAccount === 'function') {
+            const result = await window.authManager.deleteAccount();
+            
+            if (result.success) {
+                alert('Your account has been successfully deleted.');
+                
+                setTimeout(() => {
+                    if (typeof switchPage === 'function') {
+                        switchPage('login');
+                    }
+                }, 1000);
+            }
+        } else {
+            // Fallback for localStorage
+            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+            
+            const updatedUsers = savedUsers.filter(u => u.nickname !== currentUser.nickname);
+            localStorage.setItem('armHelper_users', JSON.stringify(updatedUsers));
+            
+            localStorage.removeItem('armHelper_currentUser');
+            
+            const settingsKeys = ['calculator', 'arm', 'grind'];
+            settingsKeys.forEach(key => {
+                localStorage.removeItem(`armHelper_${key}_settings`);
+            });
+            
+            alert('Your account has been successfully deleted (Development mode).');
+            
+            setTimeout(() => {
+                if (typeof switchPage === 'function') {
+                    switchPage('login');
+                }
+            }, 1000);
+        }
 
-        if (window.authManager && typeof window.auth
+    } catch (error) {
+        console.error('Delete account error:', error);
+        if (typeof showProfileMessage === 'function') {
+            showProfileMessage('Failed to delete account. Please try again.', 'error');
+        }
+    }
+}
+
+// Event listeners for clicking outside to close menus
+function setupOutsideClickListeners() {
+    document.addEventListener('click', (e) => {
+        const settingsMenu = document.getElementById('settingsMenu');
+        const statsView = document.getElementById('statsView');
+        const settingsForms = document.querySelectorAll('.settings-form');
+        
+        if (settingsMenu && settingsMenu.style.display === 'block') {
+            if (!settingsMenu.contains(e.target) && !e.target.classList.contains('settings-btn')) {
+                closeSettingsMenu();
+            }
+        }
+        
+        if (statsView && statsView.style.display === 'block') {
+            if (!statsView.contains(e.target) && !e.target.classList.contains('stats-btn')) {
+                if (typeof closeStatsView === 'function') {
+                    closeStatsView();
+                }
+            }
+        }
+    });
+}
+
+// Initialize settings
+function initializeProfileSettings() {
+    setupFormValidation();
+    setupSettingsToggles();
+    setupOutsideClickListeners();
+}
+
+// Export functions for global use
+if (typeof window !== 'undefined') {
+    window.toggleSettingsMenu = toggleSettingsMenu;
+    window.closeSettingsMenu = closeSettingsMenu;
+    window.backToSettingsMenu = backToSettingsMenu;
+    window.showChangePassword = showChangePassword;
+    window.showChangeNickname = showChangeNickname;
+    window.showPreferences = showPreferences;
+    window.validatePasswordStrength = validatePasswordStrength;
+    window.validatePasswordMatch = validatePasswordMatch;
+    window.validateNickname = validateNickname;
+    window.setupFormValidation = setupFormValidation;
+    window.setupSettingsToggles = setupSettingsToggles;
+    window.showLoading = showLoading;
+    window.handleChangePassword = handleChangePassword;
+    window.handleChangeNickname = handleChangeNickname;
+    window.confirmDeleteAccount = confirmDeleteAccount;
+    window.deleteUserAccount = deleteUserAccount;
+    window.initializeProfileSettings = initializeProfileSettings;
+}
+
+console.log('✅ profile-settings.js loaded');
