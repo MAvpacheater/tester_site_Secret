@@ -110,23 +110,9 @@ function formatJoinDate(dateString) {
     }
 }
 
-// Update profile stats
+// Update profile stats - removed calculations count
 async function updateProfileStats() {
     try {
-        // Count saved calculations
-        let calculationsCount = 0;
-        const calculatorTypes = ['calculator', 'arm', 'grind'];
-        
-        for (const type of calculatorTypes) {
-            const settings = await loadCalculatorSettings(type);
-            if (settings) calculationsCount++;
-        }
-
-        const calculationsEl = document.getElementById('calculationsCount');
-        if (calculationsEl) {
-            calculationsEl.textContent = calculationsCount;
-        }
-
         // Update login count
         const loginCountEl = document.getElementById('loginCount');
         if (loginCountEl) {
@@ -154,16 +140,6 @@ async function updateProfileStats() {
 
     } catch (error) {
         console.error('Error updating profile stats:', error);
-    }
-}
-
-// Load calculator settings
-async function loadCalculatorSettings(type) {
-    if (window.authManager && typeof window.authManager.loadCalculatorSettings === 'function') {
-        return await window.authManager.loadCalculatorSettings(type);
-    } else {
-        const settings = localStorage.getItem(`armHelper_${type}_settings`);
-        return settings ? JSON.parse(settings) : null;
     }
 }
 
@@ -214,7 +190,6 @@ if (typeof window !== 'undefined') {
     window.updateProfileDisplay = updateProfileDisplay;
     window.formatJoinDate = formatJoinDate;
     window.updateProfileStats = updateProfileStats;
-    window.loadCalculatorSettings = loadCalculatorSettings;
     window.updateLoginStats = updateLoginStats;
     window.showProfileMessage = showProfileMessage;
     window.toggleStatsView = toggleStatsView;
