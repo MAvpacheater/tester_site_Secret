@@ -456,22 +456,8 @@ function goBackFromProfile() {
 }
 
 function updateStatsView() {
-    console.log('📊 Updating stats view');
+    console.log('📊 Updating stats view (without calculations)');
     try {
-        // Count saved calculations
-        let calculationsCount = 0;
-        const calculatorTypes = ['calculator', 'arm', 'grind'];
-        
-        for (const type of calculatorTypes) {
-            const settings = localStorage.getItem(`armHelper_${type}_settings`);
-            if (settings) calculationsCount++;
-        }
-
-        const calculationsEl = document.getElementById('calculationsCount');
-        if (calculationsEl) {
-            calculationsEl.textContent = calculationsCount;
-        }
-
         // Update login count
         const loginCountEl = document.getElementById('loginCount');
         if (loginCountEl) {
@@ -518,15 +504,6 @@ function showChangeNickname() {
     
     if (settingsMenu) settingsMenu.style.display = 'none';
     if (changeNicknameForm) changeNicknameForm.style.display = 'block';
-}
-
-function showPreferences() {
-    console.log('🎛️ Show preferences');
-    const settingsMenu = document.getElementById('settingsMenu');
-    const preferencesForm = document.getElementById('preferencesForm');
-    
-    if (settingsMenu) settingsMenu.style.display = 'none';
-    if (preferencesForm) preferencesForm.style.display = 'block';
 }
 
 function backToSettingsMenu() {
@@ -622,7 +599,6 @@ window.goBackFromProfile = goBackFromProfile;
 window.updateStatsView = updateStatsView;
 window.showChangePassword = showChangePassword;
 window.showChangeNickname = showChangeNickname;
-window.showPreferences = showPreferences;
 window.backToSettingsMenu = backToSettingsMenu;
 window.confirmDeleteAccount = confirmDeleteAccount;
 window.deleteUserAccount = deleteUserAccount;
