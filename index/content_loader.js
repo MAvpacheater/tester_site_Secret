@@ -116,6 +116,7 @@ async function loadContent() {
                         border-radius: 8px;
                         padding: 4px 8px;
                         margin: -4px -8px;
+                        position: relative;
                     }
                     
                     .clickable-nickname:hover {
@@ -154,6 +155,31 @@ async function loadContent() {
                     .user-info {
                         position: relative;
                     }
+
+                    /* Profile form styles */
+                    .submit-btn.loading {
+                        position: relative;
+                        color: transparent !important;
+                    }
+
+                    .submit-btn.loading::after {
+                        content: '';
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 20px;
+                        height: 20px;
+                        margin: -10px 0 0 -10px;
+                        border: 2px solid transparent;
+                        border-top: 2px solid white;
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                    }
+
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
                 </style>
             `;
 
@@ -191,9 +217,19 @@ async function loadContent() {
     }
 }
 
-// Handle profile click with fallback
+// Handle profile click with enhanced error handling
 function handleProfileClick() {
     console.log('🖱️ Profile click detected');
+    
+    // Check if user is authenticated first
+    const isAuthenticated = checkUserAuthentication();
+    if (!isAuthenticated) {
+        console.warn('⚠️ User not authenticated, redirecting to login');
+        if (typeof switchPage === 'function') {
+            switchPage('login');
+        }
+        return;
+    }
     
     // Try to use the openProfile function if available
     if (typeof window.openProfile === 'function') {
@@ -219,6 +255,29 @@ function handleProfileClick() {
         console.error('❌ No profile opening method available');
         alert('Profile functionality not available. Please refresh the page.');
     }
+}
+
+// Check user authentication
+function checkUserAuthentication() {
+    // Check auth manager first
+    if (window.authManager && window.authManager.currentUser) {
+        return true;
+    }
+    
+    // Check localStorage fallback
+    const savedUser = localStorage.getItem('armHelper_currentUser');
+    if (savedUser) {
+        try {
+            const user = JSON.parse(savedUser);
+            return user && user.nickname;
+        } catch (e) {
+            console.warn('Invalid saved user data');
+            localStorage.removeItem('armHelper_currentUser');
+            return false;
+        }
+    }
+    
+    return false;
 }
 
 // Manual profile update as fallback
@@ -276,6 +335,8 @@ function manualProfileUpdate() {
 
 // Enhanced initialization with auth integration
 function enhanceInitialization() {
+    console.log('🔧 Enhancing initialization...');
+    
     // Listen for authentication events to update ONLY sidebar
     document.addEventListener('userAuthenticated', (event) => {
         const { user, profile } = event.detail;
@@ -289,6 +350,71 @@ function enhanceInitialization() {
     document.addEventListener('userSignedOut', () => {
         updateSidebarForSignedOutUser();
     });
+    
+    // Initialize profile settings when content is loaded
+    document.addEventListener('contentLoaded', () => {
+        setTimeout(() => {
+            initializeProfileFunctionality();
+        }, 300);
+    });
+}
+
+// Initialize profile functionality
+function initializeProfileFunctionality() {
+    console.log('👤 Initializing profile functionality...');
+    
+    // Initialize profile settings if available
+    if (typeof initializeProfileSettings === 'function') {
+        initializeProfileSettings();
+        console.log('✅ Profile settings initialized');
+    } else {
+        console.warn('⚠️ Profile settings function not found');
+    }
+    
+    // Setup form event listeners
+    setupProfileFormListeners();
+    
+    // Protect profile avatar
+    setTimeout(() => {
+        protectProfileAvatar();
+    }, 100);
+}
+
+// Setup profile form listeners
+function setupProfileFormListeners() {
+    console.log('📝 Setting up profile form listeners...');
+    
+    // Password change form
+    const passwordForm = document.querySelector('#changePasswordForm form');
+    if (passwordForm) {
+        passwordForm.addEventListener('submit', handleChangePassword);
+        console.log('✅ Password form listener added');
+    }
+    
+    // Nickname change form
+    const nicknameForm = document.querySelector('#changeNicknameForm form');
+    if (nicknameForm) {
+        nicknameForm.addEventListener('submit', handleChangeNickname);
+        console.log('✅ Nickname form listener added');
+    }
+}
+
+// Protect profile avatar
+function protectProfileAvatar() {
+    const profileAvatar = document.getElementById('profileAvatar');
+    
+    if (profileAvatar && !profileAvatar.hasAttribute('data-protected')) {
+        const originalSrc = 'https://i.postimg.cc/gjmcXwV9/file-000000008fd461f4826bd65e36dbc3d2.png';
+        profileAvatar.src = originalSrc;
+        profileAvatar.setAttribute('data-protected', 'true');
+        
+        // Error handler
+        profileAvatar.onerror = function() {
+            this.src = 'https://via.placeholder.com/100x100/667eea/ffffff?text=👤';
+        };
+        
+        console.log('🛡️ Profile avatar protected');
+    }
 }
 
 // Update ONLY sidebar for authenticated user
@@ -382,14 +508,39 @@ function checkInitialAuthState() {
     }, 500);
 }
 
-// Profile settings functions - Fallbacks for missing functions
+// Profile settings functions - Enhanced versions
 function toggleSettingsMenu() {
     console.log('⚙️ Toggle settings menu');
     const settingsMenu = document.getElementById('settingsMenu');
     if (settingsMenu) {
-        settingsMenu.style.display = settingsMenu.style.display === 'none' ? 'block' : 'none';
+        const isVisible = settingsMenu.style.display !== 'none';
+        settingsMenu.style.display = isVisible ? 'none' : 'block';
+        
+        if (!isVisible) {
+            // Update current nickname when opening settings
+            updateCurrentNicknameField();
+        }
     } else {
         console.warn('⚠️ Settings menu not found');
+    }
+}
+
+function updateCurrentNicknameField() {
+    const currentNicknameInput = document.getElementById('currentNickname');
+    if (currentNicknameInput) {
+        if (window.authManager && window.authManager.userProfile) {
+            currentNicknameInput.value = window.authManager.userProfile.nickname || 'User';
+        } else {
+            const savedUser = localStorage.getItem('armHelper_currentUser');
+            if (savedUser) {
+                try {
+                    const user = JSON.parse(savedUser);
+                    currentNicknameInput.value = user.nickname || 'User';
+                } catch (e) {
+                    currentNicknameInput.value = 'User';
+                }
+            }
+        }
     }
 }
 
@@ -471,9 +622,40 @@ function updateStatsView() {
     }
 }
 
-// Profile settings stub functions
+// Enhanced form handlers with better error handling
+function handleChangePassword(event) {
+    event.preventDefault();
+    console.log('🔑 Password change form submitted');
+    
+    // Use the enhanced handler from profile-settings.js if available
+    if (typeof window.handleChangePassword === 'function') {
+        return window.handleChangePassword(event);
+    } else {
+        console.error('❌ Enhanced password change handler not found');
+        alert('Password change functionality not available. Please refresh the page.');
+    }
+}
+
+function handleChangeNickname(event) {
+    event.preventDefault();
+    console.log('✏️ Nickname change form submitted');
+    
+    // Use the enhanced handler from profile-settings.js if available
+    if (typeof window.handleChangeNickname === 'function') {
+        return window.handleChangeNickname(event);
+    } else {
+        console.error('❌ Enhanced nickname change handler not found');
+        alert('Nickname change functionality not available. Please refresh the page.');
+    }
+}
+
+// Profile settings stub functions for compatibility
 function showChangePassword() {
     console.log('🔒 Show change password');
+    if (typeof window.showChangePassword === 'function') {
+        return window.showChangePassword();
+    }
+    
     const settingsMenu = document.getElementById('settingsMenu');
     const changePasswordForm = document.getElementById('changePasswordForm');
     
@@ -483,15 +665,26 @@ function showChangePassword() {
 
 function showChangeNickname() {
     console.log('✏️ Show change nickname');
+    if (typeof window.showChangeNickname === 'function') {
+        return window.showChangeNickname();
+    }
+    
     const settingsMenu = document.getElementById('settingsMenu');
     const changeNicknameForm = document.getElementById('changeNicknameForm');
     
     if (settingsMenu) settingsMenu.style.display = 'none';
     if (changeNicknameForm) changeNicknameForm.style.display = 'block';
+    
+    // Update current nickname
+    updateCurrentNicknameField();
 }
 
 function backToSettingsMenu() {
     console.log('← Back to settings menu');
+    if (typeof window.backToSettingsMenu === 'function') {
+        return window.backToSettingsMenu();
+    }
+    
     const settingsForms = document.querySelectorAll('.settings-form');
     const settingsMenu = document.getElementById('settingsMenu');
     
@@ -506,6 +699,10 @@ function backToSettingsMenu() {
 
 function confirmDeleteAccount() {
     console.log('⚠️ Confirm delete account');
+    if (typeof window.confirmDeleteAccount === 'function') {
+        return window.confirmDeleteAccount();
+    }
+    
     closeSettingsMenu();
     
     const isConfirmed = confirm(
@@ -527,8 +724,12 @@ function confirmDeleteAccount() {
 
 function deleteUserAccount() {
     console.log('🗑️ Delete user account');
+    if (typeof window.deleteUserAccount === 'function') {
+        return window.deleteUserAccount();
+    }
+    
+    // Basic fallback
     try {
-        // Remove from localStorage
         const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
         const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
         
@@ -537,161 +738,18 @@ function deleteUserAccount() {
         
         localStorage.removeItem('armHelper_currentUser');
         
-        // Clear user settings
-        const settingsKeys = ['calculator', 'arm', 'grind'];
-        settingsKeys.forEach(key => {
-            localStorage.removeItem(`armHelper_${key}_settings`);
-        });
-        
         alert('Your account has been successfully deleted.');
         
         setTimeout(() => {
             if (typeof switchPage === 'function') {
                 switchPage('login');
+            } else {
+                window.location.reload();
             }
         }, 1000);
     } catch (error) {
         console.error('Delete account error:', error);
         alert('Failed to delete account. Please try again.');
-    }
-}
-
-// Form handlers - ПОВНОЦІННІ БЕЗ БЛОКУВАНЬ
-function handleChangePassword(event) {
-    event.preventDefault();
-    console.log('🔑 Password change initiated');
-    
-    const currentPassword = document.getElementById('currentPassword')?.value || '';
-    const newPassword = document.getElementById('newPassword')?.value;
-    const confirmNewPassword = document.getElementById('confirmNewPassword')?.value;
-    
-    if (!newPassword || !confirmNewPassword) {
-        alert('All password fields are required');
-        return;
-    }
-    
-    if (newPassword.length < 6) {
-        alert('New password must be at least 6 characters long');
-        return;
-    }
-    
-    if (newPassword !== confirmNewPassword) {
-        alert('New passwords do not match');
-        return;
-    }
-    
-    // Call the profile settings handler if available
-    if (typeof window.handleChangePassword === 'function') {
-        window.handleChangePassword(event);
-    } else {
-        // Fallback implementation
-        handlePasswordChangeFallback(currentPassword, newPassword);
-    }
-}
-
-function handleChangeNickname(event) {
-    event.preventDefault();
-    console.log('✏️ Nickname change initiated');
-    
-    const currentNickname = document.getElementById('currentNickname')?.value;
-    const newNickname = document.getElementById('newNickname')?.value?.trim();
-    
-    if (!newNickname) {
-        alert('New nickname is required');
-        return;
-    }
-    
-    if (newNickname.length < 3 || newNickname.length > 20) {
-        alert('Nickname must be between 3 and 20 characters');
-        return;
-    }
-    
-    if (!/^[a-zA-Z0-9_]+$/.test(newNickname)) {
-        alert('Nickname can only contain letters, numbers, and underscores');
-        return;
-    }
-    
-    if (currentNickname === newNickname) {
-        alert('New nickname must be different from current nickname');
-        return;
-    }
-    
-    // Call the profile settings handler if available
-    if (typeof window.handleChangeNickname === 'function') {
-        window.handleChangeNickname(event);
-    } else {
-        // Fallback implementation
-        handleNicknameChangeFallback(currentNickname, newNickname);
-    }
-}
-
-// Fallback implementations
-function handlePasswordChangeFallback(currentPassword, newPassword) {
-    try {
-        const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
-        const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
-        
-        const userIndex = savedUsers.findIndex(u => u.nickname === currentUser.nickname);
-        
-        if (userIndex !== -1) {
-            savedUsers[userIndex].password = newPassword;
-            localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
-            
-            currentUser.password = newPassword;
-            localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
-            
-            alert('Password updated successfully!');
-            closeSettingsMenu();
-        } else {
-            alert('User not found');
-        }
-    } catch (error) {
-        console.error('Password change error:', error);
-        alert('Failed to update password');
-    }
-}
-
-function handleNicknameChangeFallback(currentNickname, newNickname) {
-    try {
-        const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
-        const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
-        
-        // Check if nickname is already taken
-        const existingUser = savedUsers.find(u => 
-            u.nickname === newNickname && u.nickname !== currentNickname
-        );
-        
-        if (existingUser) {
-            alert('This nickname is already taken');
-            return;
-        }
-        
-        const userIndex = savedUsers.findIndex(u => u.nickname === currentNickname);
-        
-        if (userIndex !== -1) {
-            savedUsers[userIndex].nickname = newNickname;
-            localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
-            
-            currentUser.nickname = newNickname;
-            localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
-            
-            // Update UI
-            const profileNickname = document.getElementById('profileNickname');
-            const sidebarUserNickname = document.getElementById('sidebarUserNickname');
-            const currentNicknameInput = document.getElementById('currentNickname');
-            
-            if (profileNickname) profileNickname.textContent = newNickname;
-            if (sidebarUserNickname) sidebarUserNickname.textContent = newNickname;
-            if (currentNicknameInput) currentNicknameInput.value = newNickname;
-            
-            alert('Nickname updated successfully!');
-            closeSettingsMenu();
-        } else {
-            alert('User not found');
-        }
-    } catch (error) {
-        console.error('Nickname change error:', error);
-        alert('Failed to update nickname');
     }
 }
 
@@ -717,6 +775,7 @@ window.handleProfileClick = handleProfileClick;
 window.manualProfileUpdate = manualProfileUpdate;
 window.updateSidebarForAuthenticatedUser = updateSidebarForAuthenticatedUser;
 window.updateSidebarForSignedOutUser = updateSidebarForSignedOutUser;
+window.checkUserAuthentication = checkUserAuthentication;
 
 // Profile functions
 window.toggleSettingsMenu = toggleSettingsMenu;
@@ -730,7 +789,8 @@ window.showChangeNickname = showChangeNickname;
 window.backToSettingsMenu = backToSettingsMenu;
 window.confirmDeleteAccount = confirmDeleteAccount;
 window.deleteUserAccount = deleteUserAccount;
-window.handleChangePassword = handleChangePassword;
-window.handleChangeNickname = handleChangeNickname;
+window.updateCurrentNicknameField = updateCurrentNicknameField;
+window.initializeProfileFunctionality = initializeProfileFunctionality;
+window.protectProfileAvatar = protectProfileAvatar;
 
-console.log('✅ content_loader.js FULLY loaded - ALL FUNCTIONALITY ENABLED');
+console.log('✅ content_loader.js FULLY loaded with enhanced profile support');
