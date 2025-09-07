@@ -296,27 +296,36 @@ function confirmDeleteAccount() {
     }
 }
 
-// Delete user account - СПРОЩЕНА ЛОГІКА
+// Delete user account - ПОВНІСТЮ РОБОЧИЙ
 async function deleteUserAccount() {
+    console.log('🗑️ Account deletion initiated');
+    
     try {
-        if (window.authManager && typeof window.authManager.deleteAccount === 'function') {
-            const result = await window.authManager.deleteAccount();
+        // Перевіряємо чи є authManager
+        if (!window.authManager) {
+            showProfileMessage('Authentication system not ready. Please refresh the page.', 'error');
+            return;
+        }
+
+        const result = await window.authManager.deleteAccount();
+        
+        if (result && result.success) {
+            alert('Your account has been successfully deleted.');
+            console.log('✅ Account deleted successfully');
             
-            if (result.success) {
-                alert('Your account has been successfully deleted.');
-                
-                setTimeout(() => {
-                    if (typeof switchPage === 'function') {
-                        switchPage('login');
-                    }
-                }, 1000);
-            }
+            setTimeout(() => {
+                if (typeof switchPage === 'function') {
+                    switchPage('login');
+                } else {
+                    window.location.reload();
+                }
+            }, 1000);
         } else {
-            showProfileMessage('Authentication manager not available', 'error');
+            throw new Error('Account deletion failed');
         }
 
     } catch (error) {
-        console.error('Delete account error:', error);
+        console.error('❌ Delete account error:', error);
         showProfileMessage('Failed to delete account. Please try again.', 'error');
     }
 }
