@@ -1,4 +1,4 @@
-// profile-settings.js - Логіка налаштувань
+// profile-settings.js - Логіка налаштувань з виправленою логікою
 console.log('⚙️ Loading profile-settings.js...');
 
 // Menu Management Functions
@@ -49,6 +49,12 @@ function showChangeNickname() {
     
     if (settingsMenu) settingsMenu.style.display = 'none';
     if (changeNicknameForm) changeNicknameForm.style.display = 'block';
+    
+    // Заповнюємо поточний нікнейм
+    const currentNicknameInput = document.getElementById('currentNickname');
+    if (currentNicknameInput && window.authManager && window.authManager.userProfile) {
+        currentNicknameInput.value = window.authManager.userProfile.nickname || 'User';
+    }
 }
 
 // Form Validation
@@ -145,7 +151,7 @@ function showLoading(button, show = true) {
     }
 }
 
-// Handle change password
+// Handle change password - СПРОЩЕНА ЛОГІКА
 async function handleChangePassword(event) {
     event.preventDefault();
 
@@ -156,32 +162,25 @@ async function handleChangePassword(event) {
     const newPassword = document.getElementById('newPassword')?.value;
     const confirmNewPassword = document.getElementById('confirmNewPassword')?.value;
 
-    // Validation
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage('All fields are required', 'error');
-        }
+    // Базова валідація
+    if (!newPassword || !confirmNewPassword) {
+        showProfileMessage('All fields are required', 'error');
         return;
     }
 
     if (newPassword.length < 6) {
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage('New password must be at least 6 characters long', 'error');
-        }
+        showProfileMessage('New password must be at least 6 characters long', 'error');
         return;
     }
 
     if (newPassword !== confirmNewPassword) {
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage('New passwords do not match', 'error');
-        }
+        showProfileMessage('New passwords do not match', 'error');
         return;
     }
 
-    if (currentPassword === newPassword) {
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage('New password must be different from current password', 'error');
-        }
+    // Для fallback режиму потрібен поточний пароль
+    if (!window.authManager?.supabase && !currentPassword) {
+        showProfileMessage('Current password is required', 'error');
         return;
     }
 
@@ -192,9 +191,7 @@ async function handleChangePassword(event) {
             const result = await window.authManager.changePassword(currentPassword, newPassword);
             
             if (result.success) {
-                if (typeof showProfileMessage === 'function') {
-                    showProfileMessage('Password updated successfully!', 'success');
-                }
+                showProfileMessage('Password updated successfully!', 'success');
                 form.reset();
                 document.querySelectorAll('.form-input').forEach(input => {
                     input.classList.remove('error', 'success');
@@ -202,46 +199,18 @@ async function handleChangePassword(event) {
                 setTimeout(() => closeSettingsMenu(), 2000);
             }
         } else {
-            // Fallback for localStorage
-            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
-            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
-            
-            const userIndex = savedUsers.findIndex(u => u.nickname === currentUser.nickname);
-            
-            if (userIndex === -1) {
-                throw new Error('User not found');
-            }
-
-            if (savedUsers[userIndex].password !== currentPassword) {
-                throw new Error('Current password is incorrect');
-            }
-
-            savedUsers[userIndex].password = newPassword;
-            savedUsers[userIndex].updatedAt = new Date().toISOString();
-
-            localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
-            
-            if (typeof showProfileMessage === 'function') {
-                showProfileMessage('Password updated successfully! (Development mode)', 'success');
-            }
-            form.reset();
-            document.querySelectorAll('.form-input').forEach(input => {
-                input.classList.remove('error', 'success');
-            });
-            setTimeout(() => closeSettingsMenu(), 2000);
+            showProfileMessage('Authentication manager not available', 'error');
         }
 
     } catch (error) {
         console.error('Change password error:', error);
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage(error.message || 'Failed to update password', 'error');
-        }
+        showProfileMessage(error.message || 'Failed to update password', 'error');
     } finally {
         showLoading(submitBtn, false);
     }
 }
 
-// Handle change nickname
+// Handle change nickname - СПРОЩЕНА ЛОГІКА
 async function handleChangeNickname(event) {
     event.preventDefault();
 
@@ -251,32 +220,24 @@ async function handleChangeNickname(event) {
     const currentNickname = document.getElementById('currentNickname')?.value;
     const newNickname = document.getElementById('newNickname')?.value.trim();
 
-    // Validation
+    // Базова валідація
     if (!newNickname) {
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage('New nickname is required', 'error');
-        }
+        showProfileMessage('New nickname is required', 'error');
         return;
     }
 
     if (newNickname.length < 3 || newNickname.length > 20) {
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage('Nickname must be between 3 and 20 characters', 'error');
-        }
+        showProfileMessage('Nickname must be between 3 and 20 characters', 'error');
         return;
     }
 
     if (!/^[a-zA-Z0-9_]+$/.test(newNickname)) {
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage('Nickname can only contain letters, numbers, and underscores', 'error');
-        }
+        showProfileMessage('Nickname can only contain letters, numbers, and underscores', 'error');
         return;
     }
 
     if (currentNickname === newNickname) {
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage('New nickname must be different from current nickname', 'error');
-        }
+        showProfileMessage('New nickname must be different from current nickname', 'error');
         return;
     }
 
@@ -287,60 +248,28 @@ async function handleChangeNickname(event) {
             const result = await window.authManager.updateProfile({ nickname: newNickname });
             
             if (result.success) {
-                if (typeof showProfileMessage === 'function') {
-                    showProfileMessage('Nickname updated successfully!', 'success');
-                }
+                showProfileMessage('Nickname updated successfully!', 'success');
+                
+                // Оновлюємо відображення профілю
                 if (typeof updateProfileDisplay === 'function') {
                     updateProfileDisplay();
                 }
+                
+                // Оновлюємо сайдбар
+                if (typeof updateSidebarForAuthenticatedUser === 'function') {
+                    updateSidebarForAuthenticatedUser(window.authManager.currentUser, result.profile);
+                }
+                
                 form.reset();
                 setTimeout(() => closeSettingsMenu(), 2000);
             }
         } else {
-            // Fallback for localStorage
-            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
-            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
-            
-            const existingUser = savedUsers.find(u => u.nickname === newNickname && u.nickname !== currentUser.nickname);
-            if (existingUser) {
-                throw new Error('This nickname is already taken');
-            }
-            
-            const userIndex = savedUsers.findIndex(u => u.nickname === currentUser.nickname);
-            
-            if (userIndex === -1) {
-                throw new Error('User not found');
-            }
-
-            savedUsers[userIndex].nickname = newNickname;
-            savedUsers[userIndex].updatedAt = new Date().toISOString();
-            
-            currentUser.nickname = newNickname;
-            currentUser.updatedAt = new Date().toISOString();
-
-            localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
-            localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
-            
-            if (typeof showProfileMessage === 'function') {
-                showProfileMessage('Nickname updated successfully! (Development mode)', 'success');
-            }
-            if (typeof updateProfileDisplay === 'function') {
-                updateProfileDisplay();
-            }
-            
-            if (typeof updateSidebarUserInfo === 'function') {
-                updateSidebarUserInfo(currentUser);
-            }
-            
-            form.reset();
-            setTimeout(() => closeSettingsMenu(), 2000);
+            showProfileMessage('Authentication manager not available', 'error');
         }
 
     } catch (error) {
         console.error('Change nickname error:', error);
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage(error.message || 'Failed to update nickname', 'error');
-        }
+        showProfileMessage(error.message || 'Failed to update nickname', 'error');
     } finally {
         showLoading(submitBtn, false);
     }
@@ -353,7 +282,7 @@ function confirmDeleteAccount() {
     const isConfirmed = confirm(
         'Are you absolutely sure you want to delete your account?\n\n' +
         'This action cannot be undone. All your data will be permanently deleted.\n\n' +
-        'Type "DELETE" to confirm:'
+        'Click OK to continue with deletion.'
     );
 
     if (isConfirmed) {
@@ -362,14 +291,12 @@ function confirmDeleteAccount() {
         if (confirmation === 'DELETE') {
             deleteUserAccount();
         } else if (confirmation !== null) {
-            if (typeof showProfileMessage === 'function') {
-                showProfileMessage('Account deletion cancelled - confirmation text did not match', 'error');
-            }
+            showProfileMessage('Account deletion cancelled - confirmation text did not match', 'error');
         }
     }
 }
 
-// Delete user account
+// Delete user account - СПРОЩЕНА ЛОГІКА
 async function deleteUserAccount() {
     try {
         if (window.authManager && typeof window.authManager.deleteAccount === 'function') {
@@ -385,33 +312,32 @@ async function deleteUserAccount() {
                 }, 1000);
             }
         } else {
-            // Fallback for localStorage
-            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
-            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
-            
-            const updatedUsers = savedUsers.filter(u => u.nickname !== currentUser.nickname);
-            localStorage.setItem('armHelper_users', JSON.stringify(updatedUsers));
-            
-            localStorage.removeItem('armHelper_currentUser');
-            
-            const settingsKeys = ['calculator', 'arm', 'grind'];
-            settingsKeys.forEach(key => {
-                localStorage.removeItem(`armHelper_${key}_settings`);
-            });
-            
-            alert('Your account has been successfully deleted (Development mode).');
-            
-            setTimeout(() => {
-                if (typeof switchPage === 'function') {
-                    switchPage('login');
-                }
-            }, 1000);
+            showProfileMessage('Authentication manager not available', 'error');
         }
 
     } catch (error) {
         console.error('Delete account error:', error);
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage('Failed to delete account. Please try again.', 'error');
+        showProfileMessage('Failed to delete account. Please try again.', 'error');
+    }
+}
+
+// Show profile message helper
+function showProfileMessage(text, type = 'success') {
+    const messageEl = document.getElementById('profileMessage');
+    if (messageEl) {
+        messageEl.textContent = text;
+        messageEl.className = `profile-message ${type}`;
+        messageEl.style.display = 'block';
+
+        setTimeout(() => {
+            messageEl.style.display = 'none';
+        }, 4000);
+    } else {
+        // Fallback до alert якщо немає елемента повідомлення
+        if (type === 'error') {
+            alert('Error: ' + text);
+        } else {
+            alert(text);
         }
     }
 }
@@ -421,7 +347,6 @@ function setupOutsideClickListeners() {
     document.addEventListener('click', (e) => {
         const settingsMenu = document.getElementById('settingsMenu');
         const statsView = document.getElementById('statsView');
-        const settingsForms = document.querySelectorAll('.settings-form');
         
         if (settingsMenu && settingsMenu.style.display === 'block') {
             if (!settingsMenu.contains(e.target) && !e.target.classList.contains('settings-btn')) {
@@ -443,6 +368,19 @@ function setupOutsideClickListeners() {
 function initializeProfileSettings() {
     setupFormValidation();
     setupOutsideClickListeners();
+    
+    // Слухаємо оновлення профілю
+    document.addEventListener('userProfileUpdated', (event) => {
+        const { profile } = event.detail;
+        
+        // Оновлюємо відображення в формах
+        const currentNicknameInput = document.getElementById('currentNickname');
+        if (currentNicknameInput && profile) {
+            currentNicknameInput.value = profile.nickname || 'User';
+        }
+        
+        console.log('✅ Profile settings updated after profile change');
+    });
 }
 
 // Export functions for global use
@@ -462,6 +400,7 @@ if (typeof window !== 'undefined') {
     window.confirmDeleteAccount = confirmDeleteAccount;
     window.deleteUserAccount = deleteUserAccount;
     window.initializeProfileSettings = initializeProfileSettings;
+    window.showProfileMessage = showProfileMessage;
 }
 
-console.log('✅ profile-settings.js loaded');
+console.log('✅ profile-settings.js loaded with simplified logic');
