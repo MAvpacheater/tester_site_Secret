@@ -18,7 +18,7 @@ const charmsData = [
     },
     {
         title: "Endless charm",
-        imageUrl: "https://i.postimg.cc/k4rc5Ntw/2025-09-06-22-18-24.png", // Замініть на ваш URL
+        imageUrl: "https://i.postimg.cc/RVSLXFMX/2025-09-07-09-35-25.png", // Замініть на ваш URL
         description: "Gives 15% to training rep",
         details: "Max stock: 10",
         category: "charm"
