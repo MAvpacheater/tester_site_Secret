@@ -1,4 +1,4 @@
-// profile-settings.js - Логіка налаштувань з виправленою логікою
+// profile-settings.js - Виправлена логіка налаштувань
 console.log('⚙️ Loading profile-settings.js...');
 
 // Menu Management Functions
@@ -52,91 +52,21 @@ function showChangeNickname() {
     
     // Заповнюємо поточний нікнейм
     const currentNicknameInput = document.getElementById('currentNickname');
-    if (currentNicknameInput && window.authManager && window.authManager.userProfile) {
-        currentNicknameInput.value = window.authManager.userProfile.nickname || 'User';
-    }
-}
-
-// Form Validation
-function validatePasswordStrength(input) {
-    const value = input.value;
-    
-    if (value.length === 0) {
-        input.classList.remove('error', 'success');
-        return true;
-    }
-
-    if (value.length >= 6) {
-        input.classList.add('success');
-        input.classList.remove('error');
-        return true;
-    } else {
-        input.classList.add('error');
-        input.classList.remove('success');
-        return false;
-    }
-}
-
-function validatePasswordMatch(passwordInput, confirmInput) {
-    if (confirmInput.value === '') {
-        confirmInput.classList.remove('error', 'success');
-        return true;
-    }
-
-    if (passwordInput.value === confirmInput.value) {
-        confirmInput.classList.add('success');
-        confirmInput.classList.remove('error');
-        return true;
-    } else {
-        confirmInput.classList.add('error');
-        confirmInput.classList.remove('success');
-        return false;
-    }
-}
-
-function validateNickname(input) {
-    const value = input.value.trim();
-    
-    if (value.length === 0) {
-        input.classList.remove('error', 'success');
-        return true;
-    }
-
-    if (value.length >= 3 && value.length <= 20 && /^[a-zA-Z0-9_]+$/.test(value)) {
-        input.classList.add('success');
-        input.classList.remove('error');
-        return true;
-    } else {
-        input.classList.add('error');
-        input.classList.remove('success');
-        return false;
-    }
-}
-
-// Setup form validation
-function setupFormValidation() {
-    const currentPassword = document.getElementById('currentPassword');
-    const newPassword = document.getElementById('newPassword');
-    const confirmNewPassword = document.getElementById('confirmNewPassword');
-    const newNickname = document.getElementById('newNickname');
-
-    if (newPassword && confirmNewPassword) {
-        confirmNewPassword.addEventListener('input', () => {
-            validatePasswordMatch(newPassword, confirmNewPassword);
-        });
-
-        newPassword.addEventListener('input', () => {
-            validatePasswordStrength(newPassword);
-            if (confirmNewPassword.value) {
-                validatePasswordMatch(newPassword, confirmNewPassword);
+    if (currentNicknameInput) {
+        if (window.authManager && window.authManager.userProfile) {
+            currentNicknameInput.value = window.authManager.userProfile.nickname || 'User';
+        } else {
+            // Fallback з localStorage
+            const savedUser = localStorage.getItem('armHelper_currentUser');
+            if (savedUser) {
+                try {
+                    const user = JSON.parse(savedUser);
+                    currentNicknameInput.value = user.nickname || 'User';
+                } catch (e) {
+                    currentNicknameInput.value = 'User';
+                }
             }
-        });
-    }
-
-    if (newNickname) {
-        newNickname.addEventListener('input', () => {
-            validateNickname(newNickname);
-        });
+        }
     }
 }
 
@@ -151,7 +81,7 @@ function showLoading(button, show = true) {
     }
 }
 
-// Handle change password - СПРОЩЕНА ЛОГІКА
+// Handle change password - ПРАЦЮЮЧА ВЕРСІЯ
 async function handleChangePassword(event) {
     event.preventDefault();
 
@@ -178,39 +108,66 @@ async function handleChangePassword(event) {
         return;
     }
 
-    // Для fallback режиму потрібен поточний пароль
-    if (!window.authManager?.supabase && !currentPassword) {
-        showProfileMessage('Current password is required', 'error');
-        return;
-    }
-
     try {
         showLoading(submitBtn, true);
 
+        // Перевіряємо наявність authManager
         if (window.authManager && typeof window.authManager.changePassword === 'function') {
+            console.log('🔄 Using authManager for password change');
             const result = await window.authManager.changePassword(currentPassword, newPassword);
             
             if (result.success) {
                 showProfileMessage('Password updated successfully!', 'success');
                 form.reset();
-                document.querySelectorAll('.form-input').forEach(input => {
-                    input.classList.remove('error', 'success');
-                });
                 setTimeout(() => closeSettingsMenu(), 2000);
+            } else {
+                throw new Error(result.message || 'Failed to update password');
             }
         } else {
-            showProfileMessage('Authentication manager not available', 'error');
+            // Fallback до локального сховища
+            console.log('🔄 Using fallback password change');
+            await handlePasswordChangeFallback(currentPassword, newPassword);
+            showProfileMessage('Password updated successfully!', 'success');
+            form.reset();
+            setTimeout(() => closeSettingsMenu(), 2000);
         }
 
     } catch (error) {
-        console.error('Change password error:', error);
+        console.error('❌ Change password error:', error);
         showProfileMessage(error.message || 'Failed to update password', 'error');
     } finally {
         showLoading(submitBtn, false);
     }
 }
 
-// Handle change nickname - СПРОЩЕНА ЛОГІКА
+// Fallback зміна паролю
+async function handlePasswordChangeFallback(currentPassword, newPassword) {
+    const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+    const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+    
+    const userIndex = savedUsers.findIndex(u => u.nickname === currentUser.nickname);
+    
+    if (userIndex === -1) {
+        throw new Error('User not found');
+    }
+
+    // Перевіряємо поточний пароль (якщо вказаний)
+    if (currentPassword && savedUsers[userIndex].password !== currentPassword) {
+        throw new Error('Current password is incorrect');
+    }
+
+    // Оновлюємо пароль
+    savedUsers[userIndex].password = newPassword;
+    savedUsers[userIndex].updatedAt = new Date().toISOString();
+
+    localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
+    
+    // Оновлюємо поточного користувача
+    currentUser.password = newPassword;
+    localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
+}
+
+// Handle change nickname - ПРАЦЮЮЧА ВЕРСІЯ
 async function handleChangeNickname(event) {
     event.preventDefault();
 
@@ -244,7 +201,9 @@ async function handleChangeNickname(event) {
     try {
         showLoading(submitBtn, true);
 
+        // Перевіряємо наявність authManager
         if (window.authManager && typeof window.authManager.updateProfile === 'function') {
+            console.log('🔄 Using authManager for nickname change');
             const result = await window.authManager.updateProfile({ nickname: newNickname });
             
             if (result.success) {
@@ -262,16 +221,68 @@ async function handleChangeNickname(event) {
                 
                 form.reset();
                 setTimeout(() => closeSettingsMenu(), 2000);
+            } else {
+                throw new Error(result.message || 'Failed to update nickname');
             }
         } else {
-            showProfileMessage('Authentication manager not available', 'error');
+            // Fallback до локального сховища
+            console.log('🔄 Using fallback nickname change');
+            await handleNicknameChangeFallback(currentNickname, newNickname);
+            showProfileMessage('Nickname updated successfully!', 'success');
+            
+            // Оновлюємо UI
+            if (typeof updateProfileDisplay === 'function') {
+                updateProfileDisplay();
+            }
+            
+            form.reset();
+            setTimeout(() => closeSettingsMenu(), 2000);
         }
 
     } catch (error) {
-        console.error('Change nickname error:', error);
+        console.error('❌ Change nickname error:', error);
         showProfileMessage(error.message || 'Failed to update nickname', 'error');
     } finally {
         showLoading(submitBtn, false);
+    }
+}
+
+// Fallback зміна нікнейму
+async function handleNicknameChangeFallback(currentNickname, newNickname) {
+    const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+    const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+    
+    // Перевіряємо унікальність нікнейму
+    const existingUser = savedUsers.find(u => 
+        u.nickname === newNickname && 
+        u.nickname !== currentNickname
+    );
+    
+    if (existingUser) {
+        throw new Error('This nickname is already taken');
+    }
+    
+    const userIndex = savedUsers.findIndex(u => u.nickname === currentNickname);
+    
+    if (userIndex === -1) {
+        throw new Error('User not found');
+    }
+
+    // Оновлюємо дані користувача
+    savedUsers[userIndex] = { 
+        ...savedUsers[userIndex], 
+        nickname: newNickname,
+        updatedAt: new Date().toISOString() 
+    };
+    
+    const updatedUser = savedUsers[userIndex];
+
+    localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
+    localStorage.setItem('armHelper_currentUser', JSON.stringify(updatedUser));
+
+    // Оновлюємо authManager якщо він є
+    if (window.authManager) {
+        window.authManager.userProfile = updatedUser;
     }
 }
 
@@ -296,22 +307,35 @@ function confirmDeleteAccount() {
     }
 }
 
-// Delete user account - ПОВНІСТЮ РОБОЧИЙ
+// Delete user account - ПРАЦЮЮЧА ВЕРСІЯ
 async function deleteUserAccount() {
     console.log('🗑️ Account deletion initiated');
     
     try {
-        // Перевіряємо чи є authManager
-        if (!window.authManager) {
-            showProfileMessage('Authentication system not ready. Please refresh the page.', 'error');
-            return;
-        }
-
-        const result = await window.authManager.deleteAccount();
-        
-        if (result && result.success) {
+        // Перевіряємо authManager
+        if (window.authManager && typeof window.authManager.deleteAccount === 'function') {
+            console.log('🔄 Using authManager for account deletion');
+            const result = await window.authManager.deleteAccount();
+            
+            if (result && result.success) {
+                alert('Your account has been successfully deleted.');
+                console.log('✅ Account deleted successfully');
+                
+                setTimeout(() => {
+                    if (typeof switchPage === 'function') {
+                        switchPage('login');
+                    } else {
+                        window.location.reload();
+                    }
+                }, 1000);
+            } else {
+                throw new Error('Account deletion failed');
+            }
+        } else {
+            // Fallback до локального сховища
+            console.log('🔄 Using fallback account deletion');
+            await deleteAccountFallback();
             alert('Your account has been successfully deleted.');
-            console.log('✅ Account deleted successfully');
             
             setTimeout(() => {
                 if (typeof switchPage === 'function') {
@@ -320,14 +344,40 @@ async function deleteUserAccount() {
                     window.location.reload();
                 }
             }, 1000);
-        } else {
-            throw new Error('Account deletion failed');
         }
 
     } catch (error) {
         console.error('❌ Delete account error:', error);
         showProfileMessage('Failed to delete account. Please try again.', 'error');
     }
+}
+
+// Fallback видалення акаунту
+async function deleteAccountFallback() {
+    const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+    const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+    
+    // Видаляємо користувача зі списку
+    const updatedUsers = savedUsers.filter(u => u.nickname !== currentUser.nickname);
+    localStorage.setItem('armHelper_users', JSON.stringify(updatedUsers));
+    
+    // Очищаємо поточні дані користувача
+    localStorage.removeItem('armHelper_currentUser');
+    
+    // Очищаємо всі налаштування користувача
+    const settingsKeys = ['calculator', 'arm', 'grind'];
+    settingsKeys.forEach(key => {
+        localStorage.removeItem(`armHelper_${key}_settings`);
+    });
+
+    // Очищаємо authManager
+    if (window.authManager) {
+        window.authManager.currentUser = null;
+        window.authManager.userProfile = null;
+    }
+
+    // Відправляємо подію про вихід
+    document.dispatchEvent(new CustomEvent('userSignedOut'));
 }
 
 // Show profile message helper
@@ -375,7 +425,6 @@ function setupOutsideClickListeners() {
 
 // Initialize settings
 function initializeProfileSettings() {
-    setupFormValidation();
     setupOutsideClickListeners();
     
     // Слухаємо оновлення профілю
@@ -399,10 +448,6 @@ if (typeof window !== 'undefined') {
     window.backToSettingsMenu = backToSettingsMenu;
     window.showChangePassword = showChangePassword;
     window.showChangeNickname = showChangeNickname;
-    window.validatePasswordStrength = validatePasswordStrength;
-    window.validatePasswordMatch = validatePasswordMatch;
-    window.validateNickname = validateNickname;
-    window.setupFormValidation = setupFormValidation;
     window.showLoading = showLoading;
     window.handleChangePassword = handleChangePassword;
     window.handleChangeNickname = handleChangeNickname;
@@ -412,4 +457,4 @@ if (typeof window !== 'undefined') {
     window.showProfileMessage = showProfileMessage;
 }
 
-console.log('✅ profile-settings.js loaded with simplified logic');
+console.log('✅ profile-settings.js loaded - Fixed version');
