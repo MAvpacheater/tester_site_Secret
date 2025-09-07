@@ -7,8 +7,8 @@
                 <img src="https://i.postimg.cc/gjmcXwV9/file-000000008fd461f4826bd65e36dbc3d2.png/80x80/667eea/ffffff?text=👤" alt="Avatar" class="avatar-img" id="profileAvatar">
             </div>
             <div class="profile-info">
-                <h2 class="profile-nickname" id="profileNickname">User</h2>
-                <p class="profile-status">Member since <span id="profileJoinDate">Recently</span></p>
+                <h2 class="profile-nickname" id="profileNickname">Loading...</h2>
+                <!-- Removed the "Member since" line -->
             </div>
         </div>
 
@@ -185,3 +185,57 @@
         <div class="profile-message" id="profileMessage"></div>
     </div>
 </div>
+
+<style>
+/* Enhanced profile styles for better nickname display */
+.profile-info {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.profile-nickname {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.5px;
+}
+
+.profile-avatar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.avatar-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.avatar-img:hover {
+    transform: scale(1.05);
+}
+
+/* Loading state for nickname */
+.profile-nickname.loading {
+    opacity: 0.6;
+    color: #cccccc;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .profile-nickname {
+        font-size: 24px;
+    }
+    
+    .avatar-img {
+        width: 80px;
+        height: 80px;
+    }
+}
+</style>
