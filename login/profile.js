@@ -1,11 +1,11 @@
-// Enhanced Profile System with Dynamic Nickname Loading - profile.js
+// Enhanced Profile System with Persistent Authentication - profile.js
 const ProfileSystem = {
     currentUser: null,
     authManager: null,
 
     // Initialize profile system
     init() {
-        console.log('👤 Initializing Enhanced Profile System...');
+        console.log('👤 Initializing Enhanced Profile System with persistence...');
         this.authManager = window.authManager;
         this.bindEvents();
         this.setupFormValidation();
@@ -14,10 +14,13 @@ const ProfileSystem = {
         this.loadCurrentUserData();
     },
 
-    // Load current user data
+    // Enhanced user data loading with persistent auth support
     loadCurrentUserData() {
-        // Check for authenticated user via auth manager
+        console.log('🔄 Loading current user data...');
+
+        // Priority 1: Check authenticated user via auth manager
         if (this.authManager && this.authManager.currentUser && this.authManager.userProfile) {
+            console.log('✅ Found user via auth manager:', this.authManager.userProfile.nickname);
             this.handleUserAuthenticated({
                 user: this.authManager.currentUser,
                 profile: this.authManager.userProfile
@@ -25,11 +28,15 @@ const ProfileSystem = {
             return;
         }
 
-        // Fallback to localStorage
+        // Priority 2: Check persistent localStorage auth
         const savedUser = localStorage.getItem('armHelper_currentUser');
-        if (savedUser) {
+        const persistentAuth = localStorage.getItem('armHelper_persistentAuth');
+        
+        if (savedUser && persistentAuth === 'true') {
             try {
                 const user = JSON.parse(savedUser);
+                console.log('✅ Found persistent user in localStorage:', user.nickname);
+                
                 // Create user object that matches the expected structure
                 const userObj = {
                     id: user.id || 'local-user',
@@ -41,14 +48,24 @@ const ProfileSystem = {
                     user: userObj,
                     profile: user
                 });
+
+                // Update auth manager if it exists but doesn't have user
+                if (this.authManager && !this.authManager.currentUser) {
+                    this.authManager.currentUser = userObj;
+                    this.authManager.userProfile = user;
+                }
+                
+                return;
             } catch (e) {
-                console.warn('Error parsing saved user data:', e);
+                console.warn('⚠️ Error parsing saved user data:', e);
                 localStorage.removeItem('armHelper_currentUser');
-                this.setNicknameLoading();
+                localStorage.removeItem('armHelper_persistentAuth');
             }
-        } else {
-            this.setNicknameLoading();
         }
+
+        // Priority 3: No authentication found
+        console.log('ℹ️ No user authentication found');
+        this.setNicknameLoading();
     },
 
     // Set loading state for nickname
@@ -64,20 +81,30 @@ const ProfileSystem = {
     bindEvents() {
         // Listen for user authentication events
         document.addEventListener('userAuthenticated', (event) => {
+            console.log('👤 Profile System: Received userAuthenticated event');
             this.handleUserAuthenticated(event.detail);
         });
 
         document.addEventListener('userSignedOut', () => {
+            console.log('👤 Profile System: Received userSignedOut event');
             this.handleUserSignedOut();
+        });
+
+        // Listen for auth manager ready event
+        document.addEventListener('authManagerReady', () => {
+            console.log('👤 Profile System: Auth manager ready, reloading data');
+            setTimeout(() => {
+                this.loadCurrentUserData();
+            }, 100);
         });
 
         // Settings toggles
         this.setupSettingsToggles();
     },
 
-    // Handle user authenticated
+    // Handle user authenticated with enhanced logging
     handleUserAuthenticated(detail) {
-        console.log('👤 Profile System: User authenticated', detail);
+        console.log('👤 Profile System: Handling user authentication', detail);
         const { user, profile } = detail;
         this.currentUser = { user, profile };
         this.updateProfileDisplay();
@@ -85,14 +112,15 @@ const ProfileSystem = {
 
     // Handle user signed out
     handleUserSignedOut() {
-        console.log('👤 Profile System: User signed out');
+        console.log('👤 Profile System: Handling user sign out');
         this.currentUser = null;
         this.setNicknameLoading();
     },
 
-    // Update profile display with actual nickname
+    // Enhanced profile display update
     updateProfileDisplay() {
         if (!this.currentUser) {
+            console.log('⚠️ No current user for profile display');
             this.setNicknameLoading();
             return;
         }
@@ -112,7 +140,7 @@ const ProfileSystem = {
 
         console.log('👤 Updating profile display for:', nickname);
 
-        // Update profile info
+        // Update profile info elements
         const profileNickname = document.getElementById('profileNickname');
         const profileAvatar = document.getElementById('profileAvatar');
         const currentNicknameInput = document.getElementById('currentNickname');
@@ -123,10 +151,13 @@ const ProfileSystem = {
         }
 
         if (profileAvatar) {
-            // Generate avatar with first letter of nickname
+            // Generate avatar with first letter of nickname and dynamic colors
             const firstLetter = nickname.charAt(0).toUpperCase();
-            // Create a more colorful placeholder
-            const colors = ['667eea', '764ba2', '667292', 'f093fb', 'f5576c', '4facfe', '43e97b'];
+            const colors = [
+                '667eea', '764ba2', '667292', 'f093fb', 
+                'f5576c', '4facfe', '43e97b', 'fa709a',
+                'fee140', 'a8edea', 'fed6e3', 'ffecd2'
+            ];
             const color = colors[nickname.length % colors.length];
             
             profileAvatar.src = `https://via.placeholder.com/100x100/${color}/ffffff?text=${firstLetter}`;
@@ -141,9 +172,11 @@ const ProfileSystem = {
         this.updateProfileStats();
     },
 
-    // Update profile stats
+    // Enhanced profile stats update
     async updateProfileStats() {
         try {
+            console.log('📊 Updating profile stats...');
+
             // Count saved calculations
             let calculationsCount = 0;
             const calculatorTypes = ['calculator', 'arm', 'grind'];
@@ -160,14 +193,22 @@ const ProfileSystem = {
                 calculationsEl.textContent = calculationsCount;
             }
 
-            // Update login count
+            // Update login count with persistence support
             const loginCountEl = document.getElementById('loginCount');
             if (loginCountEl) {
-                const loginCount = parseInt(localStorage.getItem('armHelper_loginCount') || '1');
+                let loginCount = parseInt(localStorage.getItem('armHelper_loginCount') || '1');
+                
+                // If we have persistent auth but no login count, set it to 1
+                const persistentAuth = localStorage.getItem('armHelper_persistentAuth');
+                if (persistentAuth === 'true' && !localStorage.getItem('armHelper_loginCount')) {
+                    loginCount = 1;
+                    localStorage.setItem('armHelper_loginCount', '1');
+                }
+                
                 loginCountEl.textContent = loginCount;
             }
 
-            // Update last login
+            // Update last login with better formatting
             const lastLoginEl = document.getElementById('lastLoginDate');
             if (lastLoginEl) {
                 const lastLogin = localStorage.getItem('armHelper_lastLogin');
@@ -185,179 +226,35 @@ const ProfileSystem = {
                             lastLoginEl.textContent = 'Yesterday';
                         } else if (diffDays < 7) {
                             lastLoginEl.textContent = `${diffDays} days ago`;
+                        } else if (diffDays < 30) {
+                            lastLoginEl.textContent = `${Math.floor(diffDays / 7)} weeks ago`;
                         } else {
                             lastLoginEl.textContent = date.toLocaleDateString();
                         }
                     }
                 } else {
-                    lastLoginEl.textContent = 'Today';
+                    // If no last login but we have persistent auth, assume today
+                    const persistentAuth = localStorage.getItem('armHelper_persistentAuth');
+                    if (persistentAuth === 'true') {
+                        lastLoginEl.textContent = 'Today';
+                        localStorage.setItem('armHelper_lastLogin', new Date().toISOString());
+                    } else {
+                        lastLoginEl.textContent = 'Unknown';
+                    }
                 }
             }
 
+            console.log('✅ Profile stats updated');
+
         } catch (error) {
-            console.error('Error updating profile stats:', error);
+            console.error('❌ Error updating profile stats:', error);
         }
     },
 
-    // Load calculator settings
+    // Load calculator settings with enhanced error handling
     async loadCalculatorSettings(type) {
-        if (this.authManager && typeof this.authManager.loadCalculatorSettings === 'function') {
-            return await this.authManager.loadCalculatorSettings(type);
-        } else {
-            const settings = localStorage.getItem(`armHelper_${type}_settings`);
-            return settings ? JSON.parse(settings) : null;
-        }
-    },
-
-    // Setup form validation
-    setupFormValidation() {
-        const currentPassword = document.getElementById('currentPassword');
-        const newPassword = document.getElementById('newPassword');
-        const confirmNewPassword = document.getElementById('confirmNewPassword');
-        const newNickname = document.getElementById('newNickname');
-
-        if (newPassword && confirmNewPassword) {
-            confirmNewPassword.addEventListener('input', () => {
-                this.validatePasswordMatch(newPassword, confirmNewPassword);
-            });
-
-            newPassword.addEventListener('input', () => {
-                this.validatePasswordStrength(newPassword);
-                if (confirmNewPassword.value) {
-                    this.validatePasswordMatch(newPassword, confirmNewPassword);
-                }
-            });
-        }
-
-        if (newNickname) {
-            newNickname.addEventListener('input', () => {
-                this.validateNickname(newNickname);
-            });
-        }
-    },
-
-    // Validate password strength
-    validatePasswordStrength(input) {
-        const value = input.value;
-        
-        if (value.length === 0) {
-            input.classList.remove('error', 'success');
-            return true;
-        }
-
-        if (value.length >= 6) {
-            input.classList.add('success');
-            input.classList.remove('error');
-            return true;
-        } else {
-            input.classList.add('error');
-            input.classList.remove('success');
-            return false;
-        }
-    },
-
-    // Validate password match
-    validatePasswordMatch(passwordInput, confirmInput) {
-        if (confirmInput.value === '') {
-            confirmInput.classList.remove('error', 'success');
-            return true;
-        }
-
-        if (passwordInput.value === confirmInput.value) {
-            confirmInput.classList.add('success');
-            confirmInput.classList.remove('error');
-            return true;
-        } else {
-            confirmInput.classList.add('error');
-            confirmInput.classList.remove('success');
-            return false;
-        }
-    },
-
-    // Validate nickname
-    validateNickname(input) {
-        const value = input.value.trim();
-        
-        if (value.length === 0) {
-            input.classList.remove('error', 'success');
-            return true;
-        }
-
-        if (value.length >= 3 && value.length <= 20 && /^[a-zA-Z0-9_]+$/.test(value)) {
-            input.classList.add('success');
-            input.classList.remove('error');
-            return true;
-        } else {
-            input.classList.add('error');
-            input.classList.remove('success');
-            return false;
-        }
-    },
-
-    // Setup settings toggles
-    setupSettingsToggles() {
-        const autoSaveToggle = document.getElementById('autoSaveToggle');
-        const historyToggle = document.getElementById('historyToggle');
-
-        if (autoSaveToggle) {
-            // Load saved preference
-            const autoSave = localStorage.getItem('armHelper_autoSave') !== 'false';
-            autoSaveToggle.checked = autoSave;
-
-            autoSaveToggle.addEventListener('change', (e) => {
-                localStorage.setItem('armHelper_autoSave', e.target.checked);
-                this.showMessage('Auto-save preference updated', 'success');
-            });
-        }
-
-        if (historyToggle) {
-            // Load saved preference
-            const showHistory = localStorage.getItem('armHelper_showHistory') !== 'false';
-            historyToggle.checked = showHistory;
-
-            historyToggle.addEventListener('change', (e) => {
-                localStorage.setItem('armHelper_showHistory', e.target.checked);
-                this.showMessage('History preference updated', 'success');
-            });
-        }
-    },
-
-    // Show message
-    showMessage(text, type = 'success') {
-        const messageEl = document.getElementById('profileMessage');
-        if (messageEl) {
-            messageEl.textContent = text;
-            messageEl.className = `profile-message ${type}`;
-            messageEl.style.display = 'block';
-
-            // Hide after 4 seconds
-            setTimeout(() => {
-                messageEl.style.display = 'none';
-            }, 4000);
-        }
-    },
-
-    // Show loading state on button
-    showLoading(button, show = true) {
-        if (show) {
-            button.classList.add('loading');
-            button.disabled = true;
-        } else {
-            button.classList.remove('loading');
-            button.disabled = false;
-        }
-    }
-};
-
-// Menu Management Functions
-function toggleSettingsMenu() {
-    const settingsMenu = document.getElementById('settingsMenu');
-    if (settingsMenu) {
-        settingsMenu.style.display = settingsMenu.style.display === 'none' ? 'block' : 'none';
-    }
-}
-
-function closeSettingsMenu() {
+        try {
+            if (this.authManager && typeof this.authManager.loadCalculatorSettings === 'function closeSettingsMenu() {
     const settingsMenu = document.getElementById('settingsMenu');
     const settingsForms = document.querySelectorAll('.settings-form');
     
@@ -421,9 +318,10 @@ function closeStatsView() {
     }
 }
 
-// Handle change password
+// Enhanced change password with persistent auth support
 async function handleChangePassword(event) {
     event.preventDefault();
+    console.log('🔒 Handling password change...');
 
     const form = event.target;
     const submitBtn = form.querySelector('.submit-btn');
@@ -457,7 +355,7 @@ async function handleChangePassword(event) {
         ProfileSystem.showLoading(submitBtn, true);
 
         if (ProfileSystem.authManager && typeof ProfileSystem.authManager.changePassword === 'function') {
-            // Use Supabase auth manager
+            console.log('🔄 Using Supabase auth manager for password change...');
             const result = await ProfileSystem.authManager.changePassword(currentPassword, newPassword);
             
             if (result.success) {
@@ -469,6 +367,7 @@ async function handleChangePassword(event) {
                 setTimeout(() => closeSettingsMenu(), 2000);
             }
         } else {
+            console.log('🔄 Using localStorage fallback for password change...');
             // Fallback for localStorage (development mode)
             const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
             const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
@@ -487,9 +386,14 @@ async function handleChangePassword(event) {
             savedUsers[userIndex].password = newPassword;
             savedUsers[userIndex].updatedAt = new Date().toISOString();
 
+            // Update current user
+            currentUser.password = newPassword;
+            currentUser.updatedAt = new Date().toISOString();
+
             localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
+            localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
             
-            ProfileSystem.showMessage('Password updated successfully! (Development mode)', 'success');
+            ProfileSystem.showMessage('Password updated successfully!', 'success');
             form.reset();
             document.querySelectorAll('.form-input').forEach(input => {
                 input.classList.remove('error', 'success');
@@ -498,16 +402,17 @@ async function handleChangePassword(event) {
         }
 
     } catch (error) {
-        console.error('Change password error:', error);
+        console.error('❌ Change password error:', error);
         ProfileSystem.showMessage(error.message || 'Failed to update password', 'error');
     } finally {
         ProfileSystem.showLoading(submitBtn, false);
     }
 }
 
-// Handle change nickname
+// Enhanced change nickname with persistent auth and UI updates
 async function handleChangeNickname(event) {
     event.preventDefault();
+    console.log('✏️ Handling nickname change...');
 
     const form = event.target;
     const submitBtn = form.querySelector('.submit-btn');
@@ -540,17 +445,23 @@ async function handleChangeNickname(event) {
         ProfileSystem.showLoading(submitBtn, true);
 
         if (ProfileSystem.authManager && typeof ProfileSystem.authManager.updateProfile === 'function') {
+            console.log('🔄 Using Supabase for nickname change...');
             // Use Supabase
             const result = await ProfileSystem.authManager.updateProfile({ nickname: newNickname });
             
             if (result.success) {
                 ProfileSystem.showMessage('Nickname updated successfully!', 'success');
-                // Refresh current user data to reflect changes
-                ProfileSystem.loadCurrentUserData();
+                
+                // Refresh profile display
+                setTimeout(() => {
+                    ProfileSystem.loadCurrentUserData();
+                }, 500);
+                
                 form.reset();
                 setTimeout(() => closeSettingsMenu(), 2000);
             }
         } else {
+            console.log('🔄 Using localStorage fallback for nickname change...');
             // Fallback for localStorage
             const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
             const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
@@ -574,41 +485,63 @@ async function handleChangeNickname(event) {
             // Update current user
             currentUser.nickname = newNickname;
             currentUser.updatedAt = new Date().toISOString();
+            
+            // Update email to match new nickname if needed
+            if (!currentUser.email || currentUser.email.includes('@local.test')) {
+                currentUser.email = `${newNickname}@local.test`;
+            }
 
             localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
             localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
             
-            ProfileSystem.showMessage('Nickname updated successfully! (Development mode)', 'success');
-            
-            // Refresh profile display
-            ProfileSystem.loadCurrentUserData();
-            
-            // Update sidebar if function exists
-            if (typeof updateSidebarForAuthenticatedUser === 'function') {
-                updateSidebarForAuthenticatedUser({ email: currentUser.email }, currentUser);
+            // Update auth manager if it exists
+            if (ProfileSystem.authManager) {
+                ProfileSystem.authManager.userProfile = currentUser;
+                if (ProfileSystem.authManager.currentUser) {
+                    ProfileSystem.authManager.currentUser.nickname = newNickname;
+                }
             }
+            
+            ProfileSystem.showMessage('Nickname updated successfully!', 'success');
+            
+            // Refresh profile and sidebar display
+            setTimeout(() => {
+                ProfileSystem.loadCurrentUserData();
+                
+                // Update sidebar if function exists
+                if (typeof updateSidebarForAuthenticatedUser === 'function') {
+                    const userObj = {
+                        id: currentUser.id,
+                        email: currentUser.email,
+                        nickname: newNickname
+                    };
+                    updateSidebarForAuthenticatedUser(userObj, currentUser);
+                }
+            }, 500);
             
             form.reset();
             setTimeout(() => closeSettingsMenu(), 2000);
         }
 
     } catch (error) {
-        console.error('Change nickname error:', error);
+        console.error('❌ Change nickname error:', error);
         ProfileSystem.showMessage(error.message || 'Failed to update nickname', 'error');
     } finally {
         ProfileSystem.showLoading(submitBtn, false);
     }
 }
 
-// Go back from profile
+// Enhanced profile navigation
 function goBackFromProfile() {
+    console.log('🔙 Going back from profile...');
     if (typeof switchPage === 'function') {
         switchPage('calculator');
     }
 }
 
-// Confirm delete account
+// Enhanced account deletion with persistent auth clearing
 function confirmDeleteAccount() {
+    console.log('⚠️ Account deletion requested...');
     closeSettingsMenu();
     
     const isConfirmed = confirm(
@@ -628,15 +561,21 @@ function confirmDeleteAccount() {
     }
 }
 
-// Delete user account
+// Enhanced account deletion
 async function deleteUserAccount() {
     try {
+        console.log('🗑️ Deleting user account...');
+        
         if (ProfileSystem.authManager && typeof ProfileSystem.authManager.deleteAccount === 'function') {
+            console.log('🔄 Using Supabase for account deletion...');
             // Use Supabase
             const result = await ProfileSystem.authManager.deleteAccount();
             
             if (result.success) {
                 alert('Your account has been successfully deleted.');
+                
+                // Clear persistent auth
+                localStorage.removeItem('armHelper_persistentAuth');
                 
                 // Redirect to login
                 setTimeout(() => {
@@ -646,6 +585,7 @@ async function deleteUserAccount() {
                 }, 1000);
             }
         } else {
+            console.log('🔄 Using localStorage fallback for account deletion...');
             // Fallback for localStorage
             const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
             const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
@@ -654,8 +594,11 @@ async function deleteUserAccount() {
             const updatedUsers = savedUsers.filter(u => u.nickname !== currentUser.nickname);
             localStorage.setItem('armHelper_users', JSON.stringify(updatedUsers));
             
-            // Clear current user data
+            // Clear current user data and persistent auth
             localStorage.removeItem('armHelper_currentUser');
+            localStorage.removeItem('armHelper_persistentAuth');
+            localStorage.removeItem('armHelper_loginCount');
+            localStorage.removeItem('armHelper_lastLogin');
             
             // Clear all user settings
             const settingsKeys = ['calculator', 'arm', 'grind'];
@@ -663,7 +606,7 @@ async function deleteUserAccount() {
                 localStorage.removeItem(`armHelper_${key}_settings`);
             });
             
-            alert('Your account has been successfully deleted (Development mode).');
+            alert('Your account has been successfully deleted.');
             
             setTimeout(() => {
                 if (typeof switchPage === 'function') {
@@ -673,20 +616,22 @@ async function deleteUserAccount() {
         }
 
     } catch (error) {
-        console.error('Delete account error:', error);
+        console.error('❌ Delete account error:', error);
         ProfileSystem.showMessage('Failed to delete account. Please try again.', 'error');
     }
 }
 
-// Open profile page with immediate data loading
+// Enhanced profile opening with auth checking
 function openProfile() {
     console.log('👤 Opening profile page...');
     
-    // Check if user is logged in
+    // Check multiple sources for authentication
     const hasAuthUser = window.authManager && window.authManager.currentUser;
     const hasLocalUser = localStorage.getItem('armHelper_currentUser');
+    const hasPersistentAuth = localStorage.getItem('armHelper_persistentAuth') === 'true';
     
-    if (!hasAuthUser && !hasLocalUser) {
+    if (!hasAuthUser && (!hasLocalUser || !hasPersistentAuth)) {
+        console.log('⚠️ No authentication found, redirecting to login...');
         ProfileSystem.showMessage('Please login to view your profile', 'error');
         if (typeof switchPage === 'function') {
             switchPage('login');
@@ -705,21 +650,28 @@ function openProfile() {
     }
 }
 
-// Update login stats
+// Enhanced login stats update with persistence
 function updateLoginStats() {
+    console.log('📊 Updating login stats...');
+    
     // Increment login count
     const currentCount = parseInt(localStorage.getItem('armHelper_loginCount') || '0');
-    localStorage.setItem('armHelper_loginCount', (currentCount + 1).toString());
+    const newCount = currentCount + 1;
+    localStorage.setItem('armHelper_loginCount', newCount.toString());
     
     // Update last login time
-    localStorage.setItem('armHelper_lastLogin', new Date().toISOString());
+    const now = new Date().toISOString();
+    localStorage.setItem('armHelper_lastLogin', now);
     
-    console.log('📊 Login stats updated:', { count: currentCount + 1 });
+    console.log('✅ Login stats updated:', { 
+        count: newCount, 
+        lastLogin: now 
+    });
 }
 
-// Initialize profile system
+// Enhanced profile initialization
 function initializeProfile() {
-    console.log('👤 Initializing Enhanced Profile system...');
+    console.log('👤 Initializing Enhanced Profile system with persistence...');
     
     const profilePage = document.getElementById('profilePage');
     if (!profilePage) {
@@ -728,23 +680,22 @@ function initializeProfile() {
     }
 
     ProfileSystem.init();
-    console.log('✅ Enhanced Profile system initialized');
+    console.log('✅ Enhanced Profile system initialized with persistence support');
 }
 
-// Enhanced refresh profile display function
+// Enhanced profile display refresh
 function refreshProfileDisplay() {
-    console.log('🔄 Refreshing profile display...');
+    console.log('🔄 Refreshing profile display with persistent auth...');
     if (ProfileSystem) {
         ProfileSystem.loadCurrentUserData();
         ProfileSystem.updateProfileDisplay();
     }
 }
 
-// Close any open menus when clicking outside
+// Close menus when clicking outside
 document.addEventListener('click', (e) => {
     const settingsMenu = document.getElementById('settingsMenu');
     const statsView = document.getElementById('statsView');
-    const settingsForms = document.querySelectorAll('.settings-form');
     
     if (settingsMenu && settingsMenu.style.display === 'block') {
         if (!settingsMenu.contains(e.target) && !e.target.classList.contains('settings-btn')) {
@@ -797,4 +748,164 @@ document.addEventListener('pageChanged', (event) => {
             refreshProfileDisplay();
         }, 50);
     }
-});
+});') {
+                return await this.authManager.loadCalculatorSettings(type);
+            } else {
+                const settings = localStorage.getItem(`armHelper_${type}_settings`);
+                return settings ? JSON.parse(settings) : null;
+            }
+        } catch (error) {
+            console.warn(`⚠️ Error loading ${type} settings:`, error);
+            return null;
+        }
+    },
+
+    // Enhanced form validation setup
+    setupFormValidation() {
+        const currentPassword = document.getElementById('currentPassword');
+        const newPassword = document.getElementById('newPassword');
+        const confirmNewPassword = document.getElementById('confirmNewPassword');
+        const newNickname = document.getElementById('newNickname');
+
+        if (newPassword && confirmNewPassword) {
+            confirmNewPassword.addEventListener('input', () => {
+                this.validatePasswordMatch(newPassword, confirmNewPassword);
+            });
+
+            newPassword.addEventListener('input', () => {
+                this.validatePasswordStrength(newPassword);
+                if (confirmNewPassword.value) {
+                    this.validatePasswordMatch(newPassword, confirmNewPassword);
+                }
+            });
+        }
+
+        if (newNickname) {
+            newNickname.addEventListener('input', () => {
+                this.validateNickname(newNickname);
+            });
+        }
+    },
+
+    // Validation methods (unchanged)
+    validatePasswordStrength(input) {
+        const value = input.value;
+        
+        if (value.length === 0) {
+            input.classList.remove('error', 'success');
+            return true;
+        }
+
+        if (value.length >= 6) {
+            input.classList.add('success');
+            input.classList.remove('error');
+            return true;
+        } else {
+            input.classList.add('error');
+            input.classList.remove('success');
+            return false;
+        }
+    },
+
+    validatePasswordMatch(passwordInput, confirmInput) {
+        if (confirmInput.value === '') {
+            confirmInput.classList.remove('error', 'success');
+            return true;
+        }
+
+        if (passwordInput.value === confirmInput.value) {
+            confirmInput.classList.add('success');
+            confirmInput.classList.remove('error');
+            return true;
+        } else {
+            confirmInput.classList.add('error');
+            confirmInput.classList.remove('success');
+            return false;
+        }
+    },
+
+    validateNickname(input) {
+        const value = input.value.trim();
+        
+        if (value.length === 0) {
+            input.classList.remove('error', 'success');
+            return true;
+        }
+
+        if (value.length >= 3 && value.length <= 20 && /^[a-zA-Z0-9_]+$/.test(value)) {
+            input.classList.add('success');
+            input.classList.remove('error');
+            return true;
+        } else {
+            input.classList.add('error');
+            input.classList.remove('success');
+            return false;
+        }
+    },
+
+    // Enhanced settings toggles
+    setupSettingsToggles() {
+        const autoSaveToggle = document.getElementById('autoSaveToggle');
+        const historyToggle = document.getElementById('historyToggle');
+
+        if (autoSaveToggle) {
+            const autoSave = localStorage.getItem('armHelper_autoSave') !== 'false';
+            autoSaveToggle.checked = autoSave;
+
+            autoSaveToggle.addEventListener('change', (e) => {
+                localStorage.setItem('armHelper_autoSave', e.target.checked);
+                this.showMessage('Auto-save preference updated', 'success');
+            });
+        }
+
+        if (historyToggle) {
+            const showHistory = localStorage.getItem('armHelper_showHistory') !== 'false';
+            historyToggle.checked = showHistory;
+
+            historyToggle.addEventListener('change', (e) => {
+                localStorage.setItem('armHelper_showHistory', e.target.checked);
+                this.showMessage('History preference updated', 'success');
+            });
+        }
+    },
+
+    // Enhanced message display
+    showMessage(text, type = 'success') {
+        const messageEl = document.getElementById('profileMessage');
+        if (messageEl) {
+            messageEl.textContent = text;
+            messageEl.className = `profile-message ${type}`;
+            messageEl.style.display = 'block';
+
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 4000);
+        }
+
+        // Also log for debugging
+        console.log(`📝 Profile message (${type}):`, text);
+    },
+
+    // Loading state management
+    showLoading(button, show = true) {
+        if (show) {
+            button.classList.add('loading');
+            button.disabled = true;
+            button.style.opacity = '0.6';
+        } else {
+            button.classList.remove('loading');
+            button.disabled = false;
+            button.style.opacity = '1';
+        }
+    }
+};
+
+// Menu Management Functions (unchanged)
+function toggleSettingsMenu() {
+    const settingsMenu = document.getElementById('settingsMenu');
+    if (settingsMenu) {
+        settingsMenu.style.display = settingsMenu.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+function
