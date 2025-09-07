@@ -39,21 +39,21 @@ const charmsData = [
     },
     {
         title: "Loot charm",
-        imageUrl: "https://i.postimg.cc/SQC6gzzb/2025-09-06-22-12-07.png", // Замініть на ваш URL
+        imageUrl: "https://i.postimg.cc/7LtL8K75/2025-09-07-09-55-01.png", // Замініть на ваш URL
         description: "Gives 5% to find loot from boss",
         details: "Max stock: 16",
         category: "charm"
     },
     {
         title: "Winner charm",
-        imageUrl: "https://i.postimg.cc/Kc0GS0TP/2025-09-06-22-14-30.png", // Замініть на ваш URL
+        imageUrl: "https://i.postimg.cc/XY8JxjYc/2025-09-07-09-55-06.png", // Замініть на ваш URL
         description: "Gives 5% more winns from boss",
         details: "Max stock: 16",
         category: "charm"
     },
     {
         title: "Coal charm",
-        imageUrl: "https://i.postimg.cc/hGVDkg8v/2025-09-06-22-14-05.png", // Замініть на ваш URL
+        imageUrl: "https://i.postimg.cc/B68nq2cM/2025-09-07-09-54-40.png", // Замініть на ваш URL
         description: "You can remove charm from pet",
         details: "1 useful",
         category: "charm"
