@@ -187,6 +187,14 @@ function refreshProfileDisplay() {
     ProfileOpen.refreshProfileDisplay();
 }
 
+function testProfile() {
+    ProfileOpen.testProfile();
+}
+
+function createTestUser() {
+    ProfileOpen.createTestUser();
+}
+
 // Export for global use
 if (typeof window !== 'undefined') {
     window.ProfileOpen = ProfileOpen;
@@ -195,6 +203,8 @@ if (typeof window !== 'undefined') {
     window.updateLoginStats = updateLoginStats;
     window.initializeProfileOpen = initializeProfileOpen;
     window.refreshProfileDisplay = refreshProfileDisplay;
+    window.testProfile = testProfile;
+    window.createTestUser = createTestUser;
 }
 
 // Auto-initialize when DOM is ready
