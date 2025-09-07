@@ -57,7 +57,7 @@ async function loadContent() {
                                 <div class="avatar-circle" id="sidebarUserAvatar">👤</div>
                             </div>
                             <div class="user-details">
-                                <div class="user-nickname clickable-nickname loading" id="sidebarUserNickname" onclick="openProfile()" title="Click to view profile">Restoring...</div>
+                                <div class="user-nickname clickable-nickname loading" id="sidebarUserNickname" onclick="window.openProfile()" title="Click to view profile">Restoring...</div>
                                 <div class="user-status">Logged in</div>
                             </div>
                         </div>
@@ -426,12 +426,13 @@ function updateSidebarForAuthenticatedUser(user, profile) {
             sidebarUserNickname.textContent = nickname;
             sidebarUserNickname.classList.remove('loading');
             
-            // Ensure click handler is set
+            // КРИТИЧНО ВАЖЛИВО: Правильно прив'язуємо обробник кліку
             sidebarUserNickname.onclick = () => {
-                if (typeof openProfile === 'function') {
-                    openProfile();
+                console.log('🔄 Sidebar nickname clicked, opening profile...');
+                if (typeof window.openProfile === 'function') {
+                    window.openProfile();
                 } else {
-                    console.error('openProfile function not found');
+                    console.error('❌ window.openProfile function not found');
                 }
             };
         }
