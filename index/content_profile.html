@@ -1,4 +1,4 @@
-<!-- Profile Page - HTML структура без логіки -->
+<!-- Profile Page - Fixed HTML структура -->
 <div class="page profile-page" id="profilePage">
     <!-- Include CSS -->
     <link rel="stylesheet" href="login/profile.css">
@@ -48,7 +48,7 @@
                 <button class="settings-option-btn" onclick="showChangePassword()">
                     <span class="option-icon">🔒</span>
                     <div class="option-info">
-                        <div class="option-title">Change Password (Soon..)</div>
+                        <div class="option-title">Change Password</div>
                         <div class="option-desc">Update your account password</div>
                     </div>
                     <span class="option-arrow">→</span>
@@ -57,7 +57,7 @@
                 <button class="settings-option-btn" onclick="showChangeNickname()">
                     <span class="option-icon">✏️</span>
                     <div class="option-info">
-                        <div class="option-title">Change Nickname (Soon..)</div>
+                        <div class="option-title">Change Nickname</div>
                         <div class="option-desc">Update your display name</div>
                     </div>
                     <span class="option-arrow">→</span>
@@ -66,7 +66,7 @@
                 <button class="settings-option-btn danger-option" onclick="confirmDeleteAccount()">
                     <span class="option-icon">⚠️</span>
                     <div class="option-info">
-                        <div class="option-title">Delete Account (Soon..)</div>
+                        <div class="option-title">Delete Account</div>
                         <div class="option-desc">Permanently delete your account</div>
                     </div>
                     <span class="option-arrow">→</span>
@@ -84,8 +84,8 @@
             
             <form onsubmit="handleChangePassword(event)">
                 <div class="input-group">
-                    <label for="currentPassword" class="input-label">Current Password</label>
-                    <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password" required>
+                    <label for="currentPassword" class="input-label">Current Password (Optional for fallback mode)</label>
+                    <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password">
                 </div>
                 
                 <div class="input-group">
@@ -148,9 +148,8 @@
         <div class="profile-message" id="profileMessage"></div>
     </div>
 
-    <!-- Avatar Protection Script - Inline для швидшого завантаження -->
+    <!-- Avatar Protection Script -->
     <script>
-        // Швидкий захист аватарки при завантаженні DOM
         (function() {
             const protectAvatarQuick = () => {
                 const avatar = document.getElementById('profileAvatar');
@@ -158,38 +157,15 @@
                     const originalSrc = 'https://i.postimg.cc/gjmcXwV9/file-000000008fd461f4826bd65e36dbc3d2.png';
                     avatar.src = originalSrc;
                     avatar.setAttribute('data-quick-protected', 'true');
-                    
-                    // Негайний захист від змін
-                    Object.defineProperty(avatar, 'src', {
-                        get: function() {
-                            return this.getAttribute('src') || originalSrc;
-                        },
-                        set: function(value) {
-                            // Дозволяємо тільки наше зображення або placeholder
-                            if (value.includes('postimg.cc') || value.includes('placeholder')) {
-                                this.setAttribute('src', value);
-                            } else {
-                                console.log('🛡️ Avatar change blocked');
-                                this.setAttribute('src', originalSrc);
-                            }
-                        }
-                    });
-                    
                     console.log('⚡ Quick avatar protection active');
                 }
             };
             
-            // Запускаємо відразу
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', protectAvatarQuick);
             } else {
                 protectAvatarQuick();
             }
-            
-            // Повторюємо через невеликий інтервал для надійності
-            setTimeout(protectAvatarQuick, 100);
-            setTimeout(protectAvatarQuick, 300);
-            setTimeout(protectAvatarQuick, 500);
         })();
     </script>
 
