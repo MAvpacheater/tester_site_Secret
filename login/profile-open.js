@@ -72,7 +72,7 @@ function updateProfileDisplay() {
     }
 
     if (profileAvatar) {
-        profileAvatar.src = `https://via.placeholder.com/100x100/667eea/ffffff?text=${nickname.charAt(0).toUpperCase()}`;
+        profileAvatar.src = `https://i.postimg.cc/gjmcXwV9/file-000000008fd461f4826bd65e36dbc3d2.png/100x100/667eea/ffffff?text=${nickname.charAt(0).toUpperCase()}`;
         profileAvatar.alt = `${nickname}'s avatar`;
     }
 
