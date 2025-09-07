@@ -63,15 +63,6 @@
                     <span class="option-arrow">→</span>
                 </button>
                 
-                <button class="settings-option-btn" onclick="showPreferences()">
-                    <span class="option-icon">🎛️</span>
-                    <div class="option-info">
-                        <div class="option-title">Preferences (Soon..)</div>
-                        <div class="option-desc">App settings and preferences</div>
-                    </div>
-                    <span class="option-arrow">→</span>
-                </button>
-                
                 <button class="settings-option-btn danger-option" onclick="confirmDeleteAccount()">
                     <span class="option-icon">⚠️</span>
                     <div class="option-info">
@@ -134,39 +125,6 @@
             </form>
         </div>
 
-        <!-- Preferences Form -->
-        <div class="settings-form" id="preferencesForm" style="display: none;">
-            <div class="form-header">
-                <button class="back-form-btn" onclick="backToSettingsMenu()">←</button>
-                <h3>Preferences</h3>
-                <button class="close-btn" onclick="closeSettingsMenu()">×</button>
-            </div>
-            
-            <div class="preferences-content">
-                <div class="settings-row">
-                    <div class="setting-info">
-                        <h4>Auto-save calculations</h4>
-                        <p>Automatically save your calculator settings</p>
-                    </div>
-                    <label class="setting-toggle">
-                        <input type="checkbox" id="autoSaveToggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                
-                <div class="settings-row">
-                    <div class="setting-info">
-                        <h4>Show calculation history</h4>
-                        <p>Display recent calculations in calculators</p>
-                    </div>
-                    <label class="setting-toggle">
-                        <input type="checkbox" id="historyToggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-        </div>
-
         <!-- Statistics View -->
         <div class="stats-view" id="statsView" style="display: none;">
             <div class="stats-header">
@@ -175,10 +133,6 @@
             </div>
             
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="calculationsCount">0</div>
-                    <div class="stat-label">Calculations Saved</div>
-                </div>
                 <div class="stat-card">
                     <div class="stat-number" id="loginCount">1</div>
                     <div class="stat-label">Total Logins</div>
