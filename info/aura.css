@@ -152,6 +152,11 @@
     color: #d97706;
 }
 
+.aura-rarity.mythic {
+    background: rgba(226, 43, 76, 0.2);
+    color: #7e0e0b;
+}
+
 /* Mobile Styles */
 @media (max-width: 768px) {
     .aura-item {
