@@ -51,14 +51,6 @@ function showChangeNickname() {
     if (changeNicknameForm) changeNicknameForm.style.display = 'block';
 }
 
-function showPreferences() {
-    const settingsMenu = document.getElementById('settingsMenu');
-    const preferencesForm = document.getElementById('preferencesForm');
-    
-    if (settingsMenu) settingsMenu.style.display = 'none';
-    if (preferencesForm) preferencesForm.style.display = 'block';
-}
-
 // Form Validation
 function validatePasswordStrength(input) {
     const value = input.value;
@@ -138,36 +130,6 @@ function setupFormValidation() {
     if (newNickname) {
         newNickname.addEventListener('input', () => {
             validateNickname(newNickname);
-        });
-    }
-}
-
-// Setup settings toggles
-function setupSettingsToggles() {
-    const autoSaveToggle = document.getElementById('autoSaveToggle');
-    const historyToggle = document.getElementById('historyToggle');
-
-    if (autoSaveToggle) {
-        const autoSave = localStorage.getItem('armHelper_autoSave') !== 'false';
-        autoSaveToggle.checked = autoSave;
-
-        autoSaveToggle.addEventListener('change', (e) => {
-            localStorage.setItem('armHelper_autoSave', e.target.checked);
-            if (typeof showProfileMessage === 'function') {
-                showProfileMessage('Auto-save preference updated', 'success');
-            }
-        });
-    }
-
-    if (historyToggle) {
-        const showHistory = localStorage.getItem('armHelper_showHistory') !== 'false';
-        historyToggle.checked = showHistory;
-
-        historyToggle.addEventListener('change', (e) => {
-            localStorage.setItem('armHelper_showHistory', e.target.checked);
-            if (typeof showProfileMessage === 'function') {
-                showProfileMessage('History preference updated', 'success');
-            }
         });
     }
 }
@@ -480,7 +442,6 @@ function setupOutsideClickListeners() {
 // Initialize settings
 function initializeProfileSettings() {
     setupFormValidation();
-    setupSettingsToggles();
     setupOutsideClickListeners();
 }
 
@@ -491,12 +452,10 @@ if (typeof window !== 'undefined') {
     window.backToSettingsMenu = backToSettingsMenu;
     window.showChangePassword = showChangePassword;
     window.showChangeNickname = showChangeNickname;
-    window.showPreferences = showPreferences;
     window.validatePasswordStrength = validatePasswordStrength;
     window.validatePasswordMatch = validatePasswordMatch;
     window.validateNickname = validateNickname;
     window.setupFormValidation = setupFormValidation;
-    window.setupSettingsToggles = setupSettingsToggles;
     window.showLoading = showLoading;
     window.handleChangePassword = handleChangePassword;
     window.handleChangeNickname = handleChangeNickname;
