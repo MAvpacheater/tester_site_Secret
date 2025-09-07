@@ -10,13 +10,13 @@ const auraData = [
     { name: "Solar [1/2.5m]", description: "Gives you 167% strength, 88% luck and 34% training speed", rarity: "epic", image: "" },
     { name: "Universe [1/1m]", description: "Gives you 153% strength, 81% luck and 32% training speed", rarity: "epic", image: "" },
     { name: "Storm [1/500k]", description: "Gives you 141% strength, 74% luck and 30% training speed", rarity: "rare", image: "" },
-    { name: "Poison [1/150k]", description: "Gives you 130% strength, 65% luck and 28% training speed", rarity: "epic", image: "" },
+    { name: "Poison [1/150k]", description: "Gives you 130% strength, 65% luck and 28% training speed", rarity: "epic", image: "https://i.postimg.cc/fTx4tdm2/2025-09-07-13-43-02.png" },
     { name: "Divine [1/50k]", description: "Gives you 108% strength, 59% luck and 26% training speed", rarity: "rare", image: "" },
     { name: "Firework [1/25k]", description: "Gives you 99% strength, 57% luck and 24% training speed", rarity: "rare", image: "" },
     { name: "Glitch [1/15k]", description: "Gives you 91% strength, 52% luck and 22% training speed", rarity: "rare", image: "" },
-    { name: "Buterfly [1/9.5k]", description: "Gives you 78% strength, 47% luck and 20% training speed", rarity: "rare", image: "" },
-    { name: "Sun [1/4.2k]", description: "Gives you 69% strength, 44% luck and 18% training speed", rarity: "uncommon", image: "" },
-    { name: "Lighting [1/1k]", description: "Gives you 58% strength, 38% luck and 16% training speed", rarity: "uncommon", image: "" }
+    { name: "Buterfly [1/9.5k]", description: "Gives you 78% strength, 47% luck and 20% training speed", rarity: "rare", image: "https://i.postimg.cc/wBr4bxDR/2025-09-07-13-42-56.png" },
+    { name: "Sun [1/4.2k]", description: "Gives you 69% strength, 44% luck and 18% training speed", rarity: "uncommon", image: "https://i.postimg.cc/W1XHgw3n/2025-09-07-13-42-52.png" },
+    { name: "Lighting [1/1k]", description: "Gives you 58% strength, 38% luck and 16% training speed", rarity: "uncommon", image: "https://i.postimg.cc/j27phw9j/2025-09-07-13-42-44.png" }
 ];
 
 // Generate aura content
