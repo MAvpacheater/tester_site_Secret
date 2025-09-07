@@ -1,4 +1,4 @@
-// profile-open.js - Логіка відкривання профілю
+// profile-open.js - ПОВНІСТЮ ВИПРАВЛЕНА ВЕРСІЯ БЕЗ БЛОКУВАНЬ
 console.log('👤 Loading profile-open.js...');
 
 // Open profile page
@@ -71,8 +71,8 @@ function updateProfileDisplay() {
         profileNickname.textContent = nickname;
     }
 
-    if (profileAvatar) {
-        profileAvatar.src = `https://i.postimg.cc/gjmcXwV9/file-000000008fd461f4826bd65e36dbc3d2.png/100x100/667eea/ffffff?text=${nickname.charAt(0).toUpperCase()}`;
+    // НЕ ЗМІНЮЄМО АВАТАРКУ - вона захищена
+    if (profileAvatar && !profileAvatar.hasAttribute('data-protected')) {
         profileAvatar.alt = `${nickname}'s avatar`;
     }
 
@@ -110,7 +110,7 @@ function formatJoinDate(dateString) {
     }
 }
 
-// Update profile stats - removed calculations count
+// Update profile stats
 async function updateProfileStats() {
     try {
         // Update login count
@@ -196,4 +196,4 @@ if (typeof window !== 'undefined') {
     window.closeStatsView = closeStatsView;
 }
 
-console.log('✅ profile-open.js loaded');
+console.log('✅ profile-open.js loaded - NO FUNCTIONALITY BLOCKS');
