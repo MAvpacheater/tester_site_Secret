@@ -1,4 +1,4 @@
-// Enhanced content loader script - З ПРОФІЛЬНОЮ СИСТЕМОЮ
+// Enhanced content loader script - Clean version
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -26,7 +26,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with navigation and combine all content - З КЛІКОМ НА НІК
+            // Create the main structure with navigation and combine all content
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -50,7 +50,7 @@ async function loadContent() {
                         <button class="nav-btn" onclick="switchPage('worlds')">🌍 Worlds</button>
                     </div>
                     
-                    <!-- User Section in Sidebar - З КЛІКОМ НА НІК ДЛЯ ПРОФІЛЮ -->
+                    <!-- User Section in Sidebar -->
                     <div class="sidebar-user" id="sidebarUser">
                         <div class="user-info" id="userInfo" style="display: none;">
                             <div class="user-nickname clickable-nickname" id="sidebarUserNickname" onclick="openProfile()" title="Click to view profile"></div>
@@ -158,7 +158,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully (with profile system)');
+            console.log('✅ Content loaded successfully');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -191,7 +191,7 @@ async function loadContent() {
     }
 }
 
-// Enhanced initialization with better auth integration - З ПРОФІЛЬНОЮ СИСТЕМОЮ
+// Enhanced initialization with auth integration
 function enhanceInitialization() {
     // Listen for authentication events to update ONLY sidebar
     document.addEventListener('userAuthenticated', (event) => {
@@ -208,7 +208,7 @@ function enhanceInitialization() {
     });
 }
 
-// Update ONLY sidebar for authenticated user - З КЛІКОМ НА НІК
+// Update ONLY sidebar for authenticated user
 function updateSidebarForAuthenticatedUser(user, profile) {
     const userInfo = document.getElementById('userInfo');
     const authButton = document.getElementById('authButton');
@@ -242,10 +242,10 @@ function updateSidebarForAuthenticatedUser(user, profile) {
         }
     }
     
-    console.log('✅ Sidebar updated for authenticated user (with profile link)');
+    console.log('✅ Sidebar updated for authenticated user');
 }
 
-// Update ONLY sidebar for signed out user - БЕЗ ВЕРХНЬОГО ПРОФІЛЮ
+// Update ONLY sidebar for signed out user
 function updateSidebarForSignedOutUser() {
     const userInfo = document.getElementById('userInfo');
     const authButton = document.getElementById('authButton');
@@ -257,7 +257,7 @@ function updateSidebarForSignedOutUser() {
         authButton.onclick = handleAuthAction;
     }
     
-    console.log('✅ Sidebar updated for signed out user (no profile link)');
+    console.log('✅ Sidebar updated for signed out user');
 }
 
 // Enhanced auth action handler
@@ -279,7 +279,7 @@ function handleAuthAction() {
     }
 }
 
-// Check if user is already authenticated - БЕЗ ПОКАЗУ ВЕРХНЬОГО ПРОФІЛЮ
+// Check if user is already authenticated
 function checkInitialAuthState() {
     // Wait for auth manager to be ready
     setTimeout(() => {
