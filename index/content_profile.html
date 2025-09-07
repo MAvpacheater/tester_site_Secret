@@ -186,6 +186,14 @@
     </div>
 </div>
 
+<!-- Profile Styles -->
+<link rel="stylesheet" href="login/profile.css">
+
+<!-- Profile JavaScript Files -->
+<script src="login/profile.js"></script>
+<script src="login/profile-settings.js"></script>
+<script src="login/profile-open.js"></script>
+
 <style>
 /* Enhanced profile styles for better nickname display */
 .profile-info {
@@ -239,3 +247,39 @@
     }
 }
 </style>
+
+<!-- Profile Initialization Script -->
+<script>
+// Ensure all profile components are initialized
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('👤 Initializing all profile components...');
+    
+    // Small delay to ensure all scripts are loaded
+    setTimeout(() => {
+        // Initialize main profile system
+        if (typeof initializeProfile === 'function') {
+            initializeProfile();
+        }
+        
+        // Initialize profile opening logic
+        if (typeof initializeProfileOpen === 'function') {
+            initializeProfileOpen();
+        }
+        
+        console.log('✅ All profile components initialized');
+    }, 150);
+});
+
+// Listen for page changes to ensure profile is properly loaded
+document.addEventListener('pageChanged', function(event) {
+    if (event.detail?.page === 'profile') {
+        console.log('👤 Profile page opened, ensuring components are ready...');
+        
+        setTimeout(() => {
+            if (typeof refreshProfileDisplay === 'function') {
+                refreshProfileDisplay();
+            }
+        }, 100);
+    }
+});
+</script>
