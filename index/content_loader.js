@@ -1,10 +1,10 @@
-// Enhanced content loader script - З ПОКРАЩЕНОЮ ПРОФІЛЬНОЮ СИСТЕМОЮ
-console.log('🔄 Loading content with enhanced profile support...');
+// Enhanced content loader script - З ПОСТІЙНОЮ АУТЕНТИФІКАЦІЄЮ
+console.log('🔄 Loading content with persistent authentication...');
 
 // Function to load content
 async function loadContent() {
     try {
-        // Load content files (including login and profile pages)
+        // Load content files
         const [calcResponse, infoResponse, loginResponse, profileResponse] = await Promise.all([
             fetch('index/content_calc.html'),
             fetch('index/content_info.html'),
@@ -26,7 +26,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with navigation and combine all content
+            // Create the main structure with navigation
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -50,18 +50,18 @@ async function loadContent() {
                         <button class="nav-btn" onclick="switchPage('worlds')">🌍 Worlds</button>
                     </div>
                     
-                    <!-- Enhanced User Section in Sidebar -->
+                    <!-- Enhanced User Section with persistent state -->
                     <div class="sidebar-user" id="sidebarUser">
                         <div class="user-info" id="userInfo" style="display: none;">
                             <div class="user-avatar">
                                 <div class="avatar-circle" id="sidebarUserAvatar">👤</div>
                             </div>
                             <div class="user-details">
-                                <div class="user-nickname clickable-nickname" id="sidebarUserNickname" onclick="openProfile()" title="Click to view profile">Loading...</div>
+                                <div class="user-nickname clickable-nickname loading" id="sidebarUserNickname" onclick="openProfile()" title="Click to view profile">Restoring...</div>
                                 <div class="user-status">Logged in</div>
                             </div>
                         </div>
-                        <button class="auth-btn-sidebar" id="authButton" onclick="handleAuthAction()">Login</button>
+                        <button class="auth-btn-sidebar" id="authButton" onclick="handleAuthAction()">Loading...</button>
                     </div>
                 </div>
 
@@ -82,6 +82,12 @@ async function loadContent() {
                         background: rgba(255, 255, 255, 0.1);
                         color: rgba(255, 255, 255, 0.7);
                         pointer-events: none;
+                    }
+                    
+                    .auth-btn-sidebar.loading {
+                        opacity: 0.7;
+                        cursor: wait;
+                        background: rgba(255, 255, 255, 0.05);
                     }
                     
                     /* Enhanced login page integration */
@@ -123,6 +129,12 @@ async function loadContent() {
                         background: rgba(255, 255, 255, 0.1);
                         border-radius: 12px;
                         margin-bottom: 10px;
+                        transition: all 0.3s ease;
+                    }
+
+                    .user-info.restoring {
+                        opacity: 0.8;
+                        background: rgba(255, 255, 255, 0.05);
                     }
 
                     .user-avatar {
@@ -142,6 +154,11 @@ async function loadContent() {
                         font-weight: bold;
                         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
                         border: 2px solid rgba(255, 255, 255, 0.2);
+                        transition: all 0.3s ease;
+                    }
+
+                    .avatar-circle.loading {
+                        animation: pulse 1.5s ease-in-out infinite;
                     }
 
                     .user-details {
@@ -157,6 +174,13 @@ async function loadContent() {
                         white-space: nowrap;
                         overflow: hidden;
                         text-overflow: ellipsis;
+                        transition: all 0.3s ease;
+                    }
+
+                    .user-nickname.loading {
+                        opacity: 0.6;
+                        animation: pulse 1.5s ease-in-out infinite;
+                        color: #cccccc;
                     }
 
                     .user-status {
@@ -174,14 +198,19 @@ async function loadContent() {
                         position: relative;
                     }
                     
-                    .clickable-nickname:hover {
+                    .clickable-nickname:hover:not(.loading) {
                         background: rgba(255, 255, 255, 0.15);
                         transform: scale(1.02);
                         color: #ffffff;
                     }
                     
-                    .clickable-nickname:active {
+                    .clickable-nickname:active:not(.loading) {
                         transform: scale(0.98);
+                    }
+
+                    .clickable-nickname.loading:hover {
+                        cursor: wait;
+                        transform: none;
                     }
 
                     /* Responsive adjustments */
@@ -206,27 +235,36 @@ async function loadContent() {
                         }
                     }
 
-                    /* Loading animation for nickname */
-                    .user-nickname.loading {
-                        opacity: 0.6;
-                        animation: pulse 1.5s ease-in-out infinite;
-                    }
-
+                    /* Loading and pulse animations */
                     @keyframes pulse {
                         0% { opacity: 0.6; }
                         50% { opacity: 1; }
                         100% { opacity: 0.6; }
                     }
+
+                    /* Auth restoration state */
+                    .auth-restoring {
+                        pointer-events: none;
+                        opacity: 0.7;
+                    }
+
+                    .auth-restoring .auth-btn-sidebar {
+                        background: rgba(255, 255, 255, 0.05);
+                        cursor: wait;
+                    }
                 </style>
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully (with enhanced profile system)');
+            console.log('✅ Content loaded successfully with persistent authentication support');
+            
+            // Set initial auth restoration state
+            setAuthRestorationState(true);
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
             
-            // Wait a bit for DOM to be ready, then initialize
+            // Wait for DOM and then initialize
             setTimeout(() => {
                 if (typeof initializeApp === 'function') {
                     initializeApp();
@@ -240,12 +278,10 @@ async function loadContent() {
     } catch (error) {
         console.error('❌ Error loading content:', error);
         
-        // Dispatch error event
         document.dispatchEvent(new CustomEvent('contentLoadError', { 
             detail: error 
         }));
         
-        // Fallback - try to initialize anyway
         setTimeout(() => {
             if (typeof initializeApp === 'function') {
                 initializeApp();
@@ -254,12 +290,76 @@ async function loadContent() {
     }
 }
 
-// Enhanced initialization with better auth integration
+// Set authentication restoration state
+function setAuthRestorationState(isRestoring) {
+    const sidebarUser = document.getElementById('sidebarUser');
+    const userInfo = document.getElementById('userInfo');
+    const authButton = document.getElementById('authButton');
+    const sidebarUserNickname = document.getElementById('sidebarUserNickname');
+    const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
+
+    if (isRestoring) {
+        console.log('🔄 Setting auth restoration state...');
+        
+        if (sidebarUser) {
+            sidebarUser.classList.add('auth-restoring');
+        }
+        
+        if (userInfo) {
+            userInfo.classList.add('restoring');
+        }
+        
+        if (authButton) {
+            authButton.textContent = 'Loading...';
+            authButton.classList.add('loading');
+            authButton.disabled = true;
+        }
+        
+        if (sidebarUserNickname) {
+            sidebarUserNickname.textContent = 'Restoring...';
+            sidebarUserNickname.classList.add('loading');
+        }
+        
+        if (sidebarUserAvatar) {
+            sidebarUserAvatar.classList.add('loading');
+        }
+    } else {
+        console.log('✅ Clearing auth restoration state...');
+        
+        if (sidebarUser) {
+            sidebarUser.classList.remove('auth-restoring');
+        }
+        
+        if (userInfo) {
+            userInfo.classList.remove('restoring');
+        }
+        
+        if (authButton) {
+            authButton.classList.remove('loading');
+            authButton.disabled = false;
+        }
+        
+        if (sidebarUserNickname) {
+            sidebarUserNickname.classList.remove('loading');
+        }
+        
+        if (sidebarUserAvatar) {
+            sidebarUserAvatar.classList.remove('loading');
+        }
+    }
+}
+
+// Enhanced initialization with persistent authentication
 function enhanceInitialization() {
-    // Listen for authentication events to update ONLY sidebar
+    console.log('🔄 Enhancing initialization with persistent auth...');
+    
+    // Listen for authentication events
     document.addEventListener('userAuthenticated', (event) => {
         const { user, profile } = event.detail;
+        console.log('✅ User authenticated event received:', profile?.nickname);
+        setAuthRestorationState(false);
         updateSidebarForAuthenticatedUser(user, profile);
+        
         // Update login stats
         if (typeof updateLoginStats === 'function') {
             updateLoginStats();
@@ -267,13 +367,26 @@ function enhanceInitialization() {
     });
     
     document.addEventListener('userSignedOut', () => {
+        console.log('👋 User signed out event received');
+        setAuthRestorationState(false);
         updateSidebarForSignedOutUser();
+    });
+
+    // Listen for auth manager initialization
+    document.addEventListener('authManagerReady', () => {
+        console.log('🔐 Auth manager ready, checking authentication state...');
+        setTimeout(() => {
+            checkInitialAuthState();
+        }, 100);
     });
 }
 
-// Update ONLY sidebar for authenticated user with enhanced display
+// Update sidebar for authenticated user with enhanced display
 function updateSidebarForAuthenticatedUser(user, profile) {
-    console.log('🔄 Updating sidebar for authenticated user:', { user, profile });
+    console.log('🔄 Updating sidebar for authenticated user:', { 
+        userId: user?.id, 
+        profileNickname: profile?.nickname 
+    });
     
     const userInfo = document.getElementById('userInfo');
     const authButton = document.getElementById('authButton');
@@ -281,13 +394,19 @@ function updateSidebarForAuthenticatedUser(user, profile) {
     const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
 
     if (userInfo && authButton) {
+        // Show user info
         userInfo.style.display = 'flex';
+        userInfo.classList.remove('restoring');
+        
+        // Update auth button
         authButton.textContent = 'Sign Out';
         authButton.classList.add('logout-btn');
+        authButton.classList.remove('loading');
+        authButton.disabled = false;
         authButton.onclick = () => {
             if (window.authManager) {
                 window.authManager.signOut();
-            } else {
+            } else if (typeof logout === 'function') {
                 logout();
             }
         };
@@ -302,6 +421,7 @@ function updateSidebarForAuthenticatedUser(user, profile) {
             nickname = user.email.split('@')[0];
         }
 
+        // Update nickname display
         if (sidebarUserNickname) {
             sidebarUserNickname.textContent = nickname;
             sidebarUserNickname.classList.remove('loading');
@@ -316,39 +436,59 @@ function updateSidebarForAuthenticatedUser(user, profile) {
             };
         }
 
-        // Update avatar with first letter
+        // Update avatar with first letter and dynamic color
         if (sidebarUserAvatar) {
             const firstLetter = nickname.charAt(0).toUpperCase();
             sidebarUserAvatar.textContent = firstLetter;
+            sidebarUserAvatar.classList.remove('loading');
             
-            // Generate color based on nickname
-            const colors = ['#667eea', '#764ba2', '#667292', '#f093fb', '#f5576c', '#4facfe', '#43e97b'];
-            const color = colors[nickname.length % colors.length];
-            const secondaryColor = colors[(nickname.length + 1) % colors.length];
+            // Generate dynamic colors based on nickname
+            const colors = [
+                ['#667eea', '#764ba2'], // purple-blue
+                ['#f093fb', '#f5576c'], // pink-red
+                ['#4facfe', '#00f2fe'], // blue-cyan
+                ['#43e97b', '#38f9d7'], // green-mint
+                ['#fa709a', '#fee140'], // pink-yellow
+                ['#a8edea', '#fed6e3'], // mint-pink
+                ['#ffecd2', '#fcb69f']  // peach-orange
+            ];
             
-            sidebarUserAvatar.style.background = `linear-gradient(45deg, ${color}, ${secondaryColor})`;
+            const colorIndex = nickname.length % colors.length;
+            const [color1, color2] = colors[colorIndex];
+            
+            sidebarUserAvatar.style.background = `linear-gradient(45deg, ${color1}, ${color2})`;
         }
     }
     
     console.log('✅ Sidebar updated for authenticated user:', nickname);
 }
 
-// Update ONLY sidebar for signed out user
+// Update sidebar for signed out user
 function updateSidebarForSignedOutUser() {
     const userInfo = document.getElementById('userInfo');
     const authButton = document.getElementById('authButton');
     const sidebarUserNickname = document.getElementById('sidebarUserNickname');
+    const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
 
     if (userInfo && authButton) {
         userInfo.style.display = 'none';
+        userInfo.classList.remove('restoring');
+        
         authButton.textContent = 'Login';
-        authButton.classList.remove('logout-btn');
+        authButton.classList.remove('logout-btn', 'loading');
+        authButton.disabled = false;
         authButton.onclick = handleAuthAction;
     }
     
     if (sidebarUserNickname) {
-        sidebarUserNickname.textContent = 'Loading...';
+        sidebarUserNickname.textContent = 'Not logged in';
         sidebarUserNickname.classList.add('loading');
+    }
+
+    if (sidebarUserAvatar) {
+        sidebarUserAvatar.textContent = '👤';
+        sidebarUserAvatar.classList.remove('loading');
+        sidebarUserAvatar.style.background = 'linear-gradient(45deg, #667eea, #764ba2)';
     }
     
     console.log('✅ Sidebar updated for signed out user');
@@ -360,6 +500,7 @@ function handleAuthAction() {
     
     if (authButton && authButton.classList.contains('logout-btn')) {
         // User is logged in, handle logout
+        console.log('🚪 Logging out user...');
         if (window.authManager) {
             window.authManager.signOut();
         } else if (typeof logout === 'function') {
@@ -367,44 +508,79 @@ function handleAuthAction() {
         }
     } else {
         // User is not logged in, go to login page
+        console.log('🔑 Redirecting to login...');
         if (typeof switchPage === 'function') {
             switchPage('login');
         }
     }
 }
 
-// Check if user is already authenticated
+// Enhanced initial auth state checking with proper waiting
 function checkInitialAuthState() {
-    // Wait for auth manager to be ready
-    setTimeout(() => {
-        if (window.authManager && window.authManager.currentUser) {
-            updateSidebarForAuthenticatedUser(
-                window.authManager.currentUser, 
-                window.authManager.userProfile
-            );
-        } else {
-            // Check localStorage fallback
-            const savedUser = localStorage.getItem('armHelper_currentUser');
-            if (savedUser) {
-                try {
-                    const user = JSON.parse(savedUser);
-                    // Create proper user object
-                    const userObj = {
-                        id: user.id || 'local-user',
-                        email: user.email || `${user.nickname}@local.test`,
-                        nickname: user.nickname
-                    };
-                    updateSidebarForAuthenticatedUser(userObj, user);
-                } catch (e) {
-                    console.warn('Invalid saved user data');
-                    localStorage.removeItem('armHelper_currentUser');
-                    updateSidebarForSignedOutUser();
+    console.log('🔍 Checking initial authentication state...');
+    
+    // Use the waitForAuthManager function if available
+    if (typeof waitForAuthManager === 'function') {
+        waitForAuthManager(() => {
+            performAuthStateCheck();
+        }, 5000);
+    } else {
+        // Fallback method
+        setTimeout(() => {
+            performAuthStateCheck();
+        }, 1000);
+    }
+}
+
+// Perform the actual auth state check
+function performAuthStateCheck() {
+    console.log('🔐 Performing auth state check...');
+    
+    // Check if auth manager has current user
+    if (window.authManager && window.authManager.currentUser && window.authManager.userProfile) {
+        console.log('✅ Auth manager has current user:', window.authManager.userProfile.nickname);
+        updateSidebarForAuthenticatedUser(
+            window.authManager.currentUser, 
+            window.authManager.userProfile
+        );
+    } else {
+        // Check localStorage for persistent auth
+        const savedUser = localStorage.getItem('armHelper_currentUser');
+        const persistentAuth = localStorage.getItem('armHelper_persistentAuth');
+        
+        if (savedUser && persistentAuth === 'true') {
+            try {
+                const user = JSON.parse(savedUser);
+                console.log('✅ Found persistent auth for user:', user.nickname);
+                
+                const userObj = {
+                    id: user.id || 'local-user',
+                    email: user.email || `${user.nickname}@local.test`,
+                    nickname: user.nickname
+                };
+                
+                updateSidebarForAuthenticatedUser(userObj, user);
+                
+                // If we have auth manager, update it too
+                if (window.authManager) {
+                    window.authManager.currentUser = userObj;
+                    window.authManager.userProfile = user;
                 }
-            } else {
+                
+            } catch (e) {
+                console.warn('⚠️ Invalid saved user data, clearing...');
+                localStorage.removeItem('armHelper_currentUser');
+                localStorage.removeItem('armHelper_persistentAuth');
                 updateSidebarForSignedOutUser();
             }
+        } else {
+            console.log('ℹ️ No persistent authentication found');
+            updateSidebarForSignedOutUser();
         }
-    }, 500);
+    }
+    
+    // Clear restoration state
+    setAuthRestorationState(false);
 }
 
 // Initialize when DOM is ready
@@ -418,9 +594,12 @@ if (document.readyState === 'loading') {
     enhanceInitialization();
 }
 
-// Check auth state after everything is loaded
+// Check auth state after content is loaded
 document.addEventListener('contentLoaded', () => {
-    checkInitialAuthState();
+    console.log('📄 Content loaded, checking auth state...');
+    setTimeout(() => {
+        checkInitialAuthState();
+    }, 500);
 });
 
 // Make functions globally available
@@ -428,3 +607,4 @@ window.handleAuthAction = handleAuthAction;
 window.updateSidebarForAuthenticatedUser = updateSidebarForAuthenticatedUser;
 window.updateSidebarForSignedOutUser = updateSidebarForSignedOutUser;
 window.checkInitialAuthState = checkInitialAuthState;
+window.setAuthRestorationState = setAuthRestorationState;
