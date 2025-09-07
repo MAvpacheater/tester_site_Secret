@@ -7,7 +7,13 @@
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-avatar">
-                <img src="https://i.postimg.cc/gjmcXwV9/file-000000008fd461f4826bd65e36dbc3d2.png/80x80/667eea/ffffff?text=👤" alt="Avatar" class="avatar-img" id="profileAvatar">
+                <!-- ЗАХИЩЕНА АВАТАРКА - НЕ ЗМІНЮВАТИ SRC! -->
+                <img src="https://i.postimg.cc/gjmcXwV9/file-000000008fd461f4826bd65e36dbc3d2.png" 
+                     alt="User Avatar" 
+                     class="avatar-img" 
+                     id="profileAvatar"
+                     data-protected="true"
+                     data-original-src="https://i.postimg.cc/gjmcXwV9/file-000000008fd461f4826bd65e36dbc3d2.png">
             </div>
             <div class="profile-info">
                 <h2 class="profile-nickname" id="profileNickname">User</h2>
@@ -187,6 +193,51 @@
         <!-- Success/Error Messages -->
         <div class="profile-message" id="profileMessage"></div>
     </div>
+
+    <!-- Avatar Protection Script - Inline для швидшого завантаження -->
+    <script>
+        // Швидкий захист аватарки при завантаженні DOM
+        (function() {
+            const protectAvatarQuick = () => {
+                const avatar = document.getElementById('profileAvatar');
+                if (avatar && !avatar.hasAttribute('data-quick-protected')) {
+                    const originalSrc = 'https://i.postimg.cc/gjmcXwV9/file-000000008fd461f4826bd65e36dbc3d2.png';
+                    avatar.src = originalSrc;
+                    avatar.setAttribute('data-quick-protected', 'true');
+                    
+                    // Негайний захист від змін
+                    Object.defineProperty(avatar, 'src', {
+                        get: function() {
+                            return this.getAttribute('src') || originalSrc;
+                        },
+                        set: function(value) {
+                            // Дозволяємо тільки наше зображення або placeholder
+                            if (value.includes('postimg.cc') || value.includes('placeholder')) {
+                                this.setAttribute('src', value);
+                            } else {
+                                console.log('🛡️ Avatar change blocked');
+                                this.setAttribute('src', originalSrc);
+                            }
+                        }
+                    });
+                    
+                    console.log('⚡ Quick avatar protection active');
+                }
+            };
+            
+            // Запускаємо відразу
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', protectAvatarQuick);
+            } else {
+                protectAvatarQuick();
+            }
+            
+            // Повторюємо через невеликий інтервал для надійності
+            setTimeout(protectAvatarQuick, 100);
+            setTimeout(protectAvatarQuick, 300);
+            setTimeout(protectAvatarQuick, 500);
+        })();
+    </script>
 
     <!-- Include JavaScript files -->
     <script src="login/profile.js"></script>
