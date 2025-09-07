@@ -398,9 +398,233 @@ document.addEventListener('contentLoaded', () => {
     checkInitialAuthState();
 });
 
+// Profile settings functions - Add fallbacks for missing functions
+function toggleSettingsMenu() {
+    console.log('⚙️ Toggle settings menu');
+    const settingsMenu = document.getElementById('settingsMenu');
+    if (settingsMenu) {
+        settingsMenu.style.display = settingsMenu.style.display === 'none' ? 'block' : 'none';
+    } else {
+        console.warn('⚠️ Settings menu not found');
+    }
+}
+
+function closeSettingsMenu() {
+    console.log('⚙️ Close settings menu');
+    const settingsMenu = document.getElementById('settingsMenu');
+    const settingsForms = document.querySelectorAll('.settings-form');
+    
+    if (settingsMenu) {
+        settingsMenu.style.display = 'none';
+    }
+    
+    settingsForms.forEach(form => {
+        form.style.display = 'none';
+    });
+}
+
+function toggleStatsView() {
+    console.log('📊 Toggle stats view');
+    const statsView = document.getElementById('statsView');
+    if (statsView) {
+        statsView.style.display = statsView.style.display === 'none' ? 'block' : 'none';
+        
+        // Update stats when showing
+        if (statsView.style.display === 'block') {
+            updateStatsView();
+        }
+    } else {
+        console.warn('⚠️ Stats view not found');
+    }
+}
+
+function closeStatsView() {
+    console.log('📊 Close stats view');
+    const statsView = document.getElementById('statsView');
+    if (statsView) {
+        statsView.style.display = 'none';
+    }
+}
+
+function goBackFromProfile() {
+    console.log('← Going back from profile');
+    if (typeof switchPage === 'function') {
+        switchPage('calculator');
+    } else {
+        console.warn('⚠️ switchPage function not available');
+    }
+}
+
+function updateStatsView() {
+    console.log('📊 Updating stats view');
+    try {
+        // Count saved calculations
+        let calculationsCount = 0;
+        const calculatorTypes = ['calculator', 'arm', 'grind'];
+        
+        for (const type of calculatorTypes) {
+            const settings = localStorage.getItem(`armHelper_${type}_settings`);
+            if (settings) calculationsCount++;
+        }
+
+        const calculationsEl = document.getElementById('calculationsCount');
+        if (calculationsEl) {
+            calculationsEl.textContent = calculationsCount;
+        }
+
+        // Update login count
+        const loginCountEl = document.getElementById('loginCount');
+        if (loginCountEl) {
+            const loginCount = parseInt(localStorage.getItem('armHelper_loginCount') || '1');
+            loginCountEl.textContent = loginCount;
+        }
+
+        // Update last login
+        const lastLoginEl = document.getElementById('lastLoginDate');
+        if (lastLoginEl) {
+            const lastLogin = localStorage.getItem('armHelper_lastLogin');
+            if (lastLogin) {
+                const date = new Date(lastLogin);
+                const today = new Date();
+                
+                if (date.toDateString() === today.toDateString()) {
+                    lastLoginEl.textContent = 'Today';
+                } else {
+                    lastLoginEl.textContent = date.toLocaleDateString();
+                }
+            } else {
+                lastLoginEl.textContent = 'Today';
+            }
+        }
+    } catch (error) {
+        console.error('Error updating stats:', error);
+    }
+}
+
+// Profile settings stub functions
+function showChangePassword() {
+    console.log('🔒 Show change password');
+    const settingsMenu = document.getElementById('settingsMenu');
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    
+    if (settingsMenu) settingsMenu.style.display = 'none';
+    if (changePasswordForm) changePasswordForm.style.display = 'block';
+}
+
+function showChangeNickname() {
+    console.log('✏️ Show change nickname');
+    const settingsMenu = document.getElementById('settingsMenu');
+    const changeNicknameForm = document.getElementById('changeNicknameForm');
+    
+    if (settingsMenu) settingsMenu.style.display = 'none';
+    if (changeNicknameForm) changeNicknameForm.style.display = 'block';
+}
+
+function showPreferences() {
+    console.log('🎛️ Show preferences');
+    const settingsMenu = document.getElementById('settingsMenu');
+    const preferencesForm = document.getElementById('preferencesForm');
+    
+    if (settingsMenu) settingsMenu.style.display = 'none';
+    if (preferencesForm) preferencesForm.style.display = 'block';
+}
+
+function backToSettingsMenu() {
+    console.log('← Back to settings menu');
+    const settingsForms = document.querySelectorAll('.settings-form');
+    const settingsMenu = document.getElementById('settingsMenu');
+    
+    settingsForms.forEach(form => {
+        form.style.display = 'none';
+    });
+    
+    if (settingsMenu) {
+        settingsMenu.style.display = 'block';
+    }
+}
+
+function confirmDeleteAccount() {
+    console.log('⚠️ Confirm delete account');
+    closeSettingsMenu();
+    
+    const isConfirmed = confirm(
+        'Are you absolutely sure you want to delete your account?\n\n' +
+        'This action cannot be undone. All your data will be permanently deleted.\n\n' +
+        'Click OK to continue with deletion.'
+    );
+
+    if (isConfirmed) {
+        const confirmation = prompt('Please type "DELETE" to confirm account deletion:');
+        
+        if (confirmation === 'DELETE') {
+            deleteUserAccount();
+        } else if (confirmation !== null) {
+            alert('Account deletion cancelled - confirmation text did not match');
+        }
+    }
+}
+
+function deleteUserAccount() {
+    console.log('🗑️ Delete user account');
+    try {
+        // Remove from localStorage
+        const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+        const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+        
+        const updatedUsers = savedUsers.filter(u => u.nickname !== currentUser.nickname);
+        localStorage.setItem('armHelper_users', JSON.stringify(updatedUsers));
+        
+        localStorage.removeItem('armHelper_currentUser');
+        
+        // Clear user settings
+        const settingsKeys = ['calculator', 'arm', 'grind'];
+        settingsKeys.forEach(key => {
+            localStorage.removeItem(`armHelper_${key}_settings`);
+        });
+        
+        alert('Your account has been successfully deleted.');
+        
+        setTimeout(() => {
+            if (typeof switchPage === 'function') {
+                switchPage('login');
+            }
+        }, 1000);
+    } catch (error) {
+        console.error('Delete account error:', error);
+        alert('Failed to delete account. Please try again.');
+    }
+}
+
+// Form handlers
+function handleChangePassword(event) {
+    event.preventDefault();
+    alert('Password change functionality is not fully implemented yet.');
+}
+
+function handleChangeNickname(event) {
+    event.preventDefault();
+    alert('Nickname change functionality is not fully implemented yet.');
+}
+
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 window.handleProfileClick = handleProfileClick;
 window.manualProfileUpdate = manualProfileUpdate;
 window.updateSidebarForAuthenticatedUser = updateSidebarForAuthenticatedUser;
 window.updateSidebarForSignedOutUser = updateSidebarForSignedOutUser;
+
+// Profile functions
+window.toggleSettingsMenu = toggleSettingsMenu;
+window.closeSettingsMenu = closeSettingsMenu;
+window.toggleStatsView = toggleStatsView;
+window.closeStatsView = closeStatsView;
+window.goBackFromProfile = goBackFromProfile;
+window.updateStatsView = updateStatsView;
+window.showChangePassword = showChangePassword;
+window.showChangeNickname = showChangeNickname;
+window.showPreferences = showPreferences;
+window.backToSettingsMenu = backToSettingsMenu;
+window.confirmDeleteAccount = confirmDeleteAccount;
+window.deleteUserAccount = deleteUserAccount;
+window.handleChangePassword = handleChangePassword;
+window.handleChangeNickname = handleChangeNickname;
