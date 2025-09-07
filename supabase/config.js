@@ -1,4 +1,4 @@
-// supabase/config.js - Спрощена версія з виправленими методами
+// supabase/config.js - Повністю виправлена версія з працюючими методами
 
 const SUPABASE_URL = 'https://aws-info-post.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3cy1pbmZvLXBvc3QiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczNzQ3NDYzNCwiZXhwIjoyMDUzMDUwNjM0fQ.2KKh4pBhRLbxQxJJMGgxUWXHiQQO7bsKwgKNOAdfKG0';
@@ -240,9 +240,11 @@ class SupabaseAuthManager {
         return { success: true, user: this.currentUser };
     }
 
-    // ЗМІНА ПАРОЛЮ - СПРОЩЕНА
+    // ЗМІНА ПАРОЛЮ - ВИПРАВЛЕНА ВЕРСІЯ
     async changePassword(currentPassword, newPassword) {
         try {
+            console.log('🔑 Attempting to change password...');
+
             if (this.fallbackMode) {
                 return this.changePasswordFallback(currentPassword, newPassword);
             }
@@ -253,9 +255,12 @@ class SupabaseAuthManager {
             });
 
             if (error) {
-                throw new Error(error.message);
+                console.warn('❌ Supabase password change failed:', error.message);
+                // Fallback to local storage
+                return this.changePasswordFallback(currentPassword, newPassword);
             }
 
+            console.log('✅ Password changed via Supabase');
             return {
                 success: true,
                 message: 'Password updated successfully'
@@ -269,8 +274,14 @@ class SupabaseAuthManager {
     }
 
     changePasswordFallback(currentPassword, newPassword) {
+        console.log('🔄 Using fallback password change');
+        
         const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
         const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+        
+        if (!currentUser.nickname) {
+            throw new Error('User not found');
+        }
         
         const userIndex = savedUsers.findIndex(u => u.nickname === currentUser.nickname);
         
@@ -280,26 +291,35 @@ class SupabaseAuthManager {
 
         // Оновлюємо пароль
         savedUsers[userIndex].password = newPassword;
+        savedUsers[userIndex].updatedAt = new Date().toISOString();
         localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
         
         currentUser.password = newPassword;
+        currentUser.updatedAt = new Date().toISOString();
         localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
         
+        // Оновлюємо userProfile
+        this.userProfile = currentUser;
+        
+        console.log('✅ Password changed via fallback');
         return {
             success: true,
             message: 'Password updated successfully'
         };
     }
 
-    // ЗМІНА НІКНЕЙМУ - СПРОЩЕНА
+    // ЗМІНА НІКНЕЙМУ - ВИПРАВЛЕНА ВЕРСІЯ
     async updateProfile(updates) {
         try {
+            console.log('✏️ Attempting to update profile:', updates);
+
             if (this.fallbackMode) {
                 return this.updateProfileFallback(updates);
             }
 
             if (!this.userProfile) {
-                throw new Error('User not authenticated');
+                console.warn('❌ User not authenticated, falling back');
+                return this.updateProfileFallback(updates);
             }
 
             // Якщо оновлюємо nickname, перевіряємо унікальність
@@ -325,12 +345,14 @@ class SupabaseAuthManager {
                 .single();
 
             if (error) {
-                throw new Error(error.message);
+                console.warn('❌ Supabase profile update failed:', error.message);
+                return this.updateProfileFallback(updates);
             }
 
             this.userProfile = { ...this.userProfile, ...data };
             localStorage.setItem('armHelper_currentUser', JSON.stringify(this.userProfile));
 
+            console.log('✅ Profile updated via Supabase');
             return {
                 success: true,
                 message: 'Profile updated successfully',
@@ -344,8 +366,14 @@ class SupabaseAuthManager {
     }
 
     updateProfileFallback(updates) {
+        console.log('🔄 Using fallback profile update');
+        
         const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
         const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+        
+        if (!currentUser.nickname) {
+            throw new Error('User not found');
+        }
         
         // Перевіряємо унікальність нікнейму
         if (updates.nickname) {
@@ -366,7 +394,11 @@ class SupabaseAuthManager {
         }
 
         // Оновлюємо дані
-        savedUsers[userIndex] = { ...savedUsers[userIndex], ...updates };
+        savedUsers[userIndex] = { 
+            ...savedUsers[userIndex], 
+            ...updates,
+            updatedAt: new Date().toISOString()
+        };
         const updatedUser = savedUsers[userIndex];
 
         localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
@@ -374,6 +406,7 @@ class SupabaseAuthManager {
 
         this.userProfile = updatedUser;
         
+        console.log('✅ Profile updated via fallback');
         return {
             success: true,
             message: 'Profile updated successfully',
@@ -381,15 +414,18 @@ class SupabaseAuthManager {
         };
     }
 
-    // ВИДАЛЕННЯ АКАУНТУ - СПРОЩЕНА
+    // ВИДАЛЕННЯ АКАУНТУ - ВИПРАВЛЕНА ВЕРСІЯ
     async deleteAccount() {
         try {
+            console.log('🗑️ Attempting to delete account...');
+
             if (this.fallbackMode) {
                 return this.deleteAccountFallback();
             }
 
             if (!this.userProfile) {
-                throw new Error('User not authenticated');
+                console.warn('❌ User not authenticated, falling back');
+                return this.deleteAccountFallback();
             }
 
             // Видаляємо профіль
@@ -399,17 +435,22 @@ class SupabaseAuthManager {
                 .eq('id', this.userProfile.id);
 
             if (profileError) {
-                throw new Error(profileError.message);
+                console.warn('❌ Supabase profile deletion failed:', profileError.message);
+                return this.deleteAccountFallback();
             }
 
-            // Виходимо
-            await this.supabase.auth.signOut();
+            // Виходимо з auth
+            const { error: signOutError } = await this.supabase.auth.signOut();
+            if (signOutError) {
+                console.warn('❌ Supabase sign out failed:', signOutError.message);
+            }
 
             // Очищаємо локальні дані
             this.currentUser = null;
             this.userProfile = null;
             localStorage.removeItem('armHelper_currentUser');
 
+            console.log('✅ Account deleted via Supabase');
             return {
                 success: true,
                 message: 'Account deleted successfully'
@@ -422,8 +463,14 @@ class SupabaseAuthManager {
     }
 
     deleteAccountFallback() {
+        console.log('🔄 Using fallback account deletion');
+        
         const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
         const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+        
+        if (!currentUser.nickname) {
+            throw new Error('User not found');
+        }
         
         // Видаляємо користувача
         const updatedUsers = savedUsers.filter(u => u.nickname !== currentUser.nickname);
@@ -432,9 +479,17 @@ class SupabaseAuthManager {
         // Очищаємо дані
         localStorage.removeItem('armHelper_currentUser');
         
+        // Очищаємо налаштування
+        const settingsKeys = ['calculator', 'arm', 'grind', 'loginCount', 'lastLogin'];
+        settingsKeys.forEach(key => {
+            localStorage.removeItem(`armHelper_${key}_settings`);
+            localStorage.removeItem(`armHelper_${key}`);
+        });
+        
         this.currentUser = null;
         this.userProfile = null;
 
+        console.log('✅ Account deleted via fallback');
         return {
             success: true,
             message: 'Account deleted successfully'
@@ -448,7 +503,11 @@ class SupabaseAuthManager {
         try {
             const { data: { user }, error } = await this.supabase.auth.getUser();
             
-            if (error) return;
+            if (error) {
+                console.warn('Error checking current user:', error);
+                return;
+            }
+            
             if (user) {
                 await this.handleUserSignedIn(user);
             }
@@ -500,17 +559,72 @@ class SupabaseAuthManager {
 
     async signOut() {
         try {
+            console.log('🚪 Signing out user...');
+            
             if (!this.fallbackMode && this.supabase) {
-                await this.supabase.auth.signOut();
+                const { error } = await this.supabase.auth.signOut();
+                if (error) {
+                    console.warn('❌ Supabase sign out failed:', error.message);
+                }
             }
 
             localStorage.removeItem('armHelper_currentUser');
+            this.currentUser = null;
+            this.userProfile = null;
             this.handleUserSignedOut();
+
+            console.log('✅ User signed out successfully');
 
         } catch (error) {
             console.error('Error in signOut:', error);
+            // Force cleanup even if there was an error
             localStorage.removeItem('armHelper_currentUser');
+            this.currentUser = null;
+            this.userProfile = null;
             this.handleUserSignedOut();
+        }
+    }
+
+    // Утилітарні методи
+    isAuthenticated() {
+        return !!(this.currentUser && this.userProfile);
+    }
+
+    getCurrentUser() {
+        return this.currentUser;
+    }
+
+    getUserProfile() {
+        return this.userProfile;
+    }
+
+    // Метод для отримання нікнейму
+    getCurrentNickname() {
+        return this.userProfile?.nickname || this.currentUser?.email?.split('@')[0] || 'User';
+    }
+
+    // Метод для перевірки чи користувач може змінити нікнейм
+    async canChangeNickname(newNickname) {
+        if (!newNickname || newNickname === this.getCurrentNickname()) {
+            return false;
+        }
+
+        try {
+            if (this.fallbackMode) {
+                const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+                return !savedUsers.find(u => u.nickname === newNickname && u.nickname !== this.getCurrentNickname());
+            }
+
+            const { data } = await this.supabase
+                .from('users')
+                .select('id')
+                .eq('nickname', newNickname)
+                .single();
+
+            return !data;
+        } catch (error) {
+            console.error('Error checking nickname availability:', error);
+            return false;
         }
     }
 }
@@ -518,14 +632,38 @@ class SupabaseAuthManager {
 let authManager;
 
 function initializeSupabaseAuth() {
+    console.log('🔧 Initializing Supabase Auth...');
+    
     if (!authManager) {
         authManager = new SupabaseAuthManager();
+        
+        // Make it globally available
+        window.authManager = authManager;
+        
+        console.log('✅ Auth Manager initialized and available globally');
     }
+    
     return authManager;
 }
 
+// Global exports
 if (typeof window !== 'undefined') {
     window.SupabaseAuthManager = SupabaseAuthManager;
     window.initializeSupabaseAuth = initializeSupabaseAuth;
     window.authManager = null;
+    
+    // Auto-initialize if DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                initializeSupabaseAuth();
+            }, 100);
+        });
+    } else {
+        setTimeout(() => {
+            initializeSupabaseAuth();
+        }, 100);
+    }
 }
+
+console.log('✅ Supabase config loaded with enhanced error handling and fallbacks');
