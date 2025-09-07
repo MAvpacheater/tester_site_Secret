@@ -1,4 +1,4 @@
-// supabase/config.js - ВИПРАВЛЕНА ВЕРСІЯ З ПІДТРИМКОЮ КОРИСТУВАЦЬКИХ ДАНИХ
+// supabase/config.js - ПОВНІСТЮ ВИПРАВЛЕНА ВЕРСІЯ З РОБОЧОЮ ЗМІНОЮ ПАРОЛЯ
 
 // Ваші правильні дані Supabase
 const SUPABASE_URL = 'https://aws-info-post.supabase.co'; // Замініть на ваш URL
@@ -474,7 +474,288 @@ class SupabaseAuthManager {
         };
     }
 
-    // НОВИЙ МЕТОД: Збереження користувацьких даних
+    // НОВИЙ МЕТОД: Перевірка поточного пароля
+    async verifyCurrentPassword(currentPassword) {
+        if (this.fallbackMode) {
+            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+            
+            const user = savedUsers.find(u => u.nickname === currentUser.nickname);
+            return user && user.password === currentPassword;
+        }
+
+        try {
+            const nickname = this.userProfile?.nickname;
+            if (!nickname) {
+                return false;
+            }
+
+            // Створюємо тимчасового клієнта для перевірки
+            const tempClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const tempEmail = `${nickname}@armhelper.temp`;
+            
+            const { error } = await tempClient.auth.signInWithPassword({
+                email: tempEmail,
+                password: currentPassword
+            });
+
+            // Виходимо з тимчасової сесії
+            await tempClient.auth.signOut();
+
+            return !error;
+        } catch (error) {
+            console.error('Password verification error:', error);
+            return false;
+        }
+    }
+
+    // ЗМІНА ПАРОЛЮ - ВИПРАВЛЕНА ВЕРСІЯ
+    async changePassword(currentPassword, newPassword) {
+        if (this.fallbackMode) {
+            return this.changePasswordFallback(currentPassword, newPassword);
+        }
+
+        try {
+            if (DEBUG_MODE) {
+                console.log('🔄 Starting password change...');
+            }
+
+            if (!this.currentUser) {
+                throw new Error('User not authenticated');
+            }
+
+            const nickname = this.userProfile?.nickname;
+            if (!nickname) {
+                throw new Error('User profile not found');
+            }
+
+            // Спочатку перевіряємо поточний пароль
+            const isCurrentPasswordValid = await this.verifyCurrentPassword(currentPassword);
+            
+            if (!isCurrentPasswordValid) {
+                throw new Error('Current password is incorrect');
+            }
+
+            if (DEBUG_MODE) {
+                console.log('✅ Current password verified');
+            }
+
+            // Змінюємо пароль
+            const { error: updateError } = await this.supabase.auth.updateUser({
+                password: newPassword
+            });
+
+            if (updateError) {
+                if (DEBUG_MODE) {
+                    console.error('Password update error:', updateError);
+                }
+                throw new Error(`Failed to update password: ${updateError.message}`);
+            }
+
+            if (DEBUG_MODE) {
+                console.log('✅ Password updated successfully');
+            }
+
+            return {
+                success: true,
+                message: 'Password updated successfully'
+            };
+
+        } catch (error) {
+            console.error('❌ Change password error:', error);
+            
+            // Fallback при помилці з'єднання
+            if (error.message.includes('fetch') || 
+                error.message.includes('network') || 
+                error.message.includes('JSON')) {
+                console.warn('🔄 Falling back to local storage due to connection error');
+                return this.changePasswordFallback(currentPassword, newPassword);
+            }
+            
+            throw error;
+        }
+    }
+
+    // Fallback зміна паролю
+    changePasswordFallback(currentPassword, newPassword) {
+        try {
+            if (DEBUG_MODE) {
+                console.log('🔄 Using fallback password change');
+            }
+
+            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+            
+            const userIndex = savedUsers.findIndex(u => u.nickname === currentUser.nickname);
+            
+            if (userIndex === -1) {
+                throw new Error('User not found');
+            }
+
+            if (savedUsers[userIndex].password !== currentPassword) {
+                throw new Error('Current password is incorrect');
+            }
+
+            // Оновлюємо пароль
+            savedUsers[userIndex].password = newPassword;
+            savedUsers[userIndex].updatedAt = new Date().toISOString();
+
+            // Також оновлюємо поточного користувача
+            currentUser.password = newPassword;
+            currentUser.updatedAt = new Date().toISOString();
+
+            localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
+            localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
+            
+            // Оновлюємо локальний профіль
+            this.userProfile = currentUser;
+            
+            if (DEBUG_MODE) {
+                console.log('✅ Fallback password change successful');
+            }
+
+            return {
+                success: true,
+                message: 'Password updated successfully'
+            };
+
+        } catch (error) {
+            console.error('❌ Fallback password change error:', error);
+            throw error;
+        }
+    }
+
+    // ЗМІНА НІКНЕЙМУ
+    async updateProfile(updates) {
+        if (this.fallbackMode) {
+            return this.updateProfileFallback(updates);
+        }
+
+        try {
+            if (DEBUG_MODE) {
+                console.log('🔄 Starting profile update:', updates);
+            }
+
+            if (!this.currentUser || !this.userProfile) {
+                throw new Error('User not authenticated');
+            }
+
+            // Перевіряємо чи новий nickname вже зайнятий
+            if (updates.nickname) {
+                const { data: existingUser, error: checkError } = await this.supabase
+                    .from('users')
+                    .select('id')
+                    .eq('nickname', updates.nickname)
+                    .neq('id', this.userProfile.id)
+                    .single();
+
+                if (checkError && checkError.code !== 'PGRST116') {
+                    throw new Error(`Database error checking nickname: ${checkError.message}`);
+                }
+
+                if (existingUser) {
+                    throw new Error('This nickname is already taken');
+                }
+            }
+
+            // Оновлюємо профіль в базі даних
+            const { data, error } = await this.supabase
+                .from('users')
+                .update({
+                    ...updates,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', this.userProfile.id)
+                .select()
+                .single();
+
+            if (error) {
+                console.error('❌ Error updating profile:', error);
+                throw new Error(`Failed to update profile: ${error.message}`);
+            }
+
+            // Оновлюємо локальний профіль
+            this.userProfile = { ...this.userProfile, ...data };
+
+            if (DEBUG_MODE) {
+                console.log('✅ Profile updated successfully');
+            }
+
+            return {
+                success: true,
+                profile: this.userProfile
+            };
+
+        } catch (error) {
+            console.error('❌ Update profile error:', error);
+            
+            // Fallback при помилці з'єднання
+            if (error.message.includes('fetch') || 
+                error.message.includes('network') || 
+                error.message.includes('JSON')) {
+                console.warn('🔄 Falling back to local storage due to connection error');
+                return this.updateProfileFallback(updates);
+            }
+            
+            throw error;
+        }
+    }
+
+    // Fallback оновлення профілю
+    updateProfileFallback(updates) {
+        try {
+            if (DEBUG_MODE) {
+                console.log('🔄 Using fallback profile update');
+            }
+
+            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
+            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
+            
+            // Перевіряємо чи новий nickname вже зайнятий
+            if (updates.nickname) {
+                const existingUser = savedUsers.find(u => u.nickname === updates.nickname && u.nickname !== currentUser.nickname);
+                if (existingUser) {
+                    throw new Error('This nickname is already taken');
+                }
+            }
+            
+            const userIndex = savedUsers.findIndex(u => u.nickname === currentUser.nickname);
+            
+            if (userIndex === -1) {
+                throw new Error('User not found');
+            }
+
+            // Оновлюємо дані
+            Object.assign(savedUsers[userIndex], updates, {
+                updatedAt: new Date().toISOString()
+            });
+            
+            Object.assign(currentUser, updates, {
+                updatedAt: new Date().toISOString()
+            });
+
+            localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
+            localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
+            
+            // Оновлюємо локальний профіль
+            this.userProfile = currentUser;
+
+            if (DEBUG_MODE) {
+                console.log('✅ Fallback profile update successful');
+            }
+
+            return {
+                success: true,
+                profile: this.userProfile
+            };
+
+        } catch (error) {
+            console.error('❌ Fallback profile update error:', error);
+            throw error;
+        }
+    }
+
+    // ЗБЕРЕЖЕННЯ КОРИСТУВАЦЬКИХ ДАНИХ
     async saveUserData(dataType, data) {
         if (this.fallbackMode || !this.currentUser) {
             return this.saveUserDataFallback(dataType, data);
@@ -530,7 +811,7 @@ class SupabaseAuthManager {
         }
     }
 
-    // НОВИЙ МЕТОД: Завантаження користувацьких даних
+    // ЗАВАНТАЖЕННЯ КОРИСТУВАЦЬКИХ ДАНИХ
     async loadUserData(dataType) {
         if (this.fallbackMode || !this.currentUser) {
             return this.loadUserDataFallback(dataType);
@@ -638,272 +919,6 @@ class SupabaseAuthManager {
             return {};
         }
     }
-
-// ЗМІНА ПАРОЛЮ - ВИПРАВЛЕНА ВЕРСІЯ
-async changePassword(currentPassword, newPassword) {
-    if (this.fallbackMode) {
-        return this.changePasswordFallback(currentPassword, newPassword);
-    }
-
-    try {
-        if (DEBUG_MODE) {
-            console.log('🔄 Starting password change...');
-        }
-
-        if (!this.currentUser) {
-            throw new Error('User not authenticated');
-        }
-
-        const nickname = this.userProfile?.nickname;
-        if (!nickname) {
-            throw new Error('User profile not found');
-        }
-
-        // Для Supabase Auth просто змінюємо пароль без перевірки поточного
-        // оскільки користувач вже автентифікований
-        const { error: updateError } = await this.supabase.auth.updateUser({
-            password: newPassword
-        });
-
-        if (updateError) {
-            if (DEBUG_MODE) {
-                console.error('Password update error:', updateError);
-            }
-            
-            // Якщо помилка пов'язана з автентифікацією, перевіряємо поточний пароль
-            if (updateError.message.includes('authentication') || 
-                updateError.message.includes('session')) {
-                
-                // Створюємо тимчасового клієнта для перевірки пароля
-                const tempClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                const tempEmail = `${nickname}@armhelper.temp`;
-                
-                const { error: verifyError } = await tempClient.auth.signInWithPassword({
-                    email: tempEmail,
-                    password: currentPassword
-                });
-
-                if (verifyError) {
-                    if (DEBUG_MODE) {
-                        console.error('Current password verification failed:', verifyError);
-                    }
-                    throw new Error('Current password is incorrect');
-                }
-
-                // Якщо пароль правильний, повторюємо спробу зміни
-                const { error: retryError } = await this.supabase.auth.updateUser({
-                    password: newPassword
-                });
-
-                if (retryError) {
-                    throw new Error(`Failed to update password: ${retryError.message}`);
-                }
-            } else {
-                throw new Error(`Failed to update password: ${updateError.message}`);
-            }
-        }
-
-        if (DEBUG_MODE) {
-            console.log('✅ Password updated successfully');
-        }
-
-        return {
-            success: true,
-            message: 'Password updated successfully'
-        };
-
-    } catch (error) {
-        console.error('❌ Change password error:', error);
-        
-        // Fallback при помилці з'єднання
-        if (error.message.includes('fetch') || 
-            error.message.includes('network') || 
-            error.message.includes('JSON')) {
-            console.warn('🔄 Falling back to local storage due to connection error');
-            return this.changePasswordFallback(currentPassword, newPassword);
-        }
-        
-        throw error;
-    }
-}
-
-// ДОДАМО ТАКОЖ ОНОВЛЕНУ ФУНКЦІЮ ПЕРЕВІРКИ ПОТОЧНОГО ПАРОЛЯ
-async verifyCurrentPassword(currentPassword) {
-    if (this.fallbackMode) {
-        const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
-        const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
-        
-        const user = savedUsers.find(u => u.nickname === currentUser.nickname);
-        return user && user.password === currentPassword;
-    }
-
-    try {
-        const nickname = this.userProfile?.nickname;
-        if (!nickname) {
-            return false;
-        }
-
-        // Створюємо тимчасового клієнта для перевірки
-        const tempClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const tempEmail = `${nickname}@armhelper.temp`;
-        
-        const { error } = await tempClient.auth.signInWithPassword({
-            email: tempEmail,
-            password: currentPassword
-        });
-
-        // Виходимо з тимчасової сесії
-        await tempClient.auth.signOut();
-
-        return !error;
-    } catch (error) {
-        console.error('Password verification error:', error);
-        return false;
-    }
-}
-
-// ОНОВЛЕНА ФУНКЦІЯ В profile-settings.js
-// Замініть handleChangePassword в login/profile-settings.js
-
-async function handleChangePassword(event) {
-    event.preventDefault();
-
-    const form = event.target;
-    const submitBtn = form.querySelector('.submit-btn');
-    
-    const currentPassword = document.getElementById('currentPassword')?.value;
-    const newPassword = document.getElementById('newPassword')?.value;
-    const confirmNewPassword = document.getElementById('confirmNewPassword')?.value;
-
-    // Validation
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage('All fields are required', 'error');
-        }
-        return;
-    }
-
-    if (newPassword.length < 6) {
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage('New password must be at least 6 characters long', 'error');
-        }
-        return;
-    }
-
-    if (newPassword !== confirmNewPassword) {
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage('New passwords do not match', 'error');
-        }
-        return;
-    }
-
-    if (currentPassword === newPassword) {
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage('New password must be different from current password', 'error');
-        }
-        return;
-    }
-
-    try {
-        showLoading(submitBtn, true);
-
-        if (window.authManager) {
-            // Спочатку перевіряємо поточний пароль
-            if (typeof window.authManager.verifyCurrentPassword === 'function') {
-                const isCurrentPasswordValid = await window.authManager.verifyCurrentPassword(currentPassword);
-                
-                if (!isCurrentPasswordValid) {
-                    throw new Error('Current password is incorrect');
-                }
-            }
-
-            // Змінюємо пароль
-            const result = await window.authManager.changePassword(currentPassword, newPassword);
-            
-            if (result.success) {
-                if (typeof showProfileMessage === 'function') {
-                    showProfileMessage('Password updated successfully!', 'success');
-                }
-                form.reset();
-                document.querySelectorAll('.form-input').forEach(input => {
-                    input.classList.remove('error', 'success');
-                });
-                setTimeout(() => closeSettingsMenu(), 2000);
-            } else {
-                throw new Error(result.message || 'Failed to update password');
-            }
-        } else {
-            // Fallback для localStorage
-            const savedUsers = JSON.parse(localStorage.getItem('armHelper_users') || '[]');
-            const currentUser = JSON.parse(localStorage.getItem('armHelper_currentUser') || '{}');
-            
-            const userIndex = savedUsers.findIndex(u => u.nickname === currentUser.nickname);
-            
-            if (userIndex === -1) {
-                throw new Error('User not found');
-            }
-
-            if (savedUsers[userIndex].password !== currentPassword) {
-                throw new Error('Current password is incorrect');
-            }
-
-            savedUsers[userIndex].password = newPassword;
-            savedUsers[userIndex].updatedAt = new Date().toISOString();
-
-            // Також оновлюємо поточного користувача
-            currentUser.password = newPassword;
-            currentUser.updatedAt = new Date().toISOString();
-
-            localStorage.setItem('armHelper_users', JSON.stringify(savedUsers));
-            localStorage.setItem('armHelper_currentUser', JSON.stringify(currentUser));
-            
-            if (typeof showProfileMessage === 'function') {
-                showProfileMessage('Password updated successfully!', 'success');
-            }
-            form.reset();
-            document.querySelectorAll('.form-input').forEach(input => {
-                input.classList.remove('error', 'success');
-            });
-            setTimeout(() => closeSettingsMenu(), 2000);
-        }
-
-    } catch (error) {
-        console.error('Change password error:', error);
-        if (typeof showProfileMessage === 'function') {
-            showProfileMessage(error.message || 'Failed to update password', 'error');
-        }
-    } finally {
-        showLoading(submitBtn, false);
-    }
-}
-
-// ДОДАМО ФУНКЦІЮ showProfileMessage ЯКЩО ЇЇ НЕМАЄ
-function showProfileMessage(message, type = 'info') {
-    const messageElement = document.getElementById('profileMessage');
-    if (!messageElement) {
-        // Створюємо елемент повідомлення якщо його немає
-        const newMessageElement = document.createElement('div');
-        newMessageElement.id = 'profileMessage';
-        newMessageElement.className = 'profile-message';
-        
-        const profileContainer = document.querySelector('.profile-container');
-        if (profileContainer) {
-            profileContainer.appendChild(newMessageElement);
-        } else {
-            return; // Не можемо показати повідомлення
-        }
-    }
-
-    const messageEl = document.getElementById('profileMessage');
-    messageEl.textContent = message;
-    messageEl.className = `profile-message ${type}`;
-    messageEl.style.display = 'block';
-
-    // Автоматично приховуємо через 5 секунд
-    setTimeout(() => {
-        messageEl.style.display = 'none';
-    }, 5000);
-}
 
     // ВИДАЛЕННЯ АКАУНТУ
     async deleteAccount() {
@@ -1033,7 +1048,7 @@ function showProfileMessage(message, type = 'info') {
         }
     }
 
-    // Решта методів...
+    // ПЕРЕВІРКА ПОТОЧНОГО КОРИСТУВАЧА
     async checkCurrentUser() {
         if (this.fallbackMode) return;
 
@@ -1053,6 +1068,7 @@ function showProfileMessage(message, type = 'info') {
         }
     }
 
+    // ОБРОБКА ВХОДУ КОРИСТУВАЧА
     async handleUserSignedIn(user) {
         this.currentUser = user;
         await this.loadUserProfile();
@@ -1063,6 +1079,7 @@ function showProfileMessage(message, type = 'info') {
         }));
     }
 
+    // ОБРОБКА ВИХОДУ КОРИСТУВАЧА
     handleUserSignedOut() {
         this.currentUser = null;
         this.userProfile = null;
@@ -1071,6 +1088,7 @@ function showProfileMessage(message, type = 'info') {
         document.dispatchEvent(new CustomEvent('userSignedOut'));
     }
 
+    // ЗАВАНТАЖЕННЯ ПРОФІЛЮ КОРИСТУВАЧА
     async loadUserProfile() {
         if (!this.currentUser || this.fallbackMode) return;
 
@@ -1092,6 +1110,7 @@ function showProfileMessage(message, type = 'info') {
         }
     }
 
+    // ЗБЕРЕЖЕННЯ НАЛАШТУВАНЬ КАЛЬКУЛЯТОРА
     async saveCalculatorSettings(calculatorType, settings) {
         if (this.fallbackMode || !this.currentUser) {
             localStorage.setItem(`armHelper_${calculatorType}_settings`, JSON.stringify(settings));
@@ -1132,6 +1151,7 @@ function showProfileMessage(message, type = 'info') {
         }
     }
 
+    // ЗАВАНТАЖЕННЯ НАЛАШТУВАНЬ КАЛЬКУЛЯТОРА
     async loadCalculatorSettings(calculatorType) {
         if (this.fallbackMode || !this.currentUser) {
             const settings = localStorage.getItem(`armHelper_${calculatorType}_settings`);
@@ -1161,6 +1181,7 @@ function showProfileMessage(message, type = 'info') {
         }
     }
 
+    // ВИХІД З СИСТЕМИ
     async signOut() {
         try {
             if (!this.fallbackMode && this.supabase) {
@@ -1180,6 +1201,7 @@ function showProfileMessage(message, type = 'info') {
         }
     }
 
+    // ОНОВЛЕННЯ UI ДЛЯ АВТОРИЗОВАНОГО КОРИСТУВАЧА
     updateUIForSignedInUser() {
         const userInfo = document.getElementById('userInfo');
         const authButton = document.getElementById('authButton');
@@ -1203,6 +1225,7 @@ function showProfileMessage(message, type = 'info') {
         }
     }
 
+    // ОНОВЛЕННЯ UI ДЛЯ НЕАВТОРИЗОВАНОГО КОРИСТУВАЧА
     updateUIForSignedOutUser() {
         const userInfo = document.getElementById('userInfo');
         const authButton = document.getElementById('authButton');
@@ -1217,6 +1240,7 @@ function showProfileMessage(message, type = 'info') {
 
 let authManager;
 
+// ІНІЦІАЛІЗАЦІЯ SUPABASE AUTH
 function initializeSupabaseAuth() {
     if (!authManager) {
         authManager = new SupabaseAuthManager();
@@ -1224,7 +1248,7 @@ function initializeSupabaseAuth() {
     return authManager;
 }
 
-// Функція для діагностики таблиць
+// ФУНКЦІЯ ДЛЯ ДІАГНОСТИКИ ТАБЛИЦЬ
 async function checkDatabaseTables() {
     if (!supabase) {
         console.log('❌ Supabase not initialized');
@@ -1293,6 +1317,7 @@ CREATE TABLE user_calculations (
     }
 }
 
+// ЕКСПОРТ ФУНКЦІЙ ДЛЯ ГЛОБАЛЬНОГО ВИКОРИСТАННЯ
 if (typeof window !== 'undefined') {
     window.SupabaseAuthManager = SupabaseAuthManager;
     window.initializeSupabaseAuth = initializeSupabaseAuth;
