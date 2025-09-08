@@ -11,7 +11,7 @@ const hatchRewards = [
     { hatch: 12, reward: "+1 egg hatch" }
 ];
 
-// Secret pets data (15 entries) - FIXED data structure
+// Secret pets data (15 entries)
 const secretPetsData = [
     { name: "Arcane Hydra", boosts: "Percentage 150% | Power 40m", world: "World 4" },
     { name: "Hatched Phoenix", boosts: "Percentage 160% | Power 50m", world: "World 5" },
@@ -31,24 +31,35 @@ const secretPetsData = [
 ];
 
 function initializeSecret() {
+    console.log('🔮 Initializing Secret Pets...');
+    
+    // Check if already initialized and force reinit
     if (secretInitialized) {
-        console.log('⚠️ Secret module already initialized');
+        console.log('⚠️ Secret already initialized, forcing reload...');
+        secretInitialized = false;
+    }
+    
+    // Check if container exists
+    const container = document.getElementById('secretContainer');
+    if (!container) {
+        console.error('❌ Secret container not found');
         return;
     }
-
-    console.log('🔮 Initializing Secret Pets...');
     
     try {
         loadSecretContent();
         secretInitialized = true;
+        window.secretInitialized = true;
         console.log('✅ Secret Pets initialized successfully');
     } catch (error) {
         console.error('❌ Error initializing Secret Pets:', error);
+        secretInitialized = false;
     }
 }
 
 // Switch between secret types (rewards/names)
 function switchSecretType(type) {
+    console.log(`🔄 Switching secret type to: ${type}`);
     currentSecretType = type;
     
     // Update button states
@@ -69,9 +80,10 @@ function switchSecretType(type) {
     const activeSection = document.getElementById(`${type}Section`);
     if (activeSection) {
         activeSection.classList.add('active');
+        console.log(`✅ Switched to section: ${type}Section`);
+    } else {
+        console.error(`❌ Section ${type}Section not found`);
     }
-    
-    console.log(`Switched to secret type: ${type}`);
 }
 
 function loadSecretContent() {
@@ -80,6 +92,8 @@ function loadSecretContent() {
         console.error('❌ Secret container not found');
         return;
     }
+
+    console.log('📝 Loading secret content...');
 
     // Generate hatch rewards grid for Rewards section
     const hatchRewardsHTML = hatchRewards.map(item => `
@@ -101,7 +115,7 @@ function loadSecretContent() {
     `).join('');
 
     // Create the complete secret pets content with switcher
-    const secretHTML = `
+    const fullHTML = `
         <!-- Secret Type Switcher -->
         <div class="secret-switcher">
             <button class="secret-switch-btn active" data-secret-type="rewards" onclick="switchSecretType('rewards')">Rewards</button>
@@ -144,7 +158,8 @@ function loadSecretContent() {
         </div>
     `;
 
-    container.innerHTML = secretHTML;
+    container.innerHTML = fullHTML;
+    console.log('✅ Secret pets content loaded with switcher');
     
     // Add loading effect to image
     const secretImage = container.querySelector('.secret-image');
@@ -158,122 +173,11 @@ function loadSecretContent() {
             this.alt = 'Secret Pets Image';
         });
     }
-
-    console.log('✅ Secret pets content loaded with switcher');
-}
-
-// Generate secret pets content for names section
-function generateSecretPetsContent() {
-    const namesSection = document.getElementById('namesSection');
-    if (!namesSection) {
-        console.log('Names section not found');
-        return;
-    }
-    
-    namesSection.innerHTML = '';
-    
-    secretPetsData.forEach(pet => {
-        const petItem = document.createElement('div');
-        petItem.className = 'secret-pet-item';
-        petItem.innerHTML = `
-            <div class="secret-pet-content">
-                <div class="secret-pet-name">${pet.name}</div>
-                <div class="secret-pet-boosts">${pet.boosts}</div>
-            </div>
-            <div class="secret-pet-world">${pet.world}</div>
-        `;
-        namesSection.appendChild(petItem);
-    });
-    
-    console.log(`Generated ${secretPetsData.length} secret pets`);
-}
-
-// Utility functions
-function updateSecretImage(newImageUrl) {
-    const secretImage = document.querySelector('.secret-image');
-    if (secretImage && newImageUrl) {
-        secretImage.src = newImageUrl;
-        console.log('🖼️ Secret image updated');
-    }
-}
-
-function updateHatchReward(hatchNumber, newReward) {
-    const hatchIndex = hatchRewards.findIndex(item => item.hatch === hatchNumber);
-    if (hatchIndex !== -1) {
-        hatchRewards[hatchIndex].reward = newReward;
-        // Reload content to reflect changes
-        loadSecretContent();
-        console.log(`✅ Hatch ${hatchNumber} reward updated to: ${newReward}`);
-    } else {
-        console.error(`❌ Hatch ${hatchNumber} not found`);
-    }
-}
-
-function addSecretPet(name, boosts, world) {
-    secretPetsData.push({ name, boosts, world });
-    loadSecretContent();
-    console.log(`✅ Added new secret pet: ${name}`);
-}
-
-function getHatchRewards() {
-    return [...hatchRewards]; // Return a copy to prevent external modifications
-}
-
-function getSecretPetsData() {
-    return [...secretPetsData]; // Return a copy to prevent external modifications
-}
-
-// Animation helper for smooth transitions
-function animateSecretCards() {
-    const cards = document.querySelectorAll('.hatch-reward-card, .secret-pet-item');
-    cards.forEach((card, index) => {
-        setTimeout(() => {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        }, index * 50);
-    });
-}
-
-// Initialize cards with hidden state for animation
-function setupSecretAnimations() {
-    const style = document.createElement('style');
-    style.textContent = `
-        .hatch-reward-card,
-        .secret-pet-item {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-    `;
-    document.head.appendChild(style);
-    
-    // Trigger animation after a short delay
-    setTimeout(animateSecretCards, 200);
-}
-
-// Enhanced initialization with animations
-function initializeSecretWithAnimations() {
-    initializeSecret();
-    setTimeout(setupSecretAnimations, 100);
-}
-
-// Make sure DOM is ready before running
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(initializeSecret, 100);
-    });
-} else {
-    setTimeout(initializeSecret, 100);
 }
 
 // Make functions globally available
 window.initializeSecret = initializeSecret;
-window.initializeSecretWithAnimations = initializeSecretWithAnimations;
 window.switchSecretType = switchSecretType;
-window.updateSecretImage = updateSecretImage;
-window.updateHatchReward = updateHatchReward;
-window.addSecretPet = addSecretPet;
-window.getHatchRewards = getHatchRewards;
-window.getSecretPetsData = getSecretPetsData;
+window.secretInitialized = secretInitialized;
 
-console.log('✅ secret.js loaded successfully with switcher functionality - FIXED');
+console.log('✅ secret.js FIXED loaded successfully');
