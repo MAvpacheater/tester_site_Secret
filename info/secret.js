@@ -1,4 +1,4 @@
-// Secret Pets Module
+// Secret Pets Module - FIXED
 let secretInitialized = false;
 let currentSecretType = 'rewards';
 
@@ -11,7 +11,7 @@ const hatchRewards = [
     { hatch: 12, reward: "+1 egg hatch" }
 ];
 
-// Secret pets data (15 entries)
+// Secret pets data (15 entries) - FIXED data structure
 const secretPetsData = [
     { name: "Arcane Hydra", boosts: "Percentage 150% | Power 40m", world: "World 4" },
     { name: "Hatched Phoenix", boosts: "Percentage 160% | Power 50m", world: "World 5" },
@@ -20,14 +20,14 @@ const secretPetsData = [
     { name: "Nebula Fantom", boosts: "Percentage 190% | Power 160m", world: "World 8" },
     { name: "Flaming Beast", boosts: "Percentage 200% | Power 215m", world: "World 9" },
     { name: "Magic Dominus", boosts: "Percentage 210% | Power 240m", world: "World 10" },
-    { name: "Sparkly Peanguin", boosts: "Percentage 215% | Power 275m", world: "World 11" },
+    { name: "Sparkly Penguin", boosts: "Percentage 215% | Power 275m", world: "World 11" },
     { name: "Totem Dominus", boosts: "Percentage 220% | Power 300m", world: "World 12" },
-    { name: "KingdomHydra", boosts: "Percentage 225% | Power 340m", world: "World 13" },
-    { name: "Saphire Cat", boosts: "Percentage 230% | Power 385m", world: "World 14" },
+    { name: "Kingdom Hydra", boosts: "Percentage 225% | Power 340m", world: "World 13" },
+    { name: "Sapphire Cat", boosts: "Percentage 230% | Power 385m", world: "World 14" },
     { name: "Heavenly Secret", boosts: "Percentage 240% | Power 425m", world: "World 15" },
     { name: "???", boosts: "Percentage ??? | Power ???", world: "World 21" },
-    { name: "Hallowen Secret", boosts: "Percentage 240% | Power 435m", world: "Hallowen" },
-    { name: "Mega American Serpent", boosts: "Percentage 315% | Power 1.3b", "world:" "Usa" }
+    { name: "Halloween Secret", boosts: "Percentage 240% | Power 435m", world: "Halloween" },
+    { name: "Mega American Serpent", boosts: "Percentage 315% | Power 1.3b", world: "USA" }
 ];
 
 function initializeSecret() {
@@ -276,4 +276,4 @@ window.addSecretPet = addSecretPet;
 window.getHatchRewards = getHatchRewards;
 window.getSecretPetsData = getSecretPetsData;
 
-console.log('✅ secret.js loaded successfully with switcher functionality');
+console.log('✅ secret.js loaded successfully with switcher functionality - FIXED');
