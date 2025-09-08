@@ -1,6 +1,6 @@
-// Simplified General JavaScript functions - LOGIN REMOVED
+// Fixed General JavaScript functions - LOGIN REMOVED
 
-// Page switching functionality - simplified
+// Page switching functionality - fixed
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
     
@@ -28,6 +28,8 @@ function switchPage(page) {
         'aura': 'aura',
         'trainer': 'trainer',
         'charms': 'charms',
+        'secret': 'secret',
+        'potions': 'potions',
         'worlds': 'worlds'
     };
     
@@ -44,7 +46,7 @@ function switchPage(page) {
     initializePageContent(page);
 }
 
-// Initialize specific page content when switching - simplified
+// Initialize specific page content when switching - fixed
 function initializePageContent(page) {
     switch(page) {
         case 'calculator':
@@ -90,6 +92,16 @@ function initializePageContent(page) {
         case 'charms':
             if (typeof initializeCharms === 'function') {
                 initializeCharms();
+            }
+            break;
+        case 'secret':
+            if (typeof initializeSecret === 'function') {
+                initializeSecret();
+            }
+            break;
+        case 'potions':
+            if (typeof initializePotions === 'function') {
+                initializePotions();
             }
             break;
         case 'worlds':
@@ -181,7 +193,7 @@ function loadSettingsFromStorage(key) {
 // Прапорець для запобігання повторної ініціалізації
 let appInitialized = false;
 
-// Спрощена функція ініціалізації
+// Спрощена функція ініціалізації - ВИПРАВЛЕНА
 function initializeApp() {
     if (typeof appInitialized !== 'undefined' && appInitialized) {
         console.log('⚠️ Додаток вже ініціалізовано');
@@ -243,7 +255,7 @@ function initializeApp() {
     console.log('✅ Ініціалізація додатка завершена');
 }
 
-// Ініціалізація всіх модулів - БЕЗ ЛОГІНУ ТА ПРОФІЛЮ
+// Ініціалізація всіх модулів - ВИПРАВЛЕНА (додані нові модулі)
 function initializeAllModules() {
     const modules = [
         'initializeCalculator',
@@ -252,6 +264,7 @@ function initializeAllModules() {
         'initializeBoosts',
         'initializeShiny',
         'initializeSecret',
+        'initializePotions',
         'initializeAura',
         'initializeTrainer',
         'initializeCharms',
