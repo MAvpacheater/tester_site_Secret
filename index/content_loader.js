@@ -22,7 +22,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with navigation - СПРОЩЕНА ВЕРСІЯ
+            // Create the main structure with categorized navigation
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -34,16 +34,61 @@ async function loadContent() {
                         <button class="close-sidebar" onclick="closeSidebar()">×</button>
                     </div>
                     <div class="nav-buttons">
-                        <button class="nav-btn active" onclick="switchPage('calculator')">🐾 Pet Calculator</button>
-                        <button class="nav-btn" onclick="switchPage('arm')">💪 Arm Calculator</button>
-                        <button class="nav-btn" onclick="switchPage('grind')">🏋️‍♂️ Grind Calculator</button>
-                        <button class="nav-btn" onclick="switchPage('boosts')">🚀 Boosts</button>
-                        <button class="nav-btn" onclick="switchPage('shiny')">✨ Shiny Stats</button>
-                        <button class="nav-btn" onclick="switchPage('codes')">🎁 Codes</button>
-                        <button class="nav-btn" onclick="switchPage('aura')">🌟 Aura</button>
-                        <button class="nav-btn" onclick="switchPage('trainer')">🏆 Trainer</button>
-                        <button class="nav-btn" onclick="switchPage('charms')">🔮 Charms</button>
-                        <button class="nav-btn" onclick="switchPage('worlds')">🌍 Worlds</button>
+                        <!-- Calculator Category -->
+                        <div class="nav-category">
+                            <div class="category-header" data-category="calculatorButtons" onclick="toggleCategory('calculatorButtons')">
+                                <div class="category-title">
+                                    <span class="category-icon">🧮</span>
+                                    <span>Calculator</span>
+                                </div>
+                                <span class="category-toggle">▼</span>
+                            </div>
+                            <div class="category-buttons" id="calculatorButtons">
+                                <button class="nav-btn active" data-page="calculator" onclick="switchPage('calculator')">
+                                    🐾 Pet Calculator
+                                </button>
+                                <button class="nav-btn" data-page="arm" onclick="switchPage('arm')">
+                                    💪 Arm Calculator
+                                </button>
+                                <button class="nav-btn" data-page="grind" onclick="switchPage('grind')">
+                                    🏋️‍♂️ Grind Calculator
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Info Category -->
+                        <div class="nav-category">
+                            <div class="category-header" data-category="infoButtons" onclick="toggleCategory('infoButtons')">
+                                <div class="category-title">
+                                    <span class="category-icon">📋</span>
+                                    <span>Info</span>
+                                </div>
+                                <span class="category-toggle">▼</span>
+                            </div>
+                            <div class="category-buttons" id="infoButtons">
+                                <button class="nav-btn" data-page="boosts" onclick="switchPage('boosts')">
+                                    🚀 Boosts
+                                </button>
+                                <button class="nav-btn" data-page="shiny" onclick="switchPage('shiny')">
+                                    ✨ Shiny Stats
+                                </button>
+                                <button class="nav-btn" data-page="codes" onclick="switchPage('codes')">
+                                    🎁 Codes
+                                </button>
+                                <button class="nav-btn" data-page="aura" onclick="switchPage('aura')">
+                                    🌟 Aura
+                                </button>
+                                <button class="nav-btn" data-page="trainer" onclick="switchPage('trainer')">
+                                    🏆 Trainer
+                                </button>
+                                <button class="nav-btn" data-page="charms" onclick="switchPage('charms')">
+                                    🔮 Charms
+                                </button>
+                                <button class="nav-btn" data-page="worlds" onclick="switchPage('worlds')">
+                                    🌍 Worlds
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- Simplified User Section - БЕЗ ПРОФІЛЮ -->
@@ -79,7 +124,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully (simplified version)');
+            console.log('✅ Content loaded successfully with categorized menu');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -130,4 +175,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ content_loader.js SIMPLIFIED loaded without login/profile functionality');
+console.log('✅ content_loader.js SIMPLIFIED loaded with categorized menu structure');
