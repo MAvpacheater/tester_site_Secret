@@ -6,10 +6,8 @@
     <title>Arm Helper</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS Files -->
+    <!-- CSS Files - БЕЗ ЛОГІНУ І ПРОФІЛЮ -->
     <link rel="stylesheet" href="general.css">
-    <link rel="stylesheet" href="login/login.css">
-    <link rel="stylesheet" href="login/profile.css">
     <link rel="stylesheet" href="calc/calculator.css">
     <link rel="stylesheet" href="calc/arms.css">
     <link rel="stylesheet" href="calc/grind.css">
@@ -42,7 +40,7 @@
         <div style="text-align: center;">
             <div style="font-size: 24px; margin-bottom: 20px;">🚀</div>
             <div>Loading Arm Helper...</div>
-            <div style="font-size: 14px; margin-top: 10px; opacity: 0.8;">Connecting to database...</div>
+            <div style="font-size: 14px; margin-top: 10px; opacity: 0.8;">Initializing calculators...</div>
         </div>
     </div>
 
@@ -51,18 +49,8 @@
     
     <div class="signature">Your ideas on @privatefanat_dep (telegram)</div>
     
-    <!-- Supabase CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- JavaScript Files - Load in order -->
+    <!-- JavaScript Files - СПРОЩЕНІ БЕЗ ЛОГІНУ -->
     <script src="general.js"></script>
-    
-    <!-- Supabase Configuration - Load before login -->
-    <script src="supabase/config.js"></script>
-    
-    <!-- Login/Auth system -->
-    <script src="login/login.js"></script>
-    <script src="login/profile.js"></script>
     
     <!-- Calculator modules -->
     <script src="calc/calculator.js"></script>
@@ -82,12 +70,12 @@
     <script src="index/content_loader.js"></script>
     
     <script>
-        // Enhanced loading screen with database connection info
+        // Simplified loading screen
         document.addEventListener('DOMContentLoaded', function() {
             // Update loading text
             const loadingDiv = document.querySelector('#loading-screen div div:last-child');
             if (loadingDiv) {
-                loadingDiv.textContent = 'Initializing application...';
+                loadingDiv.textContent = 'Loading calculators...';
             }
             
             // Wait for content to load, then hide loading screen
@@ -106,27 +94,21 @@
                         }, 500);
                     }, 300);
                 }
-            }, 1200);
+            }, 1000);
         });
 
-        // Enhanced error handling for Supabase connection
+        // Simplified error handling
         window.addEventListener('error', function(e) {
-            console.error('❌ Critical error:', e.error);
+            console.error('❌ Error:', e.error);
             
             const loadingScreen = document.getElementById('loading-screen');
             if (loadingScreen) {
-                const isSupabaseError = e.error?.message?.includes('supabase') || 
-                                      e.error?.message?.includes('database') ||
-                                      e.error?.message?.includes('SUPABASE');
-                
                 loadingScreen.innerHTML = `
                     <div style="text-align: center; color: #ff6b6b;">
                         <div style="font-size: 24px; margin-bottom: 20px;">⚠️</div>
                         <div>Loading Error</div>
                         <div style="font-size: 14px; margin-top: 10px;">
-                            ${isSupabaseError ? 
-                                'Database connection failed<br>Working in offline mode' : 
-                                'Please refresh the page'}
+                            Please refresh the page
                         </div>
                         <button onclick="location.reload()" style="
                             margin-top: 15px;
@@ -140,33 +122,6 @@
                         ">Refresh Page</button>
                     </div>
                 `;
-                
-                // If it's not a critical error, hide loading screen after delay
-                if (!isSupabaseError) {
-                    setTimeout(() => {
-                        loadingScreen.style.opacity = '0';
-                        setTimeout(() => {
-                            loadingScreen.remove();
-                        }, 500);
-                    }, 3000);
-                }
-            }
-        });
-
-        // Listen for Supabase connection events
-        document.addEventListener('supabaseConnected', function() {
-            console.log('✅ Supabase connected successfully');
-            const loadingDiv = document.querySelector('#loading-screen div div:last-child');
-            if (loadingDiv) {
-                loadingDiv.textContent = 'Database connected!';
-            }
-        });
-
-        document.addEventListener('supabaseError', function(e) {
-            console.warn('⚠️ Supabase connection issue:', e.detail);
-            const loadingDiv = document.querySelector('#loading-screen div div:last-child');
-            if (loadingDiv) {
-                loadingDiv.textContent = 'Working in offline mode...';
             }
         });
     </script>
