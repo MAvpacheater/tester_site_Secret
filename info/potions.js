@@ -8,7 +8,7 @@ let currentPotionsType = 'potions';
 // Potions data - Enhanced with more variety
 const potionsData = [
     { name: "Luck [1] Potion", rarity: "common", boost: "Doubles your Egg Luck ", time: "30 min" },
-    { name: "Luck [2] Potion", rarity: "common", boost: "+150% Egg Luck ", time: "30 min" },
+    { name: "Luck [2] Potion", rarity: "uncommon", boost: "+150% Egg Luck ", time: "30 min" },
     { name: "Strength Brew", rarity: "rare", boost: "Physical damage +150% for 10 minutes", time: "10 min" },
     { name: "Speed Potion", rarity: "rare", boost: "Movement speed +200% + Attack speed +100%", time: "8 min" },
     { name: "Mystic Draught", rarity: "epic", boost: "Magic damage +200% + Spell crit +50%", time: "15 min" },
