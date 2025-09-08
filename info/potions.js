@@ -39,8 +39,10 @@ const foodData = [
     { name: "Rotten Starfruit", rarity: "rare", boost: "Gives You +10% Fighting Strength", time: "10 min" },
     { name: "Normall Starfruit", rarity: "epic", boost: "Gives You +25% Fighting Strength", time: "25 min" },
     { name: "Fresh Starfruit", rarity: "legendary", boost: "Gives You +50% Fighting Strength", time: "1 hour" },
-
-
+    { name: "Rapberry", rarity: "rare", boost: "Snack for your equipped Pets! Award your pets with 40xp!", time: "∞" },
+    { name: "Enchanted Rapberry", rarity: "epic", boost: "Snack for your equipped Pets! Award your pets with 130xp!", time: "∞" },
+    { name: "Enchanted Pineapple", rarity: "epic", boost: "Snack for your equipped Pets! Award your pets with 250xp!", time: "∞" },
+    { name: "Pet Lvl Token", rarity: "exclusive", boost: "Instantly +1 level on all of your equipped pets!", time: "∞" },
 
     { name: "Phoenix Fruit", rarity: "mythic", boost: "Instantly evolve a pet of your choice!", time: "∞" }
 ];
