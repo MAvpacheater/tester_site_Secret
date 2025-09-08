@@ -56,7 +56,7 @@ function loadSecretContent() {
         </div>
         
         <div class="secret-image-container">
-            <img src="https://via.placeholder.com/500x317/667eea/ffffff?text=Secret+Pets" 
+            <img src="https://i.postimg.cc/MTvCfmFj/2025-09-08-13-11-34.jpg/500x317/667eea/ffffff?text=Secret+Pets" 
                  alt="Secret Pets" 
                  class="secret-image"
                  loading="lazy">
