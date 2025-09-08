@@ -1,4 +1,4 @@
-// Fixed General JavaScript functions - LOGIN REMOVED
+// Fixed General JavaScript functions - PROPER MODULE INITIALIZATION
 
 // Page switching functionality - fixed
 function switchPage(page) {
@@ -42,12 +42,23 @@ function switchPage(page) {
     // Close sidebar after selection
     closeSidebar();
     
-    // Trigger page-specific initialization if needed
-    initializePageContent(page);
+    // FIXED: Force re-initialize specific page content when switching
+    setTimeout(() => {
+        initializePageContent(page);
+    }, 100);
 }
 
-// Initialize specific page content when switching - fixed
+// FIXED: Initialize specific page content when switching - with proper DOM checks
 function initializePageContent(page) {
+    console.log(`🔄 Initializing content for page: ${page}`);
+    
+    // Check if the page container exists first
+    const pageContainer = document.getElementById(page + 'Page');
+    if (!pageContainer) {
+        console.error(`❌ Page container ${page}Page not found`);
+        return;
+    }
+    
     switch(page) {
         case 'calculator':
             if (typeof initializeCalculator === 'function') {
@@ -95,13 +106,27 @@ function initializePageContent(page) {
             }
             break;
         case 'secret':
+            console.log('🔮 Initializing Secret Pets page...');
             if (typeof initializeSecret === 'function') {
+                // FIXED: Reset the initialization flag to force re-init
+                if (typeof window !== 'undefined' && window.secretInitialized !== undefined) {
+                    window.secretInitialized = false;
+                }
                 initializeSecret();
+            } else {
+                console.error('❌ initializeSecret function not found');
             }
             break;
         case 'potions':
+            console.log('🧪 Initializing Potions & Food page...');
             if (typeof initializePotions === 'function') {
+                // FIXED: Reset the initialization flag to force re-init
+                if (typeof window !== 'undefined' && window.potionsInitialized !== undefined) {
+                    window.potionsInitialized = false;
+                }
                 initializePotions();
+            } else {
+                console.error('❌ initializePotions function not found');
             }
             break;
         case 'worlds':
@@ -138,7 +163,6 @@ function toggleCategory(categoryId) {
 
 // Initialize categories on app start
 function initializeCategories() {
-    // All categories start closed by default
     console.log('✅ Categories initialized - all closed by default');
 }
 
@@ -163,15 +187,12 @@ function closeSidebar() {
     }
 }
 
-// Disabled auth action - показує повідомлення "Soon..."
+// Disabled auth action
 function handleAuthAction() {
-    // Просто показуємо повідомлення що це буде скоро
     console.log('Login feature coming soon...');
-    // Можна додати alert або інше повідомлення якщо потрібно
-    // alert('Login feature coming soon!');
 }
 
-// Settings persistence helpers - використовують тільки localStorage
+// Settings persistence helpers
 function saveSettingsToStorage(key, settings) {
     localStorage.setItem(`armHelper_${key}_settings`, JSON.stringify(settings));
     console.log(`Settings saved to localStorage for ${key}`);
@@ -190,34 +211,38 @@ function loadSettingsFromStorage(key) {
     return null;
 }
 
-// Прапорець для запобігання повторної ініціалізації
+// Flag to prevent repeated initialization
 let appInitialized = false;
 
-// Спрощена функція ініціалізації - ВИПРАВЛЕНА
+// FIXED: App initialization with proper module loading
 function initializeApp() {
-    if (typeof appInitialized !== 'undefined' && appInitialized) {
-        console.log('⚠️ Додаток вже ініціалізовано');
+    if (appInitialized) {
+        console.log('⚠️ App already initialized');
         return;
     }
     
-    console.log('🚀 Початок ініціалізації додатка...');
+    console.log('🚀 Starting app initialization...');
     
-    // Перевіряємо чи контент завантажився
+    // Check if content is loaded
     const appContent = document.getElementById('app-content');
     if (!appContent || !appContent.innerHTML.trim()) {
-        console.error('❌ Контент не завантажено');
+        console.error('❌ Content not loaded');
         return;
     }
     
     // Initialize categories
     initializeCategories();
     
-    // Починаємо з калькулятора
-    switchPage('calculator');
+    // FIXED: Initialize all modules first, THEN switch to calculator
+    initializeAllModules();
+    
+    // Start with calculator page
+    setTimeout(() => {
+        switchPage('calculator');
+    }, 200);
     
     // Enhanced click outside settings panel handler
     document.addEventListener('click', e => {
-        // Закриваємо панелі налаштувань при кліку поза ними
         const settingsPanels = [
             { panel: document.getElementById('settingsPanel'), btn: document.querySelector('#calculatorPage .settings-btn') },
             { panel: document.getElementById('settingsPanelArm'), btn: document.querySelector('#armPage .settings-btn') },
@@ -244,43 +269,51 @@ function initializeApp() {
         });
     });
 
-    // Initialize all modules
-    initializeAllModules();
-    
-    // Set the flag AFTER initialization
-    if (typeof window !== 'undefined') {
-        window.appInitialized = true;
-    }
     appInitialized = true;
-    console.log('✅ Ініціалізація додатка завершена');
+    console.log('✅ App initialization completed');
 }
 
-// Ініціалізація всіх модулів - ВИПРАВЛЕНА (додані нові модулі)
+// FIXED: Initialize all modules with proper DOM readiness checks
 function initializeAllModules() {
+    console.log('🔧 Initializing all modules...');
+    
     const modules = [
         'initializeCalculator',
         'initializeArm', 
         'initializeGrind',
         'initializeBoosts',
         'initializeShiny',
-        'initializeSecret',
-        'initializePotions',
+        'initializeSecret',     // FIXED: Make sure this runs
+        'initializePotions',    // FIXED: Make sure this runs  
         'initializeAura',
         'initializeTrainer',
         'initializeCharms',
+        'initializeCodes',
         'initializeWorlds'
     ];
 
     modules.forEach(moduleName => {
-        if (typeof window[moduleName] === 'function') {
-            try {
-                window[moduleName]();
-                console.log(`✅ ${moduleName} ініціалізовано`);
-            } catch (error) {
-                console.error(`❌ Помилка ініціалізації ${moduleName}:`, error);
+        try {
+            if (typeof window[moduleName] === 'function') {
+                // FIXED: Add delay for DOM-dependent modules
+                if (moduleName === 'initializeSecret' || moduleName === 'initializePotions') {
+                    setTimeout(() => {
+                        try {
+                            window[moduleName]();
+                            console.log(`✅ ${moduleName} initialized (delayed)`);
+                        } catch (error) {
+                            console.error(`❌ Error initializing ${moduleName}:`, error);
+                        }
+                    }, 300);
+                } else {
+                    window[moduleName]();
+                    console.log(`✅ ${moduleName} initialized`);
+                }
+            } else {
+                console.warn(`⚠️ Function ${moduleName} not found`);
             }
-        } else {
-            console.warn(`⚠️ Функція ${moduleName} не знайдена`);
+        } catch (error) {
+            console.error(`❌ Error initializing ${moduleName}:`, error);
         }
     });
 }
@@ -294,6 +327,28 @@ function debugPageStates() {
     console.log('========================');
 }
 
+// FIXED: Force reinitialization for specific modules
+function forceReinitializeModule(moduleName) {
+    console.log(`🔄 Force reinitializing ${moduleName}...`);
+    
+    // Reset initialization flags
+    if (moduleName === 'secret' && typeof window !== 'undefined') {
+        window.secretInitialized = false;
+    }
+    if (moduleName === 'potions' && typeof window !== 'undefined') {
+        window.potionsInitialized = false;
+    }
+    
+    // Call initialization
+    const initFunctionName = `initialize${moduleName.charAt(0).toUpperCase() + moduleName.slice(1)}`;
+    if (typeof window[initFunctionName] === 'function') {
+        setTimeout(() => {
+            window[initFunctionName]();
+            console.log(`✅ ${initFunctionName} force reinitialized`);
+        }, 100);
+    }
+}
+
 // Make functions globally available
 window.switchPage = switchPage;
 window.toggleMobileMenu = toggleMobileMenu;
@@ -305,3 +360,4 @@ window.saveSettingsToStorage = saveSettingsToStorage;
 window.loadSettingsFromStorage = loadSettingsFromStorage;
 window.toggleCategory = toggleCategory;
 window.initializeCategories = initializeCategories;
+window.forceReinitializeModule = forceReinitializeModule; // FIXED: Added this function
