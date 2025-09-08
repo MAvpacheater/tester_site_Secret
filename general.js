@@ -126,14 +126,8 @@ function toggleCategory(categoryId) {
 
 // Initialize categories on app start
 function initializeCategories() {
-    // Expand Calculator category by default
-    const calculatorCategory = document.getElementById('calculatorButtons');
-    const calculatorToggle = document.querySelector('[data-category="calculatorButtons"] .category-toggle');
-    
-    if (calculatorCategory && calculatorToggle) {
-        calculatorCategory.classList.add('expanded');
-        calculatorToggle.classList.add('expanded');
-    }
+    // All categories start closed by default
+    console.log('✅ Categories initialized - all closed by default');
 }
 
 // Sidebar functionality
