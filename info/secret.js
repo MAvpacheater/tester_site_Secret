@@ -27,7 +27,7 @@ const secretPetsData = [
     { name: "Heavenly Secret", boosts: "Percentage 240% | Power 425m", world: "World 15" },
     { name: "???", boosts: "Percentage ??? | Power ???", world: "World 21" },
     { name: "Hallowen Secret", boosts: "Percentage 240% | Power 435m" "world: "Hallowen" },
-    { name: "Mega American Serpent", boosts: "Percentage 315% | Power 1.3b" world: "Usa" }
+    { name: "Mega American Serpent", boosts: "Percentage 315% | Power 1.3b" "world:" "Usa" }
 ];
 
 function initializeSecret() {
