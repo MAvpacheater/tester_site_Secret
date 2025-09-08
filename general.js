@@ -19,24 +19,22 @@ function switchPage(page) {
     
     // Update active nav button
     const pageMap = {
-        'calculator': 0,
-        'arm': 1,
-        'grind': 2,
-        'boosts': 3,
-        'shiny': 4,
-        'codes': 5,
-        'aura': 6,
-        'trainer': 7,
-        'charms': 8,
-        'worlds': 9
+        'calculator': 'calculator',
+        'arm': 'arm',
+        'grind': 'grind',
+        'boosts': 'boosts',
+        'shiny': 'shiny',
+        'codes': 'codes',
+        'aura': 'aura',
+        'trainer': 'trainer',
+        'charms': 'charms',
+        'worlds': 'worlds'
     };
     
-    const navButtons = document.querySelectorAll('.nav-btn');
-    const buttonIndex = pageMap[page];
-    
-    if (buttonIndex !== undefined && buttonIndex >= 0 && navButtons[buttonIndex]) {
-        navButtons[buttonIndex].classList.add('active');
-        console.log(`Nav button ${buttonIndex} activated for ${page}`);
+    const targetButton = document.querySelector(`[data-page="${pageMap[page]}"]`);
+    if (targetButton) {
+        targetButton.classList.add('active');
+        console.log(`Nav button activated for ${page}`);
     }
     
     // Close sidebar after selection
@@ -99,6 +97,42 @@ function initializePageContent(page) {
                 initializeWorlds();
             }
             break;
+    }
+}
+
+// Category toggle functionality
+function toggleCategory(categoryId) {
+    const categoryButtons = document.getElementById(categoryId);
+    const toggleIcon = document.querySelector(`[data-category="${categoryId}"] .category-toggle`);
+    
+    if (categoryButtons && toggleIcon) {
+        const isExpanded = categoryButtons.classList.contains('expanded');
+        
+        // Close all categories first
+        document.querySelectorAll('.category-buttons').forEach(el => {
+            el.classList.remove('expanded');
+        });
+        document.querySelectorAll('.category-toggle').forEach(el => {
+            el.classList.remove('expanded');
+        });
+        
+        // If this category wasn't expanded, expand it
+        if (!isExpanded) {
+            categoryButtons.classList.add('expanded');
+            toggleIcon.classList.add('expanded');
+        }
+    }
+}
+
+// Initialize categories on app start
+function initializeCategories() {
+    // Expand Calculator category by default
+    const calculatorCategory = document.getElementById('calculatorButtons');
+    const calculatorToggle = document.querySelector('[data-category="calculatorButtons"] .category-toggle');
+    
+    if (calculatorCategory && calculatorToggle) {
+        calculatorCategory.classList.add('expanded');
+        calculatorToggle.classList.add('expanded');
     }
 }
 
@@ -169,6 +203,9 @@ function initializeApp() {
         return;
     }
     
+    // Initialize categories
+    initializeCategories();
+    
     // Починаємо з калькулятора
     switchPage('calculator');
     
@@ -189,10 +226,12 @@ function initializeApp() {
                 const isClickOnBackButton = e.target.closest('.back-btn');
                 const isClickOnCategorySwitch = e.target.closest('.category-switch');
                 const isClickOnSimpleModifier = e.target.closest('.simple-modifier');
+                const isClickOnCategoryHeader = e.target.closest('.category-header');
                 
                 if (!isClickInsidePanel && !isClickOnSettingsBtn && 
                     !isClickOnCategoryButton && !isClickOnBackButton && 
-                    !isClickOnCategorySwitch && !isClickOnSimpleModifier) {
+                    !isClickOnCategorySwitch && !isClickOnSimpleModifier &&
+                    !isClickOnCategoryHeader) {
                     panel.classList.remove('show');
                 }
             }
@@ -256,3 +295,5 @@ window.initializeApp = initializeApp;
 window.debugPageStates = debugPageStates;
 window.saveSettingsToStorage = saveSettingsToStorage;
 window.loadSettingsFromStorage = loadSettingsFromStorage;
+window.toggleCategory = toggleCategory;
+window.initializeCategories = initializeCategories;
