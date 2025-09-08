@@ -178,4 +178,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ content_loader.js SIMPLIFIED loaded with categorized menu structure including Secret Pets');
+console.log('✅ content_loader.js SIMPLIFIED loaded with categorized menu structure including Secret Pets and Potions & Food');
