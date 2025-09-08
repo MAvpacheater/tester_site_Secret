@@ -251,6 +251,7 @@ function initializeAllModules() {
         'initializeGrind',
         'initializeBoosts',
         'initializeShiny',
+        'initializeSecret',
         'initializeAura',
         'initializeTrainer',
         'initializeCharms',
