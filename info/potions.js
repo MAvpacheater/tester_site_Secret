@@ -1,4 +1,4 @@
-// Potions & Food Module - FIXED with proper DOM checks
+// Potions & Food Module - FIXED
 let potionsInitialized = false;
 let currentPotionsType = 'potions';
 
@@ -23,30 +23,25 @@ const foodData = [
 ];
 
 function initializePotions() {
-    console.log('🧪 Potions & Food initialization called...');
+    console.log('🧪 Initializing Potions & Food...');
     
-    // FIXED: Check if container exists
-    const container = document.getElementById('potionsContainer');
-    if (!container) {
-        console.warn('❌ Potions container not found, retrying in 500ms...');
-        setTimeout(() => {
-            initializePotions();
-        }, 500);
-        return;
-    }
-
-    // FIXED: Allow re-initialization
+    // Check if already initialized and force reinit
     if (potionsInitialized) {
-        console.log('⚠️ Potions module already initialized, forcing reload...');
+        console.log('⚠️ Potions already initialized, forcing reload...');
         potionsInitialized = false;
     }
 
-    console.log('🧪 Initializing Potions & Food...');
+    // Check if container exists
+    const container = document.getElementById('potionsContainer');
+    if (!container) {
+        console.error('❌ Potions container not found');
+        return;
+    }
     
     try {
         loadPotionsContent();
         potionsInitialized = true;
-        window.potionsInitialized = true; // Make it globally accessible
+        window.potionsInitialized = true;
         console.log('✅ Potions & Food initialized successfully');
     } catch (error) {
         console.error('❌ Error initializing Potions & Food:', error);
@@ -121,7 +116,7 @@ function loadPotionsContent() {
     `).join('');
 
     // Create the complete potions content with switcher
-    const potionsHTML = `
+    const fullHTML = `
         <!-- Potions Type Switcher -->
         <div class="potions-switcher">
             <button class="potions-switch-btn active" data-potions-type="potions" onclick="switchPotionsType('potions')">Potions</button>
@@ -139,187 +134,18 @@ function loadPotionsContent() {
         </div>
     `;
 
-    container.innerHTML = potionsHTML;
+    container.innerHTML = fullHTML;
     console.log('✅ Potions & Food content loaded with switcher');
     
-    // FIXED: Add small delay for animations
+    // Add small delay for animations
     setTimeout(() => {
         console.log(`📊 Potions loaded: ${potionsData.length} potions, ${foodData.length} foods`);
     }, 100);
 }
 
-// Utility functions for managing potions and food data
-function addPotion(name, rarity, boost, time) {
-    potionsData.push({ name, rarity, boost, time });
-    if (potionsInitialized) {
-        loadPotionsContent();
-    }
-    console.log(`✅ Added new potion: ${name}`);
-}
-
-function addFood(name, rarity, boost, time) {
-    foodData.push({ name, rarity, boost, time });
-    if (potionsInitialized) {
-        loadPotionsContent();
-    }
-    console.log(`✅ Added new food: ${name}`);
-}
-
-function updatePotionData(index, newData) {
-    if (index >= 0 && index < potionsData.length) {
-        potionsData[index] = { ...potionsData[index], ...newData };
-        if (potionsInitialized) {
-            loadPotionsContent();
-        }
-        console.log(`✅ Updated potion at index ${index}`);
-    } else {
-        console.error(`❌ Invalid potion index: ${index}`);
-    }
-}
-
-function updateFoodData(index, newData) {
-    if (index >= 0 && index < foodData.length) {
-        foodData[index] = { ...foodData[index], ...newData };
-        if (potionsInitialized) {
-            loadPotionsContent();
-        }
-        console.log(`✅ Updated food at index ${index}`);
-    } else {
-        console.error(`❌ Invalid food index: ${index}`);
-    }
-}
-
-function getPotionsData() {
-    return [...potionsData];
-}
-
-function getFoodData() {
-    return [...foodData];
-}
-
-function filterByRarity(rarity, type = 'potions') {
-    const data = type === 'potions' ? potionsData : foodData;
-    return data.filter(item => item.rarity === rarity);
-}
-
-function searchItems(searchTerm, type = 'both') {
-    const results = [];
-    
-    if (type === 'potions' || type === 'both') {
-        const potionResults = potionsData.filter(potion => 
-            potion.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            potion.boost.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        results.push(...potionResults.map(item => ({ ...item, type: 'potion' })));
-    }
-    
-    if (type === 'food' || type === 'both') {
-        const foodResults = foodData.filter(food => 
-            food.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            food.boost.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        results.push(...foodResults.map(item => ({ ...item, type: 'food' })));
-    }
-    
-    return results;
-}
-
-// Rarity statistics
-function getRarityStats(type = 'both') {
-    const stats = {
-        common: 0, uncommon: 0, rare: 0, epic: 0, legendary: 0, mythic: 0
-    };
-    
-    let data = [];
-    if (type === 'potions') {
-        data = potionsData;
-    } else if (type === 'food') {
-        data = foodData;
-    } else {
-        data = [...potionsData, ...foodData];
-    }
-    
-    data.forEach(item => {
-        if (stats.hasOwnProperty(item.rarity)) {
-            stats[item.rarity]++;
-        }
-    });
-    
-    return stats;
-}
-
-// FIXED: Enhanced DOM readiness check
-function waitForPotionsDOM() {
-    return new Promise((resolve, reject) => {
-        let attempts = 0;
-        const maxAttempts = 10;
-        
-        function checkDOM() {
-            const container = document.getElementById('potionsContainer');
-            const page = document.getElementById('potionsPage');
-            
-            if (container && page) {
-                console.log('✅ Potions DOM elements found');
-                resolve();
-            } else if (attempts < maxAttempts) {
-                attempts++;
-                console.log(`🔄 Waiting for Potions DOM... Attempt ${attempts}/${maxAttempts}`);
-                setTimeout(checkDOM, 200);
-            } else {
-                console.error('❌ Potions DOM elements not found after max attempts');
-                reject(new Error('Potions DOM not ready'));
-            }
-        }
-        
-        checkDOM();
-    });
-}
-
-// FIXED: Enhanced initialization with DOM waiting
-async function initializePotionsWithWait() {
-    try {
-        await waitForPotionsDOM();
-        initializePotions();
-    } catch (error) {
-        console.error('❌ Failed to initialize Potions & Food:', error);
-    }
-}
-
-// FIXED: Proper initialization timing
-function setupPotionsInitialization() {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(initializePotionsWithWait, 100);
-        });
-    } else {
-        setTimeout(initializePotionsWithWait, 100);
-    }
-}
-
-// FIXED: Initialize now if DOM is ready, otherwise wait
-if (document.getElementById('potionsContainer')) {
-    // DOM is already ready
-    initializePotions();
-} else {
-    // Wait for DOM
-    setupPotionsInitialization();
-}
-
 // Make functions globally available
 window.initializePotions = initializePotions;
-window.initializePotionsWithWait = initializePotionsWithWait;
 window.switchPotionsType = switchPotionsType;
-window.addPotion = addPotion;
-window.addFood = addFood;
-window.updatePotionData = updatePotionData;
-window.updateFoodData = updateFoodData;
-window.getPotionsData = getPotionsData;
-window.getFoodData = getFoodData;
-window.filterByRarity = filterByRarity;
-window.searchItems = searchItems;
-window.getRarityStats = getRarityStats;
-
-// FIXED: Expose initialization status
 window.potionsInitialized = potionsInitialized;
 
-console.log('✅ potions.js loaded with enhanced DOM checking - FIXED');
+console.log('✅ potions.js FIXED loaded successfully');
