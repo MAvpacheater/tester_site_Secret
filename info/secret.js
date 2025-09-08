@@ -4,17 +4,10 @@ let secretInitialized = false;
 // Hatch rewards data
 const hatchRewards = [
     { hatch: 1, reward: "+1 egg hatch" },
-    { hatch: 2, reward: "+1 egg hatch" },
     { hatch: 3, reward: "+1 equip" },
-    { hatch: 4, reward: "+1 egg hatch" },
     { hatch: 5, reward: "+1 egg hatch" },
-    { hatch: 6, reward: "+1 equip" },
-    { hatch: 7, reward: "+1 egg hatch" },
-    { hatch: 8, reward: "+1 egg hatch" },
     { hatch: 9, reward: "+1 equip" },
-    { hatch: 10, reward: "+1 egg hatch" },
-    { hatch: 11, reward: "+1 egg hatch" },
-    { hatch: 12, reward: "+1 equip" }
+    { hatch: 12, reward: "+1 egg hatch" }
 ];
 
 function initializeSecret() {
