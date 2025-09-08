@@ -299,6 +299,14 @@ function initializeAllModules() {
                 if (moduleName === 'initializeSecret' || moduleName === 'initializePotions') {
                     setTimeout(() => {
                         try {
+                            // FIXED: Force reinitialization by resetting flags
+                            if (moduleName === 'initializeSecret' && window.secretInitialized) {
+                                window.secretInitialized = false;
+                            }
+                            if (moduleName === 'initializePotions' && window.potionsInitialized) {
+                                window.potionsInitialized = false;
+                            }
+                            
                             window[moduleName]();
                             console.log(`✅ ${moduleName} initialized (delayed)`);
                         } catch (error) {
@@ -360,4 +368,4 @@ window.saveSettingsToStorage = saveSettingsToStorage;
 window.loadSettingsFromStorage = loadSettingsFromStorage;
 window.toggleCategory = toggleCategory;
 window.initializeCategories = initializeCategories;
-window.forceReinitializeModule = forceReinitializeModule; // FIXED: Added this function
+window.forceReinitializeModule = forceReinitializeModule;
