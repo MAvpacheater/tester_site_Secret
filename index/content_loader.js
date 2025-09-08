@@ -72,6 +72,9 @@ async function loadContent() {
                                 <button class="nav-btn" data-page="shiny" onclick="switchPage('shiny')">
                                     ✨ Shiny Stats
                                 </button>
+                                <button class="nav-btn" data-page="secret" onclick="switchPage('secret')">
+                                    🔮 Secret Pets
+                                </button>
                                 <button class="nav-btn" data-page="codes" onclick="switchPage('codes')">
                                     🎁 Codes
                                 </button>
