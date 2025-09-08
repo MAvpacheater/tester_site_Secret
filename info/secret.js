@@ -67,7 +67,7 @@ function loadSecretContent() {
                 Secret pets have unique abilities and special stats bonuses
             </div>
             <div class="secret-info-text">
-                Each secret pet requires specific world conditions to hatch
+                P.S. I spent 1-2 days to knock out 1 secret (I had 5.5m lucky)
             </div>
         </div>
     `;
