@@ -7,16 +7,20 @@ let currentPotionsType = 'potions';
 
 // Potions data - Enhanced with more variety
 const potionsData = [
-    { name: "Luck [1] Potion", rarity: "common", boost: "Doubles your Egg Luck", time: "30 min" },
-    { name: "Luck [2] Potion", rarity: "uncommon", boost: "+150% Egg Luck", time: "30 min" },
-    { name: "Wins [1] Potion", rarity: "common", boost: "Doubles your Player wins", time: "30 min" },
-    { name: "Wins [2] Potion", rarity: "uncommon", boost: "+150% Win Boost", time: "30 min" },
-    { name: "Mystic Draught", rarity: "epic", boost: "Magic damage +200% + Spell crit +50%", time: "15 min" },
-    { name: "Invisibility Potion", rarity: "epic", boost: "Complete invisibility + Stealth damage +300%", time: "12 min" },
-    { name: "Dragon's Blood", rarity: "legendary", boost: "All stats +300% + Fire immunity", time: "30 min" },
-    { name: "Phoenix Tears", rarity: "legendary", boost: "Auto-revive on death + Burn immunity", time: "45 min" },
-    { name: "Elixir of Gods", rarity: "mythic", boost: "All damage +500% + Invincibility for 10 seconds", time: "1 hour" },
-    { name: "Time Distortion Brew", rarity: "mythic", boost: "Time stops for enemies + Infinite MP", time: "2 hours" }
+    { name: "Luck Potion [1]", rarity: "common", boost: "Doubles your Egg Luck", time: "30 min" },
+    { name: "Luck Potion [2]", rarity: "uncommon", boost: "+150% Egg Luck", time: "30 min" },
+    { name: "Wins Potion [1]", rarity: "common", boost: "Doubles your Player wins", time: "30 min" },
+    { name: "Wins Potion [2]", rarity: "uncommon", boost: "+150% Wins Boost", time: "30 min" },
+    { name: "Golden Potion", rarity: "common", boost: "Gives a chance of hatching Golden Pets", time: "30 min" },
+    { name: "Void Potion", rarity: "common", boost: "Gives a chance of hatching Void Pets", time: "30 min" },
+    { name: "Training Potion [1]", rarity: "common", boost: "Increases your training power by 30%", time: "30 min" },
+    { name: "Training Potion [2]", rarity: "uncommon", boost: "Increases your training power by 60%", time: "30 min" },
+    { name: "Training Potion [3]", rarity: "rare", boost: "Increases your training power by 90%", time: "30 min" },
+    { name: "Pet Xp Potion", rarity: "mythic", boost: "Increases Pet Xp gained from bosses by 50%", time: "30 min" },
+    { name: "Scavenger Potion", rarity: "mythic", boost: "Increases your chance of getting random loot from bosses by 30%", time: "30 min" },
+    { name: "Ticket Potion", rarity: "mythic", boost: "Doubles your ticket payout from bosses", time: "10 min" },
+    { name: "Rift Potions [1]", rarity: "mythic", boost: "+30% On Your Rift Stars", time: "30 min" },
+    { name: "Event Training Potion", rarity: "limited", boost: "Doubles your event training power", time: "30 min" }
 ];
 
 // Food data - Enhanced with more variety
