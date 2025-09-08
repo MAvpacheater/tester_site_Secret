@@ -13,21 +13,20 @@ const hatchRewards = [
 
 // Secret pets data (15 entries)
 const secretPetsData = [
-    { name: "Shadow Phoenix", boosts: "Dark Magic +300% | Fire Resistance +150%", world: "World 4" },
-    { name: "Crystal Dragon", boosts: "Ice Damage +250% | Crystal Shield +200%", world: "World 5" },
-    { name: "Void Reaper", boosts: "Death Magic +400% | Soul Drain +180%", world: "World 7" },
-    { name: "Celestial Unicorn", boosts: "Holy Power +320% | Healing +220%", world: "World 8" },
-    { name: "Inferno Wolf", boosts: "Fire Damage +280% | Speed Boost +160%", world: "World 9" },
-    { name: "Storm Eagle", boosts: "Lightning Strike +350% | Flight Speed +190%", world: "World 10" },
-    { name: "Mystic Serpent", boosts: "Poison Cloud +300% | Stealth +170%", world: "World 11" },
-    { name: "Arcane Bear", boosts: "Magic Resistance +250% | Strength +200%", world: "World 12" },
-    { name: "Phantom Tiger", boosts: "Shadow Strike +380% | Invisibility +210%", world: "World 13" },
-    { name: "Radiant Pegasus", boosts: "Light Beam +340% | Flying Speed +180%", world: "World 14" },
-    { name: "Cursed Raven", boosts: "Dark Curse +290% | Mind Control +160%", world: "World 15" },
-    { name: "Golden Sphinx", boosts: "Ancient Wisdom +400% | Riddle Power +250%", world: "World 21" },
-    { name: "Demonic Bat", boosts: "Blood Drain +310% | Night Vision +170%", world: "World 21" },
-    { name: "Divine Lion", boosts: "Sacred Roar +360% | Divine Protection +200%", world: "World 21" },
-    { name: "Cosmic Owl", boosts: "Starlight +420% | Time Manipulation +280%", world: "World 21" }
+    { name: "??? boosts: "Percentage ??? | Power ???", world: "World 4" },
+    { name: "??? boosts: "Percentage ??? | Power ???", world: "World 5" },
+    { name: "??? boosts: "Percentage ??? | Power ???", world: "World 6" },
+    { name: "??? boosts: "Percentage ??? | Power ???", world: "World 7" },
+    { name: "??? boosts: "Percentage ??? | Power ???", world: "World 8" },
+    { name: "??? boosts: "Percentage ??? | Power ???", world: "World 9" },
+    { name: "??? boosts: "Percentage ??? | Power ???", world: "World 10" },
+    { name: "??? boosts: "Percentage ??? | Power ???", world: "World 11" },
+    { name: "??? boosts: "Percentage ??? | Power ???", world: "World 12" },
+    { name: "??? boosts: "Percentage ??? | Power ???", world: "World 13" },
+    { name: "??? boosts: "Percentage ??? | Power ???", world: "World 15" },
+    { name: "??? boosts: "Percentage ??? | Power ???", world: "World 21" },
+    { name: "Hallowen Secret boosts: "Percentage 240 | Power 435m" world: "Hallowen" },
+    { name: "Mega American Serpent boosts: "Percentage 315 | Power 1.3b" world: "Usa" }
 ];
 
 function initializeSecret() {
