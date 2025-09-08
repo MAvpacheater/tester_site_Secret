@@ -25,18 +25,24 @@ const potionsData = [
 
 // Food data - Enhanced with more variety
 const foodData = [
-    { name: "Bread Roll", rarity: "common", boost: "Hunger restoration +20%", time: "Instant" },
-    { name: "Apple", rarity: "common", boost: "HP regen +5% for 10 minutes", time: "10 min" },
-    { name: "Roasted Meat", rarity: "uncommon", boost: "HP regen +15% for 20 minutes", time: "20 min" },
-    { name: "Fish Steak", rarity: "uncommon", boost: "MP regen +20% + Swimming speed +50%", time: "25 min" },
-    { name: "Golden Apple", rarity: "rare", boost: "All resistances +50% for 30 minutes", time: "30 min" },
-    { name: "Honey Cake", rarity: "rare", boost: "Sweet tooth satisfaction + Luck +75%", time: "35 min" },
-    { name: "Dragon Steak", rarity: "epic", boost: "Strength +250% + Fire resistance +100%", time: "45 min" },
-    { name: "Kraken Tentacle", rarity: "epic", boost: "Water breathing + Tentacle attacks", time: "1 hour" },
-    { name: "Ambrosia", rarity: "legendary", boost: "Experience gain +400% + Luck +200%", time: "2 hours" },
-    { name: "Phoenix Egg", rarity: "legendary", boost: "Rebirth on death + Fire powers", time: "3 hours" },
-    { name: "Nectar of Life", rarity: "mythic", boost: "Immortality + All stats +1000%", time: "24 hours" },
-    { name: "God's Feast", rarity: "mythic", boost: "Omnipotence + Reality manipulation", time: "∞" }
+    { name: "Cookie", rarity: "common", boost: "Treat your pets! Pets give 3% more strength", time: "5 min" },
+    { name: "Tasty Cookie", rarity: "uncommon", boost: "Treat your pets! Pets give 5% more strength", time: "5 min" },
+    { name: "Enchanted Cookie", rarity: "rare", boost: "Treat your pets! Pets give 7% more strength", time: "5 min" },
+    { name: "Pink Donut", rarity: "uncommon", boost: "Treat your pets! Pets give 5% more strength", time: "5 min" },
+    { name: "Vanila Donut", rarity: "rare", boost: "Treat your pets! Pets give 10% more strength", time: "5 min" },
+    { name: "Chocolate Donut", rarity: "epic", boost: "Treat your pets! Pets give 15% more strength", time: "5 min" },
+    { name: "Rotten Dragon Fruit", rarity: "rare", boost: "Gives You +10% Training Speed", time: "5 min" },
+    { name: "Fine Dragon Fruit", rarity: "epic", boost: "Gives You +15% Training Speed", time: "10 min" },
+    { name: "Fresh Dragon Fruit", rarity: "legendary", boost: "Gives You +25% Training Speed", time: "20 min" },
+    { name: "Rotten Banana", rarity: "common", boost: "Gives You +10% Player Speed", time: "5 min" },
+    { name: "Fresh Banana", rarity: "uncommon", boost: "Gives You +20% Player Speed", time: "10 min" },
+    { name: "Rotten Starfruit", rarity: "rare", boost: "Gives You +10% Fighting Strength", time: "10 min" },
+    { name: "Normall Starfruit", rarity: "epic", boost: "Gives You +25% Fighting Strength", time: "25 min" },
+    { name: "Fresh Starfruit", rarity: "legendary", boost: "Gives You +50% Fighting Strength", time: "1 hour" },
+
+
+
+    { name: "Phoenix Fruit", rarity: "mythic", boost: "Instantly evolve a pet of your choice!", time: "∞" }
 ];
 
 // Main initialization function
