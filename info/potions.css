@@ -1,6 +1,11 @@
-/* Potions & Food Page Styles */
+/* Potions & Food Page Styles - FIXED */
 .potions-page {
+    display: none; /* Hidden by default */
     padding: 0;
+}
+
+.potions-page.active {
+    display: block !important; /* Show when active */
 }
 
 .potions-page .title {
@@ -78,11 +83,11 @@
 
 /* Potions Sections */
 .potions-section {
-    display: none;
+    display: none; /* Hidden by default */
 }
 
 .potions-section.active {
-    display: block;
+    display: block !important; /* Show when active */
 }
 
 /* Potion/Food Items */
@@ -98,6 +103,7 @@
     transition: all 0.3s ease;
     font-family: 'Roboto', sans-serif;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    opacity: 1; /* Ensure visibility */
 }
 
 .potion-item:hover {
@@ -250,78 +256,4 @@
         max-height: 450px;
         padding-right: 5px;
     }
-}
-
-@media (max-width: 480px) {
-    .potions-page .title {
-        font-size: 1.6em;
-        margin-bottom: 20px;
-    }
-    
-    .potion-item {
-        padding: 12px 14px;
-        margin-bottom: 8px;
-    }
-    
-    .potion-name {
-        font-size: 1em;
-    }
-    
-    .potion-boost {
-        font-size: 0.85em;
-    }
-    
-    .potions-switch-btn {
-        padding: 8px 16px;
-        font-size: 0.9em;
-    }
-    
-    .potion-rarity,
-    .potion-time {
-        font-size: 0.75em;
-        padding: 3px 8px;
-    }
-    
-    .potion-meta {
-        gap: 8px;
-    }
-    
-    .potions-container {
-        max-height: 400px;
-    }
-}
-
-/* Loading and animation effects */
-.potion-item {
-    opacity: 0;
-    animation: fadeInPotion 0.6s ease-out forwards;
-}
-
-.potion-item:nth-child(1) { animation-delay: 0.1s; }
-.potion-item:nth-child(2) { animation-delay: 0.2s; }
-.potion-item:nth-child(3) { animation-delay: 0.3s; }
-.potion-item:nth-child(4) { animation-delay: 0.4s; }
-.potion-item:nth-child(5) { animation-delay: 0.5s; }
-
-@keyframes fadeInPotion {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Hover effects for interactive elements */
-.potion-rarity:hover {
-    transform: scale(1.05);
-    transition: transform 0.2s ease;
-}
-
-.potion-time:hover {
-    transform: scale(1.05);
-    background: rgba(102, 126, 234, 0.25);
-    transition: all 0.2s ease;
 }
