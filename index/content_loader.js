@@ -1,4 +1,4 @@
-// Simplified content loader script - БЕЗ ЛОГІНУ ТА ПРОФІЛЮ
+// Fixed content loader script - БЕЗ ЛОГІНУ ТА ПРОФІЛЮ
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -87,6 +87,9 @@ async function loadContent() {
                                 <button class="nav-btn" data-page="charms" onclick="switchPage('charms')">
                                     🔮 Charms
                                 </button>
+                                <button class="nav-btn" data-page="potions" onclick="switchPage('potions')">
+                                    🧪 Potions & Food
+                                </button>
                                 <button class="nav-btn" data-page="worlds" onclick="switchPage('worlds')">
                                     🌍 Worlds
                                 </button>
@@ -127,7 +130,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully with categorized menu including Secret Pets');
+            console.log('✅ Content loaded successfully with categorized menu including Secret Pets and Potions & Food');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -178,4 +181,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ content_loader.js SIMPLIFIED loaded with categorized menu structure including Secret Pets and Potions & Food');
+console.log('✅ content_loader.js FIXED loaded with categorized menu structure including Secret Pets and Potions & Food');
