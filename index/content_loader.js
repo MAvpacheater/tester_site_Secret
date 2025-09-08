@@ -127,7 +127,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully with categorized menu');
+            console.log('✅ Content loaded successfully with categorized menu including Secret Pets');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -178,4 +178,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ content_loader.js SIMPLIFIED loaded with categorized menu structure');
+console.log('✅ content_loader.js SIMPLIFIED loaded with categorized menu structure including Secret Pets');
