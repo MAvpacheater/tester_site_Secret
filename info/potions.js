@@ -12,7 +12,7 @@ const potionsData = [
         rarity: "common", 
         boost: "Doubles your Egg Luck", 
         time: "30 min",
-        image: "https://i.postimg.cc/sxBZTvYN/luck-potion-1.png"
+        image: "https://i.postimg.cc/DyWfhBk8/2025-09-09-16-36-40.png"
     },
     { 
         name: "Luck Potion [2]", 
