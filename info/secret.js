@@ -12,7 +12,7 @@ const hatchRewards = [
     { 
         hatch: 3, 
         reward: "+1 equip", 
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://imgbox.com/HAKMiR7k" // Add your image URL here
     },
     { 
         hatch: 5, 
