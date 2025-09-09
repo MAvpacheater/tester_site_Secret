@@ -1,4 +1,4 @@
-/* Potions & Food Page Styles - ENHANCED & FIXED */
+/* Potions & Food Page Styles - ENHANCED WITH IMAGES */
 
 .potions-page {
     display: none; /* Hidden by default */
@@ -134,11 +134,11 @@
     transform: translateY(0);
 }
 
-/* Potion/Food Items with enhanced styling */
+/* Potion/Food Items with IMAGES */
 .potion-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 18px;
     padding: 20px 24px;
     margin-bottom: 12px;
     background: rgba(246, 249, 252, 0.9);
@@ -151,6 +151,7 @@
     overflow: hidden;
     opacity: 0;
     animation: fadeInUp 0.6s ease forwards;
+    min-height: 132px; /* Accommodate image height + padding */
 }
 
 @keyframes fadeInUp {
@@ -197,12 +198,56 @@
     box-shadow: 0 12px 35px rgba(118, 75, 162, 0.15);
 }
 
-/* Left side content */
+/* POTION IMAGE STYLING */
+.potion-image {
+    width: 150px;
+    height: 112px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 3px solid rgba(102, 126, 234, 0.2);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.potion-image:hover {
+    transform: scale(1.05);
+    border-color: rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+}
+
+.potion-image.loading {
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.2), rgba(102, 126, 234, 0.1));
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.potion-image.error {
+    background: rgba(255, 182, 193, 0.3);
+    border-color: rgba(220, 53, 69, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #dc3545;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Main content area (adjusted for image) */
 .potion-main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    min-height: 112px;
+    justify-content: center;
 }
 
 .potion-name {
@@ -286,6 +331,20 @@
     animation: mythicGlow 2s ease-in-out infinite alternate;
 }
 
+.potion-rarity.limited {
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white;
+    border-color: rgba(255, 107, 53, 0.3);
+    box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+}
+
+.potion-rarity.exclusive {
+    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    color: white;
+    border-color: rgba(108, 92, 231, 0.3);
+    box-shadow: 0 0 15px rgba(108, 92, 231, 0.3);
+}
+
 @keyframes mythicGlow {
     0% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
     100% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.6); }
@@ -362,14 +421,24 @@
         align-items: flex-start;
         gap: 15px;
         padding: 16px 18px;
+        min-height: auto;
     }
     
     .potion-item:hover {
         transform: translateY(-2px);
     }
     
+    .potion-image {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+        aspect-ratio: 150/112;
+        align-self: center;
+    }
+    
     .potion-main-content {
         width: 100%;
+        min-height: auto;
     }
     
     .potion-meta {
@@ -406,6 +475,10 @@
     .potion-item {
         padding: 14px 16px;
         margin-bottom: 10px;
+    }
+    
+    .potion-image {
+        max-width: 150px;
     }
     
     .potion-name {
