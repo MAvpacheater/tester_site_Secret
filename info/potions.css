@@ -1,0 +1,502 @@
+/* Potions & Food Page Styles - ENHANCED WITH IMAGES */
+
+.potions-page {
+    display: none; /* Hidden by default */
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.potions-page.active {
+    display: block !important; /* Show when active */
+}
+
+.potions-page .title {
+    color: #2c3e50;
+    font-size: 2.5em;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: 'Orbitron', monospace;
+}
+
+/* Potions Type Switcher */
+.potions-switcher {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    gap: 12px;
+    background: rgba(246, 249, 252, 0.9);
+    padding: 10px;
+    border-radius: 18px;
+    border: 2px solid rgba(102, 126, 234, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.potions-switch-btn {
+    background: transparent;
+    border: none;
+    color: #4a5568;
+    padding: 14px 28px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    font-family: 'Orbitron', monospace;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex: 1;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 140px;
+    position: relative;
+    overflow: hidden;
+}
+
+.potions-switch-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.5s;
+}
+
+.potions-switch-btn:hover::before {
+    left: 100%;
+}
+
+.potions-switch-btn:hover {
+    background: rgba(102, 126, 234, 0.12);
+    color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+}
+
+.potions-switch-btn.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    transform: translateY(-1px);
+}
+
+.potions-switch-btn.active:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+}
+
+/* Potions Container */
+.potions-container {
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 12px;
+    scroll-behavior: smooth;
+}
+
+.potions-container::-webkit-scrollbar { 
+    width: 10px; 
+}
+
+.potions-container::-webkit-scrollbar-track { 
+    background: rgba(0, 0, 0, 0.08); 
+    border-radius: 12px; 
+}
+
+.potions-container::-webkit-scrollbar-thumb { 
+    background: linear-gradient(135deg, #667eea, #764ba2); 
+    border-radius: 12px;
+    border: 2px solid rgba(0, 0, 0, 0.02);
+}
+
+.potions-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #5a6fd8, #6b4190);
+}
+
+/* Potions Sections */
+.potions-section {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.potions-section.active {
+    display: block !important;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Potion/Food Items with IMAGES */
+.potion-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    background: rgba(246, 249, 252, 0.9);
+    border-radius: 18px;
+    border: 2px solid rgba(102, 126, 234, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Roboto', sans-serif;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+    min-height: 132px; /* Accommodate image height + padding */
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.potion-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+    transition: left 0.6s ease;
+}
+
+.potion-item:hover::before {
+    left: 100%;
+}
+
+.potion-item:hover {
+    background: rgba(102, 126, 234, 0.12);
+    border-color: rgba(102, 126, 234, 0.3);
+    transform: translateX(12px) translateY(-4px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.15);
+}
+
+.potion-item:nth-child(even) {
+    background: rgba(118, 75, 162, 0.08);
+    border-color: rgba(118, 75, 162, 0.15);
+}
+
+.potion-item:nth-child(even):hover {
+    background: rgba(118, 75, 162, 0.18);
+    border-color: rgba(118, 75, 162, 0.35);
+    box-shadow: 0 12px 35px rgba(118, 75, 162, 0.15);
+}
+
+/* POTION IMAGE STYLING */
+.potion-image {
+    width: 150px;
+    height: 112px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 3px solid rgba(102, 126, 234, 0.2);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.potion-image:hover {
+    transform: scale(1.05);
+    border-color: rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+}
+
+.potion-image.loading {
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.2), rgba(102, 126, 234, 0.1));
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.potion-image.error {
+    background: rgba(255, 182, 193, 0.3);
+    border-color: rgba(220, 53, 69, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #dc3545;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Main content area (adjusted for image) */
+.potion-main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 112px;
+    justify-content: center;
+}
+
+.potion-name {
+    font-weight: 700;
+    color: #2d3748;
+    font-size: 1.3em;
+    font-family: 'Orbitron', monospace;
+    margin-bottom: 6px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.potion-boost {
+    color: #4a5568;
+    font-size: 1em;
+    line-height: 1.5;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+/* Right side content */
+.potion-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    min-width: 130px;
+}
+
+.potion-rarity {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 90px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+/* Enhanced rarity colors */
+.potion-rarity.common {
+    background: linear-gradient(135deg, #718096, #4a5568);
+    color: white;
+    border-color: rgba(74, 85, 104, 0.3);
+}
+
+.potion-rarity.uncommon {
+    background: linear-gradient(135deg, #38a169, #22c55e);
+    color: white;
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.potion-rarity.rare {
+    background: linear-gradient(135deg, #3182ce, #2563eb);
+    color: white;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.potion-rarity.epic {
+    background: linear-gradient(135deg, #805ad5, #9333ea);
+    color: white;
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+.potion-rarity.legendary {
+    background: linear-gradient(135deg, #dd6b20, #ea580c);
+    color: white;
+    border-color: rgba(251, 146, 60, 0.3);
+}
+
+.potion-rarity.mythic {
+    background: linear-gradient(135deg, #e53e3e, #dc2626);
+    color: white;
+    border-color: rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+    animation: mythicGlow 2s ease-in-out infinite alternate;
+}
+
+.potion-rarity.limited {
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white;
+    border-color: rgba(255, 107, 53, 0.3);
+    box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+}
+
+.potion-rarity.exclusive {
+    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    color: white;
+    border-color: rgba(108, 92, 231, 0.3);
+    box-shadow: 0 0 15px rgba(108, 92, 231, 0.3);
+}
+
+@keyframes mythicGlow {
+    0% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
+    100% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.6); }
+}
+
+.potion-time {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 600;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    color: #4c51bf;
+    text-align: center;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading animation for empty state */
+.potions-loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 1.1em;
+}
+
+.potions-loading::after {
+    content: "...";
+    animation: dots 2s infinite;
+}
+
+@keyframes dots {
+    0%, 33% { content: "."; }
+    34%, 66% { content: ".."; }
+    67%, 100% { content: "..."; }
+}
+
+/* Empty state message */
+.potions-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+    font-size: 1.2em;
+    background: rgba(246, 249, 252, 0.5);
+    border-radius: 16px;
+    border: 2px dashed rgba(102, 126, 234, 0.2);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .potions-page {
+        padding: 15px;
+    }
+    
+    .potions-page .title {
+        font-size: 2em;
+        margin-bottom: 25px;
+    }
+    
+    .potions-switcher {
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+    }
+    
+    .potions-switch-btn {
+        padding: 12px 20px;
+        font-size: 1em;
+        min-width: auto;
+    }
+    
+    .potion-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 16px 18px;
+        min-height: auto;
+    }
+    
+    .potion-item:hover {
+        transform: translateY(-2px);
+    }
+    
+    .potion-image {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+        aspect-ratio: 150/112;
+        align-self: center;
+    }
+    
+    .potion-main-content {
+        width: 100%;
+        min-height: auto;
+    }
+    
+    .potion-meta {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .potion-name {
+        font-size: 1.15em;
+    }
+    
+    .potion-boost {
+        font-size: 0.95em;
+    }
+    
+    .potions-container {
+        max-height: 500px;
+        padding-right: 5px;
+    }
+    
+    .potions-container::-webkit-scrollbar {
+        width: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .potions-page .title {
+        font-size: 1.6em;
+    }
+    
+    .potion-item {
+        padding: 14px 16px;
+        margin-bottom: 10px;
+    }
+    
+    .potion-image {
+        max-width: 150px;
+    }
+    
+    .potion-name {
+        font-size: 1.1em;
+    }
+    
+    .potion-boost {
+        font-size: 0.9em;
+    }
+    
+    .potion-rarity {
+        padding: 4px 10px;
+        font-size: 0.8em;
+        min-width: 70px;
+    }
+    
+    .potion-time {
+        padding: 4px 8px;
+        font-size: 0.8em;
+    }
+}
