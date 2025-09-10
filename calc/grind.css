@@ -77,7 +77,7 @@
 
 /* Category Styles */
 .modifier-category {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     border: 1px solid #e1ecf4;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.7);
@@ -87,15 +87,56 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 12px 15px;
-    border-radius: 12px 12px 0 0;
+    border-radius: 12px;
     font-weight: 600;
     font-size: 1.1em;
-    text-align: center;
     margin-bottom: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.category-header-modifier:hover {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b63c4 100%);
+    transform: translateY(-1px);
+}
+
+.category-header-modifier.collapsed {
+    border-radius: 12px;
+}
+
+.category-header-modifier.expanded {
+    border-radius: 12px 12px 0 0;
+}
+
+.category-title-modifier {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.category-toggle-modifier {
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+    font-weight: bold;
+}
+
+.category-toggle-modifier.expanded {
+    transform: rotate(180deg);
 }
 
 .category-content {
     padding: 15px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.category-content.expanded {
+    max-height: 500px;
 }
 
 .modifier-item {
