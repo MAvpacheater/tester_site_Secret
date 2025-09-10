@@ -37,73 +37,73 @@ const secretPetsData = [
         name: "Arcane Hydra", 
         boosts: "Percentage 150% | Power 40m", 
         world: "World 4",
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/CK6WWh6X/2025-09-09-17-06-19.png" // Add your image URL here
     },
     { 
         name: "Hatched Phoenix", 
         boosts: "Percentage 160% | Power 50m", 
         world: "World 5",
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/vZXRtL7Q/2025-09-09-17-06-10.png" // Add your image URL here
     },
     { 
         name: "Voidwalker", 
         boosts: "Percentage 170% | Power 78,5m", 
         world: "World 6",
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/N003J9bR/2025-09-09-17-06-14.png" // Add your image URL here
     },
     { 
         name: "Stardust Dragon", 
         boosts: "Percentage 180% | Power 115m", 
         world: "World 7",
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/CK6WWh6X/2025-09-09-17-06-19.png" // Add your image URL here
     },
     { 
         name: "Nebula Fantom", 
         boosts: "Percentage 190% | Power 160m", 
         world: "World 8",
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/FRd2vMMR/2025-09-09-17-06-29.png" // Add your image URL here
     },
     { 
         name: "Flaming Beast", 
         boosts: "Percentage 200% | Power 215m", 
         world: "World 9",
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/2jBDNWYw/2025-09-09-17-05-57.png" // Add your image URL here
     },
     { 
         name: "Magic Dominus", 
         boosts: "Percentage 210% | Power 240m", 
         world: "World 10",
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/nhnbmwDR/2025-09-09-17-06-05.png" // Add your image URL here
     },
     { 
         name: "Sparkly Penguin", 
         boosts: "Percentage 215% | Power 275m", 
         world: "World 11",
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/qqnVsPwY/2025-09-09-17-05-54.png" // Add your image URL here
     },
     { 
         name: "Totem Dominus", 
         boosts: "Percentage 220% | Power 300m", 
         world: "World 12",
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/Ghw1Lph1/2025-09-09-17-06-01.png" // Add your image URL here
     },
     { 
         name: "Kingdom Hydra", 
         boosts: "Percentage 225% | Power 340m", 
         world: "World 13",
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/4djRhf6V/2025-09-09-17-05-49.png" // Add your image URL here
     },
     { 
         name: "Sapphire Cat", 
         boosts: "Percentage 230% | Power 385m", 
         world: "World 14",
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/857V5J6T/2025-09-09-17-05-40.png" // Add your image URL here
     },
     { 
         name: "Heavenly Secret", 
         boosts: "Percentage 240% | Power 425m", 
         world: "World 15",
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/RFk2ZPmT/2025-09-09-17-06-24.png" // Add your image URL here
     },
     { 
         name: "???", 
