@@ -55,7 +55,7 @@ const secretPetsData = [
         name: "Stardust Dragon", 
         boosts: "Percentage 180% | Power 115m", 
         world: "World 7",
-        imageUrl: "https://i.postimg.cc/CK6WWh6X/2025-09-09-17-06-19.png" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/Jz1BLnVT/2025-09-09-17-06-33.png" // Add your image URL here
     },
     { 
         name: "Nebula Fantom", 
