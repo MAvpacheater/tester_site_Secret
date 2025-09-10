@@ -97,78 +97,133 @@
     </div>
 
     <div class="settings-panel" id="settingsPanelGrind">
-        <div class="settings-title">Settings</div>
+        <div class="settings-title">Boost Settings</div>
         
-        <div class="modifier-item">
-            <span class="modifier-label">Tp1 (x1.30)</span>
-            <label class="switch">
-                <input type="checkbox" id="tp1" checked onchange="handleTpSelection('tp1')">
-                <span class="slider"></span>
-            </label>
+        <!-- TP Category -->
+        <div class="modifier-category">
+            <div class="category-header-modifier">🎯 TP Boosts</div>
+            <div class="category-content">
+                <div class="modifier-item">
+                    <span class="modifier-label">TP1 (x1.30)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="tp1" checked onchange="handleTpSelection('tp1')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="modifier-item">
+                    <span class="modifier-label">TP2 (x1.6)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="tp2" onchange="handleTpSelection('tp2')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="modifier-item">
+                    <span class="modifier-label">TP3 (x1.9)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="tp3" onchange="handleTpSelection('tp3')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
         </div>
 
-        <div class="modifier-item">
-            <span class="modifier-label">Tp2 (x1.6)</span>
-            <label class="switch">
-                <input type="checkbox" id="tp2" onchange="handleTpSelection('tp2')">
-                <span class="slider"></span>
-            </label>
+        <!-- Food Category -->
+        <div class="modifier-category">
+            <div class="category-header-modifier">🍩 Food Boosts</div>
+            <div class="category-content">
+                <div class="modifier-item">
+                    <span class="modifier-label">Chocolate Donut Lv1 (x1.05)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="chocolate_donut_1" onchange="handleFoodSelection('chocolate_donut_1', 'donut')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="modifier-item">
+                    <span class="modifier-label">Chocolate Donut Lv2 (x1.10)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="chocolate_donut_2" onchange="handleFoodSelection('chocolate_donut_2', 'donut')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="modifier-item">
+                    <span class="modifier-label">Chocolate Donut Lv3 (x1.15)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="chocolate_donut_3" checked onchange="handleFoodSelection('chocolate_donut_3', 'donut')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="modifier-item">
+                    <span class="modifier-label">Ench Cookie Lv1 (x1.03)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="ench_cookie_1" onchange="handleFoodSelection('ench_cookie_1', 'cookie')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="modifier-item">
+                    <span class="modifier-label">Ench Cookie Lv2 (x1.05)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="ench_cookie_2" onchange="handleFoodSelection('ench_cookie_2', 'cookie')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="modifier-item">
+                    <span class="modifier-label">Ench Cookie Lv3 (x1.07)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="ench_cookie_3" checked onchange="handleFoodSelection('ench_cookie_3', 'cookie')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
         </div>
 
-        <div class="modifier-item">
-            <span class="modifier-label">Tp3 (x1.9)</span>
-            <label class="switch">
-                <input type="checkbox" id="tp3" onchange="handleTpSelection('tp3')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Choc donut (x1.15)</span>
-            <label class="switch">
-                <input type="checkbox" id="chocolate_donut" checked onchange="updateGrindMultiplier()">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Ench cookie (x1.07)</span>
-            <label class="switch">
-                <input type="checkbox" id="ench_cookie" checked onchange="updateGrindMultiplier()">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Time (max)</span>
-            <label class="switch">
-                <input type="checkbox" id="time" checked onchange="updateGrindMultiplier()">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Friend (max)</span>
-            <label class="switch">
-                <input type="checkbox" id="friend" checked onchange="calculateGrindStats()">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Member (2x)</span>
-            <label class="switch">
-                <input type="checkbox" id="member" checked onchange="updateGrindMultiplier()">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Premium (1.20x)</span>
-            <label class="switch">
-                <input type="checkbox" id="premium" checked onchange="updateGrindMultiplier()">
-                <span class="slider"></span>
-            </label>
+        <!-- Other Boosts Category -->
+        <div class="modifier-category">
+            <div class="category-header-modifier">⭐ Other Boosts</div>
+            <div class="category-content">
+                <div class="modifier-item">
+                    <span class="modifier-label">Time Boost (max)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="time" checked onchange="updateGrindMultiplier()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="modifier-item">
+                    <span class="modifier-label">Member (2x)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="member" checked onchange="updateGrindMultiplier()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="modifier-item">
+                    <span class="modifier-label">Premium (x1.20)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="premium" checked onchange="updateGrindMultiplier()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="modifier-item">
+                    <span class="modifier-label">Strength Star (x1.50)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="strength_star" onchange="updateGrindMultiplier()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="modifier-item">
+                    <span class="modifier-label">Sandstorm Event (2x)</span>
+                    <label class="switch">
+                        <input type="checkbox" id="sandstorm_event" onchange="updateGrindMultiplier()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="modifier-item">
+                    <span class="modifier-label">Friend Boost</span>
+                    <div class="friend-counter">
+                        <button class="friend-btn" id="friendDownBtn" onclick="decreaseFriendBoost()">−</button>
+                        <div class="friend-display" id="friendDisplay">120%</div>
+                        <button class="friend-btn" id="friendUpBtn" onclick="increaseFriendBoost()">+</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
