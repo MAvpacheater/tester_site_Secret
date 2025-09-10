@@ -214,4 +214,3 @@ window.handleFoodSelection = handleFoodSelection;
 window.increaseFriendBoost = increaseFriendBoost;
 window.decreaseFriendBoost = decreaseFriendBoost;
 window.updateGrindMultiplier = updateGrindMultiplier;
-window.toggleGrindCategory = toggleGrindCategory;
