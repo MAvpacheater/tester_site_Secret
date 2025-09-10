@@ -1,18 +1,30 @@
 // Grind Calculator functionality
 
-// Множники для grind
+// Множники для grind з новими боостами
 const grindModifiers = {
+    // TP Category
     tp1: 1.30,
     tp2: 1.60,
     tp3: 1.90,
-    chocolate_donut: 1.15,
-    ench_cookie: 1.07,
-    time: 2.7,      // +170% = x2.7
-    member: 2.0,    // 2x
-    premium: 1.20   // 1.20x
+    
+    // Food Category
+    chocolate_donut_1: 1.05,    // Level 1
+    chocolate_donut_2: 1.10,    // Level 2  
+    chocolate_donut_3: 1.15,    // Level 3
+    ench_cookie_1: 1.03,        // Level 1
+    ench_cookie_2: 1.05,        // Level 2
+    ench_cookie_3: 1.07,        // Level 3
+    
+    // Other Category
+    time: 2.7,              // +170% = x2.7
+    member: 2.0,            // 2x
+    premium: 1.20,          // 1.20x
+    strength_star: 1.50,    // 50% boost
+    sandstorm_event: 2.0    // 2x boost
 };
 
 let grindMultiplier = 1;
+let friendBoostCount = 8; // За замовчуванням 8 (максимум 8 x 15% = 120%)
 
 // Показ/приховування налаштувань
 function toggleGrindSettings() {
@@ -48,6 +60,75 @@ function handleTpSelection(selectedTp) {
     calculateGrindStats();
 }
 
+// Функція для обробки Food вибору (лише один пончик і одне печення)
+function handleFoodSelection(selectedFood, category) {
+    const selectedCheckbox = document.getElementById(selectedFood);
+    
+    // Якщо чекбокс вимикається, просто оновлюємо множники
+    if (!selectedCheckbox || !selectedCheckbox.checked) {
+        updateGrindMultiplier();
+        calculateGrindStats();
+        return;
+    }
+    
+    // Визначаємо групи
+    let foodGroup = [];
+    if (category === 'donut') {
+        foodGroup = ['chocolate_donut_1', 'chocolate_donut_2', 'chocolate_donut_3'];
+    } else if (category === 'cookie') {
+        foodGroup = ['ench_cookie_1', 'ench_cookie_2', 'ench_cookie_3'];
+    }
+    
+    // Якщо чекбокс вмикається, вимикаємо всі інші в групі
+    foodGroup.forEach(food => {
+        if (food !== selectedFood) {
+            const checkbox = document.getElementById(food);
+            if (checkbox) {
+                checkbox.checked = false;
+            }
+        }
+    });
+    
+    updateGrindMultiplier();
+    calculateGrindStats();
+}
+
+// Friend boost functions
+function increaseFriendBoost() {
+    if (friendBoostCount < 8) {
+        friendBoostCount++;
+        updateFriendDisplay();
+        calculateGrindStats();
+    }
+}
+
+function decreaseFriendBoost() {
+    if (friendBoostCount > 0) {
+        friendBoostCount--;
+        updateFriendDisplay();
+        calculateGrindStats();
+    }
+}
+
+function updateFriendDisplay() {
+    const display = document.getElementById('friendDisplay');
+    const upBtn = document.getElementById('friendUpBtn');
+    const downBtn = document.getElementById('friendDownBtn');
+    
+    if (display) {
+        const percentage = friendBoostCount * 15;
+        display.textContent = `${percentage}%`;
+    }
+    
+    // Enable/disable buttons based on limits
+    if (upBtn) {
+        upBtn.disabled = friendBoostCount >= 8;
+    }
+    if (downBtn) {
+        downBtn.disabled = friendBoostCount <= 0;
+    }
+}
+
 // Оновлення множника при зміні чекбоксів
 function updateGrindMultiplier() {
     grindMultiplier = 1;
@@ -61,10 +142,10 @@ function updateGrindMultiplier() {
     calculateGrindStats();
 }
 
-// Функція для розрахунку Friend bonus (8 разів по +15%)
+// Функція для розрахунку Friend bonus (по friendBoostCount разів по +15%)
 function calculateFriendBonus(baseValue) {
     let result = baseValue;
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < friendBoostCount; i++) {
         result = result * 1.15; // +15% кожен раз
     }
     return result;
@@ -94,9 +175,8 @@ function calculateGrindStats() {
     // Спочатку застосовуємо всі звичайні множники
     let finalValue = baseValue * grindMultiplier;
     
-    // Потім застосовуємо Friend bonus окремо, якщо він увімкнений
-    const friendCheckbox = document.getElementById('friend');
-    if (friendCheckbox && friendCheckbox.checked) {
+    // Потім застосовуємо Friend bonus окремо
+    if (friendBoostCount > 0) {
         finalValue = calculateFriendBonus(finalValue);
     }
 
@@ -111,6 +191,7 @@ function calculateGrindStats() {
 // Ініціалізація Grind при завантаженні сторінки
 function initializeGrind() {
     updateGrindMultiplier();
+    updateFriendDisplay();
 
     const numberInput = document.getElementById('numberInputGrind');
     if (numberInput) {
@@ -126,3 +207,10 @@ function initializeGrind() {
         });
     }
 }
+
+// Make functions globally available
+window.handleTpSelection = handleTpSelection;
+window.handleFoodSelection = handleFoodSelection;
+window.increaseFriendBoost = increaseFriendBoost;
+window.decreaseFriendBoost = decreaseFriendBoost;
+window.updateGrindMultiplier = updateGrindMultiplier;
