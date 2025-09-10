@@ -7,27 +7,27 @@ const hatchRewards = [
     { 
         hatch: 1, 
         reward: "+1 egg hatch", 
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/QM43hkV6/2025-09-09-17-03-52.png" // Add your image URL here
     },
     { 
         hatch: 3, 
         reward: "+1 equip", 
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/GmRrQmZj/2025-09-09-17-05-23.png" // Add your image URL here
     },
     { 
         hatch: 5, 
         reward: "+1 egg hatch", 
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/QM43hkV6/2025-09-09-17-03-52.png" // Add your image URL here
     },
     { 
         hatch: 9, 
         reward: "+1 equip", 
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/GmRrQmZj/2025-09-09-17-05-23.png" // Add your image URL here
     },
     { 
         hatch: 12, 
         reward: "+1 egg hatch", 
-        imageUrl: "" // Add your image URL here
+        imageUrl: "https://i.postimg.cc/QM43hkV6/2025-09-09-17-03-52.png" // Add your image URL here
     }
 ];
 
