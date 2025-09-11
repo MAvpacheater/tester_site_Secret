@@ -1,7 +1,7 @@
 /* Worlds Page Styles - Updated without Language Switcher */
 
 .worlds-page {
-    display: none !important;
+    display: none;
     padding: 20px;
     min-height: 100vh;
 }
