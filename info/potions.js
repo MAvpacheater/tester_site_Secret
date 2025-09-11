@@ -1,5 +1,5 @@
-// Potions & Food Module - WITH RARITY FILTERS AND MULTILINGUAL SUPPORT
-console.log('🧪 Loading potions.js with rarity filters and multilingual support...');
+// Potions & Food Module - FIXED with automatic language updates
+console.log('🧪 Loading potions.js with automatic language updates...');
 
 // Global variables
 let potionsInitialized = false;
@@ -312,7 +312,7 @@ function getAvailableRarities() {
 
 // Main initialization function
 async function initializePotions() {
-    console.log('🧪 Initializing Potions & Food with rarity filters and multilingual support...');
+    console.log('🧪 Initializing Potions & Food with automatic language updates...');
     
     potionsInitialized = false;
     
@@ -345,7 +345,7 @@ async function initializePotions() {
         potionsInitialized = true;
         window.potionsInitialized = true;
         
-        console.log('✅ Potions & Food with rarity filters and multilingual support initialized successfully');
+        console.log('✅ Potions & Food initialized successfully');
         console.log(`📊 Loaded: ${potionsData.length} potions, ${foodData.length} foods in ${currentLanguage}`);
         return true;
     } catch (error) {
@@ -521,7 +521,7 @@ async function loadPotionsContent() {
         throw new Error('Container not found');
     }
 
-    console.log('📝 Loading potions content with rarity filters and translations...');
+    console.log('📝 Loading potions content with translations...');
 
     // Generate potions HTML with translations
     const potionsHTML = potionsData.map((potion, index) => {
@@ -593,18 +593,28 @@ async function loadPotionsContent() {
     currentPotionsType = 'potions';
     currentRarityFilter = 'all';
     
-    console.log(`✅ Potions & Food content with rarity filters and translations loaded successfully in ${currentLanguage}`);
+    console.log(`✅ Potions & Food content loaded successfully in ${currentLanguage}`);
 }
 
-// Update language when it changes globally
+// Update language when it changes globally - ENHANCED
 function updatePotionsLanguage(newLanguage) {
-    if (newLanguage === currentLanguage) return;
+    console.log(`🌍 Potions received language change request: ${currentLanguage} → ${newLanguage}`);
+    
+    if (newLanguage === currentLanguage) {
+        console.log('🔄 Same language, skipping update');
+        return;
+    }
     
     currentLanguage = newLanguage;
     
     if (potionsInitialized) {
-        console.log(`🌍 Updating potions language to: ${newLanguage}`);
-        initializePotions(); // Reinitialize with new language
+        console.log(`🧪 Updating potions language to: ${newLanguage}`);
+        // Reinitialize with new language
+        setTimeout(() => {
+            initializePotions();
+        }, 100);
+    } else {
+        console.log('🧪 Potions not initialized yet, language will be applied on next init');
     }
 }
 
@@ -704,8 +714,9 @@ window.getPotionsStats = getPotionsStats;
 window.getFilteredData = getFilteredData;
 window.potionsInitialized = potionsInitialized;
 
-// Listen for global language changes
+// Listen for global language changes - ENHANCED
 document.addEventListener('languageChanged', function(e) {
+    console.log('🧪 Potions received languageChanged event:', e.detail);
     if (e.detail && e.detail.language) {
         updatePotionsLanguage(e.detail.language);
     }
@@ -716,7 +727,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         const container = document.getElementById('potionsContainer');
         if (container && !potionsInitialized) {
-            console.log('🧪 Auto-initializing potions with rarity filters and multilingual support...');
+            console.log('🧪 Auto-initializing potions...');
             initializePotions();
         }
     }, 500);
@@ -727,11 +738,11 @@ document.addEventListener('click', function(e) {
     if (e.target && e.target.getAttribute && e.target.getAttribute('data-page') === 'potions') {
         setTimeout(() => {
             if (!potionsInitialized || !document.getElementById('potionsSection')) {
-                console.log('🧪 Page switched to potions, reinitializing with multilingual support...');
+                console.log('🧪 Page switched to potions, reinitializing...');
                 initializePotions();
             }
         }, 300);
     }
 });
 
-console.log('✅ potions.js with rarity filtering system and multilingual support loaded successfully');
+console.log('✅ potions.js with automatic language updates loaded successfully');
