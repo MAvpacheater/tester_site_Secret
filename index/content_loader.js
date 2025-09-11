@@ -1,28 +1,30 @@
-// Fixed content loader script - БЕЗ ЛОГІНУ ТА ПРОФІЛЮ
+// Fixed content loader script - БЕЗ ЛОГІНУ ТА ПРОФІЛЮ + PEOPLES PAGE
 console.log('🔄 Loading content...');
 
 // Function to load content
 async function loadContent() {
     try {
-        // Load only calculator and info content - БЕЗ ЛОГІНУ
-        const [calcResponse, infoResponse] = await Promise.all([
+        // Load calculator, info, and admins content
+        const [calcResponse, infoResponse, adminsResponse] = await Promise.all([
             fetch('index/content_calc.html'),
-            fetch('index/content_info.html')
+            fetch('index/content_info.html'),
+            fetch('index/content_admins.html')
         ]);
 
-        if (!calcResponse.ok || !infoResponse.ok) {
-            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}`);
+        if (!calcResponse.ok || !infoResponse.ok || !adminsResponse.ok) {
+            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, admins: ${adminsResponse.status}`);
         }
         
-        const [calcContent, infoContent] = await Promise.all([
+        const [calcContent, infoContent, adminsContent] = await Promise.all([
             calcResponse.text(),
-            infoResponse.text()
+            infoResponse.text(),
+            adminsResponse.text()
         ]);
 
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with categorized navigation
+            // Create the main structure with categorized navigation including Others
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -95,6 +97,22 @@ async function loadContent() {
                                 </button>
                             </div>
                         </div>
+
+                        <!-- Others Category -->
+                        <div class="nav-category">
+                            <div class="category-header" data-category="othersButtons" onclick="toggleCategory('othersButtons')">
+                                <div class="category-title">
+                                    <span class="category-icon">🔧</span>
+                                    <span>Others</span>
+                                </div>
+                                <span class="category-toggle">▼</span>
+                            </div>
+                            <div class="category-buttons" id="othersButtons">
+                                <button class="nav-btn" data-page="thanks" onclick="switchPage('thanks')">
+                                    🙏 Peoples
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- Simplified User Section - БЕЗ ПРОФІЛЮ -->
@@ -109,6 +127,7 @@ async function loadContent() {
                 <div class="container">
                     ${calcContent}
                     ${infoContent}
+                    ${adminsContent}
                 </div>
 
                 <style>
@@ -130,7 +149,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully with categorized menu including Secret Pets and Potions & Food');
+            console.log('✅ Content loaded successfully with categorized menu including Others category and Peoples page');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -181,4 +200,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ content_loader.js FIXED loaded with categorized menu structure including Secret Pets and Potions & Food');
+console.log('✅ content_loader.js FIXED loaded with categorized menu structure including Others category and Peoples page');
