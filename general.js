@@ -1,6 +1,6 @@
-// Fixed General JavaScript functions - PROPER MODULE INITIALIZATION
+// Fixed General JavaScript functions - PROPER MODULE INITIALIZATION + THANKS PAGE
 
-// Page switching functionality - fixed
+// Page switching functionality - fixed with thanks page support
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
     
@@ -30,7 +30,8 @@ function switchPage(page) {
         'charms': 'charms',
         'secret': 'secret',
         'potions': 'potions',
-        'worlds': 'worlds'
+        'worlds': 'worlds',
+        'thanks': 'thanks'  // Added thanks page mapping
     };
     
     const targetButton = document.querySelector(`[data-page="${pageMap[page]}"]`);
@@ -48,7 +49,7 @@ function switchPage(page) {
     }, 100);
 }
 
-// FIXED: Initialize specific page content when switching - with proper DOM checks
+// FIXED: Initialize specific page content when switching - with proper DOM checks + thanks page
 function initializePageContent(page) {
     console.log(`🔄 Initializing content for page: ${page}`);
     
@@ -138,6 +139,18 @@ function initializePageContent(page) {
                 initializeWorlds();
             }
             break;
+        case 'thanks':
+            console.log('🙏 Initializing Thanks page...');
+            if (typeof initializeThanks === 'function') {
+                // FIXED: Reset the initialization flag to force re-init
+                if (typeof window !== 'undefined' && window.thanksInitialized !== undefined) {
+                    window.thanksInitialized = false;
+                }
+                initializeThanks();
+            } else {
+                console.error('❌ initializeThanks function not found');
+            }
+            break;
     }
 }
 
@@ -218,7 +231,7 @@ function loadSettingsFromStorage(key) {
 // Flag to prevent repeated initialization
 let appInitialized = false;
 
-// FIXED: App initialization with proper module loading
+// FIXED: App initialization with proper module loading + thanks
 function initializeApp() {
     if (appInitialized) {
         console.log('⚠️ App already initialized');
@@ -278,7 +291,7 @@ function initializeApp() {
     console.log('✅ App initialization completed');
 }
 
-// FIXED: Initialize all modules with proper DOM readiness checks
+// FIXED: Initialize all modules with proper DOM readiness checks + thanks
 function initializeAllModules() {
     console.log('🔧 Initializing all modules...');
     
@@ -294,14 +307,16 @@ function initializeAllModules() {
         'initializeTrainer',
         'initializeCharms',
         'initializeCodes',
-        'initializeWorlds'
+        'initializeWorlds',
+        'initializeThanks'      // NEW: Initialize thanks page
     ];
 
     modules.forEach(moduleName => {
         try {
             if (typeof window[moduleName] === 'function') {
                 // FIXED: Add delay for DOM-dependent modules
-                if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || moduleName === 'initializeGrind') {
+                if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || 
+                    moduleName === 'initializeGrind' || moduleName === 'initializeThanks') {
                     setTimeout(() => {
                         try {
                             // FIXED: Force reinitialization by resetting flags
@@ -313,6 +328,9 @@ function initializeAllModules() {
                             }
                             if (moduleName === 'initializeGrind' && window.grindInitialized) {
                                 window.grindInitialized = false;
+                            }
+                            if (moduleName === 'initializeThanks' && window.thanksInitialized) {
+                                window.thanksInitialized = false;
                             }
                             
                             window[moduleName]();
@@ -343,7 +361,7 @@ function debugPageStates() {
     console.log('========================');
 }
 
-// FIXED: Force reinitialization for specific modules
+// FIXED: Force reinitialization for specific modules + thanks
 function forceReinitializeModule(moduleName) {
     console.log(`🔄 Force reinitializing ${moduleName}...`);
     
@@ -356,6 +374,9 @@ function forceReinitializeModule(moduleName) {
     }
     if (moduleName === 'grind' && typeof window !== 'undefined') {
         window.grindInitialized = false;
+    }
+    if (moduleName === 'thanks' && typeof window !== 'undefined') {
+        window.thanksInitialized = false;
     }
     
     // Call initialization
