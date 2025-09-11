@@ -1,4 +1,4 @@
-// Updated General JavaScript functions - Simplified with flag-only language selector
+// Updated General JavaScript functions - Fixed language switching for all modules
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -61,7 +61,7 @@ async function loadMenuTranslations() {
     }
 }
 
-// Switch app language
+// Switch app language - ENHANCED WITH MODULE NOTIFICATIONS
 async function switchAppLanguage(lang) {
     if (!menuTranslations) {
         await loadMenuTranslations();
@@ -72,6 +72,7 @@ async function switchAppLanguage(lang) {
         lang = 'en';
     }
     
+    const previousLanguage = currentAppLanguage;
     currentAppLanguage = lang;
     saveAppLanguage(lang);
     
@@ -86,9 +87,45 @@ async function switchAppLanguage(lang) {
     // Update menu text
     updateMenuTranslations();
     
-    // Notify worlds page about language change
+    // Notify ALL modules about language change
+    console.log(`🌍 Broadcasting language change from ${previousLanguage} to ${lang}`);
+    
+    // Dispatch custom event for language change
+    const languageChangeEvent = new CustomEvent('languageChanged', {
+        detail: {
+            language: lang,
+            previousLanguage: previousLanguage
+        }
+    });
+    document.dispatchEvent(languageChangeEvent);
+    
+    // Directly notify specific modules if their functions exist
+    const moduleNotifications = [
+        { name: 'worlds', func: 'updateWorldsLanguage' },
+        { name: 'potions', func: 'updatePotionsLanguage' },
+        { name: 'secret', func: 'updateSecretLanguage' },
+        { name: 'thanks', func: 'updateThanksLanguage' }
+    ];
+    
+    moduleNotifications.forEach(({ name, func }) => {
+        if (typeof window[func] === 'function') {
+            try {
+                window[func](lang);
+                console.log(`✅ ${name} language updated via ${func}`);
+            } catch (error) {
+                console.error(`❌ Error updating ${name} language:`, error);
+            }
+        }
+    });
+    
+    // Legacy support for older function names
     if (typeof window.switchWorldsLanguage === 'function') {
-        window.switchWorldsLanguage(lang);
+        try {
+            window.switchWorldsLanguage(lang);
+            console.log('✅ Worlds language updated via legacy function');
+        } catch (error) {
+            console.error('❌ Error in legacy worlds language update:', error);
+        }
     }
     
     console.log(`🌍 App language switched to: ${lang}`);
@@ -294,8 +331,11 @@ function initializePageContent(page) {
             }
             break;
         case 'worlds':
+            console.log('🌍 Initializing Worlds page...');
             if (typeof initializeWorlds === 'function') {
                 initializeWorlds();
+            } else {
+                console.error('❌ initializeWorlds function not found');
             }
             break;
         case 'thanks':
@@ -389,7 +429,7 @@ function loadSettingsFromStorage(key) {
 // Flag to prevent repeated initialization
 let appInitialized = false;
 
-// App initialization with flag-only language selector
+// App initialization with enhanced language support
 async function initializeApp() {
     if (appInitialized) {
         console.log('⚠️ App already initialized');
@@ -464,7 +504,7 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed with flag-only language selector');
+    console.log('✅ App initialization completed with enhanced language support');
 }
 
 // Initialize all modules with proper DOM readiness checks
