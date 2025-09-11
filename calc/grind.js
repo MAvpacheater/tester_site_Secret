@@ -25,13 +25,74 @@ const grindModifiers = {
 
 let grindMultiplier = 1;
 let friendBoostCount = 8; // За замовчуванням 8 (максимум 8 x 15% = 120%)
+let currentOpenCategory = null; // Відстежуємо поточну відкриту категорію
 
 // Показ/приховування налаштувань
 function toggleGrindSettings() {
     const panel = document.getElementById('settingsPanelGrind');
     if (panel) {
         panel.classList.toggle('show');
+        
+        // Якщо панель відкривається, ініціалізуємо колапсні категорії
+        if (panel.classList.contains('show')) {
+            initializeCollapsibleCategories();
+        }
     }
+}
+
+// Ініціалізація колапсних категорій
+function initializeCollapsibleCategories() {
+    const headers = document.querySelectorAll('.category-header-modifier');
+    
+    headers.forEach((header, index) => {
+        // Додаємо унікальний ідентифікатор кожній категорії
+        const categoryId = `category-${index}`;
+        const content = header.nextElementSibling;
+        
+        if (content && content.classList.contains('category-content')) {
+            content.setAttribute('data-category-id', categoryId);
+            header.setAttribute('data-category-id', categoryId);
+            
+            // За замовчуванням всі категорії закриті
+            content.classList.remove('expanded');
+            header.classList.add('collapsed');
+            
+            // Додаємо обробник подій для кліку
+            header.addEventListener('click', () => toggleCategory(categoryId));
+        }
+    });
+}
+
+// Функція для відкриття/закриття категорії
+function toggleCategory(categoryId) {
+    const header = document.querySelector(`[data-category-id="${categoryId}"].category-header-modifier`);
+    const content = document.querySelector(`[data-category-id="${categoryId}"].category-content`);
+    
+    if (!header || !content) return;
+    
+    // Якщо клікнули на вже відкриту категорію, закриваємо її
+    if (currentOpenCategory === categoryId) {
+        content.classList.remove('expanded');
+        header.classList.add('collapsed');
+        currentOpenCategory = null;
+        return;
+    }
+    
+    // Закриваємо поточну відкриту категорію, якщо є
+    if (currentOpenCategory) {
+        const currentHeader = document.querySelector(`[data-category-id="${currentOpenCategory}"].category-header-modifier`);
+        const currentContent = document.querySelector(`[data-category-id="${currentOpenCategory}"].category-content`);
+        
+        if (currentHeader && currentContent) {
+            currentContent.classList.remove('expanded');
+            currentHeader.classList.add('collapsed');
+        }
+    }
+    
+    // Відкриваємо нову категорію
+    content.classList.add('expanded');
+    header.classList.remove('collapsed');
+    currentOpenCategory = categoryId;
 }
 
 // Функція для обробки TP вибору (лише один з трьох)
@@ -214,3 +275,4 @@ window.handleFoodSelection = handleFoodSelection;
 window.increaseFriendBoost = increaseFriendBoost;
 window.decreaseFriendBoost = decreaseFriendBoost;
 window.updateGrindMultiplier = updateGrindMultiplier;
+window.toggleGrindSettings = toggleGrindSettings;
