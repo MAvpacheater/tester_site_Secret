@@ -6,7 +6,7 @@ let currentFilter = 'all'; // 'all', 'admin', 'helper'
 const contributors = [
     {
         name: 'Xlestay',
-        contribution: 'Gave information/Helped with logic, Top 2 trader',
+        contribution: 'Gave information/Helped with logic',
         role: 'Helper',
         telegram: '@xlEsTaY',
         discord: null
