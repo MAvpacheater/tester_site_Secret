@@ -72,6 +72,10 @@ function initializePageContent(page) {
             break;
         case 'grind':
             if (typeof initializeGrind === 'function') {
+                // FIXED: Force re-initialization for grind categories
+                if (typeof window !== 'undefined' && window.grindInitialized !== undefined) {
+                    window.grindInitialized = false;
+                }
                 initializeGrind();
             }
             break;
@@ -258,11 +262,12 @@ function initializeApp() {
                 const isClickOnCategorySwitch = e.target.closest('.category-switch');
                 const isClickOnSimpleModifier = e.target.closest('.simple-modifier');
                 const isClickOnCategoryHeader = e.target.closest('.category-header');
+                const isClickOnGrindCategoryHeader = e.target.closest('.category-header-modifier');
                 
                 if (!isClickInsidePanel && !isClickOnSettingsBtn && 
                     !isClickOnCategoryButton && !isClickOnBackButton && 
                     !isClickOnCategorySwitch && !isClickOnSimpleModifier &&
-                    !isClickOnCategoryHeader) {
+                    !isClickOnCategoryHeader && !isClickOnGrindCategoryHeader) {
                     panel.classList.remove('show');
                 }
             }
@@ -280,7 +285,7 @@ function initializeAllModules() {
     const modules = [
         'initializeCalculator',
         'initializeArm', 
-        'initializeGrind',
+        'initializeGrind',      // FIXED: Make sure grind initializes properly
         'initializeBoosts',
         'initializeShiny',
         'initializeSecret',     // FIXED: Make sure this runs
@@ -296,7 +301,7 @@ function initializeAllModules() {
         try {
             if (typeof window[moduleName] === 'function') {
                 // FIXED: Add delay for DOM-dependent modules
-                if (moduleName === 'initializeSecret' || moduleName === 'initializePotions') {
+                if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || moduleName === 'initializeGrind') {
                     setTimeout(() => {
                         try {
                             // FIXED: Force reinitialization by resetting flags
@@ -305,6 +310,9 @@ function initializeAllModules() {
                             }
                             if (moduleName === 'initializePotions' && window.potionsInitialized) {
                                 window.potionsInitialized = false;
+                            }
+                            if (moduleName === 'initializeGrind' && window.grindInitialized) {
+                                window.grindInitialized = false;
                             }
                             
                             window[moduleName]();
@@ -345,6 +353,9 @@ function forceReinitializeModule(moduleName) {
     }
     if (moduleName === 'potions' && typeof window !== 'undefined') {
         window.potionsInitialized = false;
+    }
+    if (moduleName === 'grind' && typeof window !== 'undefined') {
+        window.grindInitialized = false;
     }
     
     // Call initialization
