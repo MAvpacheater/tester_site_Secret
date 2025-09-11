@@ -304,62 +304,51 @@ body {
     50% { opacity: 0.7; transform: translateY(-50%) scale(1.2); }
 }
 
-/* Language Selection in Menu */
-.language-category {
+/* Language Selection - Only Flags */
+.language-flags {
     margin-top: auto;
-    padding-top: 15px;
+    padding: 20px;
     border-top: 1px solid rgba(102, 126, 234, 0.3);
-}
-
-.language-selector {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    justify-content: center;
+    gap: 15px;
 }
 
-.language-buttons {
-    display: flex;
-    gap: 8px;
-    justify-content: space-between;
-    padding-left: 15px;
-}
-
-.lang-btn-menu {
-    flex: 1;
+.lang-flag-btn {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
     border: 2px solid rgba(102, 126, 234, 0.2);
     color: rgba(255, 255, 255, 0.9);
-    padding: 10px 12px;
-    border-radius: 10px;
+    padding: 12px;
+    border-radius: 50%;
     cursor: pointer;
-    font-size: 0.85em;
-    font-weight: 500;
+    font-size: 1.5em;
     transition: all 0.3s ease;
-    text-align: center;
     backdrop-filter: blur(5px);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    min-width: 60px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.lang-btn-menu:hover {
+.lang-flag-btn:hover {
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.5), rgba(118, 75, 162, 0.5));
     border-color: rgba(255, 255, 255, 0.4);
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
 }
 
-.lang-btn-menu.active {
+.lang-flag-btn.active {
     background: linear-gradient(135deg, #667eea, #764ba2);
     border-color: rgba(255, 255, 255, 0.6);
-    color: #ffffff;
-    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
-    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px) scale(1.05);
 }
 
-.lang-btn-menu.active:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+.lang-flag-btn.active:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.5);
 }
 
 /* Sidebar User Section */
@@ -464,18 +453,16 @@ body {
         padding: 15px;
     }
     
-    .category-buttons {
-        padding-left: 10px;
+    .language-flags {
+        gap: 12px;
+        padding: 15px;
     }
     
-    .language-buttons {
-        padding-left: 10px;
-    }
-    
-    .lang-btn-menu {
-        padding: 8px 10px;
-        font-size: 0.8em;
-        min-width: 50px;
+    .lang-flag-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3em;
+        padding: 10px;
     }
 }
 
@@ -493,15 +480,16 @@ body {
         padding: 15px 10px;
     }
     
-    .language-buttons {
-        gap: 6px;
-        padding-left: 8px;
+    .language-flags {
+        gap: 10px;
+        padding: 15px 10px;
     }
     
-    .lang-btn-menu {
-        padding: 7px 8px;
-        font-size: 0.75em;
-        min-width: 45px;
+    .lang-flag-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
+        padding: 8px;
     }
 }
 
