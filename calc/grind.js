@@ -1,4 +1,4 @@
-// Grind Calculator functionality
+// Grind Calculator functionality with category toggles
 
 // Множники для grind з новими боостами
 const grindModifiers = {
@@ -25,6 +25,65 @@ const grindModifiers = {
 
 let grindMultiplier = 1;
 let friendBoostCount = 8; // За замовчуванням 8 (максимум 8 x 15% = 120%)
+
+// Function to toggle grind categories (only one open at a time)
+function toggleGrindCategory(categoryId) {
+    console.log(`Toggling grind category: ${categoryId}`);
+    
+    const categoryContent = document.getElementById(categoryId);
+    const categoryHeader = document.querySelector(`[onclick="toggleGrindCategory('${categoryId}')"]`);
+    
+    if (!categoryContent || !categoryHeader) {
+        console.error(`Category elements not found for: ${categoryId}`);
+        return;
+    }
+    
+    const toggleIcon = categoryHeader.querySelector('.category-toggle-modifier');
+    const isCurrentlyExpanded = categoryContent.classList.contains('expanded');
+    
+    // Close all categories first
+    document.querySelectorAll('.modifier-category .category-content').forEach(content => {
+        content.classList.remove('expanded');
+    });
+    
+    document.querySelectorAll('.category-header-modifier').forEach(header => {
+        header.classList.remove('expanded');
+        header.classList.add('collapsed');
+        const icon = header.querySelector('.category-toggle-modifier');
+        if (icon) {
+            icon.classList.remove('expanded');
+        }
+    });
+    
+    // If this category wasn't expanded, expand it
+    if (!isCurrentlyExpanded) {
+        categoryContent.classList.add('expanded');
+        categoryHeader.classList.remove('collapsed');
+        categoryHeader.classList.add('expanded');
+        if (toggleIcon) {
+            toggleIcon.classList.add('expanded');
+        }
+    }
+}
+
+// Initialize all categories as closed
+function initializeGrindCategories() {
+    console.log('Initializing grind categories - all closed by default');
+    
+    // Close all categories by default
+    document.querySelectorAll('.modifier-category .category-content').forEach(content => {
+        content.classList.remove('expanded');
+    });
+    
+    document.querySelectorAll('.category-header-modifier').forEach(header => {
+        header.classList.add('collapsed');
+        header.classList.remove('expanded');
+        const icon = header.querySelector('.category-toggle-modifier');
+        if (icon) {
+            icon.classList.remove('expanded');
+        }
+    });
+}
 
 // Показ/приховування налаштувань
 function toggleGrindSettings() {
@@ -190,8 +249,10 @@ function calculateGrindStats() {
 
 // Ініціалізація Grind при завантаженні сторінки
 function initializeGrind() {
+    console.log('🔄 Initializing Grind Calculator...');
     updateGrindMultiplier();
     updateFriendDisplay();
+    initializeGrindCategories(); // Initialize categories as closed
 
     const numberInput = document.getElementById('numberInputGrind');
     if (numberInput) {
@@ -206,6 +267,8 @@ function initializeGrind() {
             if (errorMessage) errorMessage.textContent = '';
         });
     }
+    
+    console.log('✅ Grind Calculator initialized with collapsible categories');
 }
 
 // Make functions globally available
@@ -215,3 +278,7 @@ window.increaseFriendBoost = increaseFriendBoost;
 window.decreaseFriendBoost = decreaseFriendBoost;
 window.updateGrindMultiplier = updateGrindMultiplier;
 window.toggleGrindCategory = toggleGrindCategory;
+window.initializeGrindCategories = initializeGrindCategories;
+window.toggleGrindSettings = toggleGrindSettings;
+window.calculateGrindStats = calculateGrindStats;
+window.initializeGrind = initializeGrind;
