@@ -1,4 +1,4 @@
-// Fixed content loader script - WITH LANGUAGE IN MENU
+// Updated content loader script - With flag-only language selector
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -24,7 +24,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with categorized navigation and language in menu
+            // Create the main structure with categorized navigation and flag-only language selector
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -113,9 +113,9 @@ async function loadContent() {
                                 </button>
                             </div>
                         </div>
-
-                        <!-- Language selector will be added here by JavaScript -->
                     </div>
+                    
+                    <!-- Language flags will be added here by JavaScript -->
                     
                     <!-- Simplified User Section -->
                     <div class="sidebar-user" id="sidebarUser">
@@ -151,7 +151,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully with menu structure for language integration');
+            console.log('✅ Content loaded successfully with flag-only language selector');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -202,4 +202,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ content_loader.js loaded with menu structure ready for language integration');
+console.log('✅ content_loader.js loaded with flag-only language selector ready');
