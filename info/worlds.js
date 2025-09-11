@@ -1,4 +1,4 @@
-// Worlds functionality with multilingual support
+// Worlds functionality with multilingual support (without language switcher)
 
 // Language management
 let currentLanguage = 'en';
@@ -8,12 +8,6 @@ let worldsTranslations = null;
 function getCurrentLanguage() {
     const saved = localStorage.getItem('armHelper_language');
     return saved || 'en';
-}
-
-// Save language to localStorage
-function saveLanguage(lang) {
-    localStorage.setItem('armHelper_language', lang);
-    console.log(`Language saved: ${lang}`);
 }
 
 // Load translations from JSON file
@@ -50,59 +44,22 @@ async function loadWorldsTranslations() {
     }
 }
 
-// Switch language
-async function switchWorldsLanguage(lang) {
-    if (!worldsTranslations) {
-        await loadWorldsTranslations();
-    }
+// Update language when it changes globally
+function updateWorldsLanguage(newLanguage) {
+    if (newLanguage === currentLanguage) return;
     
-    if (!worldsTranslations[lang]) {
-        console.error(`❌ Language ${lang} not found, defaulting to English`);
-        lang = 'en';
-    }
+    currentLanguage = newLanguage;
     
-    currentLanguage = lang;
-    saveLanguage(lang);
-    
-    // Update language buttons
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.lang === lang) {
-            btn.classList.add('active');
-        }
-    });
+    console.log(`🌍 Updating worlds language to: ${newLanguage}`);
     
     // Update page title
     const titleElement = document.querySelector('.worlds-page .title');
-    if (titleElement) {
-        titleElement.textContent = worldsTranslations[lang].title;
+    if (titleElement && worldsTranslations && worldsTranslations[newLanguage]) {
+        titleElement.textContent = worldsTranslations[newLanguage].title;
     }
     
     // Regenerate content
     generateWorldsContent();
-}
-
-// Create language switcher
-function createLanguageSwitcher() {
-    const languages = [
-        { code: 'en', name: 'EN', flag: '🇺🇸' },
-        { code: 'uk', name: 'UK', flag: '🇺🇦' },
-        { code: 'ru', name: 'RU', flag: '🇷🇺' }
-    ];
-    
-    const switcher = document.createElement('div');
-    switcher.className = 'language-switcher';
-    
-    languages.forEach(({ code, name, flag }) => {
-        const btn = document.createElement('button');
-        btn.className = `lang-btn ${currentLanguage === code ? 'active' : ''}`;
-        btn.dataset.lang = code;
-        btn.innerHTML = `${flag} ${name}`;
-        btn.onclick = () => switchWorldsLanguage(code);
-        switcher.appendChild(btn);
-    });
-    
-    return switcher;
 }
 
 // Generate worlds content
@@ -175,17 +132,6 @@ async function initializeWorlds() {
         return;
     }
     
-    // Check if language switcher already exists
-    let existingSwitcher = worldsPage.querySelector('.language-switcher');
-    if (!existingSwitcher) {
-        // Create and insert language switcher after title
-        const title = worldsPage.querySelector('.title');
-        if (title) {
-            const switcher = createLanguageSwitcher();
-            title.parentNode.insertBefore(switcher, title.nextSibling);
-        }
-    }
-    
     // Load translations and generate content
     await loadWorldsTranslations();
     
@@ -228,6 +174,13 @@ function observeWorldsPageActivation() {
     }
 }
 
+// Listen for global language changes
+document.addEventListener('languageChanged', function(e) {
+    if (e.detail && e.detail.language) {
+        updateWorldsLanguage(e.detail.language);
+    }
+});
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Set up observer for page activation
@@ -242,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Make functions globally available
 window.initializeWorlds = initializeWorlds;
-window.switchWorldsLanguage = switchWorldsLanguage;
+window.updateWorldsLanguage = updateWorldsLanguage;
 window.generateWorldsContent = generateWorldsContent;
 
-console.log('✅ worlds.js loaded with multilingual support');
+console.log('✅ worlds.js loaded with multilingual support (no language switcher)');
