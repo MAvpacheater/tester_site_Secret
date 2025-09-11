@@ -5,21 +5,21 @@ let thanksInitialized = false;
 const contributors = [
     {
         name: 'Cs_428',
-        contribution: 'Data Collection & Bug Reports',
+        contribution: 'Gave information',
         role: 'Helper',
         telegram: '@Cs_428alt',
         discord: null
     },
     {
         name: 'Typka123',
-        contribution: 'Data Collection & Bug Reports',
+        contribution: 'Gave information',
         role: 'Helper',
         telegram: '@Tynka235',
         discord: null
     },
     {
         name: 'Komodo',
-        contribution: 'Data Collection & Bug Reports',
+        contribution: 'Gave information',
         role: 'Helper',
         telegram: '@Tumbochka1466XD',
         discord: null,
