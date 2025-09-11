@@ -1,0 +1,74 @@
+{
+  "en": {
+    "menu": "Menu",
+    "calculator": "Calculator",
+    "info": "Info",
+    "others": "Others",
+    "pages": {
+      "calculator": "Pet Calculator",
+      "arm": "Arm Calculator",
+      "grind": "Grind Calculator",
+      "boosts": "Boosts",
+      "shiny": "Shiny Stats",
+      "secret": "Secret Pets",
+      "codes": "Codes",
+      "aura": "Aura",
+      "trainer": "Trainer",
+      "charms": "Charms",
+      "potions": "Potions & Food",
+      "worlds": "Worlds",
+      "thanks": "Peoples"
+    },
+    "auth": {
+      "login": "Login (Soon...)"
+    }
+  },
+  "uk": {
+    "menu": "Меню",
+    "calculator": "Калькулятор",
+    "info": "Інформація",
+    "others": "Інше",
+    "pages": {
+      "calculator": "Калькулятор Петів",
+      "arm": "Калькулятор Сили",
+      "grind": "Калькулятор Фарму",
+      "boosts": "Бусти",
+      "shiny": "Статистика Шайні",
+      "secret": "Секретні Пети",
+      "codes": "Коди",
+      "aura": "Аура",
+      "trainer": "Тренер",
+      "charms": "Чарми",
+      "potions": "Зілля та Їжа",
+      "worlds": "Світи",
+      "thanks": "Люди"
+    },
+    "auth": {
+      "login": "Увійти (Незабаром...)"
+    }
+  },
+  "ru": {
+    "menu": "Меню",
+    "calculator": "Калькулятор",
+    "info": "Информация",
+    "others": "Другое",
+    "pages": {
+      "calculator": "Калькулятор Петов",
+      "arm": "Калькулятор Силы",
+      "grind": "Калькулятор Фарма",
+      "boosts": "Бусты",
+      "shiny": "Статистика Шайни",
+      "secret": "Секретные Петы",
+      "codes": "Коды",
+      "aura": "Аура",
+      "trainer": "Тренер",
+      "charms": "Чармы",
+      "potions": "Зелья и Еда",
+      "worlds": "Миры",
+      "thanks": "Люди"
+    },
+    "auth": {
+      "login": "Войти (Скоро...)"
+    }
+  }
+}
