@@ -4,32 +4,32 @@ let thanksInitialized = false;
 // Contributors data
 const contributors = [
     {
-        name: 'privatefanat_dep',
-        contribution: 'Project Creator & Main Developer',
-        role: 'Admin',
-        telegram: '@privatefanat_dep',
-        discord: null
-    },
-    {
-        name: 'TestUser1',
+        name: 'Cs_428',
         contribution: 'UI/UX Design & Testing',
         role: 'Helper',
         telegram: '@testuser1',
-        discord: 'TestUser1#1234'
+        discord: null
     },
     {
-        name: 'TestUser2',
+        name: 'Tupka',
         contribution: 'Data Collection & Bug Reports',
         role: 'Helper',
         telegram: '@testuser2',
         discord: null
     },
     {
-        name: 'TestUser3',
+        name: 'Komodo',
         contribution: 'Translation & Localization',
         role: 'Helper',
         telegram: null,
-        discord: 'TestUser3#5678'
+        discord: null,
+    },
+    {
+        name: 'Mr dep Dodep',
+        contribution: 'Project Creator & Developer',
+        role: 'Admin',
+        telegram: '@privatefanat_dep',
+        discord: 'trader_aws'
     }
 ];
 
