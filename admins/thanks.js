@@ -4,6 +4,14 @@ let thanksInitialized = false;
 // Contributors data
 const contributors = [
     {
+        name: 'Xlestay',
+        contribution: 'Gave information/Helped with logic, Top 2 trader',
+        role: 'Helper',
+        role: 'Admin',
+        telegram: null,
+        discord: null
+    },
+    {
         name: 'Cs_428',
         contribution: 'Gave information',
         role: 'Helper',
