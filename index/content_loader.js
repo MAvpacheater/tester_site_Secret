@@ -1,4 +1,4 @@
-// Fixed content loader script - БЕЗ ЛОГІНУ ТА ПРОФІЛЮ + PEOPLES PAGE
+// Fixed content loader script - WITH LANGUAGE IN MENU
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -24,7 +24,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with categorized navigation including Others
+            // Create the main structure with categorized navigation and language in menu
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -113,9 +113,11 @@ async function loadContent() {
                                 </button>
                             </div>
                         </div>
+
+                        <!-- Language selector will be added here by JavaScript -->
                     </div>
                     
-                    <!-- Simplified User Section - БЕЗ ПРОФІЛЮ -->
+                    <!-- Simplified User Section -->
                     <div class="sidebar-user" id="sidebarUser">
                         <button class="auth-btn-sidebar disabled" id="authButton" title="Coming Soon!">Login (Soon...)</button>
                     </div>
@@ -149,7 +151,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully with categorized menu including Others category and Peoples page');
+            console.log('✅ Content loaded successfully with menu structure for language integration');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -200,4 +202,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ content_loader.js FIXED loaded with categorized menu structure including Others category and Peoples page');
+console.log('✅ content_loader.js loaded with menu structure ready for language integration');
