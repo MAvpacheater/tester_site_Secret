@@ -1,11 +1,12 @@
-// Potions & Food Module - COMPLETE VERSION WITH IMAGES
-console.log('🧪 Loading potions.js module with image support...');
+// Potions & Food Module - WITH RARITY FILTERS
+console.log('🧪 Loading potions.js with rarity filters...');
 
 // Global variables
 let potionsInitialized = false;
 let currentPotionsType = 'potions';
+let currentRarityFilter = 'all';
 
-// Potions data - Enhanced with images
+// Potions data - Complete with images
 const potionsData = [
     { 
         name: "Luck Potion [1]", 
@@ -107,7 +108,7 @@ const potionsData = [
     }
 ];
 
-// Food data - Enhanced with images
+// Food data - Complete with images
 const foodData = [
     { 
         name: "Cookie", 
@@ -244,21 +245,25 @@ const foodData = [
     }
 ];
 
+// Get unique rarities from both datasets
+function getAvailableRarities() {
+    const allItems = [...potionsData, ...foodData];
+    const rarities = [...new Set(allItems.map(item => item.rarity))];
+    return rarities.sort();
+}
+
 // Main initialization function
 function initializePotions() {
-    console.log('🧪 Initializing Potions & Food module with images...');
+    console.log('🧪 Initializing Potions & Food with rarity filters...');
     
-    // Reset initialization flag to allow re-initialization
     potionsInitialized = false;
     
-    // Check if the potions page exists
     const potionsPage = document.getElementById('potionsPage');
     if (!potionsPage) {
         console.error('❌ Potions page not found in DOM');
         return false;
     }
     
-    // Check if container exists
     const container = document.getElementById('potionsContainer');
     if (!container) {
         console.error('❌ Potions container not found in DOM');
@@ -266,20 +271,16 @@ function initializePotions() {
     }
     
     try {
-        // Load content
         loadPotionsContent();
-        
-        // Mark as initialized
         potionsInitialized = true;
         window.potionsInitialized = true;
         
-        console.log('✅ Potions & Food module initialized successfully with images');
+        console.log('✅ Potions & Food with rarity filters initialized successfully');
         console.log(`📊 Loaded: ${potionsData.length} potions, ${foodData.length} foods`);
         return true;
     } catch (error) {
         console.error('❌ Error initializing Potions & Food:', error);
         potionsInitialized = false;
-        window.potionsInitialized = false;
         return false;
     }
 }
@@ -313,10 +314,89 @@ function switchPotionsType(type) {
     const activeSection = document.getElementById(`${type}Section`);
     if (activeSection) {
         activeSection.classList.add('active');
+        // Reset rarity filter when switching types
+        currentRarityFilter = 'all';
+        updateRarityFilterButtons();
+        filterByRarity();
         console.log(`✅ Switched to section: ${type}Section`);
     } else {
         console.error(`❌ Section ${type}Section not found`);
     }
+}
+
+// Set rarity filter
+function setRarityFilter(rarity) {
+    console.log(`🔍 Setting rarity filter to: ${rarity}`);
+    
+    if (rarity === currentRarityFilter && rarity !== 'all') {
+        // If clicking the same filter, show all
+        currentRarityFilter = 'all';
+    } else {
+        currentRarityFilter = rarity;
+    }
+    
+    updateRarityFilterButtons();
+    filterByRarity();
+}
+
+// Update rarity filter buttons
+function updateRarityFilterButtons() {
+    const filterButtons = document.querySelectorAll('.rarity-filter-btn');
+    
+    filterButtons.forEach(btn => {
+        const btnRarity = btn.getAttribute('data-rarity');
+        if (btnRarity === currentRarityFilter) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+}
+
+// Filter items by rarity
+function filterByRarity() {
+    const activeSection = document.querySelector('.potions-section.active');
+    if (!activeSection) return;
+    
+    const items = activeSection.querySelectorAll('.potion-item');
+    let visibleCount = 0;
+    
+    items.forEach((item, index) => {
+        const itemRarity = item.getAttribute('data-rarity');
+        const shouldShow = currentRarityFilter === 'all' || itemRarity === currentRarityFilter;
+        
+        if (shouldShow) {
+            item.classList.remove('hidden');
+            item.style.animationDelay = `${visibleCount * 50}ms`;
+            visibleCount++;
+        } else {
+            item.classList.add('hidden');
+        }
+    });
+    
+    // Show notification
+    let filterMessage = '';
+    if (currentRarityFilter === 'all') {
+        filterMessage = `Showing all ${visibleCount} ${currentPotionsType}`;
+    } else {
+        filterMessage = `Showing ${visibleCount} ${currentRarityFilter.toUpperCase()} ${currentPotionsType}`;
+    }
+    
+    console.log(`📊 ${filterMessage}`);
+    showPotionsNotification(`🔍 ${filterMessage}`, 'info');
+}
+
+// Create rarity filter buttons
+function createRarityFilters() {
+    const rarities = getAvailableRarities();
+    
+    return rarities.map(rarity => `
+        <button class="rarity-filter-btn ${rarity}" 
+                data-rarity="${rarity}" 
+                onclick="setRarityFilter('${rarity}')">
+            ${rarity}
+        </button>
+    `).join('');
 }
 
 // Create image element with error handling
@@ -341,11 +421,11 @@ function loadPotionsContent() {
         throw new Error('Container not found');
     }
 
-    console.log('📝 Loading potions content with images...');
+    console.log('📝 Loading potions content with rarity filters...');
 
-    // Generate potions HTML with images
+    // Generate potions HTML
     const potionsHTML = potionsData.map((potion, index) => `
-        <div class="potion-item" style="animation-delay: ${index * 50}ms;">
+        <div class="potion-item" data-rarity="${potion.rarity}" style="animation-delay: ${index * 50}ms;">
             ${createPotionImage(potion)}
             <div class="potion-main-content">
                 <div class="potion-name">${potion.name}</div>
@@ -358,9 +438,9 @@ function loadPotionsContent() {
         </div>
     `).join('');
 
-    // Generate food HTML with images
+    // Generate food HTML
     const foodHTML = foodData.map((food, index) => `
-        <div class="potion-item" style="animation-delay: ${index * 50}ms;">
+        <div class="potion-item" data-rarity="${food.rarity}" style="animation-delay: ${index * 50}ms;">
             ${createPotionImage(food)}
             <div class="potion-main-content">
                 <div class="potion-name">${food.name}</div>
@@ -373,9 +453,9 @@ function loadPotionsContent() {
         </div>
     `).join('');
 
-    // Create the complete content with switcher
+    // Create the complete content
     const fullHTML = `
-        <!-- Potions Type Switcher -->
+        <!-- Type Switcher -->
         <div class="potions-switcher">
             <button class="potions-switch-btn active" data-potions-type="potions" onclick="switchPotionsType('potions')">
                 🧪 Potions
@@ -383,6 +463,11 @@ function loadPotionsContent() {
             <button class="potions-switch-btn" data-potions-type="food" onclick="switchPotionsType('food')">
                 🍖 Food
             </button>
+        </div>
+        
+        <!-- Rarity Filter Controls -->
+        <div class="rarity-filter-controls">
+            ${createRarityFilters()}
         </div>
         
         <!-- Potions Section -->
@@ -396,24 +481,51 @@ function loadPotionsContent() {
         </div>
     `;
 
-    // Set the content
     container.innerHTML = fullHTML;
     
-    console.log('✅ Potions & Food content loaded successfully with images');
-    
-    // Reset to potions view
+    // Reset filters
     currentPotionsType = 'potions';
+    currentRarityFilter = 'all';
+    
+    console.log('✅ Potions & Food content with rarity filters loaded successfully');
 }
 
-// Force re-initialization function
-function forceReinitializePotions() {
-    console.log('🔄 Force reinitializing Potions & Food...');
-    potionsInitialized = false;
-    window.potionsInitialized = false;
+// Show notification
+function showPotionsNotification(message, type = 'info') {
+    // Remove existing notifications
+    const existingNotifications = document.querySelectorAll('.potions-notification');
+    existingNotifications.forEach(notification => notification.remove());
+
+    const notification = document.createElement('div');
+    notification.className = `potions-notification ${type}`;
+    notification.textContent = message;
+
+    const potionsPage = document.getElementById('potionsPage');
+    if (potionsPage) {
+        potionsPage.appendChild(notification);
+
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
+}
+
+// Get filtered data
+function getFilteredData() {
+    const currentData = currentPotionsType === 'potions' ? potionsData : foodData;
     
-    setTimeout(() => {
-        initializePotions();
-    }, 100);
+    if (currentRarityFilter === 'all') {
+        return currentData;
+    }
+    
+    return currentData.filter(item => item.rarity === currentRarityFilter);
 }
 
 // Debug function
@@ -421,103 +533,75 @@ function debugPotions() {
     console.log('=== POTIONS DEBUG ===');
     console.log('Initialized:', potionsInitialized);
     console.log('Current type:', currentPotionsType);
+    console.log('Current rarity filter:', currentRarityFilter);
     console.log('Container exists:', !!document.getElementById('potionsContainer'));
     console.log('Page exists:', !!document.getElementById('potionsPage'));
-    console.log('Potions data length:', potionsData.length);
-    console.log('Food data length:', foodData.length);
-    console.log('Window functions available:');
-    console.log('- initializePotions:', typeof window.initializePotions);
-    console.log('- switchPotionsType:', typeof window.switchPotionsType);
+    console.log('Available rarities:', getAvailableRarities());
+    console.log('Filtered data count:', getFilteredData().length);
     console.log('====================');
 }
 
-// Get potions data for external use
-function getPotionsData() {
+// Get statistics
+function getPotionsStats() {
+    const potionsStats = {};
+    const foodStats = {};
+    
+    // Count potions by rarity
+    potionsData.forEach(potion => {
+        potionsStats[potion.rarity] = (potionsStats[potion.rarity] || 0) + 1;
+    });
+    
+    // Count food by rarity
+    foodData.forEach(food => {
+        foodStats[food.rarity] = (foodStats[food.rarity] || 0) + 1;
+    });
+    
     return {
-        potions: potionsData,
-        food: foodData,
+        potions: {
+            total: potionsData.length,
+            byRarity: potionsStats
+        },
+        food: {
+            total: foodData.length,
+            byRarity: foodStats
+        },
+        rarities: getAvailableRarities(),
         initialized: potionsInitialized,
-        currentType: currentPotionsType
+        currentType: currentPotionsType,
+        currentFilter: currentRarityFilter
     };
 }
 
-// Add image to existing data function
-function updatePotionImage(type, name, imageUrl) {
-    const data = type === 'potions' ? potionsData : foodData;
-    const item = data.find(item => item.name === name);
-    if (item) {
-        item.image = imageUrl;
-        console.log(`✅ Updated image for ${name}: ${imageUrl}`);
-        // Refresh content if initialized
-        if (potionsInitialized) {
-            loadPotionsContent();
-        }
-        return true;
-    } else {
-        console.warn(`❌ Item ${name} not found in ${type} data`);
-        return false;
-    }
-}
+// Expose functions globally
+window.initializePotions = initializePotions;
+window.switchPotionsType = switchPotionsType;
+window.setRarityFilter = setRarityFilter;
+window.debugPotions = debugPotions;
+window.getPotionsStats = getPotionsStats;
+window.getFilteredData = getFilteredData;
+window.potionsInitialized = potionsInitialized;
 
-// Batch update images function
-function batchUpdateImages(updates) {
-    console.log('🔄 Batch updating images...');
-    updates.forEach(update => {
-        updatePotionImage(update.type, update.name, update.image);
-    });
-    console.log(`✅ Batch updated ${updates.length} images`);
-}
-
-// Expose functions globally with error handling
-try {
-    window.initializePotions = initializePotions;
-    window.switchPotionsType = switchPotionsType;
-    window.forceReinitializePotions = forceReinitializePotions;
-    window.debugPotions = debugPotions;
-    window.getPotionsData = getPotionsData;
-    window.updatePotionImage = updatePotionImage;
-    window.batchUpdateImages = batchUpdateImages;
-    window.potionsInitialized = potionsInitialized;
-    
-    console.log('✅ Potions module functions exposed globally with image support');
-} catch (error) {
-    console.error('❌ Error exposing potions functions:', error);
-}
-
-// Auto-initialize if DOM is ready and container exists
+// Auto-initialization
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔄 DOM ready, checking for potions container...');
-    
     setTimeout(() => {
         const container = document.getElementById('potionsContainer');
         if (container && !potionsInitialized) {
-            console.log('🧪 Auto-initializing potions with images...');
+            console.log('🧪 Auto-initializing potions with rarity filters...');
             initializePotions();
         }
     }, 500);
 });
 
-// Also try to initialize when content is loaded
-document.addEventListener('contentLoaded', function() {
-    console.log('🔄 Content loaded, initializing potions with images...');
-    
-    setTimeout(() => {
-        if (!potionsInitialized) {
-            initializePotions();
-        }
-    }, 200);
-});
-
-// Initialize when the potions page becomes active
+// Initialize when potions page becomes active
 document.addEventListener('click', function(e) {
     if (e.target && e.target.getAttribute && e.target.getAttribute('data-page') === 'potions') {
         setTimeout(() => {
             if (!potionsInitialized || !document.getElementById('potionsSection')) {
-                console.log('🧪 Page switched to potions, reinitializing with images...');
+                console.log('🧪 Page switched to potions, reinitializing with rarity filters...');
                 initializePotions();
             }
         }, 300);
     }
 });
 
-console.log('✅ potions.js module loaded successfully with image support and enhanced functionality');
+console.log('✅ potions.js with rarity filtering system loaded successfully');
