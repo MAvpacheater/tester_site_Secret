@@ -7,7 +7,7 @@ const contributors = [
         name: 'Cs_428',
         contribution: 'Data Collection & Bug Reports',
         role: 'Helper',
-        telegram: null,
+        telegram: '@Cs_428alt',
         discord: null
     },
     {
@@ -21,7 +21,7 @@ const contributors = [
         name: 'Komodo',
         contribution: 'Data Collection & Bug Reports',
         role: 'Helper',
-        telegram: null,
+        telegram: '@Tumbochka1466XD',
         discord: null,
     },
     {
