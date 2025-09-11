@@ -1,7 +1,9 @@
-/* Worlds Page Styles with Language Support */
+/* Worlds Page Styles - Updated without Language Switcher */
 
 .worlds-page {
     display: none !important;
+    padding: 20px;
+    min-height: 100vh;
 }
 
 .worlds-page.active {
@@ -14,56 +16,12 @@
     font-weight: 900;
     color: #4a5568;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     background: linear-gradient(45deg, #667eea, #764ba2);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-}
-
-/* Language Switcher */
-.language-switcher {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-}
-
-.lang-btn {
-    padding: 8px 16px;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-    border: 2px solid rgba(102, 126, 234, 0.2);
-    color: #4a5568;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.9em;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    font-family: 'Roboto', sans-serif;
-    min-width: 60px;
-    text-align: center;
-}
-
-.lang-btn:hover {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
-    border-color: rgba(102, 126, 234, 0.4);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-}
-
-.lang-btn.active {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border-color: rgba(255, 255, 255, 0.3);
-    color: white;
-    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
-    transform: translateY(-1px);
-}
-
-.lang-btn.active:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 }
 
 /* Loading State */
@@ -94,37 +52,41 @@
 }
 
 .worlds-container {
-    max-height: 500px;
+    max-height: 600px;
     overflow-y: auto;
-    padding-right: 10px;
+    padding-right: 12px;
+    scroll-behavior: smooth;
 }
 
 .worlds-container::-webkit-scrollbar { 
-    width: 8px; 
+    width: 10px; 
 }
 
 .worlds-container::-webkit-scrollbar-track { 
-    background: rgba(0, 0, 0, 0.1); 
-    border-radius: 10px; 
+    background: rgba(0, 0, 0, 0.08); 
+    border-radius: 12px; 
 }
 
 .worlds-container::-webkit-scrollbar-thumb { 
-    background: #667eea; 
-    border-radius: 10px; 
+    background: linear-gradient(135deg, #667eea, #764ba2); 
+    border-radius: 12px;
 }
 
 .world-item {
-    padding: 20px 24px;
-    margin-bottom: 14px;
-    background: rgba(246, 249, 252, 0.8);
-    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    background: rgba(246, 249, 252, 0.9);
+    border-radius: 16px;
     border: 2px solid rgba(102, 126, 234, 0.1);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: 'Roboto', sans-serif;
-    min-height: 120px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    position: relative;
+    overflow: hidden;
+    min-height: 140px;
     opacity: 0;
     transform: translateY(20px);
-    animation: fadeInUp 0.5s ease forwards;
+    animation: fadeInUp 0.6s ease forwards;
 }
 
 .world-item:nth-child(1) { animation-delay: 0.1s; }
@@ -141,10 +103,26 @@
     }
 }
 
+.world-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+    transition: left 0.6s ease;
+}
+
+.world-item:hover::before {
+    left: 100%;
+}
+
 .world-item:hover {
-    background: rgba(102, 126, 234, 0.1);
+    background: rgba(102, 126, 234, 0.12);
     border-color: rgba(102, 126, 234, 0.3);
-    transform: translateX(5px);
+    transform: translateX(8px) translateY(-2px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.15);
 }
 
 .world-item:nth-child(even) {
@@ -159,147 +137,192 @@
 .world-title {
     font-weight: 700;
     color: #2d3748;
-    font-size: 1.3em;
-    margin-bottom: 10px;
+    font-size: 1.4em;
+    margin-bottom: 12px;
     font-family: 'Orbitron', monospace;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .world-icon {
-    font-size: 1.2em;
-    min-width: 1.5em;
+    font-size: 1.3em;
+    min-width: 1.8em;
     text-align: center;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .world-description {
     color: #4a5568;
-    font-size: 1em;
+    font-size: 1.05em;
     line-height: 1.6;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    font-weight: 500;
 }
 
 .world-details {
     color: #6b7280;
-    font-size: 0.9em;
+    font-size: 0.95em;
     line-height: 1.5;
     font-style: italic;
+    opacity: 0.8;
 }
 
 /* Error State */
 .worlds-error {
     text-align: center;
-    padding: 40px;
+    padding: 40px 20px;
     color: #e53e3e;
     font-size: 1.1em;
     font-weight: 500;
+    background: rgba(239, 68, 68, 0.05);
+    border-radius: 12px;
+    border: 2px solid rgba(239, 68, 68, 0.1);
+    margin: 20px 0;
 }
 
 .retry-btn {
     margin-top: 15px;
-    padding: 10px 20px;
+    padding: 12px 24px;
     background: linear-gradient(135deg, #667eea, #764ba2);
     border: none;
     color: white;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    font-size: 0.9em;
+    font-size: 0.95em;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Orbitron', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .retry-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.retry-btn:active {
+    transform: translateY(0);
 }
 
 /* Mobile Styles */
 @media (max-width: 768px) {
+    .worlds-page {
+        padding: 15px;
+    }
+    
     .worlds-page .title {
         font-size: 2.2em;
-        margin-bottom: 15px;
-    }
-    
-    .language-switcher {
-        gap: 8px;
-        margin-bottom: 20px;
-    }
-    
-    .lang-btn {
-        padding: 6px 12px;
-        font-size: 0.85em;
-        min-width: 50px;
-    }
-    
-    .world-item {
-        padding: 16px 20px;
-        min-height: 100px;
-    }
-    
-    .world-title {
-        font-size: 1.2em;
+        margin-bottom: 25px;
     }
     
     .worlds-container {
-        max-height: 450px;
+        max-height: 500px;
+        padding-right: 8px;
+    }
+    
+    .world-item {
+        padding: 20px 22px;
+        min-height: 120px;
+        margin-bottom: 14px;
+    }
+    
+    .world-title {
+        font-size: 1.25em;
+        gap: 10px;
+    }
+    
+    .world-icon {
+        font-size: 1.2em;
+        min-width: 1.6em;
+    }
+    
+    .world-description {
+        font-size: 1em;
+        margin-bottom: 10px;
+    }
+    
+    .world-details {
+        font-size: 0.9em;
+    }
+    
+    .worlds-loading {
+        padding: 30px 20px;
+    }
+    
+    .worlds-error {
+        padding: 30px 15px;
+        font-size: 1em;
     }
 }
 
 @media (max-width: 480px) {
+    .worlds-page {
+        padding: 12px;
+    }
+    
     .worlds-page .title {
-        font-size: 2em;
-        margin-bottom: 15px;
+        font-size: 1.8em;
+        margin-bottom: 20px;
     }
     
-    .language-switcher {
-        gap: 6px;
-        margin-bottom: 18px;
-    }
-    
-    .lang-btn {
-        padding: 5px 10px;
-        font-size: 0.8em;
-        min-width: 45px;
+    .worlds-container {
+        max-height: 450px;
+        padding-right: 5px;
     }
     
     .world-item {
-        padding: 14px 16px;
-        min-height: 90px;
+        padding: 16px 18px;
+        min-height: 100px;
         margin-bottom: 12px;
+    }
+    
+    .world-item:hover {
+        transform: translateY(-2px);
     }
     
     .world-title {
         font-size: 1.1em;
         flex-direction: column;
         align-items: flex-start;
-        gap: 6px;
+        gap: 8px;
+        margin-bottom: 10px;
     }
     
     .world-icon {
         font-size: 1.1em;
+        min-width: auto;
     }
     
     .world-description {
         font-size: 0.95em;
+        margin-bottom: 8px;
     }
     
     .world-details {
         font-size: 0.85em;
     }
     
-    .worlds-container {
-        max-height: 400px;
-        padding-right: 5px;
+    .worlds-loading {
+        padding: 25px 15px;
+        font-size: 1em;
     }
     
-    .worlds-loading {
-        padding: 30px 20px;
-        font-size: 1em;
+    .worlds-loading::after {
+        width: 16px;
+        height: 16px;
+        margin-left: 8px;
     }
     
     .worlds-error {
-        padding: 30px 20px;
-        font-size: 1em;
+        padding: 25px 12px;
+        font-size: 0.95em;
+    }
+    
+    .retry-btn {
+        padding: 10px 20px;
+        font-size: 0.85em;
     }
 }
