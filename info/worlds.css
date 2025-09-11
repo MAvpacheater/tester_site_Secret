@@ -1,4 +1,4 @@
-/* Worlds Page Styles */
+/* Worlds Page Styles with Language Support */
 
 .worlds-page {
     display: none !important;
@@ -14,7 +14,7 @@
     font-weight: 900;
     color: #4a5568;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     background: linear-gradient(45deg, #667eea, #764ba2);
     -webkit-background-clip: text;
@@ -22,8 +22,79 @@
     background-clip: text;
 }
 
+/* Language Switcher */
+.language-switcher {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.lang-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    color: #4a5568;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: 'Roboto', sans-serif;
+    min-width: 60px;
+    text-align: center;
+}
+
+.lang-btn:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    border-color: rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.lang-btn.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+    transform: translateY(-1px);
+}
+
+.lang-btn.active:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Loading State */
+.worlds-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    color: #667eea;
+    font-size: 1.1em;
+    font-weight: 500;
+}
+
+.worlds-loading::after {
+    content: '';
+    margin-left: 10px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #667eea;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .worlds-container {
-    max-height: 550px; /* Збільшено з 450px для більшого місця */
+    max-height: 500px;
     overflow-y: auto;
     padding-right: 10px;
 }
@@ -43,14 +114,31 @@
 }
 
 .world-item {
-    padding: 20px 24px; /* Збільшено padding для більше місця тексту */
+    padding: 20px 24px;
     margin-bottom: 14px;
     background: rgba(246, 249, 252, 0.8);
     border-radius: 12px;
     border: 2px solid rgba(102, 126, 234, 0.1);
     transition: all 0.3s ease;
     font-family: 'Roboto', sans-serif;
-    min-height: 120px; /* Мінімальна висота для більше тексту */
+    min-height: 120px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.world-item:nth-child(1) { animation-delay: 0.1s; }
+.world-item:nth-child(2) { animation-delay: 0.15s; }
+.world-item:nth-child(3) { animation-delay: 0.2s; }
+.world-item:nth-child(4) { animation-delay: 0.25s; }
+.world-item:nth-child(5) { animation-delay: 0.3s; }
+.world-item:nth-child(n+6) { animation-delay: 0.35s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .world-item:hover {
@@ -71,7 +159,7 @@
 .world-title {
     font-weight: 700;
     color: #2d3748;
-    font-size: 1.3em; /* Збільшено розмір шрифту */
+    font-size: 1.3em;
     margin-bottom: 10px;
     font-family: 'Orbitron', monospace;
     display: flex;
@@ -81,24 +169,69 @@
 
 .world-icon {
     font-size: 1.2em;
+    min-width: 1.5em;
+    text-align: center;
 }
 
 .world-description {
     color: #4a5568;
-    font-size: 1em; /* Збільшено розмір шрифту */
+    font-size: 1em;
     line-height: 1.6;
     margin-bottom: 10px;
 }
 
 .world-details {
     color: #6b7280;
-    font-size: 0.9em; /* Збільшено розмір шрифту */
+    font-size: 0.9em;
     line-height: 1.5;
     font-style: italic;
 }
 
+/* Error State */
+.worlds-error {
+    text-align: center;
+    padding: 40px;
+    color: #e53e3e;
+    font-size: 1.1em;
+    font-weight: 500;
+}
+
+.retry-btn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.retry-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+}
+
 /* Mobile Styles */
 @media (max-width: 768px) {
+    .worlds-page .title {
+        font-size: 2.2em;
+        margin-bottom: 15px;
+    }
+    
+    .language-switcher {
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .lang-btn {
+        padding: 6px 12px;
+        font-size: 0.85em;
+        min-width: 50px;
+    }
+    
     .world-item {
         padding: 16px 20px;
         min-height: 100px;
@@ -109,18 +242,31 @@
     }
     
     .worlds-container {
-        max-height: 500px;
+        max-height: 450px;
     }
 }
 
 @media (max-width: 480px) {
     .worlds-page .title {
         font-size: 2em;
+        margin-bottom: 15px;
+    }
+    
+    .language-switcher {
+        gap: 6px;
+        margin-bottom: 18px;
+    }
+    
+    .lang-btn {
+        padding: 5px 10px;
+        font-size: 0.8em;
+        min-width: 45px;
     }
     
     .world-item {
         padding: 14px 16px;
         min-height: 90px;
+        margin-bottom: 12px;
     }
     
     .world-title {
@@ -128,6 +274,10 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 6px;
+    }
+    
+    .world-icon {
+        font-size: 1.1em;
     }
     
     .world-description {
@@ -139,6 +289,17 @@
     }
     
     .worlds-container {
-        max-height: 450px;
+        max-height: 400px;
+        padding-right: 5px;
+    }
+    
+    .worlds-loading {
+        padding: 30px 20px;
+        font-size: 1em;
+    }
+    
+    .worlds-error {
+        padding: 30px 20px;
+        font-size: 1em;
     }
 }
