@@ -1,4 +1,4 @@
-// Fixed General JavaScript functions - WITH MENU TRANSLATIONS
+// Updated General JavaScript functions - Simplified with flag-only language selector
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -37,7 +37,6 @@ async function loadMenuTranslations() {
                 calculator: "Calculator", 
                 info: "Info",
                 others: "Others",
-                language: "Language",
                 pages: {
                     calculator: "Pet Calculator",
                     arm: "Arm Calculator",
@@ -76,8 +75,8 @@ async function switchAppLanguage(lang) {
     currentAppLanguage = lang;
     saveAppLanguage(lang);
     
-    // Update language buttons in menu
-    document.querySelectorAll('.lang-btn-menu').forEach(btn => {
+    // Update language flag buttons
+    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
         btn.classList.remove('active');
         if (btn.dataset.lang === lang) {
             btn.classList.add('active');
@@ -112,8 +111,7 @@ function updateMenuTranslations() {
     const categoryMappings = {
         'calculatorButtons': 'calculator',
         'infoButtons': 'info',
-        'othersButtons': 'others',
-        'languageCategory': 'language'
+        'othersButtons': 'others'
     };
     
     Object.entries(categoryMappings).forEach(([categoryId, translationKey]) => {
@@ -141,42 +139,30 @@ function updateMenuTranslations() {
     console.log(`✅ Menu translations updated for ${currentAppLanguage}`);
 }
 
-// Create language selector for menu
-function createMenuLanguageSelector() {
+// Create language flags section
+function createLanguageFlags() {
     const languages = [
-        { code: 'en', name: 'EN', flag: '🇺🇸' },
-        { code: 'uk', name: 'UK', flag: '🇺🇦' },
-        { code: 'ru', name: 'RU', flag: '🇷🇺' }
+        { code: 'en', flag: '🇺🇸' },
+        { code: 'uk', flag: '🇺🇦' },
+        { code: 'ru', flag: '🇷🇺' }
     ];
     
-    const languageCategory = document.createElement('div');
-    languageCategory.className = 'nav-category language-category';
+    const languageFlags = document.createElement('div');
+    languageFlags.className = 'language-flags';
     
-    languageCategory.innerHTML = `
-        <div class="category-header" data-category="languageCategory" onclick="toggleCategory('languageCategory')">
-            <div class="category-title">
-                <span class="category-icon">🌍</span>
-                <span>Language</span>
-            </div>
-            <span class="category-toggle">▼</span>
-        </div>
-        <div class="category-buttons language-selector" id="languageCategory">
-            <div class="language-buttons">
-                ${languages.map(({ code, name, flag }) => `
-                    <button class="lang-btn-menu ${currentAppLanguage === code ? 'active' : ''}" 
-                            data-lang="${code}" 
-                            onclick="switchAppLanguage('${code}')">
-                        ${flag}
-                    </button>
-                `).join('')}
-            </div>
-        </div>
-    `;
+    languageFlags.innerHTML = languages.map(({ code, flag }) => `
+        <button class="lang-flag-btn ${currentAppLanguage === code ? 'active' : ''}" 
+                data-lang="${code}" 
+                onclick="switchAppLanguage('${code}')"
+                title="${code.toUpperCase()}">
+            ${flag}
+        </button>
+    `).join('');
     
-    return languageCategory;
+    return languageFlags;
 }
 
-// Page switching functionality - with translation support
+// Page switching functionality
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
     
@@ -403,7 +389,7 @@ function loadSettingsFromStorage(key) {
 // Flag to prevent repeated initialization
 let appInitialized = false;
 
-// App initialization with menu translations support
+// App initialization with flag-only language selector
 async function initializeApp() {
     if (appInitialized) {
         console.log('⚠️ App already initialized');
@@ -425,11 +411,11 @@ async function initializeApp() {
     // Load menu translations
     await loadMenuTranslations();
     
-    // Add language selector to menu
-    const navButtons = document.querySelector('.nav-buttons');
-    if (navButtons) {
-        const languageSelector = createMenuLanguageSelector();
-        navButtons.appendChild(languageSelector);
+    // Add language flags to sidebar
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        const languageFlags = createLanguageFlags();
+        sidebar.appendChild(languageFlags);
     }
     
     // Update menu translations
@@ -464,13 +450,13 @@ async function initializeApp() {
                 const isClickOnSimpleModifier = e.target.closest('.simple-modifier');
                 const isClickOnCategoryHeader = e.target.closest('.category-header');
                 const isClickOnGrindCategoryHeader = e.target.closest('.category-header-modifier');
-                const isClickOnLanguageButton = e.target.closest('.lang-btn-menu');
+                const isClickOnLanguageFlag = e.target.closest('.lang-flag-btn');
                 
                 if (!isClickInsidePanel && !isClickOnSettingsBtn && 
                     !isClickOnCategoryButton && !isClickOnBackButton && 
                     !isClickOnCategorySwitch && !isClickOnSimpleModifier &&
                     !isClickOnCategoryHeader && !isClickOnGrindCategoryHeader &&
-                    !isClickOnLanguageButton) {
+                    !isClickOnLanguageFlag) {
                     panel.classList.remove('show');
                 }
             }
@@ -478,7 +464,7 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed with menu translations');
+    console.log('✅ App initialization completed with flag-only language selector');
 }
 
 // Initialize all modules with proper DOM readiness checks
