@@ -8,7 +8,7 @@ const contributors = [
         name: 'Xlestay',
         contribution: 'Gave information/Helped with logic, Top 2 trader',
         role: 'Helper',
-        telegram: null,
+        telegram: '@xlEsTaY',
         discord: null
     },
     {
