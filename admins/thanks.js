@@ -5,21 +5,21 @@ let thanksInitialized = false;
 const contributors = [
     {
         name: 'Cs_428',
-        contribution: 'UI/UX Design & Testing',
+        contribution: 'Data Collection & Bug Reports',
         role: 'Helper',
-        telegram: '@testuser1',
+        telegram: null,
         discord: null
     },
     {
-        name: 'Tupka',
+        name: 'Typka123',
         contribution: 'Data Collection & Bug Reports',
         role: 'Helper',
-        telegram: '@testuser2',
+        telegram: '@Tynka235',
         discord: null
     },
     {
         name: 'Komodo',
-        contribution: 'Translation & Localization',
+        contribution: 'Data Collection & Bug Reports',
         role: 'Helper',
         telegram: null,
         discord: null,
@@ -76,7 +76,23 @@ function createContributorCard(contributor, index) {
 
     // Role badge styling
     const roleClass = contributor.role === 'Admin' ? 'role-admin' : 'role-helper';
-    const roleColor = contributor.role === 'Admin' ? '#ff6b6b' : '#4ecdc4';
+
+    // Generate social buttons only if they exist
+    let socialButtons = '';
+    if (contributor.telegram) {
+        socialButtons += `
+            <button class="social-btn telegram-social" onclick="openTelegramProfile('${contributor.telegram}')">
+                📱 Telegram Profile
+            </button>
+        `;
+    }
+    if (contributor.discord) {
+        socialButtons += `
+            <button class="social-btn discord-social" onclick="openDiscordProfile('${contributor.discord}')">
+                🎮 Discord Profile
+            </button>
+        `;
+    }
 
     card.innerHTML = `
         <div class="contributor-main">
@@ -86,23 +102,13 @@ function createContributorCard(contributor, index) {
             </div>
             <div class="contributor-actions">
                 <div class="role-badge ${roleClass}">${contributor.role}</div>
-                <button class="action-btn telegram-btn" onclick="openTelegramProfile('${contributor.telegram || ''}')">
-                    📱 View Telegram
-                </button>
             </div>
         </div>
-        <div class="contributor-social">
-            ${contributor.telegram ? `
-                <button class="social-btn telegram-social" onclick="openTelegramProfile('${contributor.telegram}')">
-                    📱 Telegram Profile
-                </button>
-            ` : ''}
-            ${contributor.discord ? `
-                <button class="social-btn discord-social" onclick="openDiscordProfile('${contributor.discord}')">
-                    🎮 Discord Profile
-                </button>
-            ` : ''}
-        </div>
+        ${socialButtons ? `
+            <div class="contributor-social">
+                ${socialButtons}
+            </div>
+        ` : ''}
     `;
 
     return card;
@@ -120,6 +126,7 @@ function openTelegramProfile(telegramHandle) {
     try {
         window.open(url, '_blank', 'noopener,noreferrer');
         console.log(`📱 Opening Telegram profile: ${url}`);
+        showNotification('📱 Opening Telegram profile...', 'success');
     } catch (error) {
         console.error('❌ Error opening Telegram profile:', error);
         showNotification('❌ Failed to open Telegram profile', 'error');
@@ -132,11 +139,17 @@ function openDiscordProfile(discordTag) {
         return;
     }
 
-    // Since Discord doesn't have direct profile URLs, we'll show a notification
-    showNotification(`📋 Discord: ${discordTag} (copied to clipboard)`, 'info');
+    // Try to open Discord profile URL (works if Discord is installed)
+    const discordUrl = `discord://users/${discordTag}`;
     
-    // Copy Discord tag to clipboard
     try {
+        // First try to open Discord app
+        window.location.href = discordUrl;
+        
+        // Show notification that Discord tag is copied as backup
+        showNotification(`🎮 Opening Discord... Tag: ${discordTag}`, 'info');
+        
+        // Copy Discord tag to clipboard as fallback
         navigator.clipboard.writeText(discordTag).then(() => {
             console.log(`🎮 Discord tag copied to clipboard: ${discordTag}`);
         }).catch(() => {
@@ -148,8 +161,22 @@ function openDiscordProfile(discordTag) {
             document.execCommand('copy');
             document.body.removeChild(textArea);
         });
+        
+        // If Discord app doesn't open, show fallback message after delay
+        setTimeout(() => {
+            showNotification(`📋 Discord tag copied: ${discordTag}`, 'success');
+        }, 2000);
+        
     } catch (error) {
-        console.error('❌ Error copying Discord tag:', error);
+        console.error('❌ Error opening Discord profile:', error);
+        showNotification(`📋 Discord: ${discordTag} (copied to clipboard)`, 'info');
+        
+        // Copy to clipboard as fallback
+        try {
+            navigator.clipboard.writeText(discordTag);
+        } catch (clipboardError) {
+            console.error('❌ Error copying to clipboard:', clipboardError);
+        }
     }
 }
 
