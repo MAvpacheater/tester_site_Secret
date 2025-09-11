@@ -1,97 +1,85 @@
-<!-- Information Pages Content - FIXED -->
-
-<!-- Boosts Page -->
-<div class="page boosts-page" id="boostsPage">
-    <h1 class="title">Boosts Information</h1>
-    
-    <div class="boosts-container" id="boostsContainer">
-        <!-- Контент буде згенеровано через JavaScript -->
-    </div>
-</div>
-
-<!-- Shiny Stats Page -->
-<div class="page shiny-page" id="shinyPage">
-    <h1 class="title">Shiny pets</h1>
-    
-    <!-- Stats Grid -->
-    <div class="stats-grid" id="statsGrid">
-        <!-- Контент буде згенеровано через JavaScript -->
-    </div>
-</div>
-
-<!-- Secret Pets Page -->
-<div class="page secret-page" id="secretPage">
-    <h1 class="title">Secret Pets</h1>
-    
-    <div class="secret-container" id="secretContainer">
-        <!-- Контент буде згенеровано через JavaScript з переключкою -->
-    </div>
-</div>
-
-<!-- Codes Page -->
-<div class="page codes-page" id="codesPage">
-    <h1 class="title">Game Codes</h1>
-    
-    <div class="codes-container" id="codesContainer">
-        <!-- Контент буде згенеровано через JavaScript -->
-    </div>
-</div>
-
-<!-- Aura Page -->
-<div class="page aura-page" id="auraPage">
-    <h1 class="title">Aura Boosts</h1>
-    
-    <div class="aura-container" id="auraContainer">
-        <!-- Контент буде згенеровано через JavaScript -->
-    </div>
-</div>
-
-<!-- Trainer Page -->
-<div class="page trainer-page" id="trainerPage">
-    <h1 class="title">Trainer Collection</h1>
-    
-    <!-- Trainer Type Switcher -->
-    <div class="trainer-switcher">
-        <button class="trainer-switch-btn active" data-type="free" onclick="switchTrainerType('free')">Free</button>
-        <button class="trainer-switch-btn" data-type="donate" onclick="switchTrainerType('donate')">Donate</button>
-    </div>
-    
-    <div class="trainer-container">
-        <!-- Free Trainers Boosts -->
-        <div class="trainer-section active" id="freeTrainers">
-            <!-- Контент буде згенеровано через JavaScript -->
-        </div>
-        
-        <!-- Donate Trainers Section -->
-        <div class="trainer-section" id="donateTrainers">
-            <!-- Контент буде згенеровано через JavaScript -->
-        </div>
-    </div>
-</div>
-
-<!-- Charms Page -->
-<div class="page charms-page" id="charmsPage">
-    <h1 class="title">Charms Boosts</h1>
-    
-    <div class="charms-container" id="charmsContainer">
-        <!-- Контент буде згенеровано через JavaScript -->
-    </div>
-</div>
-
-<!-- Potions & Food Page - ADDED -->
+<!-- Potions & Food Page with Rarity Filters -->
 <div class="page potions-page" id="potionsPage">
-    <h1 class="title">Potions & Food</h1>
+    <h1 class="title">🧪 Potions & Food</h1>
     
+    <!-- Main Container with Filters and Content -->
     <div class="potions-container" id="potionsContainer">
-        <!-- Контент буде згенеровано через JavaScript з переключкою -->
+        <!-- Type Switcher will be inserted here by JavaScript -->
+        
+        <!-- Rarity Filter Controls will be inserted here by JavaScript -->
+        
+        <!-- Content Sections will be inserted here by JavaScript -->
+        
+        <!-- Loading State -->
+        <div class="potions-loading" id="potionsLoading">
+            <div style="text-align: center; color: #666; padding: 40px;">
+                <div style="font-size: 2em; margin-bottom: 15px;">🧪</div>
+                <div>Loading potions & food with rarity filters...</div>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Worlds Page -->
-<div class="page worlds-page" id="worldsPage">
-    <h1 class="title">Worlds Info</h1>
+<!-- Script to auto-initialize when page becomes visible -->
+<script>
+// Auto-initialize potions when this page becomes active
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if potions page is visible and initialize
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const potionsPage = document.getElementById('potionsPage');
+                if (potionsPage && potionsPage.classList.contains('active')) {
+                    // Page is now active, initialize if not already done
+                    setTimeout(() => {
+                        if (typeof window.initializePotions === 'function' && 
+                            !window.potionsInitialized) {
+                            console.log('🧪 Auto-initializing potions on page activation...');
+                            window.initializePotions();
+                        }
+                    }, 100);
+                }
+            }
+        });
+    });
     
-    <div class="worlds-container" id="worldsContainer">
-        <!-- Контент буде згенеровано через JavaScript -->
-    </div>
-</div>
+    const potionsPage = document.getElementById('potionsPage');
+    if (potionsPage) {
+        observer.observe(potionsPage, { 
+            attributes: true, 
+            attributeFilter: ['class'] 
+        });
+    }
+    
+    // Also try immediate initialization if page is already active
+    setTimeout(() => {
+        if (potionsPage && potionsPage.classList.contains('active')) {
+            if (typeof window.initializePotions === 'function' && 
+                !window.potionsInitialized) {
+                console.log('🧪 Immediate initialization of potions...');
+                window.initializePotions();
+            }
+        }
+    }, 200);
+});
+
+// Additional initialization trigger for navigation events
+document.addEventListener('click', function(e) {
+    // Check if clicking on potions navigation
+    if (e.target && 
+        (e.target.getAttribute('data-page') === 'potions' || 
+         e.target.textContent?.includes('Potions') ||
+         e.target.closest('[data-page="potions"]'))) {
+        
+        setTimeout(() => {
+            const potionsPage = document.getElementById('potionsPage');
+            if (potionsPage && potionsPage.classList.contains('active')) {
+                if (typeof window.initializePotions === 'function') {
+                    console.log('🧪 Navigation-triggered potions initialization...');
+                    window.initializePotions();
+                }
+            }
+        }, 300);
+    }
+});
+</script>
