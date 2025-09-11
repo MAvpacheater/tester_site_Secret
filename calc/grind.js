@@ -267,7 +267,16 @@ function initializeGrind() {
             if (errorMessage) errorMessage.textContent = '';
         });
     }
+
+    // Додаємо обробник для кнопки налаштувань
+    const settingsBtn = document.getElementById('grindSettingsBtn');
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', toggleGrindSettings);
+    }
 }
+
+// Ініціалізуємо при завантаженні DOM
+document.addEventListener('DOMContentLoaded', initializeGrind);
 
 // Make functions globally available
 window.handleTpSelection = handleTpSelection;
