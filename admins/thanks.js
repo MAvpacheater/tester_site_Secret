@@ -1,5 +1,6 @@
 // Thanks page functionality
 let thanksInitialized = false;
+let currentFilter = 'all'; // 'all', 'admin', 'helper'
 
 // Contributors data
 const contributors = [
@@ -61,9 +62,106 @@ function initializeThanks() {
         return;
     }
 
+    createFilterControls();
     renderContributors();
     thanksInitialized = true;
     console.log('✅ Thanks page initialized successfully');
+}
+
+function createFilterControls() {
+    const thanksPage = document.getElementById('thanksPage');
+    const thanksHeader = thanksPage.querySelector('.thanks-header');
+    
+    // Check if filter controls already exist
+    if (thanksPage.querySelector('.filter-controls')) {
+        return;
+    }
+
+    const filterControls = document.createElement('div');
+    filterControls.className = 'filter-controls';
+    filterControls.innerHTML = `
+        <button class="filter-btn" data-filter="admin" onclick="setFilter('admin')">
+            👑 Admins
+        </button>
+        <button class="filter-btn" data-filter="helper" onclick="setFilter('helper')">
+            🤝 Helpers
+        </button>
+    `;
+
+    // Insert filter controls after header
+    thanksHeader.insertAdjacentElement('afterend', filterControls);
+    
+    console.log('✅ Filter controls created');
+}
+
+function setFilter(filter) {
+    if (filter === currentFilter && filter !== 'all') {
+        // If clicking the same filter, show all
+        currentFilter = 'all';
+    } else {
+        currentFilter = filter;
+    }
+
+    updateFilterButtons();
+    filterContributors();
+    
+    console.log(`🔍 Filter set to: ${currentFilter}`);
+}
+
+function updateFilterButtons() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    filterButtons.forEach(btn => {
+        const btnFilter = btn.getAttribute('data-filter');
+        if (btnFilter === currentFilter) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+}
+
+function filterContributors() {
+    const contributorCards = document.querySelectorAll('.contributor-card');
+    
+    contributorCards.forEach((card, index) => {
+        const contributor = contributors[index];
+        if (!contributor) return;
+
+        const shouldShow = currentFilter === 'all' || 
+                          (currentFilter === 'admin' && contributor.role === 'Admin') ||
+                          (currentFilter === 'helper' && contributor.role === 'Helper');
+
+        if (shouldShow) {
+            card.classList.remove('hidden');
+            // Add animation delay for filtered results
+            card.style.animationDelay = `${(index * 0.1)}s`;
+        } else {
+            card.classList.add('hidden');
+        }
+    });
+
+    // Show count of filtered results
+    const visibleCount = document.querySelectorAll('.contributor-card:not(.hidden)').length;
+    let filterMessage = '';
+    
+    switch (currentFilter) {
+        case 'admin':
+            filterMessage = `Showing ${visibleCount} Admin${visibleCount !== 1 ? 's' : ''}`;
+            break;
+        case 'helper':
+            filterMessage = `Showing ${visibleCount} Helper${visibleCount !== 1 ? 's' : ''}`;
+            break;
+        default:
+            filterMessage = `Showing all ${visibleCount} contributor${visibleCount !== 1 ? 's' : ''}`;
+    }
+    
+    console.log(`📊 ${filterMessage}`);
+    
+    // Optional: Show notification about filter
+    if (currentFilter !== 'all') {
+        showNotification(`🔍 ${filterMessage}`, 'info');
+    }
 }
 
 function renderContributors() {
@@ -80,6 +178,9 @@ function renderContributors() {
         contributorsContainer.appendChild(contributorCard);
     });
 
+    // Apply current filter
+    filterContributors();
+    
     console.log(`✅ Rendered ${contributors.length} contributors`);
 }
 
@@ -87,6 +188,7 @@ function createContributorCard(contributor, index) {
     const card = document.createElement('div');
     card.className = 'contributor-card';
     card.setAttribute('data-index', index);
+    card.setAttribute('data-role', contributor.role.toLowerCase());
 
     // Role badge styling
     const roleClass = contributor.role === 'Admin' ? 'role-admin' : 'role-helper';
@@ -266,6 +368,7 @@ function getContributorStats() {
 
 // Make functions globally available
 window.initializeThanks = initializeThanks;
+window.setFilter = setFilter;
 window.openTelegramProfile = openTelegramProfile;
 window.openDiscordProfile = openDiscordProfile;
 window.addContributor = addContributor;
