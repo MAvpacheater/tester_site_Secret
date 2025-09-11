@@ -37,6 +37,67 @@
     margin: 0 auto;
 }
 
+/* Filter Buttons */
+.filter-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    color: #667eea;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+.filter-btn:hover {
+    transform: translateY(-2px);
+    border-color: rgba(102, 126, 234, 0.5);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+}
+
+.filter-btn:hover::before {
+    left: 100%;
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-color: #667eea;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.filter-btn.active:hover {
+    background: linear-gradient(135deg, #5a6fd8, #6a4190);
+    transform: translateY(-2px);
+}
+
 .contributors-list {
     display: flex;
     flex-direction: column;
@@ -54,6 +115,10 @@
     backdrop-filter: blur(10px);
     position: relative;
     overflow: hidden;
+}
+
+.contributor-card.hidden {
+    display: none;
 }
 
 .contributor-card::before {
@@ -291,6 +356,16 @@
         font-size: 1.1em;
     }
     
+    .filter-controls {
+        gap: 10px;
+        margin: 20px 0;
+    }
+    
+    .filter-btn {
+        font-size: 0.9em;
+        padding: 10px 20px;
+    }
+    
     .contributor-main {
         flex-direction: column;
         align-items: stretch;
@@ -323,6 +398,11 @@
 @media (max-width: 480px) {
     .thanks-page {
         padding: 15px;
+    }
+    
+    .filter-btn {
+        font-size: 0.8em;
+        padding: 8px 16px;
     }
     
     .contributor-card {
@@ -370,3 +450,4 @@
 .contributor-card:nth-child(3) { animation-delay: 0.3s; }
 .contributor-card:nth-child(4) { animation-delay: 0.4s; }
 .contributor-card:nth-child(5) { animation-delay: 0.5s; }
+.contributor-card:nth-child(6) { animation-delay: 0.6s; }
