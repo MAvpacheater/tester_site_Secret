@@ -7,7 +7,6 @@ const contributors = [
         name: 'Xlestay',
         contribution: 'Gave information/Helped with logic, Top 2 trader',
         role: 'Helper',
-        role: 'Admin',
         telegram: null,
         discord: null
     },
@@ -30,6 +29,13 @@ const contributors = [
         contribution: 'Gave information',
         role: 'Helper',
         telegram: '@Tumbochka1466XD',
+        discord: null,
+    },
+    {
+        name: 'Йорик',
+        contribution: 'Gave information',
+        role: 'Helper',
+        telegram: '@bebekam228',
         discord: null,
     },
     {
