@@ -1,10 +1,68 @@
-// Potions & Food Module - WITH RARITY FILTERS
-console.log('🧪 Loading potions.js with rarity filters...');
+// Potions & Food Module - WITH RARITY FILTERS AND MULTILINGUAL SUPPORT
+console.log('🧪 Loading potions.js with rarity filters and multilingual support...');
 
 // Global variables
 let potionsInitialized = false;
 let currentPotionsType = 'potions';
 let currentRarityFilter = 'all';
+let currentLanguage = 'en';
+let potionsTranslations = null;
+
+// Get language from localStorage or default to English
+function getCurrentLanguage() {
+    const saved = localStorage.getItem('armHelper_language');
+    return saved || 'en';
+}
+
+// Load translations from JSON file
+async function loadPotionsTranslations() {
+    if (potionsTranslations) return potionsTranslations;
+    
+    try {
+        console.log('📥 Loading potions translations...');
+        const response = await fetch('languages/potions.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        potionsTranslations = await response.json();
+        console.log('✅ Potions translations loaded successfully');
+        return potionsTranslations;
+    } catch (error) {
+        console.error('❌ Error loading potions translations:', error);
+        // Fallback to English if translations fail to load
+        potionsTranslations = {
+            en: {
+                title: "Potions & Food",
+                switcherPotions: "🧪 Potions",
+                switcherFood: "🍖 Food"
+            }
+        };
+        return potionsTranslations;
+    }
+}
+
+// Get translated text
+function getTranslation(key, fallback = '') {
+    if (!potionsTranslations || !potionsTranslations[currentLanguage]) {
+        return fallback || key;
+    }
+    
+    const translation = potionsTranslations[currentLanguage];
+    
+    // Handle nested keys like 'potions.Luck Potion [1].name'
+    const keys = key.split('.');
+    let value = translation;
+    
+    for (const k of keys) {
+        if (value && typeof value === 'object' && k in value) {
+            value = value[k];
+        } else {
+            return fallback || key;
+        }
+    }
+    
+    return value || fallback || key;
+}
 
 // Potions data - Complete with images
 const potionsData = [
@@ -253,10 +311,16 @@ function getAvailableRarities() {
 }
 
 // Main initialization function
-function initializePotions() {
-    console.log('🧪 Initializing Potions & Food with rarity filters...');
+async function initializePotions() {
+    console.log('🧪 Initializing Potions & Food with rarity filters and multilingual support...');
     
     potionsInitialized = false;
+    
+    // Get current language
+    currentLanguage = getCurrentLanguage();
+    
+    // Load translations
+    await loadPotionsTranslations();
     
     const potionsPage = document.getElementById('potionsPage');
     if (!potionsPage) {
@@ -271,12 +335,18 @@ function initializePotions() {
     }
     
     try {
-        loadPotionsContent();
+        // Update page title
+        const titleElement = potionsPage.querySelector('.title');
+        if (titleElement) {
+            titleElement.textContent = getTranslation('title', 'Potions & Food');
+        }
+        
+        await loadPotionsContent();
         potionsInitialized = true;
         window.potionsInitialized = true;
         
-        console.log('✅ Potions & Food with rarity filters initialized successfully');
-        console.log(`📊 Loaded: ${potionsData.length} potions, ${foodData.length} foods`);
+        console.log('✅ Potions & Food with rarity filters and multilingual support initialized successfully');
+        console.log(`📊 Loaded: ${potionsData.length} potions, ${foodData.length} foods in ${currentLanguage}`);
         return true;
     } catch (error) {
         console.error('❌ Error initializing Potions & Food:', error);
@@ -377,9 +447,10 @@ function filterByRarity() {
     // Show notification
     let filterMessage = '';
     if (currentRarityFilter === 'all') {
-        filterMessage = `Showing all ${visibleCount} ${currentPotionsType}`;
+        filterMessage = `${getTranslation('notificationShowingAll', 'Showing all')} ${visibleCount} ${currentPotionsType}`;
     } else {
-        filterMessage = `Showing ${visibleCount} ${currentRarityFilter.toUpperCase()} ${currentPotionsType}`;
+        const rarityTranslation = getTranslation(`filter${currentRarityFilter.charAt(0).toUpperCase() + currentRarityFilter.slice(1)}`, currentRarityFilter.toUpperCase());
+        filterMessage = `${getTranslation('notificationShowing', 'Showing')} ${visibleCount} ${rarityTranslation} ${currentPotionsType}`;
     }
     
     console.log(`📊 ${filterMessage}`);
@@ -390,13 +461,30 @@ function filterByRarity() {
 function createRarityFilters() {
     const rarities = getAvailableRarities();
     
-    return rarities.map(rarity => `
-        <button class="rarity-filter-btn ${rarity}" 
-                data-rarity="${rarity}" 
-                onclick="setRarityFilter('${rarity}')">
-            ${rarity}
+    // Add "all" button first
+    let filtersHTML = `
+        <button class="rarity-filter-btn all" 
+                data-rarity="all" 
+                onclick="setRarityFilter('all')">
+            ${getTranslation('filterAll', 'All')}
         </button>
-    `).join('');
+    `;
+    
+    // Add rarity buttons
+    filtersHTML += rarities.map(rarity => {
+        const rarityKey = `filter${rarity.charAt(0).toUpperCase() + rarity.slice(1)}`;
+        const rarityLabel = getTranslation(rarityKey, rarity);
+        
+        return `
+            <button class="rarity-filter-btn ${rarity}" 
+                    data-rarity="${rarity}" 
+                    onclick="setRarityFilter('${rarity}')">
+                ${rarityLabel}
+            </button>
+        `;
+    }).join('');
+    
+    return filtersHTML;
 }
 
 // Create image element with error handling
@@ -413,55 +501,73 @@ function createPotionImage(item) {
     `;
 }
 
+// Get translated item data
+function getTranslatedItemData(item, itemType) {
+    const translatedName = getTranslation(`${itemType}.${item.name}.name`, item.name);
+    const translatedBoost = getTranslation(`${itemType}.${item.name}.boost`, item.boost);
+    
+    return {
+        ...item,
+        displayName: translatedName,
+        displayBoost: translatedBoost
+    };
+}
+
 // Load potions content into the container
-function loadPotionsContent() {
+async function loadPotionsContent() {
     const container = document.getElementById('potionsContainer');
     if (!container) {
         console.error('❌ Potions container not found');
         throw new Error('Container not found');
     }
 
-    console.log('📝 Loading potions content with rarity filters...');
+    console.log('📝 Loading potions content with rarity filters and translations...');
 
-    // Generate potions HTML
-    const potionsHTML = potionsData.map((potion, index) => `
-        <div class="potion-item" data-rarity="${potion.rarity}" style="animation-delay: ${index * 50}ms;">
-            ${createPotionImage(potion)}
-            <div class="potion-main-content">
-                <div class="potion-name">${potion.name}</div>
-                <div class="potion-boost">${potion.boost}</div>
+    // Generate potions HTML with translations
+    const potionsHTML = potionsData.map((potion, index) => {
+        const translatedPotion = getTranslatedItemData(potion, 'potions');
+        return `
+            <div class="potion-item" data-rarity="${potion.rarity}" style="animation-delay: ${index * 50}ms;">
+                ${createPotionImage(potion)}
+                <div class="potion-main-content">
+                    <div class="potion-name">${translatedPotion.displayName}</div>
+                    <div class="potion-boost">${translatedPotion.displayBoost}</div>
+                </div>
+                <div class="potion-meta">
+                    <div class="potion-rarity ${potion.rarity}">${getTranslation(`filter${potion.rarity.charAt(0).toUpperCase() + potion.rarity.slice(1)}`, potion.rarity.toUpperCase())}</div>
+                    <div class="potion-time">${potion.time}</div>
+                </div>
             </div>
-            <div class="potion-meta">
-                <div class="potion-rarity ${potion.rarity}">${potion.rarity.toUpperCase()}</div>
-                <div class="potion-time">${potion.time}</div>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
-    // Generate food HTML
-    const foodHTML = foodData.map((food, index) => `
-        <div class="potion-item" data-rarity="${food.rarity}" style="animation-delay: ${index * 50}ms;">
-            ${createPotionImage(food)}
-            <div class="potion-main-content">
-                <div class="potion-name">${food.name}</div>
-                <div class="potion-boost">${food.boost}</div>
+    // Generate food HTML with translations
+    const foodHTML = foodData.map((food, index) => {
+        const translatedFood = getTranslatedItemData(food, 'food');
+        return `
+            <div class="potion-item" data-rarity="${food.rarity}" style="animation-delay: ${index * 50}ms;">
+                ${createPotionImage(food)}
+                <div class="potion-main-content">
+                    <div class="potion-name">${translatedFood.displayName}</div>
+                    <div class="potion-boost">${translatedFood.displayBoost}</div>
+                </div>
+                <div class="potion-meta">
+                    <div class="potion-rarity ${food.rarity}">${getTranslation(`filter${food.rarity.charAt(0).toUpperCase() + food.rarity.slice(1)}`, food.rarity.toUpperCase())}</div>
+                    <div class="potion-time">${food.time}</div>
+                </div>
             </div>
-            <div class="potion-meta">
-                <div class="potion-rarity ${food.rarity}">${food.rarity.toUpperCase()}</div>
-                <div class="potion-time">${food.time}</div>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
-    // Create the complete content
+    // Create the complete content with translations
     const fullHTML = `
         <!-- Type Switcher -->
         <div class="potions-switcher">
             <button class="potions-switch-btn active" data-potions-type="potions" onclick="switchPotionsType('potions')">
-                🧪 Potions
+                ${getTranslation('switcherPotions', '🧪 Potions')}
             </button>
             <button class="potions-switch-btn" data-potions-type="food" onclick="switchPotionsType('food')">
-                🍖 Food
+                ${getTranslation('switcherFood', '🍖 Food')}
             </button>
         </div>
         
@@ -487,7 +593,19 @@ function loadPotionsContent() {
     currentPotionsType = 'potions';
     currentRarityFilter = 'all';
     
-    console.log('✅ Potions & Food content with rarity filters loaded successfully');
+    console.log(`✅ Potions & Food content with rarity filters and translations loaded successfully in ${currentLanguage}`);
+}
+
+// Update language when it changes globally
+function updatePotionsLanguage(newLanguage) {
+    if (newLanguage === currentLanguage) return;
+    
+    currentLanguage = newLanguage;
+    
+    if (potionsInitialized) {
+        console.log(`🌍 Updating potions language to: ${newLanguage}`);
+        initializePotions(); // Reinitialize with new language
+    }
 }
 
 // Show notification
@@ -534,10 +652,12 @@ function debugPotions() {
     console.log('Initialized:', potionsInitialized);
     console.log('Current type:', currentPotionsType);
     console.log('Current rarity filter:', currentRarityFilter);
+    console.log('Current language:', currentLanguage);
     console.log('Container exists:', !!document.getElementById('potionsContainer'));
     console.log('Page exists:', !!document.getElementById('potionsPage'));
     console.log('Available rarities:', getAvailableRarities());
     console.log('Filtered data count:', getFilteredData().length);
+    console.log('Translations loaded:', !!potionsTranslations);
     console.log('====================');
 }
 
@@ -568,7 +688,9 @@ function getPotionsStats() {
         rarities: getAvailableRarities(),
         initialized: potionsInitialized,
         currentType: currentPotionsType,
-        currentFilter: currentRarityFilter
+        currentFilter: currentRarityFilter,
+        currentLanguage: currentLanguage,
+        translationsLoaded: !!potionsTranslations
     };
 }
 
@@ -576,17 +698,25 @@ function getPotionsStats() {
 window.initializePotions = initializePotions;
 window.switchPotionsType = switchPotionsType;
 window.setRarityFilter = setRarityFilter;
+window.updatePotionsLanguage = updatePotionsLanguage;
 window.debugPotions = debugPotions;
 window.getPotionsStats = getPotionsStats;
 window.getFilteredData = getFilteredData;
 window.potionsInitialized = potionsInitialized;
+
+// Listen for global language changes
+document.addEventListener('languageChanged', function(e) {
+    if (e.detail && e.detail.language) {
+        updatePotionsLanguage(e.detail.language);
+    }
+});
 
 // Auto-initialization
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         const container = document.getElementById('potionsContainer');
         if (container && !potionsInitialized) {
-            console.log('🧪 Auto-initializing potions with rarity filters...');
+            console.log('🧪 Auto-initializing potions with rarity filters and multilingual support...');
             initializePotions();
         }
     }, 500);
@@ -597,11 +727,11 @@ document.addEventListener('click', function(e) {
     if (e.target && e.target.getAttribute && e.target.getAttribute('data-page') === 'potions') {
         setTimeout(() => {
             if (!potionsInitialized || !document.getElementById('potionsSection')) {
-                console.log('🧪 Page switched to potions, reinitializing with rarity filters...');
+                console.log('🧪 Page switched to potions, reinitializing with multilingual support...');
                 initializePotions();
             }
         }, 300);
     }
 });
 
-console.log('✅ potions.js with rarity filtering system loaded successfully');
+console.log('✅ potions.js with rarity filtering system and multilingual support loaded successfully');
