@@ -1,7 +1,7 @@
-// Worlds functionality with enhanced multilingual support
+// Fixed Worlds functionality with enhanced multilingual support
 
 // Language management
-let currentLanguage = 'en';
+let worldsCurrentLanguage = 'en';  // Changed variable name for consistency
 let worldsTranslations = null;
 let worldsInitialized = false;
 
@@ -65,22 +65,98 @@ async function loadWorldsTranslations() {
                         details: "Unlock requirement: Complete World 3"
                     }
                 ]
+            },
+            uk: {
+                title: "Інформація про світи",
+                loading: "Завантаження світів...",
+                error: "Помилка завантаження даних світів",
+                retry: "Спробувати знову",
+                worlds: [
+                    {
+                        title: "Світ 0: Сад",
+                        icon: "🌳",
+                        description: "Щотижневий рейтинг | Пошта | Магазин жетонів | Сад",
+                        details: "Щоб потрапити сюди, потрібно відкрити 3 світи"
+                    },
+                    {
+                        title: "Світ 1: Початок",
+                        icon: "🏠",
+                        description: "Стартовий світ, де починається ваша пригода",
+                        details: "Базове місце появи для всіх нових гравців"
+                    },
+                    {
+                        title: "Світ 2: Фантазія",
+                        icon: "🏰",
+                        description: "Магічне царство, повне міфічних створінь і зачарованих лісів",
+                        details: "Вимога розблокування: Завершити Світ 1"
+                    },
+                    {
+                        title: "Світ 3: Технології",
+                        icon: "🤖",
+                        description: "Футуристичний світ з передовими технологіями і кібер-питомцями",
+                        details: "Вимога розблокування: Завершити Світ 2"
+                    },
+                    {
+                        title: "Світ 4: Океан Аксолотлів",
+                        icon: "🌊",
+                        description: "Підводний рай, наповнений аксолотлями і морським життям",
+                        details: "Вимога розблокування: Завершити Світ 3"
+                    }
+                ]
+            },
+            ru: {
+                title: "Информация о мирах",
+                loading: "Загрузка миров...",
+                error: "Ошибка загрузки данных миров",
+                retry: "Повторить",
+                worlds: [
+                    {
+                        title: "Мир 0: Сад",
+                        icon: "🌳",
+                        description: "Еженедельный рейтинг | Почта | Магазин токенов | Сад",
+                        details: "Чтобы попасть сюда, нужно открыть 3 мира"
+                    },
+                    {
+                        title: "Мир 1: Спавн",
+                        icon: "🏠",
+                        description: "Стартовый мир, где начинается ваше приключение",
+                        details: "Базовое место появления для всех новых игроков"
+                    },
+                    {
+                        title: "Мир 2: Фантазия",
+                        icon: "🏰",
+                        description: "Магическое царство, полное мифических существ и зачарованных лесов",
+                        details: "Требование разблокировки: Завершить Мир 1"
+                    },
+                    {
+                        title: "Мир 3: Технологии",
+                        icon: "🤖",
+                        description: "Футуристический мир с передовыми технологиями и кибер-питомцами",
+                        details: "Требование разблокировки: Завершить Мир 2"
+                    },
+                    {
+                        title: "Мир 4: Океан Аксолотлей",
+                        icon: "🌊",
+                        description: "Подводный рай, наполненный аксолотлями и морской жизнью",
+                        details: "Требование разблокировки: Завершить Мир 3"
+                    }
+                ]
             }
         };
         return worldsTranslations;
     }
 }
 
-// Update language when it changes globally - ENHANCED
+// Update language when it changes globally - FIXED
 function updateWorldsLanguage(newLanguage) {
-    console.log(`🌍 Worlds received language change request: ${currentLanguage} → ${newLanguage}`);
+    console.log(`🌍 Worlds received language change request: ${worldsCurrentLanguage} → ${newLanguage}`);
     
-    if (newLanguage === currentLanguage) {
+    if (newLanguage === worldsCurrentLanguage) {
         console.log('🔄 Same language, skipping update');
         return;
     }
     
-    currentLanguage = newLanguage;
+    worldsCurrentLanguage = newLanguage;
     
     console.log(`🌍 Updating worlds language to: ${newLanguage}`);
     
@@ -98,7 +174,7 @@ function updateWorldsLanguage(newLanguage) {
     }
 }
 
-// Generate worlds content
+// Generate worlds content - FIXED
 async function generateWorldsContent() {
     const container = document.getElementById('worldsContainer');
     if (!container) {
@@ -107,7 +183,7 @@ async function generateWorldsContent() {
     }
     
     // Get current language
-    currentLanguage = getCurrentLanguage();
+    worldsCurrentLanguage = getCurrentLanguage();
     
     // Load translations if not already loaded
     if (!worldsTranslations) {
@@ -115,13 +191,16 @@ async function generateWorldsContent() {
     }
     
     // Show loading state
-    const loadingText = worldsTranslations[currentLanguage]?.loading || 'Loading worlds...';
+    const loadingText = worldsTranslations[worldsCurrentLanguage]?.loading || 'Loading worlds...';
     container.innerHTML = `<div class="worlds-loading">${loadingText}</div>`;
     
     try {
-        const currentLangData = worldsTranslations[currentLanguage];
+        // Small delay to show loading animation
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        const currentLangData = worldsTranslations[worldsCurrentLanguage];
         if (!currentLangData) {
-            throw new Error(`Language data for ${currentLanguage} not found`);
+            throw new Error(`Language data for ${worldsCurrentLanguage} not found`);
         }
         
         // Clear container
@@ -143,14 +222,14 @@ async function generateWorldsContent() {
             container.appendChild(worldItem);
         });
         
-        console.log(`✅ Generated ${currentLangData.worlds.length} worlds in ${currentLanguage}`);
+        console.log(`✅ Generated ${currentLangData.worlds.length} worlds in ${worldsCurrentLanguage}`);
         
     } catch (error) {
         console.error('❌ Error generating worlds content:', error);
         
         // Show error state
-        const errorText = worldsTranslations[currentLanguage]?.error || 'Error loading worlds data';
-        const retryText = worldsTranslations[currentLanguage]?.retry || 'Retry';
+        const errorText = worldsTranslations[worldsCurrentLanguage]?.error || 'Error loading worlds data';
+        const retryText = worldsTranslations[worldsCurrentLanguage]?.retry || 'Retry';
         
         container.innerHTML = `
             <div class="worlds-error">
@@ -162,12 +241,19 @@ async function generateWorldsContent() {
     }
 }
 
-// Initialize worlds page
+// Initialize worlds page - ENHANCED
 async function initializeWorlds() {
     console.log('🌍 Initializing worlds page...');
     
+    // Check if already initialized and content exists
+    const container = document.getElementById('worldsContainer');
+    if (worldsInitialized && container && container.querySelector('.world-item')) {
+        console.log('🌍 Worlds already initialized with content');
+        return;
+    }
+    
     // Get saved language
-    currentLanguage = getCurrentLanguage();
+    worldsCurrentLanguage = getCurrentLanguage();
     
     const worldsPage = document.getElementById('worldsPage');
     if (!worldsPage) {
@@ -179,10 +265,10 @@ async function initializeWorlds() {
     await loadWorldsTranslations();
     
     // Update page title
-    if (worldsTranslations && worldsTranslations[currentLanguage]) {
+    if (worldsTranslations && worldsTranslations[worldsCurrentLanguage]) {
         const titleElement = worldsPage.querySelector('.title');
         if (titleElement) {
-            titleElement.textContent = worldsTranslations[currentLanguage].title;
+            titleElement.textContent = worldsTranslations[worldsCurrentLanguage].title;
         }
     }
     
@@ -192,49 +278,36 @@ async function initializeWorlds() {
     worldsInitialized = true;
     window.worldsInitialized = true;
     
-    console.log('✅ Worlds page initialized');
+    console.log('✅ Worlds page initialized successfully');
 }
 
-// Track when user switches to worlds page
-function observeWorldsPageActivation() {
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                const worldsPage = document.getElementById('worldsPage');
-                if (worldsPage && worldsPage.classList.contains('active')) {
-                    // Page became active, reinitialize if needed
-                    setTimeout(() => {
-                        if (!worldsInitialized) {
-                            initializeWorlds();
-                        }
-                    }, 100);
-                }
-            }
-        });
-    });
-    
-    const worldsPage = document.getElementById('worldsPage');
-    if (worldsPage) {
-        observer.observe(worldsPage, { 
-            attributes: true, 
-            attributeFilter: ['class'] 
-        });
-    }
+// Force reinitialize worlds
+function forceReinitializeWorlds() {
+    console.log('🔄 Force reinitializing worlds...');
+    worldsInitialized = false;
+    window.worldsInitialized = false;
+    initializeWorlds();
 }
 
-// Debug function
+// Debug function - FIXED
 function debugWorlds() {
     console.log('=== WORLDS DEBUG ===');
     console.log('Initialized:', worldsInitialized);
     console.log('Current language:', worldsCurrentLanguage);
     console.log('Container exists:', !!document.getElementById('worldsContainer'));
     console.log('Page exists:', !!document.getElementById('worldsPage'));
+    console.log('Page is active:', document.getElementById('worldsPage')?.classList.contains('active'));
     console.log('Translations loaded:', !!worldsTranslations);
     if (worldsTranslations) {
         console.log('Available languages:', Object.keys(worldsTranslations));
         if (worldsTranslations[worldsCurrentLanguage]) {
             console.log(`Worlds count for ${worldsCurrentLanguage}:`, worldsTranslations[worldsCurrentLanguage].worlds?.length);
         }
+    }
+    const container = document.getElementById('worldsContainer');
+    if (container) {
+        console.log('Container innerHTML length:', container.innerHTML.length);
+        console.log('Has world items:', !!container.querySelector('.world-item'));
     }
     console.log('====================');
 }
@@ -247,35 +320,45 @@ document.addEventListener('languageChanged', function(e) {
     }
 });
 
-// Initialize when DOM is loaded
+// Enhanced DOM ready handler
 document.addEventListener('DOMContentLoaded', () => {
-    // Set up observer for page activation
-    observeWorldsPageActivation();
+    console.log('🌍 DOM loaded, setting up worlds...');
     
     // Initialize immediately if worlds page is already active
-    const worldsPage = document.getElementById('worldsPage');
-    if (worldsPage && worldsPage.classList.contains('active')) {
-        initializeWorlds();
-    }
+    setTimeout(() => {
+        const worldsPage = document.getElementById('worldsPage');
+        if (worldsPage && worldsPage.classList.contains('active')) {
+            console.log('🌍 Worlds page is active, initializing...');
+            initializeWorlds();
+        }
+    }, 100);
 });
 
-// Initialize when worlds page becomes active via click
+// Enhanced click handler for worlds page switching
 document.addEventListener('click', function(e) {
     if (e.target && e.target.getAttribute && e.target.getAttribute('data-page') === 'worlds') {
+        console.log('🌍 Worlds page clicked, will initialize...');
         setTimeout(() => {
-            if (!worldsInitialized || !document.getElementById('worldsContainer').innerHTML.includes('world-item')) {
-                console.log('🌍 Page switched to worlds, reinitializing...');
+            const container = document.getElementById('worldsContainer');
+            if (!worldsInitialized || !container || !container.querySelector('.world-item')) {
+                console.log('🌍 Page switched to worlds, initializing...');
                 initializeWorlds();
+            } else {
+                console.log('🌍 Worlds already has content, skipping initialization');
             }
         }, 300);
     }
 });
+
+// Alternative legacy function name support
+window.switchWorldsLanguage = updateWorldsLanguage;
 
 // Make functions globally available
 window.initializeWorlds = initializeWorlds;
 window.updateWorldsLanguage = updateWorldsLanguage;
 window.generateWorldsContent = generateWorldsContent;
 window.debugWorlds = debugWorlds;
+window.forceReinitializeWorlds = forceReinitializeWorlds;
 window.worldsInitialized = worldsInitialized;
 
-console.log('✅ worlds.js loaded with enhanced multilingual support');
+console.log('✅ Fixed worlds.js loaded with enhanced multilingual support');
