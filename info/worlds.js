@@ -226,14 +226,14 @@ function observeWorldsPageActivation() {
 function debugWorlds() {
     console.log('=== WORLDS DEBUG ===');
     console.log('Initialized:', worldsInitialized);
-    console.log('Current language:', currentLanguage);
+    console.log('Current language:', worldsCurrentLanguage);
     console.log('Container exists:', !!document.getElementById('worldsContainer'));
     console.log('Page exists:', !!document.getElementById('worldsPage'));
     console.log('Translations loaded:', !!worldsTranslations);
     if (worldsTranslations) {
         console.log('Available languages:', Object.keys(worldsTranslations));
-        if (worldsTranslations[currentLanguage]) {
-            console.log(`Worlds count for ${currentLanguage}:`, worldsTranslations[currentLanguage].worlds?.length);
+        if (worldsTranslations[worldsCurrentLanguage]) {
+            console.log(`Worlds count for ${worldsCurrentLanguage}:`, worldsTranslations[worldsCurrentLanguage].worlds?.length);
         }
     }
     console.log('====================');
