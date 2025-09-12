@@ -1,0 +1,182 @@
+{
+  "en": {
+    "common": {
+      "calculate": "Calculate",
+      "settings": "Settings",
+      "back": "← Back"
+    },
+    "calculator": {
+      "title": "🐾 Pet Stats Calculator",
+      "inputLabel": "Enter Pet Stats:",
+      "inputPlaceholder": "Enter your pet's base stats...",
+      "resultLabel": "Final Pet Stats:",
+      "errorInvalidNumber": "Please enter a valid number",
+      "categories": {
+        "slimes": "Slimes",
+        "mutation": "Mutation", 
+        "evolution": "Evolution and Size",
+        "type": "Type"
+      },
+      "modifiers": {
+        "shiny": "Shiny",
+        "maxlvl": "Max lvl"
+      }
+    },
+    "arm": {
+      "title": "💪 Arm Calculator",
+      "inputLabel": "If arm base",
+      "inputPlaceholder": "Enter number...",
+      "resultLabel": "Max stats",
+      "errorInvalidNumber": "Please enter a valid number"
+    },
+    "grind": {
+      "title": "🏋️‍♂️ Grind Calculator",
+      "inputLabel": "Enter Base Value:",
+      "inputPlaceholder": "Enter your base grind value...",
+      "resultLabel": "Final Grind Value:",
+      "errorInvalidNumber": "Please enter a valid number",
+      "categories": {
+        "tp": "🚀 TP Boosts",
+        "food": "🍪 Food Boosts", 
+        "other": "⚡ Other Boosts"
+      },
+      "modifiers": {
+        "tp1": "TP1 (+30%)",
+        "tp2": "TP2 (+60%)",
+        "tp3": "TP3 (+90%)",
+        "chocolate_donut_1": "Pink Donut L1 (+5%)",
+        "chocolate_donut_2": "Vanila Donut L2 (+10%)",
+        "chocolate_donut_3": "Chocolate Donut L3 (+15%)",
+        "ench_cookie_1": "Cookie (+3%)",
+        "ench_cookie_2": "Tasty Cookie (+5%)",
+        "ench_cookie_3": "Enchanted Cookie (+7%)",
+        "time": "Time Boost (+170%)",
+        "member": "Member (2x)",
+        "premium": "Premium (+20%)",
+        "strength_star": "Strength Star (+50%)",
+        "sandstorm_event": "Sandstorm Event (2x)",
+        "friend_boost": "Friend Boost"
+      }
+    }
+  },
+  "uk": {
+    "common": {
+      "calculate": "Розрахувати",
+      "settings": "Налаштування",
+      "back": "← Назад"
+    },
+    "calculator": {
+      "title": "🐾 Калькулятор Петів",
+      "inputLabel": "Введіть статистики пета:",
+      "inputPlaceholder": "Введіть базові статистики пета...",
+      "resultLabel": "Фінальні статистики пета:",
+      "errorInvalidNumber": "Будь ласка, введіть дійсне число",
+      "categories": {
+        "slimes": "Слайми",
+        "mutation": "Мутація",
+        "evolution": "Еволюція та розмір",
+        "type": "Тип"
+      },
+      "modifiers": {
+        "shiny": "Блискучий",
+        "maxlvl": "Макс рівень"
+      }
+    },
+    "arm": {
+      "title": "💪 Калькулятор Рук",
+      "inputLabel": "Якщо базова сила рук",
+      "inputPlaceholder": "Введіть число...",
+      "resultLabel": "Максимальні статистики",
+      "errorInvalidNumber": "Будь ласка, введіть дійсне число"
+    },
+    "grind": {
+      "title": "🏋️‍♂️ Калькулятор Фарму",
+      "inputLabel": "Введіть базове значення:",
+      "inputPlaceholder": "Введіть базове значення фарму...",
+      "resultLabel": "Фінальне значення фарму:",
+      "errorInvalidNumber": "Будь ласка, введіть дійсне число",
+      "categories": {
+        "tp": "🚀 ТП Бусти",
+        "food": "🍪 Їжа Бусти",
+        "other": "⚡ Інші Бусти"
+      },
+      "modifiers": {
+        "tp1": "ТП1 (+30%)",
+        "tp2": "ТП2 (+60%)",
+        "tp3": "ТП3 (+90%)",
+        "chocolate_donut_1": "Рожевий Пончик L1 (+5%)",
+        "chocolate_donut_2": "Ванільний Пончик L2 (+10%)",
+        "chocolate_donut_3": "Шоколадний Пончик L3 (+15%)",
+        "ench_cookie_1": "Печиво (+3%)",
+        "ench_cookie_2": "Смачне Печиво (+5%)",
+        "ench_cookie_3": "Зачароване Печиво (+7%)",
+        "time": "Тайм Буст (+170%)",
+        "member": "Член (2x)",
+        "premium": "Преміум (+20%)",
+        "strength_star": "Зірка Сили (+50%)",
+        "sandstorm_event": "Подія Піщаної Бурі (2x)",
+        "friend_boost": "Буст Друзів"
+      }
+    }
+  },
+  "ru": {
+    "common": {
+      "calculate": "Рассчитать",
+      "settings": "Настройки",
+      "back": "← Назад"
+    },
+    "calculator": {
+      "title": "🐾 Калькулятор Петов",
+      "inputLabel": "Введите статистики пета:",
+      "inputPlaceholder": "Введите базовые статистики пета...",
+      "resultLabel": "Финальные статистики пета:",
+      "errorInvalidNumber": "Пожалуйста, введите действительное число",
+      "categories": {
+        "slimes": "Слаймы",
+        "mutation": "Мутация",
+        "evolution": "Эволюция и размер",
+        "type": "Тип"
+      },
+      "modifiers": {
+        "shiny": "Блестящий",
+        "maxlvl": "Макс уровень"
+      }
+    },
+    "arm": {
+      "title": "💪 Калькулятор Силы",
+      "inputLabel": "Если базовая сила рук",
+      "inputPlaceholder": "Введите число...",
+      "resultLabel": "Максимальные статистики",
+      "errorInvalidNumber": "Пожалуйста, введите действительное число"
+    },
+    "grind": {
+      "title": "🏋️‍♂️ Калькулятор Фарма",
+      "inputLabel": "Введите базовое значение:",
+      "inputPlaceholder": "Введите базовое значение фарма...",
+      "resultLabel": "Финальное значение фарма:",
+      "errorInvalidNumber": "Пожалуйста, введите действительное число",
+      "categories": {
+        "tp": "🚀 ТП Бусты",
+        "food": "🍪 Еда Бусты",
+        "other": "⚡ Другие Бусты"
+      },
+      "modifiers": {
+        "tp1": "ТП1 (+30%)",
+        "tp2": "ТП2 (+60%)",
+        "tp3": "ТП3 (+90%)",
+        "chocolate_donut_1": "Розовый Пончик L1 (+5%)",
+        "chocolate_donut_2": "Ванильный Пончик L2 (+10%)",
+        "chocolate_donut_3": "Шоколадный Пончик L3 (+15%)",
+        "ench_cookie_1": "Печенье (+3%)",
+        "ench_cookie_2": "Вкусное Печенье (+5%)",
+        "ench_cookie_3": "Зачарованное Печенье (+7%)",
+        "time": "Тайм Буст (+170%)",
+        "member": "Член (2x)",
+        "premium": "Премиум (+20%)",
+        "strength_star": "Звезда Силы (+50%)",
+        "sandstorm_event": "Событие Песчаной Бури (2x)",
+        "friend_boost": "Буст Друзей"
+      }
+    }
+  }
+}
