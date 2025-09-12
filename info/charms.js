@@ -195,7 +195,7 @@ async function initializeCharms() {
     }
     
     try {
-        charmsCurrentLanguage = getCurrentLanguage();
+        charmsCurrentLanguage = getCharmsLanguage();
         
         await loadCharmsTranslations();
         
