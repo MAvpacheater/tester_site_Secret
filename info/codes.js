@@ -1,91 +1,129 @@
-// Codes functionality - виправлена версія з збереженням стану
+// Codes functionality з мультимовною підтримкою
 
-// Codes data
-const codesData = [
-    { code: "pyramids", description: "Use for 3x stat boost for 72 hours (NEW)", isNew: true },
-    { code: "egyptian", description: "Use for 3x stat boost for 72 hours (NEW)", isNew: true },
-    { code: "21iscoming", description: "Use for 3x stat boost for 48 hours" },
-    { code: "brainrot", description: "Use for 3x stat boost for 48 hours" },
-    { code: "removal", description: "Use for 3x stat boost for 48 hours" },
-    { code: "octogames", description: "Use for 3x stat boost for 48 hours" },
-    { code: "glassbridge", description: "Use for 3x stat boost for 48 hours" },
-    { code: "celebration", description: "Use for 3x stat boost for 48 hours" },
-    { code: "banker", description: "Use for 3x stat boost for 24 hours" },
-    { code: "sorryoops", description: "Use for 3x strength boost for 24 hours" },
-    { code: "timetravel", description: "Use for 48 hours of 3x strength and +5% boost on all stats" },
-    { code: "world19", description: "Use for 5% on all strengths and 3x stat boost for 48 hours" },
-    { code: "bulk", description: "Use for 3x stat boost for 48 hours" },
-    { code: "superhero", description: "Use for 3x stat boost for 48 hours" },
-    { code: "tokenstore", description: "Use for 3x stat boost for 48 hours" },
-    { code: "captain", description: "Use for 3x stat boost for 48 hours" },
-    { code: "skullbeard", description: "Use for 3x stat boost for 48 hours" },
-    { code: "pirate", description: "Use for 5% on all strengths and 1,000 Gold Coins" },
-    { code: "athlete", description: "Use for 3x stat boost for 48 hours" },
-    { code: "tradingback", description: "5% boost on all strengths" },
-    { code: "blossom", description: "Use for 3x stat boost for 48 hours and 1500 Prison Coins" },
-    { code: "ninja", description: "Use for 3x stat boost for 48 hours and 1500 Prison Coins" },
-    { code: "snowops", description: "Use for 3x stat boost for 48 hours" },
-    { code: "hideout", description: "Use for 3x stat boost for 48 hours and 2500 Prison Coins" },
-    { code: "cosmic", description: "Use for 3x stat boost for 24 hours" },
-    { code: "stocking", description: "Use for 3x stat boost for 72 hours and Christmas Title" },
-    { code: "frostlands", description: "Use for 3x stat boost for 24 hours and 150 Ice Cubes" },
-    { code: "polar", description: "Use for 3x stat boost for 24 hours" },
-    { code: "shiny", description: "Use for 3x stat boost for 24 hours" },
-    { code: "Christmas", description: "Use for 3x stat boost for 72 hours" },
-    { code: "hacker", description: "Use for 3x stat boost for 24 hours" },
-    { code: "classic", description: "Use for 3x stat boost for 24 hours" },
-    { code: "clans", description: "Use for 3x stat boost for 24 hours" },
-    { code: "rifted", description: "Use for 3x stat boost for 24 hours" },
-    { code: "hauntedmanor", description: "Use for 3x stat boost for 24 hours and free candy" },
-    { code: "trainers", description: "Use for 3x stat boost for 24 hours" },
-    { code: "ghosthunting", description: "Use for 3x stat boost for 24 hours and 1 Halloween card" },
-    { code: "spooky", description: "Use for 3x stat boost for 24 hours and 3,500 candy" },
-    { code: "soon", description: "Use for 3x stat boost for 24 hours" },
-    { code: "hatching", description: "Use for 3x stat boost for 24 hours" },
-    { code: "billion", description: "Use for 3x stat boost for 24 hours" },
-    { code: "Heavenly", description: "Use for 3x stat boost for 24 hours" },
-    { code: "rework", description: "Use for 3x stat boost for 24 hours" },
-    { code: "paradise", description: "Use for 3x stat boost for 24 hours + 1 gold" },
-    { code: "wasteland", description: "Use for 3x stat boost for 24 hours" },
-    { code: "apocalypse", description: "Use for 3x boost for 24 hours" },
-    { code: "energy", description: "Use for 3x boost for 24 hours" },
-    { code: "royalty", description: "Use for 3x boost for 24 hours" },
-    { code: "performance", description: "Use for 3x boost for 24 hours" },
-    { code: "charms", description: "Use for 3x boost for 24 hours of 3x multiplier" },
-    { code: "wizard", description: "Use for 3x boost for 24 hours of 3x multiplier & 25 Miner Crystal" },
-    { code: "atlantis", description: "Use for 8 hours of the 3x boost" },
-    { code: "800mvisits", description: "Use for 3x stat boost for eight hours" },
-    { code: "icecold", description: "Use for 3x boost for 24 hours of 3x multiplier" },
-    { code: "forging", description: "Use for 3x boost for 24 hours of 3x multiplier" },
-    { code: "axel", description: "Use for 50 Wins" }
-];
+// Мовні змінні
+let codesCurrentLanguage = 'en';
+let codesTranslations = null;
+let codesInitialized = false;
 
-// Загрузка стану з sessionStorage
-function loadCodeStates() {
-    const savedStates = sessionStorage.getItem('codeStates');
-    if (savedStates) {
-        const states = JSON.parse(savedStates);
-        codesData.forEach((code, index) => {
-            if (states[code.code] !== undefined) {
-                code.isUsed = states[code.code];
+// Отримання поточної мови
+function getCurrentLanguage() {
+    const saved = localStorage.getItem('armHelper_language');
+    return saved || 'en';
+}
+
+// Завантаження перекладів
+async function loadCodesTranslations() {
+    if (codesTranslations) return codesTranslations;
+    
+    try {
+        console.log('📥 Loading codes translations...');
+        const response = await fetch('languages/codes.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        codesTranslations = await response.json();
+        console.log('✅ Codes translations loaded successfully');
+        return codesTranslations;
+    } catch (error) {
+        console.error('❌ Error loading codes translations:', error);
+        // Fallback до англійської
+        codesTranslations = {
+            en: {
+                title: "Codes Collection",
+                loading: "Loading codes...",
+                error: "Error loading codes data",
+                retry: "Retry",
+                stats: {
+                    total: "Total Codes",
+                    used: "Used",
+                    available: "Available",
+                    progress: "Progress"
+                },
+                codes: []
             }
-        });
+        };
+        return codesTranslations;
     }
 }
 
-// Збереження стану в sessionStorage  
-function saveCodeStates() {
-    const states = {};
-    codesData.forEach(code => {
-        states[code.code] = code.isUsed || false;
-    });
+// Оновлення мови
+function updateCodesLanguage(newLanguage) {
+    console.log(`🌍 Codes received language change: ${codesCurrentLanguage} → ${newLanguage}`);
+    
+    if (newLanguage === codesCurrentLanguage) {
+        console.log('🔄 Same language, skipping update');
+        return;
+    }
+    
+    codesCurrentLanguage = newLanguage;
+    
+    // Оновлення заголовку
+    const titleElement = document.querySelector('.codes-page .title');
+    if (titleElement && codesTranslations && codesTranslations[newLanguage]) {
+        titleElement.textContent = codesTranslations[newLanguage].title;
+    }
+    
+    // Регенерація контенту якщо вже ініціалізовано
+    if (codesInitialized) {
+        setTimeout(() => {
+            generateCodesContent();
+        }, 100);
+    }
+}
+
+// Збереження/завантаження стану кодів
+function loadCodeStates() {
+    const savedStates = sessionStorage.getItem('codeStates');
+    if (savedStates) {
+        return JSON.parse(savedStates);
+    }
+    return {};
+}
+
+function saveCodeStates(states) {
     sessionStorage.setItem('codeStates', JSON.stringify(states));
 }
 
+// Генерація опису коду
+function generateCodeDescription(code, language) {
+    const langData = codesTranslations[language];
+    if (!langData) return '';
+    
+    let description = '';
+    
+    // Базовий опис з 3x boost
+    if (code.hours > 0) {
+        if (language === 'uk') {
+            description = `3x підсилення на ${code.hours} годин`;
+        } else if (language === 'ru') {
+            description = `3x усиление на ${code.hours} часов`;
+        } else {
+            description = `3x stat boost for ${code.hours} hours`;
+        }
+    }
+    
+    // Додаткові бонуси
+    if (code.extras) {
+        if (description) {
+            if (language === 'uk') {
+                description += ` + ${code.extras}`;
+            } else if (language === 'ru') {
+                description += ` + ${code.extras}`;
+            } else {
+                description += ` + ${code.extras}`;
+            }
+        } else {
+            description = code.extras;
+        }
+    }
+    
+    return description;
+}
+
 // Розрахунок статистики
-function calculateCodeStats() {
-    const totalCodes = codesData.length;
-    const usedCodes = codesData.filter(code => code.isUsed).length;
+function calculateCodeStats(codes, codeStates) {
+    const totalCodes = codes.length;
+    const usedCodes = codes.filter(code => codeStates[code.code]).length;
     const availableCodes = totalCodes - usedCodes;
     const progressPercentage = Math.round((usedCodes / totalCodes) * 100);
     
@@ -123,13 +161,16 @@ async function copyCode(code, button) {
 
 // Зміна статусу коду
 function toggleCodeStatus(codeIndex, toggleElement) {
-    const code = codesData[codeIndex];
-    code.isUsed = !code.isUsed;
+    const currentLangData = codesTranslations[codesCurrentLanguage];
+    const code = currentLangData.codes[codeIndex];
+    const codeStates = loadCodeStates();
+    
+    codeStates[code.code] = !codeStates[code.code];
     
     // Оновлення UI
     const codeItem = toggleElement.closest('.code-item');
     
-    if (code.isUsed) {
+    if (codeStates[code.code]) {
         toggleElement.classList.add('used');
         codeItem.classList.add('used');
     } else {
@@ -138,13 +179,17 @@ function toggleCodeStatus(codeIndex, toggleElement) {
     }
     
     // Збереження стану та оновлення статистики
-    saveCodeStates();
+    saveCodeStates(codeStates);
     updateCodesStats();
 }
 
 // Оновлення статистики
 function updateCodesStats() {
-    const stats = calculateCodeStats();
+    if (!codesTranslations || !codesTranslations[codesCurrentLanguage]) return;
+    
+    const currentLangData = codesTranslations[codesCurrentLanguage];
+    const codeStates = loadCodeStates();
+    const stats = calculateCodeStats(currentLangData.codes, codeStates);
     
     const elements = {
         total: document.querySelector('.stat-number.total'),
@@ -175,98 +220,234 @@ function showCopyMessage(message) {
     setTimeout(() => messageEl.classList.remove('show'), 2000);
 }
 
-// Генерація контенту
-function generateCodesContent() {
+// Генерація контенту кодів
+async function generateCodesContent() {
     const container = document.getElementById('codesContainer');
-    if (!container) return;
-
-    // Завантаження збережених станів
-    loadCodeStates();
-    const stats = calculateCodeStats();
+    if (!container) {
+        console.error('❌ Codes container not found');
+        return;
+    }
     
-    let content = `
-        <div class="codes-header">
-            <div class="codes-stats">
-                <div class="stat-item">
-                    <div class="stat-number total">${stats.total}</div>
-                    <div class="stat-label">Total Codes</div>
+    // Отримання поточної мови
+    codesCurrentLanguage = getCurrentLanguage();
+    
+    // Завантаження перекладів якщо ще не завантажено
+    if (!codesTranslations) {
+        await loadCodesTranslations();
+    }
+    
+    // Показ стану завантаження
+    const currentLangData = codesTranslations[codesCurrentLanguage];
+    if (!currentLangData) {
+        console.error(`❌ Language data for ${codesCurrentLanguage} not found`);
+        return;
+    }
+    
+    const loadingText = currentLangData.loading || 'Loading codes...';
+    container.innerHTML = `<div class="codes-loading">${loadingText}</div>`;
+    
+    try {
+        // Невелика затримка для анімації завантаження
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        // Завантаження збережених станів
+        const codeStates = loadCodeStates();
+        const stats = calculateCodeStats(currentLangData.codes, codeStates);
+        
+        let content = `
+            <div class="codes-header">
+                <div class="codes-stats">
+                    <div class="stat-item">
+                        <div class="stat-number total">${stats.total}</div>
+                        <div class="stat-label">${currentLangData.stats.total}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number used">${stats.used}</div>
+                        <div class="stat-label">${currentLangData.stats.used}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number available">${stats.available}</div>
+                        <div class="stat-label">${currentLangData.stats.available}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number progress">${stats.progress}%</div>
+                        <div class="stat-label">${currentLangData.stats.progress}</div>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number used">${stats.used}</div>
-                    <div class="stat-label">Used</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number available">${stats.available}</div>
-                    <div class="stat-label">Available</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number progress">${stats.progress}%</div>
-                    <div class="stat-label">Progress</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="height: ${stats.progress}%"></div>
                 </div>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill" style="height: ${stats.progress}%"></div>
-            </div>
-        </div>
-        <div class="codes-list">
-    `;
-    
-    codesData.forEach((item, index) => {
-        content += `
-            <div class="code-item ${item.isUsed ? 'used' : ''}">
-                <div class="code-content">
-                    <div class="code-name">${item.code}${item.isNew ? ' (NEW)' : ''}</div>
-                    <div class="code-description">${item.description}</div>
+            <div class="codes-list">
+        `;
+        
+        currentLangData.codes.forEach((code, index) => {
+            const isUsed = codeStates[code.code] || false;
+            const description = generateCodeDescription(code, codesCurrentLanguage);
+            
+            content += `
+                <div class="code-item ${isUsed ? 'used' : ''}">
+                    <div class="code-content">
+                        <div class="code-name">${code.code}${code.isNew ? ` (${code.extras})` : ''}</div>
+                        <div class="code-description">${description}</div>
+                    </div>
+                    <div class="code-actions">
+                        <button class="code-toggle ${isUsed ? 'used' : ''}" 
+                                onclick="toggleCodeStatus(${index}, this)">
+                        </button>
+                        <button class="copy-btn" onclick="copyCode('${code.code}', this)">
+                            <span class="copy-icon">📋</span>
+                            Copy
+                        </button>
+                    </div>
                 </div>
-                <div class="code-actions">
-                    <button class="code-toggle ${item.isUsed ? 'used' : ''}" 
-                            onclick="toggleCodeStatus(${index}, this)">
-                    </button>
-                    <button class="copy-btn" onclick="copyCode('${item.code}', this)">
-                        <span class="copy-icon">📋</span>
-                        Copy
-                    </button>
-                </div>
+            `;
+        });
+        
+        content += '</div>';
+        container.innerHTML = content;
+        
+        console.log(`✅ Generated ${currentLangData.codes.length} codes in ${codesCurrentLanguage}`);
+        
+    } catch (error) {
+        console.error('❌ Error generating codes content:', error);
+        
+        // Показ стану помилки
+        const errorText = currentLangData.error || 'Error loading codes data';
+        const retryText = currentLangData.retry || 'Retry';
+        
+        container.innerHTML = `
+            <div class="codes-error">
+                ⚠️ ${errorText}
+                <br>
+                <button class="retry-btn" onclick="generateCodesContent()">${retryText}</button>
             </div>
         `;
-    });
-    
-    content += '</div>';
-    container.innerHTML = content;
-}
-
-// Ініціалізація
-function initializeCodes() {
-    const codesPage = document.getElementById('codesPage');
-    if (!codesPage) return;
-    
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                const target = mutation.target;
-                if (target.id === 'codesPage' && target.classList.contains('active')) {
-                    setTimeout(generateCodesContent, 100);
-                }
-            }
-        });
-    });
-    
-    observer.observe(codesPage, { attributes: true });
-    
-    if (codesPage.classList.contains('active')) {
-        setTimeout(generateCodesContent, 100);
     }
 }
+
+// Ініціалізація сторінки кодів
+async function initializeCodes() {
+    console.log('🔑 Initializing codes page...');
+    
+    // Перевірка чи вже ініціалізовано
+    const container = document.getElementById('codesContainer');
+    if (codesInitialized && container && container.querySelector('.code-item')) {
+        console.log('🔑 Codes already initialized with content');
+        return;
+    }
+    
+    // Отримання збереженої мови
+    codesCurrentLanguage = getCurrentLanguage();
+    
+    const codesPage = document.getElementById('codesPage');
+    if (!codesPage) {
+        console.error('❌ Codes page not found');
+        return;
+    }
+    
+    // Завантаження перекладів та генерація контенту
+    await loadCodesTranslations();
+    
+    // Оновлення заголовку сторінки
+    if (codesTranslations && codesTranslations[codesCurrentLanguage]) {
+        const titleElement = codesPage.querySelector('.title');
+        if (titleElement) {
+            titleElement.textContent = codesTranslations[codesCurrentLanguage].title;
+        }
+    }
+    
+    // Генерація контенту
+    await generateCodesContent();
+    
+    codesInitialized = true;
+    window.codesInitialized = true;
+    
+    console.log('✅ Codes page initialized successfully');
+}
+
+// Примусова реініціалізація
+function forceReinitializeCodes() {
+    console.log('🔄 Force reinitializing codes...');
+    codesInitialized = false;
+    window.codesInitialized = false;
+    initializeCodes();
+}
+
+// Функція для налагодження
+function debugCodes() {
+    console.log('=== CODES DEBUG ===');
+    console.log('Initialized:', codesInitialized);
+    console.log('Current language:', codesCurrentLanguage);
+    console.log('Container exists:', !!document.getElementById('codesContainer'));
+    console.log('Page exists:', !!document.getElementById('codesPage'));
+    console.log('Page is active:', document.getElementById('codesPage')?.classList.contains('active'));
+    console.log('Translations loaded:', !!codesTranslations);
+    if (codesTranslations) {
+        console.log('Available languages:', Object.keys(codesTranslations));
+        if (codesTranslations[codesCurrentLanguage]) {
+            console.log(`Codes count for ${codesCurrentLanguage}:`, codesTranslations[codesCurrentLanguage].codes?.length);
+        }
+    }
+    const container = document.getElementById('codesContainer');
+    if (container) {
+        console.log('Container innerHTML length:', container.innerHTML.length);
+        console.log('Has code items:', !!container.querySelector('.code-item'));
+    }
+    console.log('Code states:', loadCodeStates());
+    console.log('====================');
+}
+
+// Слухач зміни мови
+document.addEventListener('languageChanged', function(e) {
+    console.log('🔑 Codes received languageChanged event:', e.detail);
+    if (e.detail && e.detail.language) {
+        updateCodesLanguage(e.detail.language);
+    }
+});
+
+// Обробник DOM готовності
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🔑 DOM loaded, setting up codes...');
+    
+    // Ініціалізація якщо сторінка кодів вже активна
+    setTimeout(() => {
+        const codesPage = document.getElementById('codesPage');
+        if (codesPage && codesPage.classList.contains('active')) {
+            console.log('🔑 Codes page is active, initializing...');
+            initializeCodes();
+        }
+    }, 100);
+});
+
+// Обробник кліку для перемикання сторінок
+document.addEventListener('click', function(e) {
+    if (e.target && e.target.getAttribute && e.target.getAttribute('data-page') === 'codes') {
+        console.log('🔑 Codes page clicked, will initialize...');
+        setTimeout(() => {
+            const container = document.getElementById('codesContainer');
+            if (!codesInitialized || !container || !container.querySelector('.code-item')) {
+                console.log('🔑 Page switched to codes, initializing...');
+                initializeCodes();
+            } else {
+                console.log('🔑 Codes already has content, skipping initialization');
+            }
+        }, 300);
+    }
+});
 
 // Глобальні функції
 window.copyCode = copyCode;
 window.toggleCodeStatus = toggleCodeStatus;
 window.updateCodesStats = updateCodesStats;
 window.initializeCodes = initializeCodes;
+window.updateCodesLanguage = updateCodesLanguage;
+window.generateCodesContent = generateCodesContent;
+window.debugCodes = debugCodes;
+window.forceReinitializeCodes = forceReinitializeCodes;
+window.codesInitialized = codesInitialized;
 
-// Автоініціалізація
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(initializeCodes, 100));
-} else {
-    setTimeout(initializeCodes, 100);
-}
+// Підтримка застарілих назв функцій
+window.switchCodesLanguage = updateCodesLanguage;
+
+console.log('✅ Codes.js loaded with multilingual support');
