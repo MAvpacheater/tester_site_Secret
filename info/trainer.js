@@ -1,31 +1,61 @@
-// Trainer functionality
+// Trainer functionality with multilingual support
 
-// Trainer data
-const trainerData = {
-    free: [
-        { name: "Overseer [1/12.5m]", description: "270%/405% Strength -- 91%/136.5% luck -- 94%/141% wins", type: "free" },
-        { name: "Mr Robot [1/1.5m]", description: "220%/330% Strength -- 71%/106,5% luck -- 77%/115.5% wins", type: "free" },
-        { name: "Pirate Peanguin [1/500k]", description: "205%/307.5% Strength -- 65%/97,5% luck -- 69%/103.5% wins", type: "free" },
-        { name: "Princes [1/150k]", description: "190%/285% Strength -- 59%/88.5% luck -- 61%/91.5% wins", type: "free" },
-        { name: "Sensei [1/100k]", description: "180%/270% Strength -- 56%/84% luck -- 58%/87% wins", type: "free" },
-        { name: "Dominus lord [1/75k]", description: "160%/240% Strength -- 53%/79.5% luck -- 55%/82.5% wins", type: "free" },
-        { name: "Vampire [1/50k]", description: "145%/217.5% Strength -- 50%/75% luck -- 52%/78% wins", type: "free" }
-    ],
-    donate: [
-        { name: "Pharoah", description: "320%/480% Strength -- 129%%/193.5% luck -- 139%/208.5% wins", type: "donate" },
-        { name: "Tung Tung Tung Sahur", description: "300%/450% Strength -- 118%%/177% luck -- 128%/192% wins", type: "donate" },
-        { name: "Manager guard", description: "280%/420% Strength -- 108%/162% luck -- 118%/177% wins", type: "donate" },
-        { name: "Octo guard", description: "270%/405% Strength -- 98%/147% luck -- 108%/162% wins", type: "donate" },
-        { name: "Frontman", description: "260%/390% Strength -- 98%/147% luck -- 108%/162% wins", type: "donate" },
-        { name: "Island surfer", description: "250%/375% Strength -- 95%/142.5% luck -- 20%/30% wins", type: "donate" },
-        { name: "Surfer Jake", description: "240%/360% Strength -- 85%/127.5% luck -- 95%/142.5% wins", type: "donate" },
-        { name: "Shrine Master", description: "230%/345% Strength -- 77%/115.5% luck -- 85%/127.5% wins", type: "donate" },
-        { name: "Rune keeper", description: "220%/330% Strength -- 73%/109.5% luck -- 78%/117% wins", type: "donate" },
-        { name: "Zeus", description: "205%/307.5% Strength -- 67%/100.5% luck -- 70%/105% wins", type: "donate" }
-    ]
-};
-
+let trainerCurrentLanguage = 'en';
+let trainerTranslations = null;
+let trainerInitialized = false;
 let currentTrainerType = 'free';
+
+// Get language from localStorage
+function getCurrentLanguage() {
+    return localStorage.getItem('armHelper_language') || 'en';
+}
+
+// Load translations from external file
+async function loadTrainerTranslations() {
+    if (trainerTranslations) return trainerTranslations;
+    
+    try {
+        const response = await fetch('languages/trainers.json');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        trainerTranslations = await response.json();
+        console.log('✅ Trainer translations loaded');
+    } catch (error) {
+        console.error('❌ Failed to load trainer translations:', error);
+        throw error;
+    }
+    return trainerTranslations;
+}
+
+// Update language
+function updateTrainerLanguage(newLanguage) {
+    console.log(`👨‍🏫 Trainer language: ${trainerCurrentLanguage} → ${newLanguage}`);
+    
+    if (newLanguage === trainerCurrentLanguage) return;
+    trainerCurrentLanguage = newLanguage;
+    
+    // Update title and button texts
+    if (trainerTranslations?.[newLanguage]) {
+        const data = trainerTranslations[newLanguage];
+        
+        // Update title
+        const titleElement = document.querySelector('.trainer-page .title');
+        if (titleElement) {
+            titleElement.textContent = data.title;
+        }
+        
+        // Update switch buttons
+        const freeBtn = document.querySelector('[data-type="free"]');
+        const donateBtn = document.querySelector('[data-type="donate"]');
+        
+        if (freeBtn) freeBtn.textContent = data.free_button;
+        if (donateBtn) donateBtn.textContent = data.donate_button;
+    }
+    
+    // Regenerate content
+    if (trainerInitialized) {
+        setTimeout(generateAllTrainerContent, 100);
+    }
+}
 
 // Switch between trainer types
 function switchTrainerType(type) {
@@ -60,23 +90,42 @@ function generateTrainerContent(type, containerId) {
         return;
     }
     
+    if (!trainerTranslations?.[trainerCurrentLanguage]) {
+        console.error('No trainer translations available');
+        return;
+    }
+    
+    const data = trainerTranslations[trainerCurrentLanguage];
     container.innerHTML = '';
     
-    const trainers = trainerData[type];
+    const trainers = data.trainers[type];
     if (!trainers) {
         console.log(`No trainers found for type: ${type}`);
         return;
     }
     
-    trainers.forEach(trainer => {
+    trainers.forEach((trainer, index) => {
         const trainerItem = document.createElement('div');
         trainerItem.className = 'trainer-item';
+        trainerItem.style.animationDelay = `${index * 0.05}s`;
+        
+        // Generate description with stats
+        const description = data.description_template
+            .replace('{strength}', trainer.strength)
+            .replace('{strengthBoost}', trainer.strengthBoost)
+            .replace('{luck}', trainer.luck)
+            .replace('{luckBoost}', trainer.luckBoost)
+            .replace('{wins}', trainer.wins)
+            .replace('{winsBoost}', trainer.winsBoost);
+        
+        const typeLabel = type === 'free' ? data.free_label : data.donate_label;
+        
         trainerItem.innerHTML = `
             <div class="trainer-content">
                 <div class="trainer-name">${trainer.name}</div>
-                <div class="trainer-description">${trainer.description}</div>
+                <div class="trainer-description">${description}</div>
             </div>
-            <div class="trainer-type ${trainer.type}">${trainer.type}</div>
+            <div class="trainer-type ${type}">${typeLabel}</div>
         `;
         container.appendChild(trainerItem);
     });
@@ -85,30 +134,96 @@ function generateTrainerContent(type, containerId) {
 }
 
 // Generate all trainer content
-function generateAllTrainerContent() {
+async function generateAllTrainerContent() {
     console.log('Generating all trainer content...');
-    generateTrainerContent('free', 'freeTrainers');
-    generateTrainerContent('donate', 'donateTrainers');
+    
+    trainerCurrentLanguage = getCurrentLanguage();
+    
+    try {
+        if (!trainerTranslations) await loadTrainerTranslations();
+        
+        generateTrainerContent('free', 'freeTrainers');
+        generateTrainerContent('donate', 'donateTrainers');
+        
+        console.log(`✅ Generated all trainers in ${trainerCurrentLanguage}`);
+    } catch (error) {
+        console.error('❌ Error generating trainer content:', error);
+    }
 }
 
 // Initialize trainer functionality
-function initializeTrainer() {
-    console.log('Initializing trainer...');
+async function initializeTrainer() {
+    console.log('👨‍🏫 Initializing trainer...');
     
-    // Wait a bit for DOM to be ready
-    setTimeout(() => {
-        generateAllTrainerContent();
+    const container = document.getElementById('freeTrainers');
+    if (trainerInitialized && container?.querySelector('.trainer-item')) {
+        console.log('👨‍🏫 Already initialized');
+        return;
+    }
+    
+    trainerCurrentLanguage = getCurrentLanguage();
+    
+    try {
+        await loadTrainerTranslations();
+        
+        // Update UI texts
+        const data = trainerTranslations[trainerCurrentLanguage];
+        if (data) {
+            // Update title
+            const titleElement = document.querySelector('.trainer-page .title');
+            if (titleElement) {
+                titleElement.textContent = data.title;
+            }
+            
+            // Update switch buttons
+            const freeBtn = document.querySelector('[data-type="free"]');
+            const donateBtn = document.querySelector('[data-type="donate"]');
+            
+            if (freeBtn) freeBtn.textContent = data.free_button;
+            if (donateBtn) donateBtn.textContent = data.donate_button;
+        }
+        
+        await generateAllTrainerContent();
         switchTrainerType('free');
-        console.log('Trainer initialization completed');
-    }, 100);
+        trainerInitialized = true;
+        window.trainerInitialized = true;
+        console.log('✅ Trainer initialized');
+    } catch (error) {
+        console.error('❌ Failed to initialize trainer:', error);
+        const container = document.getElementById('freeTrainers');
+        if (container) {
+            container.innerHTML = `
+                <div class="trainer-error">
+                    ⚠️ Failed to load trainer data<br>
+                    <button class="retry-btn" onclick="initializeTrainer()">Retry</button>
+                </div>
+            `;
+        }
+    }
 }
 
-// Make sure initializeTrainer runs when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeTrainer);
-} else {
-    initializeTrainer();
-}
+// Event listeners
+document.addEventListener('languageChanged', (e) => {
+    if (e.detail?.language) updateTrainerLanguage(e.detail.language);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const page = document.getElementById('trainerPage');
+        if (page?.classList.contains('active')) initializeTrainer();
+    }, 100);
+});
+
+document.addEventListener('click', (e) => {
+    if (e.target?.getAttribute('data-page') === 'trainer') {
+        setTimeout(() => {
+            const container = document.getElementById('freeTrainers');
+            if (!trainerInitialized || !container?.querySelector('.trainer-item')) {
+                initializeTrainer();
+            }
+        }, 300);
+    }
+});
 
 // Also run when trainer page becomes active
 document.addEventListener('DOMContentLoaded', () => {
@@ -117,8 +232,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 const trainerPage = document.getElementById('trainerPage');
                 if (trainerPage && trainerPage.classList.contains('active')) {
-                    console.log('Trainer page became active, regenerating content...');
-                    generateAllTrainerContent();
+                    console.log('Trainer page became active, checking initialization...');
+                    const container = document.getElementById('freeTrainers');
+                    if (!trainerInitialized || !container?.querySelector('.trainer-item')) {
+                        initializeTrainer();
+                    }
                 }
             }
         });
@@ -130,5 +248,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Global function for window object (fallback)
+// Global exports
 window.switchTrainerType = switchTrainerType;
+window.initializeTrainer = initializeTrainer;
+window.updateTrainerLanguage = updateTrainerLanguage;
+window.generateAllTrainerContent = generateAllTrainerContent;
+window.trainerInitialized = trainerInitialized;
+
+console.log('✅ Trainer.js loaded and ready');
