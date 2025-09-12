@@ -1,0 +1,39 @@
+{
+    "en": {
+        "title": "Charms Boosts",
+        "loading": "Loading charms...",
+        "error": "Error loading charms data",
+        "retry": "Retry",
+        "charms": [
+            {
+                "title": "Infinite charm",
+                "imageUrl": "https://i.postimg.cc/W4TNJQmF/2025-09-07-09-40-22.png",
+                "description": "Gives 20% to training rep",
+                "details": "Max stock: 5",
+                "category": "charm"
+            },
+            {
+                "title": "Leadboard charm",
+                "imageUrl": "https://i.postimg.cc/vHwZsg1t/image.png",
+                "description": "Gives 18% to training rep",
+                "details": "Max stock: 7",
+                "category": "charm"
+            },
+            {
+                "title": "Endless charm",
+                "imageUrl": "https://i.postimg.cc/76TqvwwR/2025-09-07-10-00-26.png",
+                "description": "Gives 15% to training rep",
+                "details": "Max stock: 10",
+                "category": "charm"
+            },
+            {
+                "title": "Luck charm",
+                "imageUrl": "https://i.postimg.cc/wB1pJgyB/2025-09-07-10-01-45.png",
+                "description": "Adds 5% to luck",
+                "details": "Max stock: 16",
+                "category": "charm"
+            },
+            {
+                "title": "Training charms",
+                "imageUrl": "https://i.postimg.cc/FRZLQ0bY/telegram-cloud-photo-size-2-5190785500309485773-m.jpg",
+                "description": "Gives
