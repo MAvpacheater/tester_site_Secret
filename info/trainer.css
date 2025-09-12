@@ -1,258 +1,200 @@
-// Trainer functionality with multilingual support
+/* Trainer Page Styles */
 
-let trainerCurrentLanguage = 'en';
-let trainerTranslations = null;
-let trainerInitialized = false;
-let currentTrainerType = 'free';
-
-// Get language from localStorage
-function getCurrentLanguage() {
-    return localStorage.getItem('armHelper_language') || 'en';
+.trainer-page {
+    display: none !important;
 }
 
-// Load translations from external file
-async function loadTrainerTranslations() {
-    if (trainerTranslations) return trainerTranslations;
-    
-    try {
-        const response = await fetch('languages/trainers.json');
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        trainerTranslations = await response.json();
-        console.log('✅ Trainer translations loaded');
-    } catch (error) {
-        console.error('❌ Failed to load trainer translations:', error);
-        throw error;
-    }
-    return trainerTranslations;
+.trainer-page.active {
+    display: block !important;
 }
 
-// Update language
-function updateTrainerLanguage(newLanguage) {
-    console.log(`👨‍🏫 Trainer language: ${trainerCurrentLanguage} → ${newLanguage}`);
-    
-    if (newLanguage === trainerCurrentLanguage) return;
-    trainerCurrentLanguage = newLanguage;
-    
-    // Update title and button texts
-    if (trainerTranslations?.[newLanguage]) {
-        const data = trainerTranslations[newLanguage];
-        
-        // Update title
-        const titleElement = document.querySelector('.trainer-page .title');
-        if (titleElement) {
-            titleElement.textContent = data.title;
-        }
-        
-        // Update switch buttons
-        const freeBtn = document.querySelector('[data-type="free"]');
-        const donateBtn = document.querySelector('[data-type="donate"]');
-        
-        if (freeBtn) freeBtn.textContent = data.free_button;
-        if (donateBtn) donateBtn.textContent = data.donate_button;
-    }
-    
-    // Regenerate content
-    if (trainerInitialized) {
-        setTimeout(generateAllTrainerContent, 100);
-    }
+.trainer-page .title {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.5em;
+    font-weight: 900;
+    color: #4a5568;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-// Switch between trainer types
-function switchTrainerType(type) {
-    currentTrainerType = type;
-    
-    // Update button states
-    document.querySelectorAll('.trainer-switch-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    const activeBtn = document.querySelector(`[data-type="${type}"]`);
-    if (activeBtn) {
-        activeBtn.classList.add('active');
-    }
-    
-    // Update sections
-    document.querySelectorAll('.trainer-section').forEach(section => {
-        section.classList.remove('active');
-    });
-    
-    const activeSection = document.getElementById(`${type}Trainers`);
-    if (activeSection) {
-        activeSection.classList.add('active');
-    }
+/* Trainer Type Switcher */
+.trainer-switcher {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+    gap: 10px;
+    background: rgba(246, 249, 252, 0.8);
+    padding: 8px;
+    border-radius: 15px;
+    border: 2px solid rgba(102, 126, 234, 0.1);
 }
 
-// Generate trainer content for a specific type
-function generateTrainerContent(type, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) {
-        console.log(`Container ${containerId} not found`);
-        return;
-    }
-    
-    if (!trainerTranslations?.[trainerCurrentLanguage]) {
-        console.error('No trainer translations available');
-        return;
-    }
-    
-    const data = trainerTranslations[trainerCurrentLanguage];
-    container.innerHTML = '';
-    
-    const trainers = data.trainers[type];
-    if (!trainers) {
-        console.log(`No trainers found for type: ${type}`);
-        return;
-    }
-    
-    trainers.forEach((trainer, index) => {
-        const trainerItem = document.createElement('div');
-        trainerItem.className = 'trainer-item';
-        trainerItem.style.animationDelay = `${index * 0.05}s`;
-        
-        // Generate description with stats
-        const description = data.description_template
-            .replace('{strength}', trainer.strength)
-            .replace('{strengthBoost}', trainer.strengthBoost)
-            .replace('{luck}', trainer.luck)
-            .replace('{luckBoost}', trainer.luckBoost)
-            .replace('{wins}', trainer.wins)
-            .replace('{winsBoost}', trainer.winsBoost);
-        
-        const typeLabel = type === 'free' ? data.free_label : data.donate_label;
-        
-        trainerItem.innerHTML = `
-            <div class="trainer-content">
-                <div class="trainer-name">${trainer.name}</div>
-                <div class="trainer-description">${description}</div>
-            </div>
-            <div class="trainer-type ${type}">${typeLabel}</div>
-        `;
-        container.appendChild(trainerItem);
-    });
-    
-    console.log(`Generated ${trainers.length} trainers for ${type}`);
+.trainer-switch-btn {
+    background: transparent;
+    border: none;
+    color: #4a5568;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    font-family: 'Orbitron', monospace;
+    transition: all 0.3s ease;
+    flex: 1;
+    text-transform: uppercase;
 }
 
-// Generate all trainer content
-async function generateAllTrainerContent() {
-    console.log('Generating all trainer content...');
-    
-    trainerCurrentLanguage = getCurrentLanguage();
-    
-    try {
-        if (!trainerTranslations) await loadTrainerTranslations();
-        
-        generateTrainerContent('free', 'freeTrainers');
-        generateTrainerContent('donate', 'donateTrainers');
-        
-        console.log(`✅ Generated all trainers in ${trainerCurrentLanguage}`);
-    } catch (error) {
-        console.error('❌ Error generating trainer content:', error);
-    }
+.trainer-switch-btn:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    transform: translateY(-2px);
 }
 
-// Initialize trainer functionality
-async function initializeTrainer() {
-    console.log('👨‍🏫 Initializing trainer...');
-    
-    const container = document.getElementById('freeTrainers');
-    if (trainerInitialized && container?.querySelector('.trainer-item')) {
-        console.log('👨‍🏫 Already initialized');
-        return;
+.trainer-switch-btn.active {
+    background: #667eea;
+    color: white;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.trainer-container {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.trainer-container::-webkit-scrollbar { 
+    width: 8px; 
+}
+
+.trainer-container::-webkit-scrollbar-track { 
+    background: rgba(0, 0, 0, 0.1); 
+    border-radius: 10px; 
+}
+
+.trainer-container::-webkit-scrollbar-thumb { 
+    background: #667eea; 
+    border-radius: 10px; 
+}
+
+.trainer-section {
+    display: none;
+}
+
+.trainer-section.active {
+    display: block;
+}
+
+.trainer-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    background: rgba(246, 249, 252, 0.8);
+    border-radius: 12px;
+    border: 2px solid rgba(102, 126, 234, 0.1);
+    transition: all 0.3s ease;
+    font-family: 'Roboto', sans-serif;
+}
+
+.trainer-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.3);
+    transform: translateX(5px);
+}
+
+.trainer-item:nth-child(even) {
+    background: rgba(118, 75, 162, 0.08);
+}
+
+.trainer-item:nth-child(even):hover {
+    background: rgba(118, 75, 162, 0.15);
+    border-color: rgba(118, 75, 162, 0.3);
+}
+
+.trainer-content {
+    flex: 1;
+}
+
+.trainer-name {
+    font-weight: 700;
+    color: #2d3748;
+    font-size: 1.1em;
+    margin-bottom: 4px;
+    font-family: 'Orbitron', monospace;
+}
+
+.trainer-description {
+    color: #4a5568;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.trainer-type {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-left: 10px;
+    min-width: 80px;
+    text-align: center;
+}
+
+.trainer-type.free {
+    background: rgba(34, 197, 94, 0.2);
+    color: #15803d;
+}
+
+.trainer-type.donate {
+    background: rgba(234, 179, 8, 0.2);
+    color: #ca8a04;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .trainer-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
     }
     
-    trainerCurrentLanguage = getCurrentLanguage();
+    .trainer-type {
+        margin-left: 0;
+        align-self: flex-end;
+    }
     
-    try {
-        await loadTrainerTranslations();
-        
-        // Update UI texts
-        const data = trainerTranslations[trainerCurrentLanguage];
-        if (data) {
-            // Update title
-            const titleElement = document.querySelector('.trainer-page .title');
-            if (titleElement) {
-                titleElement.textContent = data.title;
-            }
-            
-            // Update switch buttons
-            const freeBtn = document.querySelector('[data-type="free"]');
-            const donateBtn = document.querySelector('[data-type="donate"]');
-            
-            if (freeBtn) freeBtn.textContent = data.free_button;
-            if (donateBtn) donateBtn.textContent = data.donate_button;
-        }
-        
-        await generateAllTrainerContent();
-        switchTrainerType('free');
-        trainerInitialized = true;
-        window.trainerInitialized = true;
-        console.log('✅ Trainer initialized');
-    } catch (error) {
-        console.error('❌ Failed to initialize trainer:', error);
-        const container = document.getElementById('freeTrainers');
-        if (container) {
-            container.innerHTML = `
-                <div class="trainer-error">
-                    ⚠️ Failed to load trainer data<br>
-                    <button class="retry-btn" onclick="initializeTrainer()">Retry</button>
-                </div>
-            `;
-        }
+    .trainer-switcher {
+        flex-direction: column;
+        gap: 5px;
     }
 }
 
-// Event listeners
-document.addEventListener('languageChanged', (e) => {
-    if (e.detail?.language) updateTrainerLanguage(e.detail.language);
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        const page = document.getElementById('trainerPage');
-        if (page?.classList.contains('active')) initializeTrainer();
-    }, 100);
-});
-
-document.addEventListener('click', (e) => {
-    if (e.target?.getAttribute('data-page') === 'trainer') {
-        setTimeout(() => {
-            const container = document.getElementById('freeTrainers');
-            if (!trainerInitialized || !container?.querySelector('.trainer-item')) {
-                initializeTrainer();
-            }
-        }, 300);
+@media (max-width: 480px) {
+    .trainer-page .title {
+        font-size: 2em;
     }
-});
-
-// Also run when trainer page becomes active
-document.addEventListener('DOMContentLoaded', () => {
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                const trainerPage = document.getElementById('trainerPage');
-                if (trainerPage && trainerPage.classList.contains('active')) {
-                    console.log('Trainer page became active, checking initialization...');
-                    const container = document.getElementById('freeTrainers');
-                    if (!trainerInitialized || !container?.querySelector('.trainer-item')) {
-                        initializeTrainer();
-                    }
-                }
-            }
-        });
-    });
     
-    const trainerPage = document.getElementById('trainerPage');
-    if (trainerPage) {
-        observer.observe(trainerPage, { attributes: true });
+    .trainer-item {
+        padding: 10px 12px;
     }
-});
-
-// Global exports
-window.switchTrainerType = switchTrainerType;
-window.initializeTrainer = initializeTrainer;
-window.updateTrainerLanguage = updateTrainerLanguage;
-window.generateAllTrainerContent = generateAllTrainerContent;
-window.trainerInitialized = trainerInitialized;
-
-console.log('✅ Trainer.js loaded and ready');
+    
+    .trainer-name {
+        font-size: 1em;
+    }
+    
+    .trainer-description {
+        font-size: 0.85em;
+    }
+    
+    .trainer-switch-btn {
+        padding: 10px 16px;
+        font-size: 0.9em;
+    }
+}
