@@ -195,15 +195,15 @@ async function generateCodesContent() {
     // Generate code items
     codesData.forEach((item, index) => {
         content += `
-            <div class="code-item">
+            <div class="code-item ${item.isUsed ? 'used' : ''}">
                 <div class="code-content">
                     <div class="code-name">${item.code}${item.isNew ? ' (NEW)' : ''}</div>
                     <div class="code-description">${item.description}</div>
                 </div>
                 <div class="code-actions">
-                    <button class="code-toggle ${item.isActive ? '' : 'inactive'}" 
+                    <button class="code-toggle ${item.isUsed ? 'used' : ''}" 
                             onclick="toggleCodeStatus(${index}, this)"
-                            title="${item.isActive ? 'Mark as used' : 'Mark as available'}">
+                            title="${item.isUsed ? 'Mark as available' : 'Mark as used'}">
                     </button>
                     <button class="copy-btn" onclick="copyCode('${item.code}', this)">
                         <span class="copy-icon">📋</span>
