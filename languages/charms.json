@@ -64,66 +64,66 @@
     ]
   },
   "uk": {
-    "title": "Чари та підсилення",
+    "title": "Брелок та підсилення",
     "loading": "Завантаження чарів...",
     "error": "Помилка завантаження чарів",
     "retry": "Спробувати знову",
     "charms": [
       {
-        "title": "Нескінченні чари",
+        "title": "Нескінченні Брелки",
         "imageUrl": "https://i.postimg.cc/W4TNJQmF/2025-09-07-09-40-22.png",
         "description": "Дають 20% до тренування",
         "details": "Макс запас: 5",
-        "category": "чари"
+        "category": "Брелок"
       },
       {
-        "title": "Чари лідера",
+        "title": "Брелок лідера",
         "imageUrl": "https://i.postimg.cc/vHwZsg1t/image.png",
         "description": "Дають 18% до тренування",
         "details": "Макс запас: 7",
-        "category": "чари"
+        "category": "Брелок"
       },
       {
-        "title": "Безкінечні чари",
+        "title": "Безкінечні Брелки",
         "imageUrl": "https://i.postimg.cc/76TqvwwR/2025-09-07-10-00-26.png",
         "description": "Дають 15% до тренування",
         "details": "Макс запас: 10",
-        "category": "чари"
+        "category": "Брелок"
       },
       {
-        "title": "Чари удачі",
+        "title": "Брелок удачі",
         "imageUrl": "https://i.postimg.cc/wB1pJgyB/2025-09-07-10-01-45.png",
         "description": "Додають 5% до удачі",
         "details": "Макс запас: 16",
-        "category": "чари"
+        "category": "Брелок"
       },
       {
-        "title": "Тренувальні чари",
+        "title": "Тренувальні Брелки",
         "imageUrl": "https://i.postimg.cc/FRZLQ0bY/telegram-cloud-photo-size-2-5190785500309485773-m.jpg",
         "description": "Дають 5% до тренування",
         "details": "Макс запас: 16",
-        "category": "чари"
+        "category": "Брелок"
       },
       {
-        "title": "Чари здобичі",
+        "title": "Брелок здобичі",
         "imageUrl": "https://i.postimg.cc/7LtL8K75/2025-09-07-09-55-01.png",
         "description": "Дають 5% на знаходження здобичі з боса",
         "details": "Макс запас: 16",
-        "category": "чари"
+        "category": "Брелок"
       },
       {
-        "title": "Чари переможця",
+        "title": "Брелок переможця",
         "imageUrl": "https://i.postimg.cc/XY8JxjYc/2025-09-07-09-55-06.png",
         "description": "Дають 5% більше перемог над босом",
         "details": "Макс запас: 16",
-        "category": "чари"
+        "category": "Брелок"
       },
       {
-        "title": "Вугільні чари",
+        "title": "Вугільні Брелки",
         "imageUrl": "https://i.postimg.cc/B68nq2cM/2025-09-07-09-54-40.png",
         "description": "Можна видалити чари з питомця",
         "details": "Тільки 1 використання",
-        "category": "чари"
+        "category": "Брелок"
       }
     ]
   },
@@ -134,60 +134,60 @@
     "retry": "Повторить",
     "charms": [
       {
-        "title": "Бесконечные чары",
+        "title": "Бесконечные Чармы",
         "imageUrl": "https://i.postimg.cc/W4TNJQmF/2025-09-07-09-40-22.png",
         "description": "Дают 20% к тренировке",
         "details": "Макс запас: 5",
-        "category": "чары"
+        "category": "чармы"
       },
       {
-        "title": "Чары лидера",
+        "title": "Чармы лидера",
         "imageUrl": "https://i.postimg.cc/vHwZsg1t/image.png",
         "description": "Дают 18% к тренировке",
         "details": "Макс запас: 7",
-        "category": "чары"
+        "category": "чармы"
       },
       {
-        "title": "Бесконечные чары",
+        "title": "Бесконечные Чары",
         "imageUrl": "https://i.postimg.cc/76TqvwwR/2025-09-07-10-00-26.png",
         "description": "Дают 15% к тренировке",
         "details": "Макс запас: 10",
-        "category": "чары"
+        "category": "чармы"
       },
       {
-        "title": "Чары удачи",
+        "title": "Чармы удачи",
         "imageUrl": "https://i.postimg.cc/wB1pJgyB/2025-09-07-10-01-45.png",
         "description": "Добавляют 5% к удаче",
         "details": "Макс запас: 16",
-        "category": "чары"
+        "category": "чармы"
       },
       {
-        "title": "Тренировочные чары",
+        "title": "Тренировочные чармы",
         "imageUrl": "https://i.postimg.cc/FRZLQ0bY/telegram-cloud-photo-size-2-5190785500309485773-m.jpg",
         "description": "Дают 5% к тренировке",
         "details": "Макс запас: 16",
-        "category": "чары"
+        "category": "чармы"
       },
       {
-        "title": "Чары добычи",
+        "title": "Чармы добычи",
         "imageUrl": "https://i.postimg.cc/7LtL8K75/2025-09-07-09-55-01.png",
         "description": "Дают 5% на поиск добычи с босса",
         "details": "Макс запас: 16",
-        "category": "чары"
+        "category": "чармы"
       },
       {
-        "title": "Чары победителя",
+        "title": "Чармы победителя",
         "imageUrl": "https://i.postimg.cc/XY8JxjYc/2025-09-07-09-55-06.png",
         "description": "Дают 5% больше побед над боссом",
         "details": "Макс запас: 16",
-        "category": "чары"
+        "category": "чармы"
       },
       {
-        "title": "Угольные чары",
+        "title": "Угольные чармы",
         "imageUrl": "https://i.postimg.cc/B68nq2cM/2025-09-07-09-54-40.png",
         "description": "Можно убрать чары с питомца",
         "details": "Только 1 использование",
-        "category": "чары"
+        "category": "чармы"
       }
     ]
   }
