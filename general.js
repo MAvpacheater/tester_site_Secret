@@ -1,4 +1,4 @@
-// Updated General JavaScript functions - Fixed language switching for all modules
+// Updated General JavaScript functions - With Page Title Language Support
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -38,19 +38,19 @@ async function loadMenuTranslations() {
                 info: "Info",
                 others: "Others",
                 pages: {
-                    calculator: "Pet Calculator",
-                    arm: "Arm Calculator",
-                    grind: "Grind Calculator",
-                    boosts: "Boosts",
-                    shiny: "Shiny Stats",
-                    secret: "Secret Pets",
-                    codes: "Codes",
-                    aura: "Aura",
-                    trainer: "Trainer",
-                    charms: "Charms",
-                    potions: "Potions & Food",
-                    worlds: "Worlds",
-                    thanks: "Peoples"
+                    calculator: "🐾 Pet Calculator",
+                    arm: "💪 Arm Calculator",
+                    grind: "🏋️‍♂️ Grind Calculator",
+                    boosts: "🚀 Boosts",
+                    shiny: "✨ Shiny Stats",
+                    secret: "🔮 Secret Pets",
+                    codes: "🎁 Codes",
+                    aura: "🌟 Aura",
+                    trainer: "🏆 Trainer",
+                    charms: "🔮 Charms",
+                    potions: "🧪 Potions & Food",
+                    worlds: "🌍 Worlds",
+                    thanks: "🙏 Peoples"
                 },
                 auth: {
                     login: "Login (Soon...)"
@@ -61,7 +61,7 @@ async function loadMenuTranslations() {
     }
 }
 
-// Switch app language - ENHANCED WITH MODULE NOTIFICATIONS
+// Switch app language - ENHANCED WITH PAGE TITLES
 async function switchAppLanguage(lang) {
     if (!menuTranslations) {
         await loadMenuTranslations();
@@ -84,8 +84,9 @@ async function switchAppLanguage(lang) {
         }
     });
     
-    // Update menu text
+    // Update menu text AND page titles
     updateMenuTranslations();
+    updatePageTitles();
     
     // Notify ALL modules about language change
     console.log(`🌍 Broadcasting language change from ${previousLanguage} to ${lang}`);
@@ -162,8 +163,7 @@ function updateMenuTranslations() {
     Object.entries(translations.pages).forEach(([page, translation]) => {
         const pageButton = document.querySelector(`[data-page="${page}"]`);
         if (pageButton) {
-            const icon = pageButton.innerHTML.split(' ')[0]; // Keep the emoji
-            pageButton.innerHTML = `${icon} ${translation}`;
+            pageButton.textContent = translation; // Full text with emoji
         }
     });
     
@@ -174,6 +174,53 @@ function updateMenuTranslations() {
     }
     
     console.log(`✅ Menu translations updated for ${currentAppLanguage}`);
+}
+
+// NEW FUNCTION: Update page titles
+function updatePageTitles() {
+    if (!menuTranslations || !currentAppLanguage) return;
+    
+    const translations = menuTranslations[currentAppLanguage];
+    if (!translations || !translations.pages) return;
+    
+    // Page title mappings (page ID -> translation key)
+    const pageTitleMappings = {
+        'calculatorPage': 'calculator',
+        'armPage': 'arm',
+        'grindPage': 'grind',
+        'boostsPage': 'boosts',
+        'shinyPage': 'shiny',
+        'secretPage': 'secret',
+        'codesPage': 'codes',
+        'auraPage': 'aura',
+        'trainerPage': 'trainer',
+        'charmsPage': 'charms',
+        'potionsPage': 'potions',
+        'worldsPage': 'worlds',
+        'thanksPage': 'thanks'
+    };
+    
+    // Update each page title
+    Object.entries(pageTitleMappings).forEach(([pageId, translationKey]) => {
+        const page = document.getElementById(pageId);
+        if (page && translations.pages[translationKey]) {
+            // Find the h1 title element in the page
+            const titleElement = page.querySelector('h1, .title, .thanks-title');
+            if (titleElement) {
+                titleElement.textContent = translations.pages[translationKey];
+                console.log(`✅ Updated title for ${pageId}: ${translations.pages[translationKey]}`);
+            }
+            
+            // Special handling for header-controls h1 elements
+            const headerControlsTitle = page.querySelector('.header-controls h1');
+            if (headerControlsTitle) {
+                headerControlsTitle.textContent = translations.pages[translationKey];
+                console.log(`✅ Updated header title for ${pageId}: ${translations.pages[translationKey]}`);
+            }
+        }
+    });
+    
+    console.log(`✅ Page titles updated for ${currentAppLanguage}`);
 }
 
 // Create language flags section
@@ -458,8 +505,9 @@ async function initializeApp() {
         sidebar.appendChild(languageFlags);
     }
     
-    // Update menu translations
+    // Update menu translations AND page titles
     updateMenuTranslations();
+    updatePageTitles();
     
     // Initialize categories
     initializeCategories();
@@ -504,7 +552,7 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed with enhanced language support');
+    console.log('✅ App initialization completed with enhanced language support and page titles');
 }
 
 // Initialize all modules with proper DOM readiness checks
@@ -622,3 +670,4 @@ window.switchAppLanguage = switchAppLanguage;
 window.getCurrentAppLanguage = getCurrentAppLanguage;
 window.saveAppLanguage = saveAppLanguage;
 window.updateMenuTranslations = updateMenuTranslations;
+window.updatePageTitles = updatePageTitles; // NEW FUNCTION EXPOSED
