@@ -1,4 +1,85 @@
-// Pet Stats Calculator functionality
+// Pet Stats Calculator functionality with multilingual support
+
+// Global variables
+let calcTranslations = null;
+let currentCalcLanguage = 'en';
+
+// Load calculator translations
+async function loadCalcTranslations() {
+    if (calcTranslations) return calcTranslations;
+    
+    try {
+        console.log('📥 Loading calculator translations...');
+        const response = await fetch('languages/calc.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        calcTranslations = await response.json();
+        console.log('✅ Calculator translations loaded successfully');
+        return calcTranslations;
+    } catch (error) {
+        console.error('❌ Error loading calculator translations:', error);
+        // Fallback to English
+        calcTranslations = {
+            en: {
+                common: { calculate: "Calculate", settings: "Settings", back: "← Back" },
+                calculator: {
+                    inputLabel: "Enter Pet Stats:",
+                    inputPlaceholder: "Enter your pet's base stats...",
+                    resultLabel: "Final Pet Stats:",
+                    errorInvalidNumber: "Please enter a valid number"
+                }
+            }
+        };
+        return calcTranslations;
+    }
+}
+
+// Update calculator language
+async function updateCalculatorLanguage(lang) {
+    if (!calcTranslations) {
+        await loadCalcTranslations();
+    }
+    
+    currentCalcLanguage = lang;
+    
+    if (!calcTranslations[lang]) {
+        console.error(`❌ Calculator language ${lang} not found, defaulting to English`);
+        currentCalcLanguage = 'en';
+    }
+    
+    const translations = calcTranslations[currentCalcLanguage];
+    if (!translations) return;
+    
+    // Update calculator input elements
+    const inputLabel = document.querySelector('#calculatorPage .input-label');
+    const inputField = document.getElementById('numberInput');
+    const calculateBtn = document.querySelector('#calculatorPage .calculate-btn');
+    const resultLabel = document.querySelector('#calculatorPage .stats-label');
+    const settingsTitle = document.querySelector('#settingsPanel .settings-title');
+    
+    if (inputLabel && translations.calculator.inputLabel) {
+        inputLabel.textContent = translations.calculator.inputLabel;
+    }
+    
+    if (inputField && translations.calculator.inputPlaceholder) {
+        inputField.placeholder = translations.calculator.inputPlaceholder;
+    }
+    
+    if (calculateBtn && translations.common.calculate) {
+        calculateBtn.textContent = translations.common.calculate;
+    }
+    
+    if (resultLabel && translations.calculator.resultLabel) {
+        resultLabel.textContent = translations.calculator.resultLabel;
+    }
+    
+    if (settingsTitle && translations.common.settings) {
+        settingsTitle.textContent = translations.common.settings;
+    }
+    
+    console.log(`✅ Calculator language updated to: ${currentCalcLanguage}`);
+}
 
 // Категорії модифікаторів
 const modifierCategories = {
@@ -17,7 +98,7 @@ const modifierCategories = {
             { id: "slime_neowave", name: "Neowave", multiplier: 3 },
             { id: "slime_shock", name: "Shock", multiplier: 3.15 }
         ],
-        default: "slime_shock" // найкращий за замовчуванням
+        default: "slime_shock"
     },
     mutation: {
         title: "Mutation",
@@ -28,7 +109,7 @@ const modifierCategories = {
             { id: "mutation_ghost", name: "Ghost", multiplier: 2 },
             { id: "mutation_cosmic", name: "Cosmic", multiplier: 2.5 }
         ],
-        default: "mutation_cosmic" // найкращий за замовчуванням
+        default: "mutation_cosmic"
     },
     evolution: {
         title: "Evolution and Size",
@@ -38,7 +119,7 @@ const modifierCategories = {
             { id: "evolution_huge", name: "Huge", multiplier: 2 },
             { id: "evolution_goliath", name: "Goliath", multiplier: 2.5 }
         ],
-        default: "evolution_goliath" // найкращий за замовчуванням
+        default: "evolution_goliath"
     },
     type: {
         title: "Type",
@@ -48,7 +129,7 @@ const modifierCategories = {
             { id: "type_void", name: "Void", multiplier: 2 },
             { id: "type_pristine", name: "Pristine", multiplier: 2.17 }
         ],
-        default: "type_pristine" // найкращий за замовчуванням
+        default: "type_pristine"
     }
 };
 
@@ -136,9 +217,6 @@ function handleCategoryToggle(categoryKey, optionId, checkbox) {
     // Встановлюємо новий вибір
     currentSelections[categoryKey] = optionId;
     
-    // Оновлюємо основну панель налаштувань (якщо потрібно показати оновлений вибір)
-    // createSettingsHTML(); // Закоментовуємо, щоб не перемальовувати панель
-    
     // Перераховуємо статистики
     calculateStats();
 }
@@ -189,7 +267,11 @@ function calculateStats() {
 
     if (isNaN(baseValue) || input.value.trim() === '') {
         if (input.value.trim() !== '') {
-            errorMessage.textContent = 'Please enter a valid number';
+            // Use translated error message
+            const translations = calcTranslations && calcTranslations[currentCalcLanguage];
+            const errorText = (translations && translations.calculator.errorInvalidNumber) 
+                || 'Please enter a valid number';
+            errorMessage.textContent = errorText;
         }
         resultSection.classList.remove('show');
         return;
@@ -234,6 +316,11 @@ function createSettingsHTML() {
 
     let html = '';
     
+    // Get current translations
+    const translations = calcTranslations && calcTranslations[currentCalcLanguage];
+    const settingsText = (translations && translations.common.settings) || 'Settings';
+    const backText = (translations && translations.common.back) || '← Back';
+    
     // Якщо ми в режимі перегляду категорії
     if (isInCategoryView && currentCategoryView) {
         const category = modifierCategories[currentCategoryView];
@@ -241,7 +328,7 @@ function createSettingsHTML() {
             html += `
                 <div class="settings-header">
                     <div class="settings-title">${category.title}</div>
-                    <button type="button" class="back-btn" onclick="backToMainSettings(event)">← Back</button>
+                    <button type="button" class="back-btn" onclick="backToMainSettings(event)">${backText}</button>
                 </div>
             `;
             
@@ -266,7 +353,7 @@ function createSettingsHTML() {
         }
     } else {
         // Основний вигляд налаштувань
-        html += '<div class="settings-title">Settings</div>';
+        html += `<div class="settings-title">${settingsText}</div>`;
         
         // Кнопки категорій
         for (const [categoryKey, category] of Object.entries(modifierCategories)) {
@@ -304,8 +391,19 @@ function createSettingsHTML() {
 }
 
 // Ініціалізація калькулятора при завантаженні сторінки
-function initializeCalculator() {
+async function initializeCalculator() {
     console.log('🚀 Ініціалізація калькулятора...');
+    
+    // Load translations
+    await loadCalcTranslations();
+    
+    // Get current app language
+    const currentAppLanguage = (typeof getCurrentAppLanguage === 'function') 
+        ? getCurrentAppLanguage() 
+        : 'en';
+    
+    // Update calculator language
+    await updateCalculatorLanguage(currentAppLanguage);
     
     // Скидаємо поточні вибори
     currentSelections = {};
@@ -334,5 +432,16 @@ function initializeCalculator() {
         });
     }
     
-    console.log('✅ Калькулятор ініціалізовано');
+    console.log('✅ Калькулятор ініціалізовано з підтримкою мов');
 }
+
+// Listen for language change events
+document.addEventListener('languageChanged', async (event) => {
+    const newLanguage = event.detail.language;
+    console.log('🌍 Calculator received language change:', newLanguage);
+    await updateCalculatorLanguage(newLanguage);
+});
+
+// Make functions globally available
+window.updateCalculatorLanguage = updateCalculatorLanguage;
+window.loadCalcTranslations = loadCalcTranslations;
