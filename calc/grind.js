@@ -1,4 +1,85 @@
-// Grind Calculator functionality with category toggles
+// Grind Calculator functionality with category toggles and multilingual support
+
+// Global variables for translations
+let grindCalcTranslations = null;
+let currentGrindLanguage = 'en';
+
+// Load calculator translations (reuse from calculator)
+async function loadGrindTranslations() {
+    if (grindCalcTranslations) return grindCalcTranslations;
+    
+    try {
+        console.log('📥 Loading grind calculator translations...');
+        const response = await fetch('languages/calc.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        grindCalcTranslations = await response.json();
+        console.log('✅ Grind calculator translations loaded successfully');
+        return grindCalcTranslations;
+    } catch (error) {
+        console.error('❌ Error loading grind calculator translations:', error);
+        // Fallback to English
+        grindCalcTranslations = {
+            en: {
+                common: { calculate: "Calculate", settings: "Settings" },
+                grind: {
+                    inputLabel: "Enter Base Value:",
+                    inputPlaceholder: "Enter your base grind value...",
+                    resultLabel: "Final Grind Value:",
+                    errorInvalidNumber: "Please enter a valid number"
+                }
+            }
+        };
+        return grindCalcTranslations;
+    }
+}
+
+// Update grind calculator language
+async function updateGrindLanguage(lang) {
+    if (!grindCalcTranslations) {
+        await loadGrindTranslations();
+    }
+    
+    currentGrindLanguage = lang;
+    
+    if (!grindCalcTranslations[lang]) {
+        console.error(`❌ Grind calculator language ${lang} not found, defaulting to English`);
+        currentGrindLanguage = 'en';
+    }
+    
+    const translations = grindCalcTranslations[currentGrindLanguage];
+    if (!translations || !translations.grind) return;
+    
+    // Update grind calculator input elements
+    const inputLabel = document.querySelector('#grindPage .input-label');
+    const inputField = document.getElementById('numberInputGrind');
+    const calculateBtn = document.querySelector('#grindPage .calculate-btn');
+    const resultLabel = document.querySelector('#grindPage .stats-label');
+    const settingsTitle = document.querySelector('#settingsPanelGrind .settings-title');
+    
+    if (inputLabel && translations.grind.inputLabel) {
+        inputLabel.textContent = translations.grind.inputLabel;
+    }
+    
+    if (inputField && translations.grind.inputPlaceholder) {
+        inputField.placeholder = translations.grind.inputPlaceholder;
+    }
+    
+    if (calculateBtn && translations.common.calculate) {
+        calculateBtn.textContent = translations.common.calculate;
+    }
+    
+    if (resultLabel && translations.grind.resultLabel) {
+        resultLabel.textContent = translations.grind.resultLabel;
+    }
+    
+    if (settingsTitle && translations.common.settings) {
+        settingsTitle.textContent = translations.common.settings;
+    }
+    
+    console.log(`✅ Grind calculator language updated to: ${currentGrindLanguage}`);
+}
 
 // Множники для grind з новими боостами
 const grindModifiers = {
@@ -225,7 +306,11 @@ function calculateGrindStats() {
 
     if (isNaN(baseValue) || input.value.trim() === '') {
         if (input.value.trim() !== '') {
-            errorMessage.textContent = 'Please enter a valid number';
+            // Use translated error message
+            const translations = grindCalcTranslations && grindCalcTranslations[currentGrindLanguage];
+            const errorText = (translations && translations.grind && translations.grind.errorInvalidNumber) 
+                || 'Please enter a valid number';
+            errorMessage.textContent = errorText;
         }
         resultSection.classList.remove('show');
         return;
@@ -248,8 +333,20 @@ function calculateGrindStats() {
 }
 
 // Ініціалізація Grind при завантаженні сторінки
-function initializeGrind() {
-    console.log('🔄 Initializing Grind Calculator...');
+async function initializeGrind() {
+    console.log('🔄 Initializing Grind Calculator with multilingual support...');
+    
+    // Load translations
+    await loadGrindTranslations();
+    
+    // Get current app language
+    const currentAppLanguage = (typeof getCurrentAppLanguage === 'function') 
+        ? getCurrentAppLanguage() 
+        : 'en';
+    
+    // Update grind calculator language
+    await updateGrindLanguage(currentAppLanguage);
+    
     updateGrindMultiplier();
     updateFriendDisplay();
     initializeGrindCategories(); // Initialize categories as closed
@@ -268,8 +365,15 @@ function initializeGrind() {
         });
     }
     
-    console.log('✅ Grind Calculator initialized with collapsible categories');
+    console.log('✅ Grind Calculator initialized with multilingual support and collapsible categories');
 }
+
+// Listen for language change events
+document.addEventListener('languageChanged', async (event) => {
+    const newLanguage = event.detail.language;
+    console.log('🌍 Grind calculator received language change:', newLanguage);
+    await updateGrindLanguage(newLanguage);
+});
 
 // Make functions globally available
 window.handleTpSelection = handleTpSelection;
@@ -282,3 +386,5 @@ window.initializeGrindCategories = initializeGrindCategories;
 window.toggleGrindSettings = toggleGrindSettings;
 window.calculateGrindStats = calculateGrindStats;
 window.initializeGrind = initializeGrind;
+window.updateGrindLanguage = updateGrindLanguage;
+window.loadGrindTranslations = loadGrindTranslations;
