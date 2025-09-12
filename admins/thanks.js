@@ -1,6 +1,81 @@
-// Thanks page functionality
+// Thanks page functionality with multilingual support
 let thanksInitialized = false;
 let currentFilter = 'all'; // 'all', 'admin', 'helper'
+let peoplesTranslations = null;
+let currentThanksLanguage = 'en';
+
+// Load peoples translations
+async function loadPeoplesTranslations() {
+    if (peoplesTranslations) return peoplesTranslations;
+    
+    try {
+        console.log('📥 Loading peoples translations...');
+        const response = await fetch('languages/peoples.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        peoplesTranslations = await response.json();
+        console.log('✅ Peoples translations loaded successfully');
+        return peoplesTranslations;
+    } catch (error) {
+        console.error('❌ Error loading peoples translations:', error);
+        // Fallback to English
+        peoplesTranslations = {
+            en: {
+                title: "🙏 Thanks & Developer",
+                subtitle: "Special thanks to everyone who contributed!",
+                filters: { admins: "👑 Admins", helpers: "🤝 Helpers" },
+                roles: { admin: "Admin", helper: "Helper" },
+                social: { telegram: "📱 Telegram Profile", discord: "🎮 Discord Profile" }
+            }
+        };
+        return peoplesTranslations;
+    }
+}
+
+// Update thanks page language
+async function updateThanksLanguage(lang) {
+    if (!peoplesTranslations) {
+        await loadPeoplesTranslations();
+    }
+    
+    currentThanksLanguage = lang;
+    
+    if (!peoplesTranslations[lang]) {
+        console.error(`❌ Thanks language ${lang} not found, defaulting to English`);
+        currentThanksLanguage = 'en';
+    }
+    
+    const translations = peoplesTranslations[currentThanksLanguage];
+    if (!translations) return;
+    
+    // Update page title and description
+    const pageTitle = document.querySelector('#thanksPage .thanks-title');
+    const pageSubtitle = document.querySelector('#thanksPage .thanks-subtitle');
+    const pageDescription = document.querySelector('#thanksPage .thanks-description');
+    
+    if (pageTitle && translations.title) {
+        pageTitle.textContent = translations.title;
+    }
+    
+    if (pageSubtitle && translations.subtitle) {
+        pageSubtitle.textContent = translations.subtitle;
+    }
+    
+    if (pageDescription && translations.description) {
+        pageDescription.textContent = translations.description;
+    }
+    
+    // Update filter buttons
+    updateFilterButtonsText();
+    
+    // Re-render contributors with new language
+    if (thanksInitialized) {
+        renderContributors();
+    }
+    
+    console.log(`✅ Thanks page language updated to: ${currentThanksLanguage}`);
+}
 
 // Contributors data
 const contributors = [
@@ -48,13 +123,13 @@ const contributors = [
     }
 ];
 
-function initializeThanks() {
+async function initializeThanks() {
     if (thanksInitialized) {
         console.log('⚠️ Thanks already initialized');
         return;
     }
 
-    console.log('🙏 Initializing Thanks page...');
+    console.log('🙏 Initializing Thanks page with multilingual support...');
 
     const thanksPage = document.getElementById('thanksPage');
     if (!thanksPage) {
@@ -62,10 +137,21 @@ function initializeThanks() {
         return;
     }
 
+    // Load translations
+    await loadPeoplesTranslations();
+    
+    // Get current app language
+    const currentAppLanguage = (typeof getCurrentAppLanguage === 'function') 
+        ? getCurrentAppLanguage() 
+        : 'en';
+    
+    // Update thanks page language
+    await updateThanksLanguage(currentAppLanguage);
+
     createFilterControls();
     renderContributors();
     thanksInitialized = true;
-    console.log('✅ Thanks page initialized successfully');
+    console.log('✅ Thanks page initialized successfully with multilingual support');
 }
 
 function createFilterControls() {
@@ -79,19 +165,40 @@ function createFilterControls() {
 
     const filterControls = document.createElement('div');
     filterControls.className = 'filter-controls';
+    
+    const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+    const adminsText = (translations && translations.filters.admins) || '👑 Admins';
+    const helpersText = (translations && translations.filters.helpers) || '🤝 Helpers';
+    
     filterControls.innerHTML = `
         <button class="filter-btn" data-filter="admin" onclick="setFilter('admin')">
-            👑 Admins
+            ${adminsText}
         </button>
         <button class="filter-btn" data-filter="helper" onclick="setFilter('helper')">
-            🤝 Helpers
+            ${helpersText}
         </button>
     `;
 
     // Insert filter controls after header
     thanksHeader.insertAdjacentElement('afterend', filterControls);
     
-    console.log('✅ Filter controls created');
+    console.log('✅ Filter controls created with translations');
+}
+
+function updateFilterButtonsText() {
+    const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+    if (!translations) return;
+    
+    const adminBtn = document.querySelector('[data-filter="admin"]');
+    const helperBtn = document.querySelector('[data-filter="helper"]');
+    
+    if (adminBtn && translations.filters.admins) {
+        adminBtn.textContent = translations.filters.admins;
+    }
+    
+    if (helperBtn && translations.filters.helpers) {
+        helperBtn.textContent = translations.filters.helpers;
+    }
 }
 
 function setFilter(filter) {
@@ -141,19 +248,41 @@ function filterContributors() {
         }
     });
 
-    // Show count of filtered results
+    // Show count of filtered results with translations
     const visibleCount = document.querySelectorAll('.contributor-card:not(.hidden)').length;
+    const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
     let filterMessage = '';
     
-    switch (currentFilter) {
-        case 'admin':
-            filterMessage = `Showing ${visibleCount} Admin${visibleCount !== 1 ? 's' : ''}`;
-            break;
-        case 'helper':
-            filterMessage = `Showing ${visibleCount} Helper${visibleCount !== 1 ? 's' : ''}`;
-            break;
-        default:
-            filterMessage = `Showing all ${visibleCount} contributor${visibleCount !== 1 ? 's' : ''}`;
+    if (translations && translations.filterResults) {
+        const plural = visibleCount !== 1 ? 's' : '';
+        switch (currentFilter) {
+            case 'admin':
+                filterMessage = translations.filterResults.showingAdmins
+                    .replace('{count}', visibleCount)
+                    .replace('{s}', plural);
+                break;
+            case 'helper':
+                filterMessage = translations.filterResults.showingHelpers
+                    .replace('{count}', visibleCount)
+                    .replace('{s}', plural);
+                break;
+            default:
+                filterMessage = translations.filterResults.showingAll
+                    .replace('{count}', visibleCount)
+                    .replace('{s}', plural);
+        }
+    } else {
+        // Fallback to English
+        switch (currentFilter) {
+            case 'admin':
+                filterMessage = `Showing ${visibleCount} Admin${visibleCount !== 1 ? 's' : ''}`;
+                break;
+            case 'helper':
+                filterMessage = `Showing ${visibleCount} Helper${visibleCount !== 1 ? 's' : ''}`;
+                break;
+            default:
+                filterMessage = `Showing all ${visibleCount} contributor${visibleCount !== 1 ? 's' : ''}`;
+        }
     }
     
     console.log(`📊 ${filterMessage}`);
@@ -181,7 +310,7 @@ function renderContributors() {
     // Apply current filter
     filterContributors();
     
-    console.log(`✅ Rendered ${contributors.length} contributors`);
+    console.log(`✅ Rendered ${contributors.length} contributors with translations`);
 }
 
 function createContributorCard(contributor, index) {
@@ -190,22 +319,30 @@ function createContributorCard(contributor, index) {
     card.setAttribute('data-index', index);
     card.setAttribute('data-role', contributor.role.toLowerCase());
 
-    // Role badge styling
+    // Get translations
+    const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+    
+    // Role badge styling and text
     const roleClass = contributor.role === 'Admin' ? 'role-admin' : 'role-helper';
+    const roleText = translations && translations.roles 
+        ? (contributor.role === 'Admin' ? translations.roles.admin : translations.roles.helper)
+        : contributor.role;
 
     // Generate social buttons only if they exist
     let socialButtons = '';
     if (contributor.telegram) {
+        const telegramText = (translations && translations.social.telegram) || '📱 Telegram Profile';
         socialButtons += `
             <button class="social-btn telegram-social" onclick="openTelegramProfile('${contributor.telegram}')">
-                📱 Telegram Profile
+                ${telegramText}
             </button>
         `;
     }
     if (contributor.discord) {
+        const discordText = (translations && translations.social.discord) || '🎮 Discord Profile';
         socialButtons += `
             <button class="social-btn discord-social" onclick="openDiscordProfile('${contributor.discord}')">
-                🎮 Discord Profile
+                ${discordText}
             </button>
         `;
     }
@@ -217,7 +354,7 @@ function createContributorCard(contributor, index) {
                 <div class="contributor-contribution">${escapeHtml(contributor.contribution)}</div>
             </div>
             <div class="contributor-actions">
-                <div class="role-badge ${roleClass}">${contributor.role}</div>
+                <div class="role-badge ${roleClass}">${roleText}</div>
             </div>
         </div>
         ${socialButtons ? `
@@ -232,7 +369,10 @@ function createContributorCard(contributor, index) {
 
 function openTelegramProfile(telegramHandle) {
     if (!telegramHandle) {
-        showNotification('❌ Telegram profile not available', 'error');
+        const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+        const errorMsg = (translations && translations.notifications.telegramNotAvailable) 
+            || '❌ Telegram profile not available';
+        showNotification(errorMsg, 'error');
         return;
     }
 
@@ -242,16 +382,27 @@ function openTelegramProfile(telegramHandle) {
     try {
         window.open(url, '_blank', 'noopener,noreferrer');
         console.log(`📱 Opening Telegram profile: ${url}`);
-        showNotification('📱 Opening Telegram profile...', 'success');
+        
+        const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+        const successMsg = (translations && translations.notifications.telegramOpening) 
+            || '📱 Opening Telegram profile...';
+        showNotification(successMsg, 'success');
     } catch (error) {
         console.error('❌ Error opening Telegram profile:', error);
-        showNotification('❌ Failed to open Telegram profile', 'error');
+        
+        const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+        const errorMsg = (translations && translations.notifications.telegramFailed) 
+            || '❌ Failed to open Telegram profile';
+        showNotification(errorMsg, 'error');
     }
 }
 
 function openDiscordProfile(discordTag) {
     if (!discordTag) {
-        showNotification('❌ Discord profile not available', 'error');
+        const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+        const errorMsg = (translations && translations.notifications.discordNotAvailable) 
+            || '❌ Discord profile not available';
+        showNotification(errorMsg, 'error');
         return;
     }
 
@@ -263,7 +414,11 @@ function openDiscordProfile(discordTag) {
         window.location.href = discordUrl;
         
         // Show notification that Discord tag is copied as backup
-        showNotification(`🎮 Opening Discord... Tag: ${discordTag}`, 'info');
+        const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+        const openingMsg = translations && translations.notifications.discordOpening 
+            ? translations.notifications.discordOpening.replace('{tag}', discordTag)
+            : `🎮 Opening Discord... Tag: ${discordTag}`;
+        showNotification(openingMsg, 'info');
         
         // Copy Discord tag to clipboard as fallback
         navigator.clipboard.writeText(discordTag).then(() => {
@@ -280,12 +435,20 @@ function openDiscordProfile(discordTag) {
         
         // If Discord app doesn't open, show fallback message after delay
         setTimeout(() => {
-            showNotification(`📋 Discord tag copied: ${discordTag}`, 'success');
+            const copiedMsg = translations && translations.notifications.discordCopied 
+                ? translations.notifications.discordCopied.replace('{tag}', discordTag)
+                : `📋 Discord tag copied: ${discordTag}`;
+            showNotification(copiedMsg, 'success');
         }, 2000);
         
     } catch (error) {
         console.error('❌ Error opening Discord profile:', error);
-        showNotification(`📋 Discord: ${discordTag} (copied to clipboard)`, 'info');
+        
+        const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+        const fallbackMsg = translations && translations.notifications.discordCopied 
+            ? translations.notifications.discordCopied.replace('{tag}', discordTag)
+            : `📋 Discord: ${discordTag} (copied to clipboard)`;
+        showNotification(fallbackMsg, 'info');
         
         // Copy to clipboard as fallback
         try {
@@ -366,8 +529,17 @@ function getContributorStats() {
     return stats;
 }
 
+// Listen for language change events
+document.addEventListener('languageChanged', async (event) => {
+    const newLanguage = event.detail.language;
+    console.log('🌍 Thanks page received language change:', newLanguage);
+    await updateThanksLanguage(newLanguage);
+});
+
 // Make functions globally available
 window.initializeThanks = initializeThanks;
+window.updateThanksLanguage = updateThanksLanguage;
+window.loadPeoplesTranslations = loadPeoplesTranslations;
 window.setFilter = setFilter;
 window.openTelegramProfile = openTelegramProfile;
 window.openDiscordProfile = openDiscordProfile;
@@ -375,4 +547,4 @@ window.addContributor = addContributor;
 window.removeContributor = removeContributor;
 window.getContributorStats = getContributorStats;
 
-console.log('✅ thanks.js loaded successfully');
+console.log('✅ thanks.js loaded successfully with multilingual support');
