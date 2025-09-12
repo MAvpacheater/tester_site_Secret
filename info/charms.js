@@ -171,37 +171,60 @@ async function generateCharmsContent() {
     }
 }
 
-// Initialize
+// Initialize with better error handling
 async function initializeCharms() {
-    if (charmsInitialized) {
-        console.log('🔮 Charms already initialized');
-        return;
-    }
-    
     console.log('🔮 Initializing charms...');
     
     const charmsPage = document.getElementById('charmsPage');
+    const container = document.getElementById('charmsContainer');
+    
     if (!charmsPage) {
         console.error('❌ Charms page not found');
         return;
     }
     
-    charmsCurrentLanguage = getCurrentLanguage();
-    
-    await loadCharmsTranslations();
-    
-    // Update title
-    const titleElement = charmsPage.querySelector('.title');
-    if (titleElement && charmsTranslations[charmsCurrentLanguage]) {
-        titleElement.textContent = charmsTranslations[charmsCurrentLanguage].title;
+    if (!container) {
+        console.error('❌ Charms container not found');
+        return;
     }
     
-    await generateCharmsContent();
+    // Prevent double initialization
+    if (charmsInitialized) {
+        console.log('🔮 Charms already initialized');
+        return;
+    }
     
-    charmsInitialized = true;
-    window.charmsInitialized = true;
-    
-    console.log('✅ Charms initialized');
+    try {
+        charmsCurrentLanguage = getCurrentLanguage();
+        
+        await loadCharmsTranslations();
+        
+        // Update title
+        const titleElement = charmsPage.querySelector('.title');
+        if (titleElement && charmsTranslations[charmsCurrentLanguage]) {
+            titleElement.textContent = charmsTranslations[charmsCurrentLanguage].title;
+        }
+        
+        await generateCharmsContent();
+        
+        charmsInitialized = true;
+        window.charmsInitialized = true;
+        
+        console.log('✅ Charms initialized successfully');
+    } catch (error) {
+        console.error('❌ Error initializing charms:', error);
+        
+        // Show error in container
+        if (container) {
+            container.innerHTML = `
+                <div class="charms-error">
+                    ⚠️ Failed to load charms
+                    <br>
+                    <button class="retry-btn" onclick="window.initializeCharms()">Try Again</button>
+                </div>
+            `;
+        }
+    }
 }
 
 // Event listeners
