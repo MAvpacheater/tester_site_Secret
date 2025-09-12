@@ -1,70 +1,92 @@
-// Codes functionality - Updated to match design with stats and toggles
+// Codes functionality - виправлена версія з збереженням стану
 
-// Codes data with status tracking
+// Codes data
 const codesData = [
-    { code: "pyramids", description: "Use for 3x stat boost for 72 hours (NEW)", isNew: true, isActive: true },
-    { code: "egyptian", description: "Use for 3x stat boost for 72 hours (NEW)", isNew: true, isActive: true },
-    { code: "21iscoming", description: "Use for 3x stat boost for 48 hours", isActive: true },
-    { code: "brainrot", description: "Use for 3x stat boost for 48 hours", isActive: true },
-    { code: "removal", description: "Use for 3x stat boost for 48 hours", isActive: true },
-    { code: "octogames", description: "Use for 3x stat boost for 48 hours", isActive: true },
-    { code: "glassbridge", description: "Use for 3x stat boost for 48 hours", isActive: true },
-    { code: "celebration", description: "Use for 3x stat boost for 48 hours", isActive: true },
-    { code: "banker", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "sorryoops", description: "Use for 3x strength boost for 24 hours", isActive: true },
-    { code: "timetravel", description: "Use for 48 hours of 3x strength and +5% boost on all stats", isActive: true },
-    { code: "world19", description: "Use for 5% on all strengths and 3x stat boost for 48 hours", isActive: true },
-    { code: "bulk", description: "Use for 3x stat boost for 48 hours", isActive: true },
-    { code: "superhero", description: "Use for 3x stat boost for 48 hours", isActive: true },
-    { code: "tokenstore", description: "Use for 3x stat boost for 48 hours", isActive: true },
-    { code: "captain", description: "Use for 3x stat boost for 48 hours", isActive: true },
-    { code: "skullbeard", description: "Use for 3x stat boost for 48 hours", isActive: true },
-    { code: "pirate", description: "Use for 5% on all strengths and 1,000 Gold Coins", isActive: true },
-    { code: "athlete", description: "Use for 3x stat boost for 48 hours", isActive: true },
-    { code: "tradingback", description: "5% boost on all strengths", isActive: true },
-    { code: "blossom", description: "Use for 3x stat boost for 48 hours and 1500 Prison Coins", isActive: true },
-    { code: "ninja", description: "Use for 3x stat boost for 48 hours and 1500 Prison Coins", isActive: true },
-    { code: "snowops", description: "Use for 3x stat boost for 48 hours", isActive: true },
-    { code: "hideout", description: "Use for 3x stat boost for 48 hours and 2500 Prison Coins", isActive: true },
-    { code: "cosmic", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "stocking", description: "Use for 3x stat boost for 72 hours and Christmas Title", isActive: true },
-    { code: "frostlands", description: "Use for 3x stat boost for 24 hours and 150 Ice Cubes", isActive: true },
-    { code: "polar", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "shiny", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "Christmas", description: "Use for 3x stat boost for 72 hours", isActive: true },
-    { code: "hacker", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "classic", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "clans", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "rifted", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "hauntedmanor", description: "Use for 3x stat boost for 24 hours and free candy", isActive: true },
-    { code: "trainers", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "ghosthunting", description: "Use for 3x stat boost for 24 hours and 1 Halloween card", isActive: true },
-    { code: "spooky", description: "Use for 3x stat boost for 24 hours and 3,500 candy", isActive: true },
-    { code: "soon", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "hatching", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "billion", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "Heavenly", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "rework", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "paradise", description: "Use for 3x stat boost for 24 hours + 1 gold", isActive: true },
-    { code: "wasteland", description: "Use for 3x stat boost for 24 hours", isActive: true },
-    { code: "apocalypse", description: "Use for 3x boost for 24 hours", isActive: true },
-    { code: "energy", description: "Use for 3x boost for 24 hours", isActive: true },
-    { code: "royalty", description: "Use for 3x boost for 24 hours", isActive: true },
-    { code: "performance", description: "Use for 3x boost for 24 hours", isActive: true },
-    { code: "charms", description: "Use for 3x boost for 24 hours of 3x multiplier", isActive: true },
-    { code: "wizard", description: "Use for 3x boost for 24 hours of 3x multiplier & 25 Miner Crystal", isActive: true },
-    { code: "atlantis", description: "Use for 8 hours of the 3x boost", isActive: true },
-    { code: "800mvisits", description: "Use for 3x stat boost for eight hours", isActive: true },
-    { code: "icecold", description: "Use for 3x boost for 24 hours of 3x multiplier", isActive: true },
-    { code: "forging", description: "Use for 3x boost for 24 hours of 3x multiplier", isActive: true },
-    { code: "axel", description: "Use for 50 Wins", isActive: true }
+    { code: "pyramids", description: "Use for 3x stat boost for 72 hours (NEW)", isNew: true },
+    { code: "egyptian", description: "Use for 3x stat boost for 72 hours (NEW)", isNew: true },
+    { code: "21iscoming", description: "Use for 3x stat boost for 48 hours" },
+    { code: "brainrot", description: "Use for 3x stat boost for 48 hours" },
+    { code: "removal", description: "Use for 3x stat boost for 48 hours" },
+    { code: "octogames", description: "Use for 3x stat boost for 48 hours" },
+    { code: "glassbridge", description: "Use for 3x stat boost for 48 hours" },
+    { code: "celebration", description: "Use for 3x stat boost for 48 hours" },
+    { code: "banker", description: "Use for 3x stat boost for 24 hours" },
+    { code: "sorryoops", description: "Use for 3x strength boost for 24 hours" },
+    { code: "timetravel", description: "Use for 48 hours of 3x strength and +5% boost on all stats" },
+    { code: "world19", description: "Use for 5% on all strengths and 3x stat boost for 48 hours" },
+    { code: "bulk", description: "Use for 3x stat boost for 48 hours" },
+    { code: "superhero", description: "Use for 3x stat boost for 48 hours" },
+    { code: "tokenstore", description: "Use for 3x stat boost for 48 hours" },
+    { code: "captain", description: "Use for 3x stat boost for 48 hours" },
+    { code: "skullbeard", description: "Use for 3x stat boost for 48 hours" },
+    { code: "pirate", description: "Use for 5% on all strengths and 1,000 Gold Coins" },
+    { code: "athlete", description: "Use for 3x stat boost for 48 hours" },
+    { code: "tradingback", description: "5% boost on all strengths" },
+    { code: "blossom", description: "Use for 3x stat boost for 48 hours and 1500 Prison Coins" },
+    { code: "ninja", description: "Use for 3x stat boost for 48 hours and 1500 Prison Coins" },
+    { code: "snowops", description: "Use for 3x stat boost for 48 hours" },
+    { code: "hideout", description: "Use for 3x stat boost for 48 hours and 2500 Prison Coins" },
+    { code: "cosmic", description: "Use for 3x stat boost for 24 hours" },
+    { code: "stocking", description: "Use for 3x stat boost for 72 hours and Christmas Title" },
+    { code: "frostlands", description: "Use for 3x stat boost for 24 hours and 150 Ice Cubes" },
+    { code: "polar", description: "Use for 3x stat boost for 24 hours" },
+    { code: "shiny", description: "Use for 3x stat boost for 24 hours" },
+    { code: "Christmas", description: "Use for 3x stat boost for 72 hours" },
+    { code: "hacker", description: "Use for 3x stat boost for 24 hours" },
+    { code: "classic", description: "Use for 3x stat boost for 24 hours" },
+    { code: "clans", description: "Use for 3x stat boost for 24 hours" },
+    { code: "rifted", description: "Use for 3x stat boost for 24 hours" },
+    { code: "hauntedmanor", description: "Use for 3x stat boost for 24 hours and free candy" },
+    { code: "trainers", description: "Use for 3x stat boost for 24 hours" },
+    { code: "ghosthunting", description: "Use for 3x stat boost for 24 hours and 1 Halloween card" },
+    { code: "spooky", description: "Use for 3x stat boost for 24 hours and 3,500 candy" },
+    { code: "soon", description: "Use for 3x stat boost for 24 hours" },
+    { code: "hatching", description: "Use for 3x stat boost for 24 hours" },
+    { code: "billion", description: "Use for 3x stat boost for 24 hours" },
+    { code: "Heavenly", description: "Use for 3x stat boost for 24 hours" },
+    { code: "rework", description: "Use for 3x stat boost for 24 hours" },
+    { code: "paradise", description: "Use for 3x stat boost for 24 hours + 1 gold" },
+    { code: "wasteland", description: "Use for 3x stat boost for 24 hours" },
+    { code: "apocalypse", description: "Use for 3x boost for 24 hours" },
+    { code: "energy", description: "Use for 3x boost for 24 hours" },
+    { code: "royalty", description: "Use for 3x boost for 24 hours" },
+    { code: "performance", description: "Use for 3x boost for 24 hours" },
+    { code: "charms", description: "Use for 3x boost for 24 hours of 3x multiplier" },
+    { code: "wizard", description: "Use for 3x boost for 24 hours of 3x multiplier & 25 Miner Crystal" },
+    { code: "atlantis", description: "Use for 8 hours of the 3x boost" },
+    { code: "800mvisits", description: "Use for 3x stat boost for eight hours" },
+    { code: "icecold", description: "Use for 3x boost for 24 hours of 3x multiplier" },
+    { code: "forging", description: "Use for 3x boost for 24 hours of 3x multiplier" },
+    { code: "axel", description: "Use for 50 Wins" }
 ];
 
-// Calculate stats
+// Загрузка стану з sessionStorage
+function loadCodeStates() {
+    const savedStates = sessionStorage.getItem('codeStates');
+    if (savedStates) {
+        const states = JSON.parse(savedStates);
+        codesData.forEach((code, index) => {
+            if (states[code.code] !== undefined) {
+                code.isUsed = states[code.code];
+            }
+        });
+    }
+}
+
+// Збереження стану в sessionStorage  
+function saveCodeStates() {
+    const states = {};
+    codesData.forEach(code => {
+        states[code.code] = code.isUsed || false;
+    });
+    sessionStorage.setItem('codeStates', JSON.stringify(states));
+}
+
+// Розрахунок статистики
 function calculateCodeStats() {
     const totalCodes = codesData.length;
-    const usedCodes = codesData.filter(code => !code.isActive).length;
-    const availableCodes = codesData.filter(code => code.isActive).length;
+    const usedCodes = codesData.filter(code => code.isUsed).length;
+    const availableCodes = totalCodes - usedCodes;
     const progressPercentage = Math.round((usedCodes / totalCodes) * 100);
     
     return {
@@ -75,7 +97,7 @@ function calculateCodeStats() {
     };
 }
 
-// Copy code to clipboard
+// Копіювання коду
 async function copyCode(code, button) {
     try {
         await navigator.clipboard.writeText(code);
@@ -88,58 +110,58 @@ async function copyCode(code, button) {
             button.classList.remove('copied');
         }, 1500);
     } catch (err) {
-        console.error('Failed to copy code:', err);
-        // Fallback for older browsers
-        try {
-            const textArea = document.createElement('textarea');
-            textArea.value = code;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            showCopyMessage(`Code "${code}" copied!`);
-        } catch (fallbackErr) {
-            console.error('Clipboard fallback failed:', fallbackErr);
-        }
+        // Fallback для старих браузерів
+        const textArea = document.createElement('textarea');
+        textArea.value = code;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showCopyMessage(`Code "${code}" copied!`);
     }
 }
 
-// Toggle code status (for visual feedback)
+// Зміна статусу коду
 function toggleCodeStatus(codeIndex, toggleElement) {
-    codesData[codeIndex].isActive = !codesData[codeIndex].isActive;
+    const code = codesData[codeIndex];
+    code.isUsed = !code.isUsed;
     
-    // Update toggle appearance
-    if (codesData[codeIndex].isActive) {
-        toggleElement.classList.remove('inactive');
+    // Оновлення UI
+    const codeItem = toggleElement.closest('.code-item');
+    
+    if (code.isUsed) {
+        toggleElement.classList.add('used');
+        codeItem.classList.add('used');
     } else {
-        toggleElement.classList.add('inactive');
+        toggleElement.classList.remove('used');
+        codeItem.classList.remove('used');
     }
     
-    // Update stats
+    // Збереження стану та оновлення статистики
+    saveCodeStates();
     updateCodesStats();
-    
-    console.log(`Code ${codesData[codeIndex].code} status changed to: ${codesData[codeIndex].isActive ? 'active' : 'inactive'}`);
 }
 
-// Update codes statistics
+// Оновлення статистики
 function updateCodesStats() {
     const stats = calculateCodeStats();
     
-    // Update stat numbers
-    const totalEl = document.querySelector('.stat-number.total');
-    const usedEl = document.querySelector('.stat-number.used');
-    const availableEl = document.querySelector('.stat-number.available');
-    const progressEl = document.querySelector('.stat-number.progress');
-    const progressBar = document.querySelector('.progress-fill');
+    const elements = {
+        total: document.querySelector('.stat-number.total'),
+        used: document.querySelector('.stat-number.used'),
+        available: document.querySelector('.stat-number.available'),
+        progress: document.querySelector('.stat-number.progress'),
+        progressBar: document.querySelector('.progress-fill')
+    };
     
-    if (totalEl) totalEl.textContent = stats.total;
-    if (usedEl) usedEl.textContent = stats.used;
-    if (availableEl) availableEl.textContent = stats.available;
-    if (progressEl) progressEl.textContent = `${stats.progress}%`;
-    if (progressBar) progressBar.style.height = `${stats.progress}%`;
+    if (elements.total) elements.total.textContent = stats.total;
+    if (elements.used) elements.used.textContent = stats.used;
+    if (elements.available) elements.available.textContent = stats.available;
+    if (elements.progress) elements.progress.textContent = `${stats.progress}%`;
+    if (elements.progressBar) elements.progressBar.style.height = `${stats.progress}%`;
 }
 
-// Show copy success message
+// Показ повідомлення про копіювання
 function showCopyMessage(message) {
     let messageEl = document.getElementById('copySuccessMessage');
     if (!messageEl) {
@@ -150,20 +172,19 @@ function showCopyMessage(message) {
     }
     messageEl.textContent = message;
     messageEl.classList.add('show');
-    setTimeout(() => {
-        messageEl.classList.remove('show');
-    }, 2000);
+    setTimeout(() => messageEl.classList.remove('show'), 2000);
 }
 
-// Generate codes content with stats header
-async function generateCodesContent() {
+// Генерація контенту
+function generateCodesContent() {
     const container = document.getElementById('codesContainer');
     if (!container) return;
 
+    // Завантаження збережених станів
+    loadCodeStates();
     const stats = calculateCodeStats();
     
     let content = `
-        <!-- Header with Stats -->
         <div class="codes-header">
             <div class="codes-stats">
                 <div class="stat-item">
@@ -187,12 +208,9 @@ async function generateCodesContent() {
                 <div class="progress-fill" style="height: ${stats.progress}%"></div>
             </div>
         </div>
-        
-        <!-- Codes List -->
         <div class="codes-list">
     `;
     
-    // Generate code items
     codesData.forEach((item, index) => {
         content += `
             <div class="code-item ${item.isUsed ? 'used' : ''}">
@@ -202,8 +220,7 @@ async function generateCodesContent() {
                 </div>
                 <div class="code-actions">
                     <button class="code-toggle ${item.isUsed ? 'used' : ''}" 
-                            onclick="toggleCodeStatus(${index}, this)"
-                            title="${item.isUsed ? 'Mark as available' : 'Mark as used'}">
+                            onclick="toggleCodeStatus(${index}, this)">
                     </button>
                     <button class="copy-btn" onclick="copyCode('${item.code}', this)">
                         <span class="copy-icon">📋</span>
@@ -215,29 +232,20 @@ async function generateCodesContent() {
     });
     
     content += '</div>';
-    
     container.innerHTML = content;
-    
-    console.log('✅ Codes content generated with stats and toggles');
 }
 
-// Initialize codes page
+// Ініціалізація
 function initializeCodes() {
     const codesPage = document.getElementById('codesPage');
-    if (!codesPage) {
-        console.error('❌ Codes page not found');
-        return;
-    }
+    if (!codesPage) return;
     
-    // Listen for page activation
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 const target = mutation.target;
                 if (target.id === 'codesPage' && target.classList.contains('active')) {
-                    setTimeout(() => {
-                        generateCodesContent();
-                    }, 100);
+                    setTimeout(generateCodesContent, 100);
                 }
             }
         });
@@ -245,27 +253,20 @@ function initializeCodes() {
     
     observer.observe(codesPage, { attributes: true });
     
-    // Generate content if page is already active
     if (codesPage.classList.contains('active')) {
-        setTimeout(() => {
-            generateCodesContent();
-        }, 100);
+        setTimeout(generateCodesContent, 100);
     }
-    
-    console.log('✅ Codes page initialized with enhanced features');
 }
 
-// Auto-initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(initializeCodes, 100);
-    });
-} else {
-    setTimeout(initializeCodes, 100);
-}
-
-// Global functions
+// Глобальні функції
 window.copyCode = copyCode;
 window.toggleCodeStatus = toggleCodeStatus;
 window.updateCodesStats = updateCodesStats;
 window.initializeCodes = initializeCodes;
+
+// Автоініціалізація
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(initializeCodes, 100));
+} else {
+    setTimeout(initializeCodes, 100);
+}
