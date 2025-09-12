@@ -200,7 +200,7 @@
 }
 
 .code-toggle {
-    background: #48bb78;
+    background: #cbd5e0;
     border: none;
     border-radius: 20px;
     width: 50px;
@@ -213,8 +213,8 @@
     justify-content: center;
 }
 
-.code-toggle.inactive {
-    background: #cbd5e0;
+.code-toggle.used {
+    background: #48bb78;
 }
 
 .code-toggle::after {
@@ -226,10 +226,28 @@
     position: absolute;
     left: 3px;
     transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.code-toggle.inactive::after {
+.code-toggle.used::after {
     left: calc(100% - 23px);
+}
+
+/* Used code styling */
+.code-item.used .code-name {
+    text-decoration: line-through;
+    opacity: 0.7;
+    color: #718096;
+}
+
+.code-item.used .code-description {
+    text-decoration: line-through;
+    opacity: 0.6;
+    color: #a0aec0;
+}
+
+.code-item.used {
+    opacity: 0.8;
 }
 
 .copy-btn {
