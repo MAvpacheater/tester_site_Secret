@@ -1,7 +1,11 @@
-/* Charms Page Styles */
+/* Fixed Charms Page Styles - Prevents unnecessary stretching */
 
 .charms-page {
-    display: none !important;
+    display: none;
+    padding: 20px;
+    min-height: auto; /* Changed from 100vh to auto */
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .charms-page.active {
@@ -22,43 +26,114 @@
     background-clip: text;
 }
 
+/* Loading State - FIXED */
+.charms-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 40px; /* Increased padding for better visibility */
+    color: #667eea;
+    font-size: 1.2em; /* Slightly larger text */
+    font-weight: 600;
+    min-height: 200px; /* Minimum height to prevent collapse */
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 16px;
+    border: 2px solid rgba(102, 126, 234, 0.1);
+    margin: 20px 0;
+}
+
+.charms-loading::after {
+    content: '';
+    margin-left: 15px;
+    width: 24px;
+    height: 24px;
+    border: 3px solid #667eea;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .charms-container {
-    max-height: 450px;
+    max-height: 600px;
     overflow-y: auto;
-    padding-right: 10px;
+    padding-right: 12px;
+    scroll-behavior: smooth;
+    min-height: 200px; /* Minimum height to ensure visibility */
 }
 
 .charms-container::-webkit-scrollbar { 
-    width: 8px; 
+    width: 10px; 
 }
 
 .charms-container::-webkit-scrollbar-track { 
-    background: rgba(0, 0, 0, 0.1); 
-    border-radius: 10px; 
+    background: rgba(0, 0, 0, 0.08); 
+    border-radius: 12px; 
 }
 
 .charms-container::-webkit-scrollbar-thumb { 
-    background: #667eea; 
-    border-radius: 10px; 
+    background: linear-gradient(135deg, #667eea, #764ba2); 
+    border-radius: 12px;
 }
 
 .charm-item {
     display: flex;
     gap: 16px;
-    padding: 16px 20px;
-    margin-bottom: 12px;
-    background: rgba(246, 249, 252, 0.8);
-    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    background: rgba(246, 249, 252, 0.9);
+    border-radius: 16px;
     border: 2px solid rgba(102, 126, 234, 0.1);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: 'Roboto', sans-serif;
     align-items: flex-start;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    position: relative;
+    overflow: hidden;
+    min-height: 140px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.charm-item:nth-child(1) { animation-delay: 0.1s; }
+.charm-item:nth-child(2) { animation-delay: 0.15s; }
+.charm-item:nth-child(3) { animation-delay: 0.2s; }
+.charm-item:nth-child(4) { animation-delay: 0.25s; }
+.charm-item:nth-child(5) { animation-delay: 0.3s; }
+.charm-item:nth-child(n+6) { animation-delay: 0.35s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.charm-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+    transition: left 0.6s ease;
+}
+
+.charm-item:hover::before {
+    left: 100%;
 }
 
 .charm-item:hover {
-    background: rgba(102, 126, 234, 0.1);
+    background: rgba(102, 126, 234, 0.12);
     border-color: rgba(102, 126, 234, 0.3);
-    transform: translateX(5px);
+    transform: translateX(8px) translateY(-2px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.15);
 }
 
 .charm-item:nth-child(even) {
@@ -74,10 +149,11 @@
     flex-shrink: 0;
     width: 150px;
     height: 112px;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
     border: 2px solid rgba(102, 126, 234, 0.2);
     background: rgba(255, 255, 255, 0.5);
+    transition: transform 0.3s ease;
 }
 
 .charm-image {
@@ -99,66 +175,168 @@
 .charm-title {
     font-weight: 700;
     color: #2d3748;
-    font-size: 1.2em;
-    margin-bottom: 8px;
+    font-size: 1.3em;
+    margin-bottom: 10px;
     font-family: 'Orbitron', monospace;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    line-height: 1.3;
 }
 
 .charm-description {
     color: #4a5568;
-    font-size: 0.95em;
-    line-height: 1.5;
-    margin-bottom: 8px;
+    font-size: 1.05em;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    font-weight: 500;
 }
 
 .charm-details {
     color: #6b7280;
-    font-size: 0.85em;
-    line-height: 1.4;
+    font-size: 0.95em;
+    line-height: 1.5;
     font-style: italic;
+    opacity: 0.8;
+    margin-bottom: 12px;
 }
 
 .charm-category {
     display: inline-block;
-    padding: 4px 12px;
-    border-radius: 15px;
-    font-size: 0.75em;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 0.8em;
     font-weight: 600;
     text-transform: uppercase;
-    margin-top: 8px;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .charm-category.gameplay {
     background: rgba(34, 197, 94, 0.2);
     color: #16a34a;
+    border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 .charm-category.info {
     background: rgba(59, 130, 246, 0.2);
     color: #2563eb;
+    border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .charm-category.tips {
     background: rgba(245, 158, 11, 0.2);
     color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .charm-category.charm {
     background: rgba(168, 85, 247, 0.2);
     color: #9333ea;
+    border: 1px solid rgba(168, 85, 247, 0.3);
 }
 
 .charm-category.general {
     background: rgba(156, 163, 175, 0.2);
     color: #4b5563;
+    border: 1px solid rgba(156, 163, 175, 0.3);
 }
 
-/* Mobile Styles */
+/* Error State - IMPROVED */
+.charms-error {
+    text-align: center;
+    padding: 50px 30px; /* Increased padding */
+    color: #e53e3e;
+    font-size: 1.1em;
+    font-weight: 500;
+    background: rgba(239, 68, 68, 0.05);
+    border-radius: 16px;
+    border: 2px solid rgba(239, 68, 68, 0.15);
+    margin: 20px 0;
+    min-height: 200px; /* Minimum height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.retry-btn {
+    margin-top: 20px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Orbitron', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.retry-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.retry-btn:active {
+    transform: translateY(0);
+}
+
+/* Empty state helper */
+.charms-empty {
+    text-align: center;
+    padding: 60px 30px;
+    color: #6b7280;
+    font-size: 1.1em;
+    font-weight: 500;
+    background: rgba(107, 114, 128, 0.05);
+    border-radius: 16px;
+    border: 2px solid rgba(107, 114, 128, 0.1);
+    margin: 20px 0;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Mobile Styles - ENHANCED */
 @media (max-width: 768px) {
+    .charms-page {
+        padding: 15px;
+        min-height: auto;
+    }
+    
+    .charms-page .title {
+        font-size: 2.2em;
+        margin-bottom: 25px;
+    }
+    
+    .charms-container {
+        max-height: 500px;
+        padding-right: 8px;
+        min-height: 150px;
+    }
+    
+    .charms-loading {
+        padding: 40px 20px;
+        min-height: 150px;
+        font-size: 1.1em;
+    }
+    
+    .charms-loading::after {
+        width: 20px;
+        height: 20px;
+        margin-left: 12px;
+    }
+    
     .charm-item {
         flex-direction: column;
-        padding: 12px 16px;
+        padding: 20px 22px;
+        min-height: auto;
+        margin-bottom: 14px;
+        gap: 14px;
     }
     
     .charm-image-container {
@@ -168,18 +346,68 @@
     }
     
     .charm-title {
-        font-size: 1.1em;
+        font-size: 1.2em;
+        text-align: center;
+    }
+    
+    .charm-description {
+        font-size: 1em;
+        margin-bottom: 8px;
+    }
+    
+    .charm-details {
+        font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+    
+    .charms-error {
+        padding: 40px 20px;
+        font-size: 1em;
+        min-height: 150px;
+    }
+    
+    .retry-btn {
+        padding: 12px 24px;
+        font-size: 0.95em;
     }
 }
 
 @media (max-width: 480px) {
+    .charms-page {
+        padding: 12px;
+    }
+    
     .charms-page .title {
-        font-size: 2em;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+    
+    .charms-container {
+        max-height: 450px;
+        padding-right: 5px;
+        min-height: 120px;
+    }
+    
+    .charms-loading {
+        padding: 30px 15px;
+        min-height: 120px;
+        font-size: 1em;
+    }
+    
+    .charms-loading::after {
+        width: 16px;
+        height: 16px;
+        margin-left: 8px;
     }
     
     .charm-item {
-        padding: 10px 12px;
+        padding: 16px 18px;
+        margin-bottom: 12px;
         gap: 12px;
+    }
+    
+    .charm-item:hover {
+        transform: translateY(-2px);
     }
     
     .charm-image-container {
@@ -188,14 +416,46 @@
     }
     
     .charm-title {
-        font-size: 1em;
+        font-size: 1.1em;
+        margin-bottom: 8px;
     }
     
     .charm-description {
-        font-size: 0.9em;
+        font-size: 0.95em;
+        margin-bottom: 6px;
     }
     
     .charm-details {
-        font-size: 0.8em;
+        font-size: 0.85em;
+        margin-bottom: 8px;
     }
+    
+    .charms-error {
+        padding: 30px 15px;
+        font-size: 0.95em;
+        min-height: 120px;
+    }
+    
+    .retry-btn {
+        padding: 10px 20px;
+        font-size: 0.85em;
+    }
+}
+
+/* Debug helper styles */
+.charms-debug {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 9999;
+    display: none;
+}
+
+.charms-debug.show {
+    display: block;
 }
