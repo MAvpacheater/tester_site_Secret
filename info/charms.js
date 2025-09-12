@@ -134,6 +134,7 @@ async function generateCharmsContent() {
     
     // Get current language
     charmsCurrentLanguage = getCurrentLanguage();
+    console.log(`🔮 Generating charms content for language: ${charmsCurrentLanguage}`);
     
     // Load translations if not already loaded
     if (!charmsTranslations) {
@@ -150,7 +151,16 @@ async function generateCharmsContent() {
         
         const currentLangData = charmsTranslations[charmsCurrentLanguage];
         if (!currentLangData) {
-            throw new Error(`Language data for ${charmsCurrentLanguage} not found`);
+            console.error(`❌ Language data for ${charmsCurrentLanguage} not found`);
+            console.log('Available languages:', Object.keys(charmsTranslations));
+            // Fallback to English if current language not found
+            if (charmsTranslations['en']) {
+                console.log('🔄 Falling back to English');
+                charmsCurrentLanguage = 'en';
+                currentLangData = charmsTranslations['en'];
+            } else {
+                throw new Error(`Language data for ${charmsCurrentLanguage} not found`);
+            }
         }
         
         // Clear container
@@ -181,8 +191,8 @@ async function generateCharmsContent() {
         console.error('❌ Error generating charms content:', error);
         
         // Show error state
-        const errorText = charmsTranslations[charmsCurrentLanguage]?.error || 'Error loading charms data';
-        const retryText = charmsTranslations[charmsCurrentLanguage]?.retry || 'Retry';
+        const errorText = charmsTranslations[charmsCurrentLanguage]?.error || charmsTranslations['en']?.error || 'Error loading charms data';
+        const retryText = charmsTranslations[charmsCurrentLanguage]?.retry || charmsTranslations['en']?.retry || 'Retry';
         
         container.innerHTML = `
             <div class="charms-error">
