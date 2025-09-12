@@ -1,39 +1,194 @@
 {
-    "en": {
-        "title": "Charms Boosts",
-        "loading": "Loading charms...",
-        "error": "Error loading charms data",
-        "retry": "Retry",
-        "charms": [
-            {
-                "title": "Infinite charm",
-                "imageUrl": "https://i.postimg.cc/W4TNJQmF/2025-09-07-09-40-22.png",
-                "description": "Gives 20% to training rep",
-                "details": "Max stock: 5",
-                "category": "charm"
-            },
-            {
-                "title": "Leadboard charm",
-                "imageUrl": "https://i.postimg.cc/vHwZsg1t/image.png",
-                "description": "Gives 18% to training rep",
-                "details": "Max stock: 7",
-                "category": "charm"
-            },
-            {
-                "title": "Endless charm",
-                "imageUrl": "https://i.postimg.cc/76TqvwwR/2025-09-07-10-00-26.png",
-                "description": "Gives 15% to training rep",
-                "details": "Max stock: 10",
-                "category": "charm"
-            },
-            {
-                "title": "Luck charm",
-                "imageUrl": "https://i.postimg.cc/wB1pJgyB/2025-09-07-10-01-45.png",
-                "description": "Adds 5% to luck",
-                "details": "Max stock: 16",
-                "category": "charm"
-            },
-            {
-                "title": "Training charms",
-                "imageUrl": "https://i.postimg.cc/FRZLQ0bY/telegram-cloud-photo-size-2-5190785500309485773-m.jpg",
-                "description": "Gives
+  "en": {
+    "title": "Charms Boosts",
+    "loading": "Loading charms...",
+    "error": "Error loading charms data",
+    "retry": "Retry",
+    "charms": [
+      {
+        "title": "Infinite charm",
+        "imageUrl": "https://i.postimg.cc/W4TNJQmF/2025-09-07-09-40-22.png",
+        "description": "Gives 20% to training rep",
+        "details": "Max stock: 5",
+        "category": "charm"
+      },
+      {
+        "title": "Leaderboard charm",
+        "imageUrl": "https://i.postimg.cc/vHwZsg1t/image.png",
+        "description": "Gives 18% to training rep",
+        "details": "Max stock: 7",
+        "category": "charm"
+      },
+      {
+        "title": "Endless charm",
+        "imageUrl": "https://i.postimg.cc/76TqvwwR/2025-09-07-10-00-26.png",
+        "description": "Gives 15% to training rep",
+        "details": "Max stock: 10",
+        "category": "charm"
+      },
+      {
+        "title": "Luck charm",
+        "imageUrl": "https://i.postimg.cc/wB1pJgyB/2025-09-07-10-01-45.png",
+        "description": "Adds 5% to luck",
+        "details": "Max stock: 16",
+        "category": "charm"
+      },
+      {
+        "title": "Training charms",
+        "imageUrl": "https://i.postimg.cc/FRZLQ0bY/telegram-cloud-photo-size-2-5190785500309485773-m.jpg",
+        "description": "Gives 5% to training rep",
+        "details": "Max stock: 16",
+        "category": "charm"
+      },
+      {
+        "title": "Loot charm",
+        "imageUrl": "https://i.postimg.cc/7LtL8K75/2025-09-07-09-55-01.png",
+        "description": "Gives 5% to find loot from boss",
+        "details": "Max stock: 16",
+        "category": "charm"
+      },
+      {
+        "title": "Winner charm",
+        "imageUrl": "https://i.postimg.cc/XY8JxjYc/2025-09-07-09-55-06.png",
+        "description": "Gives 5% more wins from boss",
+        "details": "Max stock: 16",
+        "category": "charm"
+      },
+      {
+        "title": "Coal charm",
+        "imageUrl": "https://i.postimg.cc/B68nq2cM/2025-09-07-09-54-40.png",
+        "description": "You can remove charm from pet",
+        "details": "1 use only",
+        "category": "charm"
+      }
+    ]
+  },
+  "uk": {
+    "title": "Чари та підсилення",
+    "loading": "Завантаження чарів...",
+    "error": "Помилка завантаження чарів",
+    "retry": "Спробувати знову",
+    "charms": [
+      {
+        "title": "Нескінченні чари",
+        "imageUrl": "https://i.postimg.cc/W4TNJQmF/2025-09-07-09-40-22.png",
+        "description": "Дають 20% до тренування",
+        "details": "Макс запас: 5",
+        "category": "чари"
+      },
+      {
+        "title": "Чари лідера",
+        "imageUrl": "https://i.postimg.cc/vHwZsg1t/image.png",
+        "description": "Дають 18% до тренування",
+        "details": "Макс запас: 7",
+        "category": "чари"
+      },
+      {
+        "title": "Безкінечні чари",
+        "imageUrl": "https://i.postimg.cc/76TqvwwR/2025-09-07-10-00-26.png",
+        "description": "Дають 15% до тренування",
+        "details": "Макс запас: 10",
+        "category": "чари"
+      },
+      {
+        "title": "Чари удачі",
+        "imageUrl": "https://i.postimg.cc/wB1pJgyB/2025-09-07-10-01-45.png",
+        "description": "Додають 5% до удачі",
+        "details": "Макс запас: 16",
+        "category": "чари"
+      },
+      {
+        "title": "Тренувальні чари",
+        "imageUrl": "https://i.postimg.cc/FRZLQ0bY/telegram-cloud-photo-size-2-5190785500309485773-m.jpg",
+        "description": "Дають 5% до тренування",
+        "details": "Макс запас: 16",
+        "category": "чари"
+      },
+      {
+        "title": "Чари здобичі",
+        "imageUrl": "https://i.postimg.cc/7LtL8K75/2025-09-07-09-55-01.png",
+        "description": "Дають 5% на знаходження здобичі з боса",
+        "details": "Макс запас: 16",
+        "category": "чари"
+      },
+      {
+        "title": "Чари переможця",
+        "imageUrl": "https://i.postimg.cc/XY8JxjYc/2025-09-07-09-55-06.png",
+        "description": "Дають 5% більше перемог над босом",
+        "details": "Макс запас: 16",
+        "category": "чари"
+      },
+      {
+        "title": "Вугільні чари",
+        "imageUrl": "https://i.postimg.cc/B68nq2cM/2025-09-07-09-54-40.png",
+        "description": "Можна видалити чари з питомця",
+        "details": "Тільки 1 використання",
+        "category": "чари"
+      }
+    ]
+  },
+  "ru": {
+    "title": "Чары и усиления",
+    "loading": "Загрузка чар...",
+    "error": "Ошибка загрузки чар",
+    "retry": "Повторить",
+    "charms": [
+      {
+        "title": "Бесконечные чары",
+        "imageUrl": "https://i.postimg.cc/W4TNJQmF/2025-09-07-09-40-22.png",
+        "description": "Дают 20% к тренировке",
+        "details": "Макс запас: 5",
+        "category": "чары"
+      },
+      {
+        "title": "Чары лидера",
+        "imageUrl": "https://i.postimg.cc/vHwZsg1t/image.png",
+        "description": "Дают 18% к тренировке",
+        "details": "Макс запас: 7",
+        "category": "чары"
+      },
+      {
+        "title": "Бесконечные чары",
+        "imageUrl": "https://i.postimg.cc/76TqvwwR/2025-09-07-10-00-26.png",
+        "description": "Дают 15% к тренировке",
+        "details": "Макс запас: 10",
+        "category": "чары"
+      },
+      {
+        "title": "Чары удачи",
+        "imageUrl": "https://i.postimg.cc/wB1pJgyB/2025-09-07-10-01-45.png",
+        "description": "Добавляют 5% к удаче",
+        "details": "Макс запас: 16",
+        "category": "чары"
+      },
+      {
+        "title": "Тренировочные чары",
+        "imageUrl": "https://i.postimg.cc/FRZLQ0bY/telegram-cloud-photo-size-2-5190785500309485773-m.jpg",
+        "description": "Дают 5% к тренировке",
+        "details": "Макс запас: 16",
+        "category": "чары"
+      },
+      {
+        "title": "Чары добычи",
+        "imageUrl": "https://i.postimg.cc/7LtL8K75/2025-09-07-09-55-01.png",
+        "description": "Дают 5% на поиск добычи с босса",
+        "details": "Макс запас: 16",
+        "category": "чары"
+      },
+      {
+        "title": "Чары победителя",
+        "imageUrl": "https://i.postimg.cc/XY8JxjYc/2025-09-07-09-55-06.png",
+        "description": "Дают 5% больше побед над боссом",
+        "details": "Макс запас: 16",
+        "category": "чары"
+      },
+      {
+        "title": "Угольные чары",
+        "imageUrl": "https://i.postimg.cc/B68nq2cM/2025-09-07-09-54-40.png",
+        "description": "Можно убрать чары с питомца",
+        "details": "Только 1 использование",
+        "category": "чары"
+      }
+    ]
+  }
+}
