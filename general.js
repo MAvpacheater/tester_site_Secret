@@ -79,7 +79,7 @@ async function switchAppLanguage(lang) {
     currentAppLanguage = lang;
     saveAppLanguage(lang);
     
-    // Update language flag buttons
+    // Update language flag buttons (they already exist in HTML)
     document.querySelectorAll('.lang-flag-btn').forEach(btn => {
         btn.classList.remove('active');
         if (btn.dataset.lang === lang) {
@@ -231,9 +231,6 @@ function updatePageTitles() {
     
     console.log(`✅ Page titles updated for ${currentAppLanguage}`);
 }
-
-// REMOVED createLanguageFlags function to prevent duplication
-// The language flags are now created directly in the HTML
 
 // Page switching functionality - WITH SETTINGS
 function switchPage(page) {
@@ -510,7 +507,7 @@ function loadSettingsFromStorage(key) {
 // Flag to prevent repeated initialization
 let appInitialized = false;
 
-// App initialization with enhanced language support
+// App initialization with enhanced language support - FIXED for right-side language flags
 async function initializeApp() {
     if (appInitialized) {
         console.log('⚠️ App already initialized');
@@ -532,24 +529,16 @@ async function initializeApp() {
     // Load menu translations
     await loadMenuTranslations();
     
-    // Add language flags to existing container (no duplication)
-    const languageFlags = document.querySelector('.language-flags');
-    if (languageFlags && !languageFlags.hasChildNodes()) {
-        const languages = [
-            { code: 'en', flag: '🇺🇸' },
-            { code: 'uk', flag: '🇺🇦' },
-            { code: 'ru', flag: '🇷🇺' }
-        ];
-        
-        languageFlags.innerHTML = languages.map(({ code, flag }) => `
-            <button class="lang-flag-btn ${currentAppLanguage === code ? 'active' : ''}" 
-                    data-lang="${code}" 
-                    onclick="switchAppLanguage('${code}')"
-                    title="${code.toUpperCase()}">
-                ${flag}
-            </button>
-        `).join('');
-    }
+    // DO NOT CREATE LANGUAGE FLAGS - they are already in HTML
+    console.log('✅ Language flags already exist in HTML - no duplication needed');
+    
+    // Just update the active state of existing flags
+    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.lang === currentAppLanguage) {
+            btn.classList.add('active');
+        }
+    });
     
     // Update menu translations AND page titles
     updateMenuTranslations();
@@ -599,7 +588,7 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed - Fixed layout without duplication');
+    console.log('✅ App initialization completed - Language flags positioned correctly on RIGHT side');
 }
 
 // Initialize all modules with proper DOM readiness checks - WITH SETTINGS
