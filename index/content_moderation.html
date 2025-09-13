@@ -1,0 +1,61 @@
+<!-- Settings Page Content -->
+<div class="page settings-page" id="settingsPage">
+    <div class="settings-header">
+        <h1 class="settings-title">⚙️ Settings</h1>
+    </div>
+    
+    <div class="settings-groups">
+        <!-- Appearance Settings -->
+        <div class="settings-group" data-group="appearance">
+            <h2 class="settings-group-title">
+                <span class="settings-group-icon">🎨</span>
+                <span>Appearance</span>
+            </h2>
+            
+            <div class="background-selector">
+                <h3 style="color: #FFD700; margin-bottom: 15px; font-size: 1.2em; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);">Background Theme</h3>
+                <div class="background-options">
+                    <div class="background-option bg-penguin active" 
+                         data-background="penguin" 
+                         onclick="selectBackground('penguin')">
+                        <div class="background-preview"></div>
+                        <div class="background-name">Penguin</div>
+                        <div class="background-description">Default mining theme with penguin character</div>
+                    </div>
+                    
+                    <div class="background-option bg-game" 
+                         data-background="game" 
+                         onclick="selectBackground('game')">
+                        <div class="background-preview"></div>
+                        <div class="background-name">Game</div>
+                        <div class="background-description">Gaming-inspired blue gradient theme</div>
+                    </div>
+                    
+                    <div class="background-option bg-code" 
+                         data-background="code" 
+                         onclick="selectBackground('code')">
+                        <div class="background-preview"></div>
+                        <div class="background-name">Code</div>
+                        <div class="background-description">Developer-friendly green matrix theme</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Settings (Coming Soon) -->
+        <div class="settings-group" data-group="navigation">
+            <h2 class="settings-group-title">
+                <span class="settings-group-icon">🧭</span>
+                <span>Navigation</span>
+            </h2>
+            
+            <div class="coming-soon">
+                <div class="coming-soon-icon">🔄</div>
+                <p>Coming Soon!</p>
+                <small style="color: #B8860B; margin-top: 10px; display: block; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);">
+                    Menu style and layout options will be available here
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
