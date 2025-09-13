@@ -1,4 +1,4 @@
-// Updated content loader script - With flag-only language selector and peoples naming
+// Updated content loader script - With flag-only language selector, peoples naming, and Help page
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -108,6 +108,9 @@ async function loadContent() {
                                 <span class="category-toggle">▼</span>
                             </div>
                             <div class="category-buttons" id="othersButtons">
+                                <button class="nav-btn" data-page="help" onclick="switchPage('help')">
+                                    🆘 Help
+                                </button>
                                 <button class="nav-btn" data-page="peoples" onclick="switchPage('peoples')">
                                     🙏 Peoples
                                 </button>
@@ -151,7 +154,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully with flag-only language selector and peoples naming');
+            console.log('✅ Content loaded successfully with flag-only language selector, peoples naming, and Help page');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -202,4 +205,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ content_loader.js loaded with flag-only language selector and peoples naming ready');
+console.log('✅ content_loader.js loaded with flag-only language selector, peoples naming, and Help page ready');
