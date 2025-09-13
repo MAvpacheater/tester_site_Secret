@@ -418,7 +418,7 @@ body::before {
     backdrop-filter: blur(10px);
 }
 
-/* Mobile Responsiveness - simplified with proper sidebar height */
+/* Mobile Responsiveness - simplified */
 @media (max-width: 768px) {
     body {
         background-attachment: scroll;
@@ -427,21 +427,6 @@ body::before {
     .sidebar {
         width: 300px;
         left: -300px;
-    }
-    
-    .nav-buttons {
-        padding: 15px;
-        max-height: calc(100vh - 160px); /* Adjusted for mobile */
-        gap: 12px;
-    }
-    
-    .language-flags {
-        padding: 12px 15px;
-        gap: 12px;
-    }
-    
-    .sidebar-user {
-        padding: 12px 15px;
     }
     
     .container {
@@ -454,28 +439,6 @@ body::before {
     .sidebar {
         width: 280px;
         left: -280px;
-    }
-    
-    .nav-buttons {
-        padding: 12px;
-        max-height: calc(100vh - 140px); /* Further adjusted for small screens */
-        gap: 10px;
-    }
-    
-    .language-flags {
-        padding: 10px;
-        gap: 10px;
-    }
-    
-    .lang-flag-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2em;
-        padding: 8px;
-    }
-    
-    .sidebar-user {
-        padding: 10px;
     }
     
     .container {
