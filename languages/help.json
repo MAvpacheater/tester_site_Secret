@@ -180,12 +180,7 @@
       "feature": "⭐ Предложить Функцию"
     },
     "modal": {
-      "feedback": {
-        "title": "💭 Отправить Отзыв",
-        "text": "Пожалуйста, свяжитесь с администратором напрямую через Telegram или Discord для отправки отзыва:",
-        "telegram": "📱 Telegram",
-        "discord": "🎮 Discord"
-      }
+      "removed": "Modal functionality removed - buttons now scroll to admin contact"
     },
     "notifications": {
       "telegramOpening": "📱 Открываю Telegram...",
