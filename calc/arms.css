@@ -1,4 +1,4 @@
-/* Arm Calculator Page Styles */
+/* Arm Calculator Page Styles - Mining Theme */
 
 .arm-page {
     display: none !important;
@@ -9,10 +9,16 @@
 }
 
 .arm-page h1 {
-    color: #333;
+    color: #FFD700;
     margin-bottom: 30px;
     font-size: 2.2em;
-    font-weight: 600;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: 'Orbitron', 'Arial Black', sans-serif;
+    background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 /* Header controls */
@@ -24,32 +30,68 @@
 }
 
 .arm-page .settings-btn {
-    background: rgba(102, 126, 234, 0.1);
-    border: 2px solid #667eea;
-    color: #667eea;
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.2), 
+        rgba(139, 69, 19, 0.3));
+    border: 2px solid #8B4513;
+    color: #FFD700;
     padding: 10px 15px;
     border-radius: 12px;
     cursor: pointer;
     font-size: 1em;
     font-weight: 600;
     transition: all 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
 }
 
 .arm-page .settings-btn:hover {
-    background: #667eea;
-    color: white;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #2F1B14;
+    border-color: #FFD700;
     transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Settings Panel */
 .arm-page .settings-panel {
     display: none;
-    background: rgba(246, 249, 252, 0.95);
-    border: 2px solid #e1ecf4;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.9) 0%, 
+        rgba(101, 67, 33, 0.95) 50%, 
+        rgba(62, 39, 35, 1) 100%);
+    border: 3px solid #8B4513;
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 20px;
     text-align: left;
+    backdrop-filter: blur(15px);
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.5),
+        inset 0 2px 10px rgba(255, 215, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.arm-page .settings-panel::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 215, 0, 0.03) 50%, 
+        transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.arm-page .settings-panel > * {
+    position: relative;
+    z-index: 1;
 }
 
 .arm-page .settings-panel.show {
@@ -69,19 +111,21 @@
 }
 
 .arm-page .settings-title {
-    color: #2c3e50;
+    color: #FFD700;
     font-size: 1.3em;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 15px;
     text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: 'Orbitron', Arial, sans-serif;
 }
 
 .arm-page .modifier-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 15px 0;
+    border-bottom: 2px solid rgba(139, 69, 19, 0.5);
 }
 
 .arm-page .modifier-item:last-child { 
@@ -89,12 +133,13 @@
 }
 
 .arm-page .modifier-label {
-    color: #555;
+    color: #F5DEB3;
     font-size: 1.1em;
-    font-weight: 500;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-/* Toggle Switches */
+/* Toggle Switches - Mining Style */
 .arm-page .switch {
     position: relative;
     display: inline-block;
@@ -115,9 +160,12 @@
     left: 0; 
     right: 0; 
     bottom: 0;
-    background-color: #ccc;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.8), 
+        rgba(101, 67, 33, 0.9));
     transition: .4s;
     border-radius: 25px;
+    border: 2px solid #8B4513;
 }
 
 .arm-page .slider:before {
@@ -125,82 +173,160 @@
     content: "";
     height: 19px; 
     width: 19px;
-    left: 3px; 
-    bottom: 3px;
-    background-color: white;
+    left: 2px; 
+    bottom: 2px;
+    background: linear-gradient(135deg, #F5DEB3, #D4AF37);
     transition: .4s;
     border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .arm-page input:checked + .slider { 
-    background-color: #667eea; 
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-color: #FFD700;
 }
 
 .arm-page input:checked + .slider:before { 
-    transform: translateX(25px); 
+    transform: translateX(21px);
+    background: linear-gradient(135deg, #2F1B14, #1A0F0A);
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
 }
 
-/* Input Section */
+/* Input Section - Mining Style */
 .arm-page .input-section { 
     margin-bottom: 30px; 
 }
 
 .arm-page .input-label {
     display: block;
-    color: #555;
+    color: #F5DEB3;
     font-size: 1.1em;
     margin-bottom: 10px;
-    font-weight: 500;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .arm-page .number-input {
     width: 100%;
     padding: 15px 20px;
     font-size: 1.2em;
-    border: 2px solid #ddd;
+    border: 3px solid #8B4513;
     border-radius: 12px;
     outline: none;
     transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.9);
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.2), 
+        rgba(62, 39, 35, 0.3));
+    color: #F5DEB3;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.arm-page .number-input::placeholder {
+    color: rgba(245, 222, 179, 0.7);
+    text-shadow: none;
 }
 
 .arm-page .number-input:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #FFD700;
+    box-shadow: 
+        0 0 0 3px rgba(255, 215, 0, 0.3),
+        0 8px 20px rgba(255, 215, 0, 0.2);
     transform: translateY(-2px);
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.1), 
+        rgba(139, 69, 19, 0.3));
 }
 
 .arm-page .calculate-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #2F1B14;
+    border: 3px solid #8B4513;
     padding: 15px 30px;
     font-size: 1.1em;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 20px;
-    font-weight: 600;
+    font-weight: 700;
     min-width: 150px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.arm-page .calculate-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+    opacity: 0;
+}
+
+.arm-page .calculate-btn:hover::before {
+    opacity: 1;
+    animation: shine 0.8s ease-in-out;
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
 .arm-page .calculate-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    box-shadow: 
+        0 15px 35px rgba(255, 215, 0, 0.4),
+        inset 0 2px 10px rgba(255, 255, 255, 0.2);
+    border-color: #FFD700;
 }
 
 .arm-page .calculate-btn:active { 
     transform: translateY(-1px); 
 }
 
-/* Result Section */
+/* Result Section - Mining Style */
 .arm-page .result-section {
     margin-top: 30px;
     padding: 25px;
-    background: linear-gradient(135deg, #f6f9fc 0%, #e9f4ff 100%);
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.8) 0%, 
+        rgba(101, 67, 33, 0.9) 50%, 
+        rgba(62, 39, 35, 0.95) 100%);
     border-radius: 15px;
-    border: 2px solid #e1ecf4;
+    border: 3px solid #8B4513;
     display: none;
+    backdrop-filter: blur(15px);
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.5),
+        inset 0 2px 10px rgba(255, 215, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.arm-page .result-section::before {
+    content: '⛏️💎';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5em;
+    opacity: 0.6;
+    animation: floatGem 4s ease-in-out infinite;
+}
+
+@keyframes floatGem {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-5px) rotate(10deg); }
 }
 
 .arm-page .result-section.show {
@@ -209,23 +335,41 @@
 }
 
 .arm-page .stats-label {
-    color: #2c3e50;
+    color: #FFD700;
     font-size: 1.2em;
     margin-bottom: 15px;
-    font-weight: 600;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: 'Orbitron', Arial, sans-serif;
 }
 
 .arm-page .result-value {
     font-size: 2em;
-    color: #667eea;
+    color: #FFD700;
     font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: resultGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes resultGlow {
+    0% { 
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7));
+    }
+    100% { 
+        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 1));
+    }
 }
 
 .arm-page .error {
-    color: #e74c3c;
+    color: #FF6347;
     font-size: 0.9em;
     margin-top: 10px;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 @keyframes slideIn {
@@ -239,7 +383,7 @@
     }
 }
 
-/* Mobile Styles */
+/* Mobile Styles - Mining Theme */
 @media (max-width: 480px) {
     .arm-page h1 { 
         font-size: 1.8em; 
@@ -252,5 +396,23 @@
     .arm-page .header-controls { 
         flex-direction: column; 
         gap: 15px; 
+    }
+    
+    .arm-page .settings-panel {
+        padding: 15px;
+    }
+    
+    .arm-page .modifier-item {
+        padding: 12px 0;
+    }
+    
+    .arm-page .number-input {
+        font-size: 1.1em;
+        padding: 12px 15px;
+    }
+    
+    .arm-page .calculate-btn {
+        padding: 12px 25px;
+        font-size: 1em;
     }
 }
