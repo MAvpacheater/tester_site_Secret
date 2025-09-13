@@ -18,73 +18,8 @@ async function loadHelpTranslations() {
         return helpTranslations;
     } catch (error) {
         console.error('❌ Error loading help translations:', error);
-        // Fallback to English
-        helpTranslations = {
-            en: {
-                title: "🆘 Help & Support",
-                subtitle: "Need assistance? Contact our team!",
-                admin: {
-                    name: "Mr dep Dodep",
-                    role: "Project Creator & Developer",
-                    status: "🟢 Active",
-                    telegram: "📱 Contact on Telegram",
-                    discord: "🎮 Contact on Discord"
-                },
-                infoRequest: {
-                    title: "📋 Information Needed",
-                    subtitle: "Write to me if you have this information:",
-                    items: [
-                        "🐾 Pet statistics and multipliers",
-                        "🚀 New boost information",
-                        "🔮 Secret pets data",
-                        "🌍 World unlock requirements",
-                        "🎁 New codes and promotions",
-                        "🧪 Potion effects and recipes",
-                        "✨ Shiny pet chances",
-                        "🏆 Achievement requirements",
-                        "💎 Game mechanics and formulas",
-                        "🎯 Quest rewards and objectives"
-                    ]
-                },
-                recruitment: {
-                    title: "👥 Developer & Tester Recruitment",
-                    status: "🔒 Currently Closed",
-                    description: "We are always looking for talented developers and dedicated testers to join our team. Currently, recruitment is closed, but we will announce when new positions become available.",
-                    requirements: {
-                        title: "What we're looking for:",
-                        items: [
-                            "🔧 JavaScript/HTML/CSS developers",
-                            "🎮 Game testers and QA specialists",
-                            "🌍 Multi-language translators",
-                            "🎨 UI/UX designers",
-                            "📊 Data analysts"
-                        ]
-                    },
-                    note: "Stay tuned to our channels for recruitment announcements!"
-                },
-                quickActions: {
-                    feedback: "💭 Send Feedback",
-                    bug: "🐛 Report Bug",
-                    feature: "⭐ Request Feature"
-                },
-                modal: {
-                    feedback: {
-                        title: "💭 Send Feedback",
-                        text: "Please contact the admin directly via Telegram or Discord to send your feedback:",
-                        telegram: "📱 Telegram",
-                        discord: "🎮 Discord"
-                    }
-                },
-                notifications: {
-                    telegramOpening: "📱 Opening Telegram...",
-                    telegramFailed: "❌ Failed to open Telegram",
-                    discordOpening: "🎮 Opening Discord... Tag: {tag}",
-                    discordCopied: "📋 Discord tag copied: {tag}",
-                    discordFailed: "❌ Failed to open Discord"
-                }
-            }
-        };
-        return helpTranslations;
+        helpTranslations = null;
+        return null;
     }
 }
 
@@ -359,6 +294,26 @@ function openAdminDiscord() {
     }
 }
 
+// Scroll to admin contact section - ДОДАНА ВІДСУТНЯ ФУНКЦІЯ
+function scrollToAdminContact() {
+    const adminSection = document.querySelector('.admin-contact-section');
+    if (adminSection) {
+        adminSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+        });
+        
+        // Add highlight animation
+        const adminCard = adminSection.querySelector('.admin-card');
+        if (adminCard) {
+            adminCard.style.animation = 'highlightPulse 2s ease-in-out';
+            setTimeout(() => {
+                adminCard.style.animation = '';
+            }, 2000);
+        }
+    }
+}
+
 // Quick action functions
 function showFeedbackForm() {
     const modal = document.getElementById('feedbackModal');
@@ -378,20 +333,23 @@ function showFeedbackForm() {
             if (modalTelegramBtn) modalTelegramBtn.textContent = translations.modal.feedback.telegram;
             if (modalDiscordBtn) modalDiscordBtn.textContent = translations.modal.feedback.discord;
         }
+    } else {
+        // Fallback - scroll to admin contact if modal doesn't exist
+        scrollToAdminContact();
     }
 }
 
 function showBugReport() {
     showHelpNotification('🐛 Please contact the admin via Telegram or Discord to report bugs', 'info');
     setTimeout(() => {
-        showFeedbackForm();
+        scrollToAdminContact();
     }, 1000);
 }
 
 function showFeatureRequest() {
     showHelpNotification('⭐ Please contact the admin via Telegram or Discord to request features', 'info');
     setTimeout(() => {
-        showFeedbackForm();
+        scrollToAdminContact();
     }, 1000);
 }
 
@@ -458,6 +416,11 @@ window.updateHelpLanguage = updateHelpLanguage;
 window.loadHelpTranslations = loadHelpTranslations;
 window.openAdminTelegram = openAdminTelegram;
 window.openAdminDiscord = openAdminDiscord;
-window.scrollToAdminContact = scrollToAdminContact;
+window.scrollToAdminContact = scrollToAdminContact; // ВИПРАВЛЕНО: функція тепер існує
+window.showFeedbackForm = showFeedbackForm;
+window.showBugReport = showBugReport;
+window.showFeatureRequest = showFeatureRequest;
+window.closeFeedbackModal = closeFeedbackModal;
+window.showHelpNotification = showHelpNotification;
 
 console.log('✅ help.js loaded successfully with multilingual support');
