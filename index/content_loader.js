@@ -1,24 +1,24 @@
-// Updated content loader script - With flag-only language selector
+// Updated content loader script - With flag-only language selector and peoples naming
 console.log('🔄 Loading content...');
 
 // Function to load content
 async function loadContent() {
     try {
-        // Load calculator, info, and admins content
-        const [calcResponse, infoResponse, adminsResponse] = await Promise.all([
+        // Load calculator, info, and other content
+        const [calcResponse, infoResponse, otherResponse] = await Promise.all([
             fetch('index/content_calc.html'),
             fetch('index/content_info.html'),
-            fetch('index/content_admins.html')
+            fetch('index/content_other.html')
         ]);
 
-        if (!calcResponse.ok || !infoResponse.ok || !adminsResponse.ok) {
-            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, admins: ${adminsResponse.status}`);
+        if (!calcResponse.ok || !infoResponse.ok || !otherResponse.ok) {
+            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, other: ${otherResponse.status}`);
         }
         
-        const [calcContent, infoContent, adminsContent] = await Promise.all([
+        const [calcContent, infoContent, otherContent] = await Promise.all([
             calcResponse.text(),
             infoResponse.text(),
-            adminsResponse.text()
+            otherResponse.text()
         ]);
 
         const appContent = document.getElementById('app-content');
@@ -108,7 +108,7 @@ async function loadContent() {
                                 <span class="category-toggle">▼</span>
                             </div>
                             <div class="category-buttons" id="othersButtons">
-                                <button class="nav-btn" data-page="thanks" onclick="switchPage('thanks')">
+                                <button class="nav-btn" data-page="peoples" onclick="switchPage('peoples')">
                                     🙏 Peoples
                                 </button>
                             </div>
@@ -129,7 +129,7 @@ async function loadContent() {
                 <div class="container">
                     ${calcContent}
                     ${infoContent}
-                    ${adminsContent}
+                    ${otherContent}
                 </div>
 
                 <style>
@@ -151,7 +151,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully with flag-only language selector');
+            console.log('✅ Content loaded successfully with flag-only language selector and peoples naming');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -202,4 +202,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ content_loader.js loaded with flag-only language selector ready');
+console.log('✅ content_loader.js loaded with flag-only language selector and peoples naming ready');
