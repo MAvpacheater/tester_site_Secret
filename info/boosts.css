@@ -1,4 +1,4 @@
-/* Boosts Page Styles */
+/* Optimized Boosts Page - Mining Theme */
 
 .boosts-page {
     display: none;
@@ -12,14 +12,13 @@
     font-family: 'Orbitron', monospace;
     font-size: 2.5em;
     font-weight: 900;
-    color: #4a5568;
+    color: #FFD700;
     text-align: center;
     margin-bottom: 30px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(45deg, #667eea, #764ba2);
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+    background: linear-gradient(45deg, #FFD700, #FFA500, #8B4513);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .boosts-container {
@@ -33,34 +32,38 @@
 }
 
 .boosts-container::-webkit-scrollbar-track { 
-    background: rgba(0, 0, 0, 0.1); 
+    background: rgba(139, 69, 19, 0.2); 
     border-radius: 10px; 
 }
 
 .boosts-container::-webkit-scrollbar-thumb { 
-    background: #667eea; 
+    background: #8B4513; 
     border-radius: 10px; 
 }
 
 .boost-section {
     margin-bottom: 25px;
-    background: rgba(246, 249, 252, 0.8);
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.15) 0%, 
+        rgba(101, 67, 33, 0.2) 50%, 
+        rgba(62, 39, 35, 0.25) 100%);
     border-radius: 15px;
     padding: 20px;
-    border: 2px solid rgba(102, 126, 234, 0.1);
+    border: 2px solid rgba(139, 69, 19, 0.3);
+    backdrop-filter: blur(5px);
 }
 
 .section-title {
     font-family: 'Orbitron', monospace;
     font-size: 1.4em;
     font-weight: 700;
-    color: #2c3e50;
+    color: #FFD700;
     margin-bottom: 15px;
     text-align: center;
-    background: linear-gradient(45deg, #667eea, #764ba2);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    background: linear-gradient(45deg, #FFD700, #FFA500);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .boost-grid {
@@ -74,48 +77,35 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(139, 69, 19, 0.1);
     border-radius: 8px;
-    border-left: 4px solid transparent;
-    transition: all 0.3s ease;
-    font-family: 'Roboto', sans-serif;
+    border: 1px solid rgba(139, 69, 19, 0.3);
+    transition: all 0.2s ease;
 }
 
 .boost-item:hover {
-    background: rgba(102, 126, 234, 0.1);
-    border-left-color: #667eea;
-    transform: translateX(5px);
-}
-
-.boost-item:nth-child(even) {
-    background: rgba(118, 75, 162, 0.1);
-}
-
-.boost-item:nth-child(even):hover {
-    background: rgba(118, 75, 162, 0.2);
-    border-left-color: #764ba2;
+    background: rgba(255, 215, 0, 0.1);
+    border-color: #FFD700;
+    transform: translateX(3px);
+    box-shadow: 0 3px 10px rgba(255, 215, 0, 0.2);
 }
 
 .boost-name {
     font-weight: 600;
-    color: #2d3748;
+    color: #F5DEB3;
     font-size: 1em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .boost-multiplier {
     font-weight: 700;
-    color: #667eea;
+    color: #FFD700;
     font-size: 1.1em;
-    background: rgba(102, 126, 234, 0.1);
+    background: rgba(139, 69, 19, 0.2);
     padding: 3px 8px;
     border-radius: 12px;
-}
-
-.boost-separator {
-    grid-column: 1 / -1;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #667eea, transparent);
-    margin: 10px 0;
+    border: 1px solid #8B4513;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 /* Mobile Styles */
@@ -131,13 +121,13 @@
     .section-title {
         font-size: 1.2em;
     }
-}
-
-@media (max-width: 480px) {
+    
     .boost-section {
         padding: 15px;
     }
-    
+}
+
+@media (max-width: 480px) {
     .boost-item {
         padding: 8px 12px;
     }
