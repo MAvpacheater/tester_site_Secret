@@ -32,7 +32,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create optimized structure - minimal HTML
+            // Create optimized structure with combined footer
             const fullContent = `
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
 
@@ -93,8 +93,15 @@ async function loadContent() {
                         </div>
                     </div>
                     
-                    <div class="sidebar-user" id="sidebarUser">
-                        <button class="auth-btn-sidebar disabled" id="authButton" title="Coming Soon!">Login (Soon...)</button>
+                    <div class="sidebar-footer">
+                        <div class="language-flags">
+                            <button class="lang-flag-btn active" data-lang="en" onclick="switchAppLanguage('en')" title="EN">🇺🇸</button>
+                            <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="UK">🇺🇦</button>
+                            <button class="lang-flag-btn" data-lang="ru" onclick="switchAppLanguage('ru')" title="RU">🇷🇺</button>
+                        </div>
+                        <div class="sidebar-user" id="sidebarUser">
+                            <button class="auth-btn-sidebar disabled" id="authButton" title="Coming Soon!">Login (Soon...)</button>
+                        </div>
                     </div>
                 </div>
 
