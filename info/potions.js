@@ -78,91 +78,98 @@ const potionsData = [
         rarity: "uncommon", 
         boost: "+150% Egg Luck", 
         time: "30 min",
-        image: "https://i.postimg.cc/GhXZqY8R/luck-potion-2.png"
+        image: "https://i.postimg.cc/X7pRBr2z/2025-09-13-21-13-57.png"
     },
     { 
         name: "Wins Potion [1]", 
         rarity: "common", 
         boost: "Doubles your Player wins", 
         time: "30 min",
-        image: "https://i.postimg.cc/VNMzJZYN/wins-potion-1.png"
+        image: "https://i.postimg.cc/HnLf2nTj/2025-09-13-21-13-53.png"
     },
     { 
         name: "Wins Potion [2]", 
         rarity: "uncommon", 
         boost: "+150% Wins Boost", 
         time: "30 min",
-        image: "https://i.postimg.cc/GmKRpXzK/wins-potion-2.png"
+        image: "https://i.postimg.cc/MTYS5gR3/2025-09-13-21-14-01.png"
     },
     { 
         name: "Golden Potion", 
         rarity: "common", 
         boost: "Gives a chance of hatching Golden Pets", 
         time: "30 min",
-        image: "https://i.postimg.cc/QCLvH9nR/golden-potion.png"
+        image: "https://i.postimg.cc/ZK218J2K/2025-09-13-21-14-12.png"
     },
     { 
         name: "Void Potion", 
         rarity: "common", 
         boost: "Gives a chance of hatching Void Pets", 
         time: "30 min",
-        image: "https://i.postimg.cc/Y2mHQ7gQ/void-potion.png"
+        image: "https://i.postimg.cc/wjt9zf83/2025-09-13-21-14-06.png"
     },
     { 
         name: "Training Potion [1]", 
         rarity: "common", 
         boost: "Increases your training power by 30%", 
         time: "30 min",
-        image: "https://i.postimg.cc/MGr0hJkR/training-potion-1.png"
+        image: "https://i.postimg.cc/Jz8tcmbW/2025-09-07-21-47-03.png"
     },
     { 
         name: "Training Potion [2]", 
         rarity: "uncommon", 
         boost: "Increases your training power by 60%", 
         time: "30 min",
-        image: "https://i.postimg.cc/SxPbh5Lz/training-potion-2.png"
+        image: "https://i.postimg.cc/RFt30Sk6/2025-09-07-21-47-05.png"
     },
     { 
         name: "Training Potion [3]", 
         rarity: "rare", 
         boost: "Increases your training power by 90%", 
         time: "30 min",
-        image: "https://i.postimg.cc/8zbYXdBH/training-potion-3.png"
+        image: "https://i.postimg.cc/v8gRc12S/2025-09-13-21-19-55.png"
     },
     { 
         name: "Pet Xp Potion", 
         rarity: "mythic", 
         boost: "Increases Pet Xp gained from bosses by 50%", 
         time: "30 min",
-        image: "https://i.postimg.cc/QdYnJvKG/pet-xp-potion.png"
+        image: "https://i.postimg.cc/W3d4b4P0/2025-09-07-21-47-10.png"
     },
     { 
         name: "Scavenger Potion", 
         rarity: "mythic", 
         boost: "Increases your chance of getting random loot from bosses by 30%", 
         time: "30 min",
-        image: "https://i.postimg.cc/vHpLn6cV/scavenger-potion.png"
+        image: "https://i.postimg.cc/j51hpSzD/2025-09-13-21-14-20.png"
     },
     { 
         name: "Ticket Potion", 
         rarity: "mythic", 
         boost: "Doubles your ticket payout from bosses", 
         time: "10 min",
-        image: "https://i.postimg.cc/TPLqxGDX/ticket-potion.png"
+        image: "https://i.postimg.cc/3xGz9PQj/2025-09-13-21-14-15.png"
     },
     { 
         name: "Rift Potions [1]", 
         rarity: "mythic", 
         boost: "+30% On Your Rift Stars", 
         time: "30 min",
-        image: "https://i.postimg.cc/XJHyKzWF/rift-potion.png"
+        image: "https://i.postimg.cc/mg767C78/2025-09-13-21-14-23.png"
+    },
+    {
+        name: "Secret Potion", 
+        rarity: "mythic", 
+        boost: "Double chance for hatching secret pets", 
+        time: "30 min",
+        image: "https://i.postimg.cc/y6wDx0xx/2025-09-07-21-46-53.png"
     },
     { 
         name: "Event Training Potion", 
         rarity: "limited", 
         boost: "Doubles your event training power", 
         time: "30 min",
-        image: "https://i.postimg.cc/nL5DgCpq/event-training-potion.png"
+        image: "https://i.postimg.cc/VLZz3yh3/2025-09-13-21-14-29.png"
     }
 ];
 
@@ -173,14 +180,14 @@ const foodData = [
         rarity: "common", 
         boost: "Treat your pets! Pets give 3% more strength", 
         time: "5 min",
-        image: "https://i.postimg.cc/ZqMx8gKt/cookie.png"
+        image: "https://i.postimg.cc/3xM3KjKB/2025-09-13-21-25-11.png"
     },
     { 
         name: "Tasty Cookie", 
         rarity: "uncommon", 
         boost: "Treat your pets! Pets give 5% more strength", 
         time: "5 min",
-        image: "https://i.postimg.cc/vTK0PbfM/tasty-cookie.png"
+        image: "https://i.postimg.cc/zf85hJHH/2025-09-13-21-25-34.png"
     },
     { 
         name: "Enchanted Cookie", 
