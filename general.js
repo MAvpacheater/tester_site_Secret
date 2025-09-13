@@ -232,7 +232,7 @@ function updatePageTitles() {
     console.log(`✅ Page titles updated for ${currentAppLanguage}`);
 }
 
-// Create language flags section with settings button
+// Create language flags section with settings button - UPDATED LAYOUT
 function createLanguageFlags() {
     const languages = [
         { code: 'en', flag: '🇺🇸' },
@@ -244,16 +244,18 @@ function createLanguageFlags() {
     const sidebarControls = document.createElement('div');
     sidebarControls.className = 'sidebar-controls';
     
-    // Create settings button
+    // Create settings button (LEFT SIDE)
     const settingsButton = document.createElement('button');
     settingsButton.className = 'settings-btn-sidebar';
     settingsButton.onclick = () => switchPage('settings');
     settingsButton.title = 'Settings';
     settingsButton.innerHTML = '⚙️';
+    settingsButton.style.order = '1'; // Явно ставимо налево
     
-    // Create language flags container
+    // Create language flags container (RIGHT SIDE)
     const languageFlags = document.createElement('div');
     languageFlags.className = 'language-flags';
+    languageFlags.style.order = '2'; // Явно ставимо направо
     
     languageFlags.innerHTML = languages.map(({ code, flag }) => `
         <button class="lang-flag-btn ${currentAppLanguage === code ? 'active' : ''}" 
@@ -264,7 +266,7 @@ function createLanguageFlags() {
         </button>
     `).join('');
     
-    // Assemble the container
+    // Assemble the container (Settings button first, then flags)
     sidebarControls.appendChild(settingsButton);
     sidebarControls.appendChild(languageFlags);
     
