@@ -1,4 +1,4 @@
-// Final content loader script - With proper Settings and Updates page integration
+// Final content loader script - With proper Settings and Language flags on RIGHT side
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -26,7 +26,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with proper order: Login above, Settings+Flags below
+            // Create the main structure with FIXED layout: Settings LEFT, Language flags RIGHT
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -100,7 +100,7 @@ async function loadContent() {
                             </div>
                         </div>
 
-                        <!-- Others Category - WITH SETTINGS AND UPDATES -->
+                        <!-- Others Category -->
                         <div class="nav-category">
                             <div class="category-header" data-category="othersButtons" onclick="toggleCategory('othersButtons')">
                                 <div class="category-title">
@@ -126,23 +126,25 @@ async function loadContent() {
                         </div>
                     </div>
                     
-                    <!-- User Section - MOVED ABOVE (Login above everything) -->
+                    <!-- User Section - Login at top -->
                     <div class="sidebar-user" id="sidebarUser" style="margin-top: auto; border-bottom: 2px solid #8B4513; border-top: none;">
                         <button class="auth-btn-sidebar disabled" id="authButton" title="Coming Soon!" onclick="handleAuthAction()">
                             Login (Soon...)
                         </button>
                     </div>
                     
-                    <!-- Settings button and Language flags - MOVED BELOW (Below login) -->
+                    <!-- CORRECTED: Settings LEFT, Language flags RIGHT -->
                     <div class="sidebar-controls" style="border-top: none;">
                         <!-- Settings Button - LEFT SIDE -->
-                        <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings" style="order: 1;">
+                        <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">
                             ⚙️
                         </button>
                         
-                        <!-- Language Flags - RIGHT SIDE -->
-                        <div class="language-flags" style="order: 2;">
-                            <!-- Language flags will be added here by JavaScript -->
+                        <!-- Language Flags - RIGHT SIDE (as in image 2) -->
+                        <div class="language-flags">
+                            <button class="lang-flag-btn active" data-lang="en" onclick="switchAppLanguage('en')" title="English">🇺🇸</button>
+                            <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="Українська">🇺🇦</button>
+                            <button class="lang-flag-btn" data-lang="ru" onclick="switchAppLanguage('ru')" title="Русский">🇷🇺</button>
                         </div>
                     </div>
                 </div>
@@ -159,7 +161,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully with proper layout: Login above, Settings+Flags below');
+            console.log('✅ Content loaded successfully - Language flags are now on the RIGHT side');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -221,4 +223,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ Fixed content_loader.js - Login above, Settings+Flags below');
+console.log('✅ FIXED content_loader.js - Language flags moved to RIGHT side as shown in image 2');
