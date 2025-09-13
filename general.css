@@ -191,8 +191,10 @@ body::before {
     flex-direction: column;
     gap: 12px;
     padding: 20px;
+    padding-bottom: 30px; /* Extra padding at bottom */
     overflow-y: auto;
     flex: 1;
+    max-height: calc(100vh - 180px); /* Ensure proper max height */
     /* Fixed scrollbar styles */
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 215, 0, 0.3) transparent;
@@ -468,8 +470,9 @@ body::before {
     
     .nav-buttons {
         padding: 12px;
+        padding-bottom: 40px; /* Increase bottom padding for mobile */
         gap: 8px;
-        max-height: calc(100vh - 140px); /* Збільшена висота для мобільних */
+        max-height: calc(100vh - 220px); /* Increase available height */
     }
     
     .nav-category {
@@ -535,8 +538,9 @@ body::before {
     
     .nav-buttons {
         padding: 10px;
+        padding-bottom: 50px; /* Even more bottom padding for small screens */
         gap: 6px;
-        max-height: calc(100vh - 120px); /* Ще більша висота для маленьких екранів */
+        max-height: calc(100vh - 200px); /* Максимальна висота для маленьких екранів */
     }
     
     .nav-category {
