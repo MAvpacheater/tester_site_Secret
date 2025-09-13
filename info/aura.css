@@ -1,4 +1,4 @@
-/* Aura Page Styles */
+/* Optimized Aura Page - Mining Theme */
 
 .aura-page {
     display: none !important;
@@ -12,14 +12,13 @@
     font-family: 'Orbitron', monospace;
     font-size: 2.5em;
     font-weight: 900;
-    color: #4a5568;
+    color: #FFD700;
     text-align: center;
     margin-bottom: 30px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(45deg, #667eea, #764ba2);
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+    background: linear-gradient(45deg, #FFD700, #FFA500, #8B4513);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .aura-container {
@@ -33,12 +32,12 @@
 }
 
 .aura-container::-webkit-scrollbar-track { 
-    background: rgba(0, 0, 0, 0.1); 
+    background: rgba(139, 69, 19, 0.2); 
     border-radius: 10px; 
 }
 
 .aura-container::-webkit-scrollbar-thumb { 
-    background: #667eea; 
+    background: #8B4513; 
     border-radius: 10px; 
 }
 
@@ -47,35 +46,32 @@
     align-items: center;
     padding: 12px 16px;
     margin-bottom: 8px;
-    background: rgba(246, 249, 252, 0.8);
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.15) 0%, 
+        rgba(101, 67, 33, 0.2) 50%, 
+        rgba(62, 39, 35, 0.25) 100%);
     border-radius: 12px;
-    border: 2px solid rgba(102, 126, 234, 0.1);
-    transition: all 0.3s ease;
-    font-family: 'Roboto', sans-serif;
+    border: 2px solid rgba(139, 69, 19, 0.3);
+    transition: all 0.2s ease;
     gap: 15px;
+    backdrop-filter: blur(5px);
 }
 
 .aura-item:hover {
-    background: rgba(102, 126, 234, 0.1);
-    border-color: rgba(102, 126, 234, 0.3);
-    transform: translateX(5px);
-}
-
-.aura-item:nth-child(even) {
-    background: rgba(118, 75, 162, 0.08);
-}
-
-.aura-item:nth-child(even):hover {
-    background: rgba(118, 75, 162, 0.15);
-    border-color: rgba(118, 75, 162, 0.3);
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.1) 0%, 
+        rgba(139, 69, 19, 0.3) 100%);
+    border-color: #FFD700;
+    transform: translateX(3px);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
 }
 
 .aura-photo {
-    width: 150px;
-    height: 112px;
-    background: rgba(102, 126, 234, 0.1);
+    width: 120px;
+    height: 90px;
+    background: rgba(139, 69, 19, 0.2);
     border-radius: 8px;
-    border: 2px solid rgba(102, 126, 234, 0.2);
+    border: 2px solid #8B4513;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -92,10 +88,11 @@
 }
 
 .aura-photo-placeholder {
-    color: rgba(102, 126, 234, 0.6);
+    color: #D4AF37;
     font-size: 0.8em;
     text-align: center;
     font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .aura-content {
@@ -105,16 +102,18 @@
 
 .aura-name {
     font-weight: 700;
-    color: #2d3748;
+    color: #FFD700;
     font-size: 1.1em;
     margin-bottom: 4px;
     font-family: 'Orbitron', monospace;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .aura-description {
-    color: #4a5568;
+    color: #F5DEB3;
     font-size: 0.9em;
     line-height: 1.4;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .aura-rarity {
@@ -127,67 +126,69 @@
     min-width: 80px;
     text-align: center;
     flex-shrink: 0;
+    border: 1px solid;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
+/* Mining-themed rarity colors */
 .aura-rarity.common {
-    background: rgba(110, 253, 110);
-    color: #4b5563;
+    background: rgba(139, 69, 19, 0.3);
+    color: #D4AF37;
+    border-color: #8B4513;
 }
+
 .aura-rarity.uncommon {
-    background: rgba(174, 252, 163);
-    color: #1b8120;
+    background: rgba(255, 215, 0, 0.2);
+    color: #FFD700;
+    border-color: #FFD700;
 }
+
 .aura-rarity.rare {
-    background: rgba(59, 130, 246, 0.2);
-    color: #1d4ed8;
+    background: rgba(255, 165, 0, 0.2);
+    color: #FFA500;
+    border-color: #FFA500;
 }
 
 .aura-rarity.epic {
-    background: rgba(147, 51, 234, 0.2);
-    color: #7c2d12;
+    background: rgba(75, 0, 130, 0.3);
+    color: #DDA0DD;
+    border-color: #DDA0DD;
 }
 
 .aura-rarity.legendary {
-    background: rgba(245, 158, 11, 0.2);
-    color: #d97706;
+    background: rgba(255, 69, 0, 0.3);
+    color: #FF6347;
+    border-color: #FF6347;
 }
 
 .aura-rarity.mythic {
-    background: rgba(226, 43, 76, 0.2);
-    color: #7e0e0b;
+    background: rgba(220, 20, 60, 0.3);
+    color: #FF1493;
+    border-color: #FF1493;
 }
 
 /* Mobile Styles */
 @media (max-width: 768px) {
     .aura-item {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
         gap: 10px;
-    }
-    
-    .aura-photo {
-        width: 120px;
-        height: 90px;
-        align-self: center;
-    }
-    
-    .aura-rarity {
-        align-self: flex-end;
-    }
-}
-
-@media (max-width: 480px) {
-    .aura-page .title {
-        font-size: 2em;
-    }
-    
-    .aura-item {
-        padding: 10px 12px;
+        text-align: center;
     }
     
     .aura-photo {
         width: 100px;
         height: 75px;
+    }
+    
+    .aura-page .title {
+        font-size: 2em;
+    }
+}
+
+@media (max-width: 480px) {
+    .aura-item {
+        padding: 10px 12px;
     }
     
     .aura-name {
