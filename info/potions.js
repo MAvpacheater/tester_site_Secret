@@ -180,14 +180,14 @@ const foodData = [
         rarity: "common", 
         boost: "Treat your pets! Pets give 3% more strength", 
         time: "5 min",
-        image: "https://i.postimg.cc/ZqMx8gKt/cookie.png"
+        image: "https://i.postimg.cc/3xM3KjKB/2025-09-13-21-25-11.png"
     },
     { 
         name: "Tasty Cookie", 
         rarity: "uncommon", 
         boost: "Treat your pets! Pets give 5% more strength", 
         time: "5 min",
-        image: "https://i.postimg.cc/vTK0PbfM/tasty-cookie.png"
+        image: "https://i.postimg.cc/zf85hJHH/2025-09-13-21-25-34.png"
     },
     { 
         name: "Enchanted Cookie", 
