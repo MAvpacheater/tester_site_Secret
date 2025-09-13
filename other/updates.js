@@ -1,4 +1,4 @@
-// Updates Page JavaScript - Mining Theme (Languages folder version)
+// Complete Updates Page JavaScript - Clean version, all text from JSON
 let updatesInitialized = false;
 let updatesTranslations = null;
 let currentUpdateType = 'game';
@@ -10,24 +10,37 @@ function initializeUpdates() {
     console.log('🔄 Initializing Updates page...');
     
     try {
-        // Load translations
+        // Load translations and initialize
         loadUpdatesTranslations().then(() => {
-            updateUpdatesLanguage(getCurrentAppLanguage());
+            // Get current language from the global function
+            const currentLang = getCurrentAppLanguage();
+            updateUpdatesLanguage(currentLang);
+            
+            // Set initial state
+            currentUpdateType = 'game';
+            
+            // Ensure proper initial display
+            setTimeout(() => {
+                switchUpdateType('game');
+            }, 100);
+            
             updatesInitialized = true;
             console.log('✅ Updates page initialized successfully');
+        }).catch(error => {
+            console.error('❌ Error loading translations:', error);
+            updatesInitialized = true;
         });
         
-        // Set initial state
-        currentUpdateType = 'game';
-        
-        // Add event listeners
+        // Add event listener for language changes
         document.addEventListener('languageChanged', (e) => {
-            updateUpdatesLanguage(e.detail.language);
+            if (e.detail && e.detail.language) {
+                updateUpdatesLanguage(e.detail.language);
+            }
         });
         
     } catch (error) {
         console.error('❌ Error initializing Updates page:', error);
-        updatesInitialized = true; // Prevent infinite retry
+        updatesInitialized = true;
     }
 }
 
@@ -36,67 +49,23 @@ async function loadUpdatesTranslations() {
     if (updatesTranslations) return updatesTranslations;
     
     try {
+        console.log('📄 Loading updates translations...');
         const response = await fetch('languages/updates.json');
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
         updatesTranslations = await response.json();
-        console.log('📄 Updates translations loaded successfully from languages folder');
+        console.log('✅ Updates translations loaded successfully');
         return updatesTranslations;
     } catch (error) {
         console.error('❌ Error loading updates translations:', error);
         
-        // Fallback translations
+        // Minimal fallback - no text content, will be handled by JSON
         updatesTranslations = {
-            en: {
-                title: "📝 Updates & Changelog",
-                subtitle: "Stay updated with the latest changes!",
-                gameUpdates: "🎮 Game Updates",
-                siteUpdates: "🌐 Site Updates",
-                gameContent: {
-                    version: "Game Update v1.2.3",
-                    date: "December 15, 2024",
-                    newFeatures: "🎮 New Features",
-                    improvements: "⚡ Improvements", 
-                    bugFixes: "🐛 Bug Fixes",
-                    features: [
-                        "Loading game updates...",
-                        "Please wait...",
-                        "Content will appear soon..."
-                    ],
-                    improvementsList: [
-                        "Loading improvements...",
-                        "Please wait...",
-                        "Content will appear soon..."
-                    ],
-                    bugFixesList: [
-                        "Loading bug fixes...",
-                        "Please wait...",
-                        "Content will appear soon..."
-                    ]
-                },
-                siteContent: {
-                    version: "Site Update v2.1.0",
-                    date: "December 10, 2024",
-                    newFeatures: "🌟 New Features",
-                    improvements: "🔧 Improvements",
-                    bugFixes: "🐛 Bug Fixes",
-                    features: [
-                        "Loading site updates...",
-                        "Please wait...",
-                        "Content will appear soon..."
-                    ],
-                    improvementsList: [
-                        "Loading improvements...",
-                        "Please wait...",
-                        "Content will appear soon..."
-                    ],
-                    bugFixesList: [
-                        "Loading bug fixes...",
-                        "Please wait...",
-                        "Content will appear soon..."
-                    ]
-                }
-            }
+            en: {},
+            uk: {},
+            ru: {}
         };
         return updatesTranslations;
     }
@@ -104,58 +73,91 @@ async function loadUpdatesTranslations() {
 
 // Switch update type (game/site)
 function switchUpdateType(type) {
-    if (type === currentUpdateType) return;
+    if (!type || type === currentUpdateType) return;
     
     console.log(`🔄 Switching to ${type} updates`);
     currentUpdateType = type;
     
-    // Update toggle buttons
-    document.querySelectorAll('.toggle-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.type === type);
-    });
-    
-    // Show/hide update sections
-    document.querySelectorAll('.update-section').forEach(section => {
-        section.classList.remove('active');
-    });
-    
-    const targetSection = document.getElementById(type + 'Updates');
-    if (targetSection) {
-        targetSection.classList.add('active');
+    try {
+        // Update toggle buttons
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            if (btn && btn.dataset && btn.dataset.type) {
+                btn.classList.toggle('active', btn.dataset.type === type);
+            }
+        });
+        
+        // Show/hide update sections
+        document.querySelectorAll('.update-section').forEach(section => {
+            if (section) {
+                section.classList.remove('active');
+            }
+        });
+        
+        const targetSection = document.getElementById(type + 'Updates');
+        if (targetSection) {
+            targetSection.classList.add('active');
+            console.log(`✅ Switched to ${type} updates section`);
+        } else {
+            console.error(`❌ Target section ${type}Updates not found`);
+        }
+        
+    } catch (error) {
+        console.error('❌ Error switching update type:', error);
     }
 }
 
 // Update updates language
 function updateUpdatesLanguage(language) {
-    if (!updatesTranslations || !updatesTranslations[language]) {
-        language = 'en'; // Fallback to English
+    if (!language) {
+        language = 'en';
     }
     
-    if (!updatesTranslations[language]) return;
+    console.log(`🌍 Updating updates language to: ${language}`);
+    
+    if (!updatesTranslations) {
+        console.warn('⚠️ Updates translations not loaded yet');
+        return;
+    }
+    
+    if (!updatesTranslations[language]) {
+        console.warn(`⚠️ Language ${language} not found, using English`);
+        language = 'en';
+    }
     
     const t = updatesTranslations[language];
+    if (!t) {
+        console.error('❌ No translation data available');
+        return;
+    }
     
     try {
         // Update page title and subtitle
         const title = document.querySelector('.updates-title');
         const subtitle = document.querySelector('.updates-subtitle');
         
-        if (title && t.title) title.textContent = t.title;
-        if (subtitle && t.subtitle) subtitle.textContent = t.subtitle;
+        if (title && t.title) {
+            title.textContent = t.title;
+        }
+        if (subtitle && t.subtitle) {
+            subtitle.textContent = t.subtitle;
+        }
         
         // Update toggle buttons
-        const gameBtn = document.querySelector('[data-type="game"]');
-        const siteBtn = document.querySelector('[data-type="site"]');
+        const gameBtn = document.querySelector('.toggle-btn[data-type="game"]');
+        const siteBtn = document.querySelector('.toggle-btn[data-type="site"]');
         
-        if (gameBtn && t.gameUpdates) gameBtn.textContent = t.gameUpdates;
-        if (siteBtn && t.siteUpdates) siteBtn.textContent = t.siteUpdates;
+        if (gameBtn && t.gameUpdates) {
+            gameBtn.textContent = t.gameUpdates;
+        }
+        if (siteBtn && t.siteUpdates) {
+            siteBtn.textContent = t.siteUpdates;
+        }
         
-        // Update game content
+        // Update content sections
         if (t.gameContent) {
             updateGameContent(t.gameContent);
         }
         
-        // Update site content
         if (t.siteContent) {
             updateSiteContent(t.siteContent);
         }
@@ -169,81 +171,152 @@ function updateUpdatesLanguage(language) {
 // Update game content
 function updateGameContent(content) {
     const gameSection = document.getElementById('gameUpdates');
-    if (!gameSection) return;
-    
-    // Update version and date
-    const version = gameSection.querySelector('.update-version');
-    const date = gameSection.querySelector('.update-date');
-    
-    if (version && content.version) version.textContent = content.version;
-    if (date && content.date) date.textContent = content.date;
-    
-    // Update categories
-    const categories = gameSection.querySelectorAll('.update-category');
-    if (categories.length >= 3) {
-        if (content.newFeatures) categories[0].textContent = content.newFeatures;
-        if (content.improvements) categories[1].textContent = content.improvements;
-        if (content.bugFixes) categories[2].textContent = content.bugFixes;
+    if (!gameSection || !content) {
+        console.warn('⚠️ Game section or content not found');
+        return;
     }
     
-    // Update lists
-    const lists = gameSection.querySelectorAll('.update-list');
-    if (lists.length >= 3) {
-        if (content.features) updateListContent(lists[0], content.features);
-        if (content.improvementsList) updateListContent(lists[1], content.improvementsList);
-        if (content.bugFixesList) updateListContent(lists[2], content.bugFixesList);
+    try {
+        // Update version and date
+        const version = gameSection.querySelector('.update-version');
+        const date = gameSection.querySelector('.update-date');
+        
+        if (version && content.version) {
+            version.textContent = content.version;
+        }
+        if (date && content.date) {
+            date.textContent = content.date;
+        }
+        
+        // Update categories
+        const categories = gameSection.querySelectorAll('.update-category');
+        if (categories.length >= 3) {
+            if (content.newFeatures && categories[0]) {
+                categories[0].textContent = content.newFeatures;
+            }
+            if (content.improvements && categories[1]) {
+                categories[1].textContent = content.improvements;
+            }
+            if (content.bugFixes && categories[2]) {
+                categories[2].textContent = content.bugFixes;
+            }
+        }
+        
+        // Update lists
+        const lists = gameSection.querySelectorAll('.update-list');
+        if (lists.length >= 3) {
+            if (content.features && lists[0]) {
+                updateListContent(lists[0], content.features);
+            }
+            if (content.improvementsList && lists[1]) {
+                updateListContent(lists[1], content.improvementsList);
+            }
+            if (content.bugFixesList && lists[2]) {
+                updateListContent(lists[2], content.bugFixesList);
+            }
+        }
+        
+        console.log('✅ Game content updated');
+    } catch (error) {
+        console.error('❌ Error updating game content:', error);
     }
 }
 
 // Update site content
 function updateSiteContent(content) {
     const siteSection = document.getElementById('siteUpdates');
-    if (!siteSection) return;
-    
-    // Update version and date
-    const version = siteSection.querySelector('.update-version');
-    const date = siteSection.querySelector('.update-date');
-    
-    if (version && content.version) version.textContent = content.version;
-    if (date && content.date) date.textContent = content.date;
-    
-    // Update categories
-    const categories = siteSection.querySelectorAll('.update-category');
-    if (categories.length >= 3) {
-        if (content.newFeatures) categories[0].textContent = content.newFeatures;
-        if (content.improvements) categories[1].textContent = content.improvements;
-        if (content.bugFixes) categories[2].textContent = content.bugFixes;
+    if (!siteSection || !content) {
+        console.warn('⚠️ Site section or content not found');
+        return;
     }
     
-    // Update lists
-    const lists = siteSection.querySelectorAll('.update-list');
-    if (lists.length >= 3) {
-        if (content.features) updateListContent(lists[0], content.features);
-        if (content.improvementsList) updateListContent(lists[1], content.improvementsList);
-        if (content.bugFixesList) updateListContent(lists[2], content.bugFixesList);
+    try {
+        // Update version and date
+        const version = siteSection.querySelector('.update-version');
+        const date = siteSection.querySelector('.update-date');
+        
+        if (version && content.version) {
+            version.textContent = content.version;
+        }
+        if (date && content.date) {
+            date.textContent = content.date;
+        }
+        
+        // Update categories
+        const categories = siteSection.querySelectorAll('.update-category');
+        if (categories.length >= 3) {
+            if (content.newFeatures && categories[0]) {
+                categories[0].textContent = content.newFeatures;
+            }
+            if (content.improvements && categories[1]) {
+                categories[1].textContent = content.improvements;
+            }
+            if (content.bugFixes && categories[2]) {
+                categories[2].textContent = content.bugFixes;
+            }
+        }
+        
+        // Update lists
+        const lists = siteSection.querySelectorAll('.update-list');
+        if (lists.length >= 3) {
+            if (content.features && lists[0]) {
+                updateListContent(lists[0], content.features);
+            }
+            if (content.improvementsList && lists[1]) {
+                updateListContent(lists[1], content.improvementsList);
+            }
+            if (content.bugFixesList && lists[2]) {
+                updateListContent(lists[2], content.bugFixesList);
+            }
+        }
+        
+        console.log('✅ Site content updated');
+    } catch (error) {
+        console.error('❌ Error updating site content:', error);
     }
 }
 
-// Update list content - enhanced to handle dynamic list creation
+// Update list content
 function updateListContent(listElement, items) {
-    if (!listElement || !Array.isArray(items)) return;
+    if (!listElement) {
+        console.warn('⚠️ List element not provided');
+        return;
+    }
     
-    // Clear existing content
-    listElement.innerHTML = '';
+    if (!Array.isArray(items)) {
+        console.warn('⚠️ Items is not an array:', items);
+        return;
+    }
     
-    // Add new items
-    items.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        listElement.appendChild(li);
-    });
+    try {
+        // Clear existing content
+        listElement.innerHTML = '';
+        
+        // Add new items
+        items.forEach((item, index) => {
+            if (item && typeof item === 'string') {
+                const li = document.createElement('li');
+                li.textContent = item;
+                li.style.animationDelay = `${index * 0.1}s`;
+                listElement.appendChild(li);
+            }
+        });
+        
+        console.log(`✅ Updated list with ${items.length} items`);
+    } catch (error) {
+        console.error('❌ Error updating list content:', error);
+    }
 }
 
 // Export functions to global scope
 Object.assign(window, {
     initializeUpdates,
     updateUpdatesLanguage,
-    switchUpdateType
+    switchUpdateType,
+    loadUpdatesTranslations
 });
 
-console.log('✅ Updates page JavaScript loaded (languages folder version)');
+// Also make the function available for external calls
+window.updateUpdatesLanguage = updateUpdatesLanguage;
+
+console.log('✅ Complete clean Updates page JavaScript loaded (no hardcoded text)');
