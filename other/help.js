@@ -162,12 +162,17 @@ function updateRecruitmentSection(translations) {
     
     // Update requirements list
     if (translations.recruitment.requirements.items) {
-        const requirementItems = document.querySelectorAll('.requirements-list li');
-        translations.recruitment.requirements.items.forEach((item, index) => {
-            if (requirementItems[index]) {
-                requirementItems[index].textContent = item;
-            }
-        });
+        const requirementsList = document.querySelector('.requirements-list');
+        if (requirementsList) {
+            requirementsList.innerHTML = '';
+            
+            // Create new items from translations
+            translations.recruitment.requirements.items.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = item;
+                requirementsList.appendChild(listItem);
+            });
+        }
     }
 }
 
