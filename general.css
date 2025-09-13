@@ -1,4 +1,4 @@
-/* General Styles - Mining Theme */
+/* Optimized General Styles - Mining Theme */
 * { 
     margin: 0; 
     padding: 0; 
@@ -22,7 +22,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Mining background pattern */
+/* Simplified background pattern */
 body::before {
     content: '';
     position: fixed;
@@ -30,49 +30,25 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: 
+    background: 
         radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.03) 0%, transparent 40%),
-        radial-gradient(circle at 75% 75%, rgba(255, 165, 0, 0.03) 0%, transparent 40%),
-        linear-gradient(45deg, 
-            rgba(139, 69, 19, 0.02) 25%, 
-            transparent 25%, 
-            transparent 75%, 
-            rgba(139, 69, 19, 0.02) 75%);
-    background-size: 200px 200px, 150px 150px, 50px 50px;
+        radial-gradient(circle at 75% 75%, rgba(255, 165, 0, 0.03) 0%, transparent 40%);
+    background-size: 200px 200px, 150px 150px;
     pointer-events: none;
     z-index: -1;
 }
 
-/* Desktop background - fixed full cover */
+/* Desktop background */
 @media (min-width: 769px) {
     body {
-        background: 
-            linear-gradient(135deg, 
-                rgba(41, 39, 35, 0.3) 0%, 
-                rgba(28, 26, 23, 0.5) 50%, 
-                rgba(20, 19, 17, 0.7) 100%),
-            url('https://i.postimg.cc/43yVBkY8/Generated-image-1.png') center center / cover no-repeat fixed;
+        background-attachment: fixed;
     }
 }
 
-/* Mobile background - scrolling parallax effect */
+/* Mobile - removed animation */
 @media (max-width: 768px) {
     body {
-        background: 
-            linear-gradient(135deg, 
-                rgba(41, 39, 35, 0.5) 0%, 
-                rgba(28, 26, 23, 0.7) 50%, 
-                rgba(20, 19, 17, 0.9) 100%),
-            url('https://i.postimg.cc/43yVBkY8/Generated-image-1.png') center top / cover no-repeat;
         background-attachment: scroll;
-        animation: mobileBackgroundScroll 25s ease-in-out infinite;
-    }
-    
-    @keyframes mobileBackgroundScroll {
-        0%, 100% { background-position: center top; }
-        25% { background-position: center 25%; }
-        50% { background-position: center 50%; }
-        75% { background-position: center 75%; }
     }
 }
 
@@ -96,7 +72,7 @@ body::before {
     overflow: hidden;
 }
 
-/* Mining decorations for container */
+/* Simplified decorations */
 .container::before {
     content: '⛏️';
     position: absolute;
@@ -104,7 +80,6 @@ body::before {
     right: 25px;
     font-size: 2em;
     opacity: 0.6;
-    animation: miningPick 3s ease-in-out infinite;
 }
 
 .container::after {
@@ -114,23 +89,6 @@ body::before {
     left: 25px;
     font-size: 1.5em;
     opacity: 0.7;
-    animation: gemGlow 4s ease-in-out infinite alternate;
-}
-
-@keyframes miningPick {
-    0%, 100% { transform: rotate(-15deg); }
-    50% { transform: rotate(15deg); }
-}
-
-@keyframes gemGlow {
-    0% { 
-        opacity: 0.7; 
-        filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
-    }
-    100% { 
-        opacity: 0.9; 
-        filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8));
-    }
 }
 
 /* Page Management */
@@ -142,7 +100,7 @@ body::before {
     display: block !important;
 }
 
-/* Mobile Menu Toggle - Mining Style */
+/* Mobile Menu Toggle */
 .mobile-menu-toggle {
     position: fixed;
     top: 20px;
@@ -158,7 +116,7 @@ body::before {
     cursor: pointer;
     font-size: 1.3em;
     font-weight: 700;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     z-index: 1001;
     box-shadow: 
         0 8px 25px rgba(0, 0, 0, 0.4),
@@ -171,13 +129,13 @@ body::before {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #FFD700;
     color: #2F1B14;
-    transform: scale(1.1) rotate(180deg);
+    transform: scale(1.05);
     box-shadow: 
         0 12px 35px rgba(255, 215, 0, 0.4),
         inset 0 2px 10px rgba(255, 255, 255, 0.2);
 }
 
-/* Sidebar - Mining Theme */
+/* Sidebar */
 .sidebar {
     position: fixed;
     top: 0;
@@ -195,8 +153,7 @@ body::before {
     box-shadow: 
         2px 0 40px rgba(0, 0, 0, 0.6),
         inset -2px 0 10px rgba(255, 215, 0, 0.1);
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
+    border-radius: 0 15px 15px 0;
     display: flex;
     flex-direction: column;
 }
@@ -215,7 +172,6 @@ body::before {
         rgba(139, 69, 19, 0.3) 0%, 
         rgba(101, 67, 33, 0.4) 50%, 
         rgba(62, 39, 35, 0.5) 100%);
-    backdrop-filter: blur(10px);
 }
 
 .sidebar-header h3 {
@@ -251,11 +207,11 @@ body::before {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #FFD700;
     color: #2F1B14;
-    transform: scale(1.1) rotate(90deg);
+    transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
 }
 
-/* Navigation Categories - Mining Style */
+/* Navigation Categories */
 .nav-buttons {
     display: flex;
     flex-direction: column;
@@ -287,7 +243,6 @@ body::before {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     cursor: pointer;
     transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
 }
 
 .category-header:hover {
@@ -343,7 +298,7 @@ body::before {
     cursor: pointer;
     font-size: 0.95em;
     font-weight: 600;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     text-align: center;
     display: flex;
     align-items: center;
@@ -351,23 +306,7 @@ body::before {
     gap: 8px;
     width: 100%;
     position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(5px);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-}
-
-.nav-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 215, 0, 0.2), 
-        transparent);
-    transition: left 0.6s ease;
 }
 
 .nav-btn:hover {
@@ -378,10 +317,6 @@ body::before {
     color: #FFD700;
     transform: translateX(6px) scale(1.02);
     box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
-}
-
-.nav-btn:hover::before {
-    left: 100%;
 }
 
 .nav-btn.active {
@@ -404,15 +339,9 @@ body::before {
     background: #2F1B14;
     border-radius: 50%;
     box-shadow: 0 0 8px rgba(47, 27, 20, 0.8);
-    animation: pulse 2s infinite;
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
-    50% { opacity: 0.7; transform: translateY(-50%) scale(1.2); }
-}
-
-/* Language Selection - Mining Style */
+/* Language Selection */
 .language-flags {
     margin-top: auto;
     padding: 20px;
@@ -436,7 +365,6 @@ body::before {
     cursor: pointer;
     font-size: 1.5em;
     transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
     width: 50px;
     height: 50px;
     display: flex;
@@ -458,12 +386,7 @@ body::before {
     transform: translateY(-2px) scale(1.05);
 }
 
-.lang-flag-btn.active:hover {
-    transform: translateY(-3px) scale(1.1);
-    box-shadow: 0 10px 25px rgba(255, 215, 0, 0.6);
-}
-
-/* Sidebar User Section - Mining Style */
+/* Sidebar User Section */
 .sidebar-user {
     padding: 20px;
     border-top: 2px solid #8B4513;
@@ -546,7 +469,6 @@ body::before {
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
-    backdrop-filter: blur(2px);
 }
 
 .sidebar-overlay.show {
@@ -554,7 +476,7 @@ body::before {
     visibility: visible;
 }
 
-/* Signature - Mining Style */
+/* Signature */
 .signature {
     position: fixed;
     bottom: 20px;
