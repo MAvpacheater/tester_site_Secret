@@ -1,8 +1,8 @@
-// Thanks page functionality with multilingual support
-let thanksInitialized = false;
+// Peoples page functionality with multilingual support
+let peoplesInitialized = false;
 let currentFilter = 'all'; // 'all', 'admin', 'helper'
 let peoplesTranslations = null;
-let currentThanksLanguage = 'en';
+let currentPeoplesLanguage = 'en';
 
 // Load peoples translations
 async function loadPeoplesTranslations() {
@@ -22,7 +22,7 @@ async function loadPeoplesTranslations() {
         // Fallback to English
         peoplesTranslations = {
             en: {
-                title: "🙏 Thanks & Developer",
+                title: "🙏 Peoples & Developer",
                 subtitle: "Special thanks to everyone who contributed!",
                 filters: { admins: "👑 Admins", helpers: "🤝 Helpers" },
                 roles: { admin: "Admin", helper: "Helper" },
@@ -33,26 +33,26 @@ async function loadPeoplesTranslations() {
     }
 }
 
-// Update thanks page language
-async function updateThanksLanguage(lang) {
+// Update peoples page language
+async function updatePeoplesLanguage(lang) {
     if (!peoplesTranslations) {
         await loadPeoplesTranslations();
     }
     
-    currentThanksLanguage = lang;
+    currentPeoplesLanguage = lang;
     
     if (!peoplesTranslations[lang]) {
-        console.error(`❌ Thanks language ${lang} not found, defaulting to English`);
-        currentThanksLanguage = 'en';
+        console.error(`❌ Peoples language ${lang} not found, defaulting to English`);
+        currentPeoplesLanguage = 'en';
     }
     
-    const translations = peoplesTranslations[currentThanksLanguage];
+    const translations = peoplesTranslations[currentPeoplesLanguage];
     if (!translations) return;
     
     // Update page title and description
-    const pageTitle = document.querySelector('#thanksPage .thanks-title');
-    const pageSubtitle = document.querySelector('#thanksPage .thanks-subtitle');
-    const pageDescription = document.querySelector('#thanksPage .thanks-description');
+    const pageTitle = document.querySelector('#peoplesPage .peoples-title');
+    const pageSubtitle = document.querySelector('#peoplesPage .peoples-subtitle');
+    const pageDescription = document.querySelector('#peoplesPage .peoples-description');
     
     if (pageTitle && translations.title) {
         pageTitle.textContent = translations.title;
@@ -70,11 +70,11 @@ async function updateThanksLanguage(lang) {
     updateFilterButtonsText();
     
     // Re-render contributors with new language
-    if (thanksInitialized) {
+    if (peoplesInitialized) {
         renderContributors();
     }
     
-    console.log(`✅ Thanks page language updated to: ${currentThanksLanguage}`);
+    console.log(`✅ Peoples page language updated to: ${currentPeoplesLanguage}`);
 }
 
 // Contributors data
@@ -123,17 +123,17 @@ const contributors = [
     }
 ];
 
-async function initializeThanks() {
-    if (thanksInitialized) {
-        console.log('⚠️ Thanks already initialized');
+async function initializePeoples() {
+    if (peoplesInitialized) {
+        console.log('⚠️ Peoples already initialized');
         return;
     }
 
-    console.log('🙏 Initializing Thanks page with multilingual support...');
+    console.log('🙏 Initializing Peoples page with multilingual support...');
 
-    const thanksPage = document.getElementById('thanksPage');
-    if (!thanksPage) {
-        console.error('❌ Thanks page element not found');
+    const peoplesPage = document.getElementById('peoplesPage');
+    if (!peoplesPage) {
+        console.error('❌ Peoples page element not found');
         return;
     }
 
@@ -145,28 +145,28 @@ async function initializeThanks() {
         ? getCurrentAppLanguage() 
         : 'en';
     
-    // Update thanks page language
-    await updateThanksLanguage(currentAppLanguage);
+    // Update peoples page language
+    await updatePeoplesLanguage(currentAppLanguage);
 
     createFilterControls();
     renderContributors();
-    thanksInitialized = true;
-    console.log('✅ Thanks page initialized successfully with multilingual support');
+    peoplesInitialized = true;
+    console.log('✅ Peoples page initialized successfully with multilingual support');
 }
 
 function createFilterControls() {
-    const thanksPage = document.getElementById('thanksPage');
-    const thanksHeader = thanksPage.querySelector('.thanks-header');
+    const peoplesPage = document.getElementById('peoplesPage');
+    const peoplesHeader = peoplesPage.querySelector('.peoples-header');
     
     // Check if filter controls already exist
-    if (thanksPage.querySelector('.filter-controls')) {
+    if (peoplesPage.querySelector('.filter-controls')) {
         return;
     }
 
     const filterControls = document.createElement('div');
     filterControls.className = 'filter-controls';
     
-    const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+    const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
     const adminsText = (translations && translations.filters.admins) || '👑 Admins';
     const helpersText = (translations && translations.filters.helpers) || '🤝 Helpers';
     
@@ -180,13 +180,13 @@ function createFilterControls() {
     `;
 
     // Insert filter controls after header
-    thanksHeader.insertAdjacentElement('afterend', filterControls);
+    peoplesHeader.insertAdjacentElement('afterend', filterControls);
     
     console.log('✅ Filter controls created with translations');
 }
 
 function updateFilterButtonsText() {
-    const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+    const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
     if (!translations) return;
     
     const adminBtn = document.querySelector('[data-filter="admin"]');
@@ -250,7 +250,7 @@ function filterContributors() {
 
     // Show count of filtered results with translations
     const visibleCount = document.querySelectorAll('.contributor-card:not(.hidden)').length;
-    const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+    const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
     let filterMessage = '';
     
     if (translations && translations.filterResults) {
@@ -294,7 +294,7 @@ function filterContributors() {
 }
 
 function renderContributors() {
-    const contributorsContainer = document.querySelector('#thanksPage .contributors-list');
+    const contributorsContainer = document.querySelector('#peoplesPage .contributors-list');
     if (!contributorsContainer) {
         console.error('❌ Contributors container not found');
         return;
@@ -320,7 +320,7 @@ function createContributorCard(contributor, index) {
     card.setAttribute('data-role', contributor.role.toLowerCase());
 
     // Get translations
-    const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+    const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
     
     // Role badge styling and text
     const roleClass = contributor.role === 'Admin' ? 'role-admin' : 'role-helper';
@@ -369,7 +369,7 @@ function createContributorCard(contributor, index) {
 
 function openTelegramProfile(telegramHandle) {
     if (!telegramHandle) {
-        const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+        const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
         const errorMsg = (translations && translations.notifications.telegramNotAvailable) 
             || '❌ Telegram profile not available';
         showNotification(errorMsg, 'error');
@@ -383,14 +383,14 @@ function openTelegramProfile(telegramHandle) {
         window.open(url, '_blank', 'noopener,noreferrer');
         console.log(`📱 Opening Telegram profile: ${url}`);
         
-        const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+        const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
         const successMsg = (translations && translations.notifications.telegramOpening) 
             || '📱 Opening Telegram profile...';
         showNotification(successMsg, 'success');
     } catch (error) {
         console.error('❌ Error opening Telegram profile:', error);
         
-        const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+        const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
         const errorMsg = (translations && translations.notifications.telegramFailed) 
             || '❌ Failed to open Telegram profile';
         showNotification(errorMsg, 'error');
@@ -399,7 +399,7 @@ function openTelegramProfile(telegramHandle) {
 
 function openDiscordProfile(discordTag) {
     if (!discordTag) {
-        const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+        const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
         const errorMsg = (translations && translations.notifications.discordNotAvailable) 
             || '❌ Discord profile not available';
         showNotification(errorMsg, 'error');
@@ -414,7 +414,7 @@ function openDiscordProfile(discordTag) {
         window.location.href = discordUrl;
         
         // Show notification that Discord tag is copied as backup
-        const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+        const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
         const openingMsg = translations && translations.notifications.discordOpening 
             ? translations.notifications.discordOpening.replace('{tag}', discordTag)
             : `🎮 Opening Discord... Tag: ${discordTag}`;
@@ -444,7 +444,7 @@ function openDiscordProfile(discordTag) {
     } catch (error) {
         console.error('❌ Error opening Discord profile:', error);
         
-        const translations = peoplesTranslations && peoplesTranslations[currentThanksLanguage];
+        const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
         const fallbackMsg = translations && translations.notifications.discordCopied 
             ? translations.notifications.discordCopied.replace('{tag}', discordTag)
             : `📋 Discord: ${discordTag} (copied to clipboard)`;
@@ -461,16 +461,16 @@ function openDiscordProfile(discordTag) {
 
 function showNotification(message, type = 'info') {
     // Remove existing notifications
-    const existingNotifications = document.querySelectorAll('.thanks-notification');
+    const existingNotifications = document.querySelectorAll('.peoples-notification');
     existingNotifications.forEach(notification => notification.remove());
 
     const notification = document.createElement('div');
-    notification.className = `thanks-notification thanks-notification-${type}`;
+    notification.className = `peoples-notification peoples-notification-${type}`;
     notification.textContent = message;
 
-    const thanksPage = document.getElementById('thanksPage');
-    if (thanksPage) {
-        thanksPage.appendChild(notification);
+    const peoplesPage = document.getElementById('peoplesPage');
+    if (peoplesPage) {
+        peoplesPage.appendChild(notification);
 
         // Show notification
         setTimeout(() => {
@@ -496,7 +496,7 @@ function escapeHtml(text) {
 // Add contributor functionality (for future admin features)
 function addContributor(contributorData) {
     contributors.push(contributorData);
-    if (thanksInitialized) {
+    if (peoplesInitialized) {
         renderContributors();
     }
     console.log('✅ Contributor added:', contributorData.name);
@@ -506,7 +506,7 @@ function addContributor(contributorData) {
 function removeContributor(index) {
     if (index >= 0 && index < contributors.length) {
         const removed = contributors.splice(index, 1)[0];
-        if (thanksInitialized) {
+        if (peoplesInitialized) {
             renderContributors();
         }
         console.log('✅ Contributor removed:', removed.name);
@@ -532,13 +532,13 @@ function getContributorStats() {
 // Listen for language change events
 document.addEventListener('languageChanged', async (event) => {
     const newLanguage = event.detail.language;
-    console.log('🌍 Thanks page received language change:', newLanguage);
-    await updateThanksLanguage(newLanguage);
+    console.log('🌍 Peoples page received language change:', newLanguage);
+    await updatePeoplesLanguage(newLanguage);
 });
 
 // Make functions globally available
-window.initializeThanks = initializeThanks;
-window.updateThanksLanguage = updateThanksLanguage;
+window.initializePeoples = initializePeoples;
+window.updatePeoplesLanguage = updatePeoplesLanguage;
 window.loadPeoplesTranslations = loadPeoplesTranslations;
 window.setFilter = setFilter;
 window.openTelegramProfile = openTelegramProfile;
@@ -547,4 +547,4 @@ window.addContributor = addContributor;
 window.removeContributor = removeContributor;
 window.getContributorStats = getContributorStats;
 
-console.log('✅ thanks.js loaded successfully with multilingual support');
+console.log('✅ peoples.js loaded successfully with multilingual support');
