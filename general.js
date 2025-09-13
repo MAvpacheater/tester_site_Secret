@@ -171,29 +171,6 @@ function updatePageTitles() {
     });
 }
 
-// Create language flags
-function createLanguageFlags() {
-    const languages = [
-        { code: 'en', flag: '🇺🇸' },
-        { code: 'uk', flag: '🇺🇦' },
-        { code: 'ru', flag: '🇷🇺' }
-    ];
-    
-    const languageFlags = document.createElement('div');
-    languageFlags.className = 'language-flags';
-    
-    languageFlags.innerHTML = languages.map(({ code, flag }) => `
-        <button class="lang-flag-btn ${currentAppLanguage === code ? 'active' : ''}" 
-                data-lang="${code}" 
-                onclick="switchAppLanguage('${code}')"
-                title="${code.toUpperCase()}">
-            ${flag}
-        </button>
-    `).join('');
-    
-    return languageFlags;
-}
-
 // Page switching - optimized
 function switchPage(page) {
     // Batch DOM operations
@@ -307,7 +284,7 @@ function loadSettingsFromStorage(key) {
     }
 }
 
-// App initialization - optimized
+// App initialization - optimized (without adding language flags)
 async function initializeApp() {
     if (appInitialized) return;
     
@@ -321,11 +298,10 @@ async function initializeApp() {
     currentAppLanguage = getCurrentAppLanguage();
     await loadMenuTranslations();
     
-    // Add language flags
-    const sidebar = document.querySelector('.sidebar');
-    if (sidebar) {
-        sidebar.appendChild(createLanguageFlags());
-    }
+    // Update language flags state
+    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === currentAppLanguage);
+    });
     
     // Update UI
     updateMenuTranslations();
