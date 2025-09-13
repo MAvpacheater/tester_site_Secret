@@ -1,4 +1,4 @@
-/* Potions & Food Page Styles - ENHANCED WITH RARITY FILTERS */
+/* Optimized Potions & Food Page - Mining Theme */
 
 .potions-page {
     display: none;
@@ -11,43 +11,45 @@
 }
 
 .potions-page .title {
-    color: #2c3e50;
+    color: #FFD700;
     font-size: 2.5em;
     font-weight: 700;
     margin-bottom: 30px;
     text-align: center;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    background: linear-gradient(135deg, #FFD700, #FFA500);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-family: 'Orbitron', monospace;
 }
 
-/* Type Switcher (Potions/Food) */
+/* Type Switcher - Mining Style */
 .potions-switcher {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
     gap: 12px;
-    background: rgba(246, 249, 252, 0.9);
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.3) 0%, 
+        rgba(62, 39, 35, 0.4) 100%);
     padding: 10px;
     border-radius: 18px;
-    border: 2px solid rgba(102, 126, 234, 0.15);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid #8B4513;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .potions-switch-btn {
     background: transparent;
     border: none;
-    color: #4a5568;
+    color: #F5DEB3;
     padding: 14px 28px;
     border-radius: 12px;
     cursor: pointer;
     font-size: 1.1em;
     font-weight: 600;
     font-family: 'Orbitron', monospace;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     flex: 1;
     text-transform: uppercase;
     display: flex;
@@ -55,40 +57,25 @@
     justify-content: center;
     gap: 8px;
     min-width: 140px;
-    position: relative;
-    overflow: hidden;
-}
-
-.potions-switch-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    transition: left 0.5s;
-}
-
-.potions-switch-btn:hover::before {
-    left: 100%;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .potions-switch-btn:hover {
-    background: rgba(102, 126, 234, 0.12);
-    color: #667eea;
+    background: rgba(255, 215, 0, 0.2);
+    color: #FFD700;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
 }
 
 .potions-switch-btn.active {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #2F1B14;
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
     transform: translateY(-1px);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* Rarity Filter Controls */
+/* Rarity Filter - Mining Colors */
 .rarity-filter-controls {
     display: flex;
     justify-content: center;
@@ -96,13 +83,15 @@
     margin: 20px 0;
     flex-wrap: wrap;
     padding: 15px;
-    background: rgba(246, 249, 252, 0.7);
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.2) 0%, 
+        rgba(62, 39, 35, 0.3) 100%);
     border-radius: 15px;
-    border: 1px solid rgba(102, 126, 234, 0.15);
+    border: 1px solid #8B4513;
 }
 
 .rarity-filter-btn {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(139, 69, 19, 0.3);
     border: 2px solid;
     color: white;
     padding: 8px 16px;
@@ -110,82 +99,55 @@
     cursor: pointer;
     font-size: 0.85em;
     font-weight: 700;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    backdrop-filter: blur(10px);
-    position: relative;
-    overflow: hidden;
     min-width: 85px;
     text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-.rarity-filter-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.6s ease;
-    pointer-events: none;
-}
-
-.rarity-filter-btn:hover::before {
-    left: 100%;
-}
-
-/* Rarity-specific button colors */
+/* Mining-themed rarity colors */
 .rarity-filter-btn.common {
-    background: linear-gradient(135deg, #718096, #4a5568);
-    border-color: #4a5568;
+    background: linear-gradient(135deg, #8B4513, #654321);
+    border-color: #8B4513;
 }
 
 .rarity-filter-btn.uncommon {
-    background: linear-gradient(135deg, #38a169, #22c55e);
-    border-color: #22c55e;
+    background: linear-gradient(135deg, #228B22, #32CD32);
+    border-color: #228B22;
 }
 
 .rarity-filter-btn.rare {
-    background: linear-gradient(135deg, #3182ce, #2563eb);
-    border-color: #2563eb;
+    background: linear-gradient(135deg, #4169E1, #1E90FF);
+    border-color: #4169E1;
 }
 
 .rarity-filter-btn.epic {
-    background: linear-gradient(135deg, #805ad5, #9333ea);
-    border-color: #9333ea;
+    background: linear-gradient(135deg, #8A2BE2, #9932CC);
+    border-color: #8A2BE2;
 }
 
 .rarity-filter-btn.legendary {
-    background: linear-gradient(135deg, #dd6b20, #ea580c);
-    border-color: #ea580c;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-color: #FFD700;
+    color: #2F1B14;
 }
 
 .rarity-filter-btn.mythic {
-    background: linear-gradient(135deg, #e53e3e, #dc2626);
-    border-color: #dc2626;
-    box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
-}
-
-.rarity-filter-btn.limited {
-    background: linear-gradient(135deg, #ff6b35, #f7931e);
-    border-color: #f7931e;
-}
-
-.rarity-filter-btn.exclusive {
-    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-    border-color: #6c5ce7;
+    background: linear-gradient(135deg, #DC143C, #B22222);
+    border-color: #DC143C;
+    box-shadow: 0 0 15px rgba(220, 20, 60, 0.5);
 }
 
 .rarity-filter-btn:hover {
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .rarity-filter-btn.active {
     transform: translateY(-2px) scale(1.08);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 
 /* Container */
@@ -201,12 +163,12 @@
 }
 
 .potions-container::-webkit-scrollbar-track { 
-    background: rgba(0, 0, 0, 0.08); 
+    background: rgba(139, 69, 19, 0.2); 
     border-radius: 12px; 
 }
 
 .potions-container::-webkit-scrollbar-thumb { 
-    background: linear-gradient(135deg, #667eea, #764ba2); 
+    background: linear-gradient(135deg, #FFD700, #FFA500); 
     border-radius: 12px;
 }
 
@@ -215,7 +177,7 @@
     display: none;
     opacity: 0;
     transform: translateY(20px);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
 }
 
 .potions-section.active {
@@ -224,19 +186,21 @@
     transform: translateY(0);
 }
 
-/* Items */
+/* Items - Mining Style */
 .potion-item {
     display: flex;
     align-items: center;
     gap: 18px;
     padding: 20px 24px;
     margin-bottom: 12px;
-    background: rgba(246, 249, 252, 0.9);
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.2) 0%, 
+        rgba(62, 39, 35, 0.3) 100%);
     border-radius: 18px;
-    border: 2px solid rgba(102, 126, 234, 0.1);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid #8B4513;
+    transition: all 0.3s ease;
     font-family: 'Roboto', sans-serif;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
     opacity: 0;
@@ -259,26 +223,13 @@
     }
 }
 
-.potion-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.05), transparent);
-    transition: left 0.6s ease;
-}
-
-.potion-item:hover::before {
-    left: 100%;
-}
-
 .potion-item:hover {
-    background: rgba(102, 126, 234, 0.12);
-    border-color: rgba(102, 126, 234, 0.3);
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.2) 0%, 
+        rgba(139, 69, 19, 0.4) 100%);
+    border-color: #FFD700;
     transform: translateX(12px) translateY(-4px);
-    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.15);
+    box-shadow: 0 12px 35px rgba(255, 215, 0, 0.3);
 }
 
 /* Image */
@@ -287,21 +238,21 @@
     height: 112px;
     object-fit: cover;
     border-radius: 12px;
-    border: 3px solid rgba(102, 126, 234, 0.2);
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border: 3px solid #8B4513;
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.3), rgba(62, 39, 35, 0.3));
     transition: all 0.3s ease;
     flex-shrink: 0;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .potion-image:hover {
     transform: scale(1.05);
-    border-color: rgba(102, 126, 234, 0.4);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+    border-color: #FFD700;
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
 }
 
 .potion-image.loading {
-    background: linear-gradient(90deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.2), rgba(102, 126, 234, 0.1));
+    background: linear-gradient(90deg, rgba(139, 69, 19, 0.3), rgba(255, 215, 0, 0.3), rgba(139, 69, 19, 0.3));
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
 }
@@ -312,12 +263,12 @@
 }
 
 .potion-image.error {
-    background: rgba(255, 182, 193, 0.3);
-    border-color: rgba(220, 53, 69, 0.3);
+    background: rgba(139, 69, 19, 0.4);
+    border-color: #DC143C;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #dc3545;
+    color: #FF6347;
     font-size: 0.9em;
     font-weight: 600;
     text-align: center;
@@ -335,19 +286,20 @@
 
 .potion-name {
     font-weight: 700;
-    color: #2d3748;
+    color: #FFD700;
     font-size: 1.3em;
     font-family: 'Orbitron', monospace;
     margin-bottom: 6px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .potion-boost {
-    color: #4a5568;
+    color: #F5DEB3;
     font-size: 1em;
     line-height: 1.5;
     font-weight: 500;
     opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 /* Meta */
@@ -369,59 +321,41 @@
     text-align: center;
     min-width: 90px;
     letter-spacing: 0.5px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     border: 2px solid transparent;
     transition: all 0.3s ease;
 }
 
-/* Rarity colors */
+/* Mining-themed rarity colors */
 .potion-rarity.common {
-    background: linear-gradient(135deg, #718096, #4a5568);
-    color: white;
+    background: linear-gradient(135deg, #8B4513, #654321);
+    color: #FFD700;
 }
 
 .potion-rarity.uncommon {
-    background: linear-gradient(135deg, #38a169, #22c55e);
+    background: linear-gradient(135deg, #228B22, #32CD32);
     color: white;
 }
 
 .potion-rarity.rare {
-    background: linear-gradient(135deg, #3182ce, #2563eb);
+    background: linear-gradient(135deg, #4169E1, #1E90FF);
     color: white;
 }
 
 .potion-rarity.epic {
-    background: linear-gradient(135deg, #805ad5, #9333ea);
+    background: linear-gradient(135deg, #8A2BE2, #9932CC);
     color: white;
 }
 
 .potion-rarity.legendary {
-    background: linear-gradient(135deg, #dd6b20, #ea580c);
-    color: white;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #2F1B14;
 }
 
 .potion-rarity.mythic {
-    background: linear-gradient(135deg, #e53e3e, #dc2626);
+    background: linear-gradient(135deg, #DC143C, #B22222);
     color: white;
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
-    animation: mythicGlow 2s ease-in-out infinite alternate;
-}
-
-.potion-rarity.limited {
-    background: linear-gradient(135deg, #ff6b35, #f7931e);
-    color: white;
-    box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
-}
-
-.potion-rarity.exclusive {
-    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-    color: white;
-    box-shadow: 0 0 15px rgba(108, 92, 231, 0.3);
-}
-
-@keyframes mythicGlow {
-    0% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
-    100% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.6); }
+    box-shadow: 0 0 20px rgba(220, 20, 60, 0.5);
 }
 
 .potion-time {
@@ -430,11 +364,11 @@
     border-radius: 12px;
     font-size: 0.85em;
     font-weight: 600;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
-    color: #4c51bf;
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.4), rgba(62, 39, 35, 0.5));
+    color: #D4AF37;
     text-align: center;
-    border: 1px solid rgba(102, 126, 234, 0.3);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    border: 1px solid #8B4513;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 /* Notifications */
@@ -449,7 +383,7 @@
     z-index: 1000;
     transform: translateX(100%);
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -459,49 +393,12 @@
 }
 
 .potions-notification.info {
-    background: linear-gradient(135deg, rgba(52, 152, 219, 0.9), rgba(41, 128, 185, 0.9));
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 165, 0, 0.9));
+    color: #2F1B14;
 }
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-    .potions-page {
-        padding: 15px;
-    }
-    
-    .potions-page .title {
-        font-size: 2em;
-        margin-bottom: 25px;
-    }
-    
-    .potions-switcher {
-        flex-direction: column;
-        gap: 8px;
-        padding: 8px;
-    }
-    
-    .rarity-filter-controls {
-        gap: 6px;
-        padding: 12px;
-    }
-    
-    .rarity-filter-btn {
-        font-size: 0.75em;
-        padding: 6px 12px;
-        min-width: 70px;
-    }
-    
-    .potion-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-        padding: 16px 18px;
-        min-height: auto;
-    }
-    
-    .potion-item:hover {
-        transform: translateY(-2px);
-    }
-    
     .potion-image {
         width: 100%;
         max-width: 200px;
@@ -573,4 +470,42 @@
         padding: 4px 8px;
         font-size: 0.8em;
     }
-}
+}tions-page {
+        padding: 15px;
+    }
+    
+    .potions-page .title {
+        font-size: 2em;
+        margin-bottom: 25px;
+    }
+    
+    .potions-switcher {
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+    }
+    
+    .rarity-filter-controls {
+        gap: 6px;
+        padding: 12px;
+    }
+    
+    .rarity-filter-btn {
+        font-size: 0.75em;
+        padding: 6px 12px;
+        min-width: 70px;
+    }
+    
+    .potion-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 16px 18px;
+        min-height: auto;
+    }
+    
+    .potion-item:hover {
+        transform: translateY(-2px);
+    }
+    
+    .po
