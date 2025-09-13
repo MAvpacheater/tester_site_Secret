@@ -441,6 +441,15 @@
         font-size: 1.6em;
     }
     
+    .potions-switcher {
+        max-width: 320px;
+    }
+    
+    .potions-switch-btn {
+        font-size: 1em;
+        padding: 12px 0;
+    }
+    
     .rarity-filter-btn {
         font-size: 0.7em;
         padding: 5px 8px;
@@ -448,26 +457,36 @@
     }
     
     .potion-item {
-        padding: 14px 16px;
-        margin-bottom: 10px;
+        padding: 16px 18px;
+        margin-bottom: 12px;
+    }
+    
+    .potion-image {
+        width: 120px;
+        height: 90px;
     }
     
     .potion-name {
-        font-size: 1.1em;
+        font-size: 1.3em;
     }
     
     .potion-boost {
-        font-size: 0.9em;
+        font-size: 0.95em;
     }
     
     .potion-rarity {
-        padding: 4px 10px;
+        padding: 6px 12px;
         font-size: 0.8em;
-        min-width: 70px;
+        min-width: 80px;
     }
     
     .potion-time {
         padding: 4px 8px;
+        font-size: 0.8em;
+    }
+    
+    .potion-category {
+        padding: 6px 12px;
         font-size: 0.8em;
     }
 }tions-page {
