@@ -441,7 +441,7 @@ body::before {
     backdrop-filter: blur(10px);
 }
 
-/* Mobile Responsiveness - оптимізовано для максимальної висоти контенту */
+/* Mobile Responsiveness - збільшена прокрутка для мобільних */
 @media (max-width: 768px) {
     body {
         background-attachment: scroll;
@@ -469,6 +469,7 @@ body::before {
     .nav-buttons {
         padding: 12px;
         gap: 8px;
+        max-height: calc(100vh - 140px); /* Збільшена висота для мобільних */
     }
     
     .nav-category {
@@ -535,6 +536,7 @@ body::before {
     .nav-buttons {
         padding: 10px;
         gap: 6px;
+        max-height: calc(100vh - 120px); /* Ще більша висота для маленьких екранів */
     }
     
     .nav-category {
