@@ -1,4 +1,4 @@
-// Optimized General JavaScript - Performance Enhanced
+// Optimized General JavaScript - Performance Enhanced with Updates
 
 // Global state
 let currentAppLanguage = 'en';
@@ -46,6 +46,7 @@ async function loadMenuTranslations() {
                     charms: "🔮 Charms",
                     potions: "🧪 Potions & Food",
                     worlds: "🌍 Worlds",
+                    updates: "📝 Updates",
                     help: "🆘 Help",
                     peoples: "🙏 Peoples"
                 },
@@ -88,7 +89,8 @@ async function switchAppLanguage(lang) {
         'updatePotionsLanguage', 
         'updateSecretLanguage',
         'updatePeoplesLanguage',
-        'updateHelpLanguage'
+        'updateHelpLanguage',
+        'updateUpdatesLanguage'
     ];
     
     moduleNotifications.forEach(func => {
@@ -158,6 +160,7 @@ function updatePageTitles() {
         'charmsPage': 'charms',
         'potionsPage': 'potions',
         'worldsPage': 'worlds',
+        'updatesPage': 'updates',
         'helpPage': 'help',
         'peoplesPage': 'peoples'
     };
@@ -165,7 +168,7 @@ function updatePageTitles() {
     Object.entries(pageMappings).forEach(([pageId, key]) => {
         const page = document.getElementById(pageId);
         if (page && translations[key]) {
-            const title = page.querySelector('h1, .title, .peoples-title, .help-title, .header-controls h1');
+            const title = page.querySelector('h1, .title, .peoples-title, .help-title, .updates-title, .header-controls h1');
             if (title) title.textContent = translations[key];
         }
     });
@@ -212,6 +215,7 @@ function initializePageContent(page) {
         secret: 'initializeSecret',
         potions: 'initializePotions',
         worlds: 'initializeWorlds',
+        updates: 'initializeUpdates',
         help: 'initializeHelp',
         peoples: 'initializePeoples'
     };
@@ -219,7 +223,7 @@ function initializePageContent(page) {
     const initFunc = initFunctions[page];
     if (initFunc && typeof window[initFunc] === 'function') {
         // Reset flags for modules that need it
-        const resetFlags = ['secret', 'potions', 'grind', 'peoples', 'help'];
+        const resetFlags = ['secret', 'potions', 'grind', 'peoples', 'help', 'updates'];
         if (resetFlags.includes(page)) {
             window[page + 'Initialized'] = false;
         }
@@ -351,6 +355,7 @@ function initializeAllModules() {
         'initializeCharms',
         'initializeCodes',
         'initializeWorlds',
+        'initializeUpdates',
         'initializeHelp',
         'initializePeoples'
     ];
@@ -373,7 +378,7 @@ function handleAuthAction() {
 }
 
 function forceReinitializeModule(moduleName) {
-    const flags = ['secret', 'potions', 'grind', 'peoples', 'help'];
+    const flags = ['secret', 'potions', 'grind', 'peoples', 'help', 'updates'];
     if (flags.includes(moduleName)) {
         window[moduleName + 'Initialized'] = false;
     }
