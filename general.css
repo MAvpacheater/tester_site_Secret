@@ -341,17 +341,69 @@ body::before {
     box-shadow: 0 0 8px rgba(47, 27, 20, 0.8);
 }
 
-/* Language Selection */
-.language-flags {
+/* Settings and Language Flags Container */
+.sidebar-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-top: auto;
     padding: 20px;
     border-top: 2px solid #8B4513;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.2) 0%, 
         rgba(62, 39, 35, 0.3) 100%);
+}
+
+/* Settings Button */
+.settings-btn-sidebar {
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.4) 0%, 
+        rgba(101, 67, 33, 0.5) 50%, 
+        rgba(62, 39, 35, 0.6) 100%);
+    border: 2px solid #8B4513;
+    color: #FFD700;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.4em;
+    transition: all 0.3s ease;
+    width: 50px;
+    height: 50px;
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 15px;
+    position: relative;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 2px 5px rgba(255, 215, 0, 0.1);
+}
+
+.settings-btn-sidebar:hover {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-color: #FFD700;
+    color: #2F1B14;
+    transform: translateY(-3px) scale(1.1) rotate(90deg);
+    box-shadow: 
+        0 8px 20px rgba(255, 215, 0, 0.4),
+        inset 0 2px 10px rgba(255, 255, 255, 0.2);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.settings-btn-sidebar.active {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-color: #8B4513;
+    color: #2F1B14;
+    transform: translateY(-2px) scale(1.05) rotate(90deg);
+    box-shadow: 
+        0 10px 25px rgba(255, 215, 0, 0.5),
+        inset 0 3px 15px rgba(255, 255, 255, 0.3);
+}
+
+/* Language Selection */
+.language-flags {
+    display: flex;
+    gap: 12px;
 }
 
 .lang-flag-btn {
@@ -495,6 +547,17 @@ body::before {
     backdrop-filter: blur(10px);
 }
 
+/* Page title mapping updates for Settings */
+.settings-title {
+    color: #FFD700;
+    font-size: 2.5em;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+    letter-spacing: 2px;
+    text-align: center;
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .sidebar {
@@ -510,16 +573,27 @@ body::before {
         padding: 15px;
     }
     
-    .language-flags {
-        gap: 12px;
+    .sidebar-controls {
         padding: 15px;
+        gap: 10px;
     }
     
-    .lang-flag-btn {
+    .settings-btn-sidebar {
         width: 45px;
         height: 45px;
         font-size: 1.3em;
         padding: 10px;
+    }
+    
+    .language-flags {
+        gap: 10px;
+    }
+    
+    .lang-flag-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
+        padding: 8px;
     }
     
     .container {
@@ -542,16 +616,27 @@ body::before {
         padding: 15px 10px 10px 10px;
     }
     
-    .language-flags {
-        gap: 10px;
-        padding: 15px 10px;
+    .sidebar-controls {
+        padding: 12px 10px;
+        gap: 8px;
     }
     
-    .lang-flag-btn {
+    .settings-btn-sidebar {
         width: 40px;
         height: 40px;
         font-size: 1.2em;
         padding: 8px;
+    }
+    
+    .language-flags {
+        gap: 8px;
+    }
+    
+    .lang-flag-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1em;
+        padding: 6px;
     }
     
     .container {
