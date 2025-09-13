@@ -1,4 +1,4 @@
-// Updated General JavaScript functions - With Page Title Language Support
+// Updated General JavaScript functions - With Page Title Language Support + Help Page
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -50,6 +50,7 @@ async function loadMenuTranslations() {
                     charms: "🔮 Charms",
                     potions: "🧪 Potions & Food",
                     worlds: "🌍 Worlds",
+                    help: "🆘 Help",
                     peoples: "🙏 Peoples"
                 },
                 auth: {
@@ -105,7 +106,8 @@ async function switchAppLanguage(lang) {
         { name: 'worlds', func: 'updateWorldsLanguage' },
         { name: 'potions', func: 'updatePotionsLanguage' },
         { name: 'secret', func: 'updateSecretLanguage' },
-        { name: 'peoples', func: 'updatePeoplesLanguage' }
+        { name: 'peoples', func: 'updatePeoplesLanguage' },
+        { name: 'help', func: 'updateHelpLanguage' }
     ];
     
     moduleNotifications.forEach(({ name, func }) => {
@@ -197,6 +199,7 @@ function updatePageTitles() {
         'charmsPage': 'charms',
         'potionsPage': 'potions',
         'worldsPage': 'worlds',
+        'helpPage': 'help',
         'peoplesPage': 'peoples'
     };
     
@@ -205,7 +208,7 @@ function updatePageTitles() {
         const page = document.getElementById(pageId);
         if (page && translations.pages[translationKey]) {
             // Find the h1 title element in the page
-            const titleElement = page.querySelector('h1, .title, .peoples-title');
+            const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title');
             if (titleElement) {
                 titleElement.textContent = translations.pages[translationKey];
                 console.log(`✅ Updated title for ${pageId}: ${translations.pages[translationKey]}`);
@@ -277,6 +280,7 @@ function switchPage(page) {
         'secret': 'secret',
         'potions': 'potions',
         'worlds': 'worlds',
+        'help': 'help',
         'peoples': 'peoples'
     };
     
@@ -383,6 +387,17 @@ function initializePageContent(page) {
                 initializeWorlds();
             } else {
                 console.error('❌ initializeWorlds function not found');
+            }
+            break;
+        case 'help':
+            console.log('🆘 Initializing Help page...');
+            if (typeof initializeHelp === 'function') {
+                if (typeof window !== 'undefined' && window.helpInitialized !== undefined) {
+                    window.helpInitialized = false;
+                }
+                initializeHelp();
+            } else {
+                console.error('❌ initializeHelp function not found');
             }
             break;
         case 'peoples':
@@ -552,7 +567,7 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed with enhanced language support and page titles');
+    console.log('✅ App initialization completed with enhanced language support, page titles, and Help page');
 }
 
 // Initialize all modules with proper DOM readiness checks
@@ -572,6 +587,7 @@ function initializeAllModules() {
         'initializeCharms',
         'initializeCodes',
         'initializeWorlds',
+        'initializeHelp',
         'initializePeoples'
     ];
 
@@ -581,7 +597,7 @@ function initializeAllModules() {
                 // Add delay for DOM-dependent modules
                 if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || 
                     moduleName === 'initializeGrind' || moduleName === 'initializePeoples' ||
-                    moduleName === 'initializeWorlds') {
+                    moduleName === 'initializeWorlds' || moduleName === 'initializeHelp') {
                     setTimeout(() => {
                         try {
                             // Force reinitialization by resetting flags
@@ -596,6 +612,9 @@ function initializeAllModules() {
                             }
                             if (moduleName === 'initializePeoples' && window.peoplesInitialized) {
                                 window.peoplesInitialized = false;
+                            }
+                            if (moduleName === 'initializeHelp' && window.helpInitialized) {
+                                window.helpInitialized = false;
                             }
                             
                             window[moduleName]();
@@ -642,6 +661,9 @@ function forceReinitializeModule(moduleName) {
     }
     if (moduleName === 'peoples' && typeof window !== 'undefined') {
         window.peoplesInitialized = false;
+    }
+    if (moduleName === 'help' && typeof window !== 'undefined') {
+        window.helpInitialized = false;
     }
     
     // Call initialization
