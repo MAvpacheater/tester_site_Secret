@@ -1,4 +1,4 @@
-// Updated General JavaScript functions - With Page Title Language Support + Help Page
+// Updated General JavaScript functions - With Updates page support
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -50,6 +50,7 @@ async function loadMenuTranslations() {
                     charms: "🔮 Charms",
                     potions: "🧪 Potions & Food",
                     worlds: "🌍 Worlds",
+                    updates: "📝 Updates",
                     help: "🆘 Help",
                     peoples: "🙏 Peoples"
                 },
@@ -107,7 +108,8 @@ async function switchAppLanguage(lang) {
         { name: 'potions', func: 'updatePotionsLanguage' },
         { name: 'secret', func: 'updateSecretLanguage' },
         { name: 'peoples', func: 'updatePeoplesLanguage' },
-        { name: 'help', func: 'updateHelpLanguage' }
+        { name: 'help', func: 'updateHelpLanguage' },
+        { name: 'updates', func: 'updateUpdatesLanguage' }
     ];
     
     moduleNotifications.forEach(({ name, func }) => {
@@ -178,14 +180,14 @@ function updateMenuTranslations() {
     console.log(`✅ Menu translations updated for ${currentAppLanguage}`);
 }
 
-// NEW FUNCTION: Update page titles
+// Update page titles
 function updatePageTitles() {
     if (!menuTranslations || !currentAppLanguage) return;
     
     const translations = menuTranslations[currentAppLanguage];
     if (!translations || !translations.pages) return;
     
-    // Page title mappings (page ID -> translation key)
+    // Page title mappings (page ID -> translation key) - WITH UPDATES
     const pageTitleMappings = {
         'calculatorPage': 'calculator',
         'armPage': 'arm',
@@ -199,6 +201,7 @@ function updatePageTitles() {
         'charmsPage': 'charms',
         'potionsPage': 'potions',
         'worldsPage': 'worlds',
+        'updatesPage': 'updates',  // ADDED UPDATES
         'helpPage': 'help',
         'peoplesPage': 'peoples'
     };
@@ -208,7 +211,7 @@ function updatePageTitles() {
         const page = document.getElementById(pageId);
         if (page && translations.pages[translationKey]) {
             // Find the h1 title element in the page
-            const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title');
+            const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title, .updates-title');
             if (titleElement) {
                 titleElement.textContent = translations.pages[translationKey];
                 console.log(`✅ Updated title for ${pageId}: ${translations.pages[translationKey]}`);
@@ -266,7 +269,7 @@ function switchPage(page) {
         console.error(`Page ${page}Page not found`);
     }
     
-    // Update active nav button
+    // Update active nav button - WITH UPDATES
     const pageMap = {
         'calculator': 'calculator',
         'arm': 'arm',
@@ -280,6 +283,7 @@ function switchPage(page) {
         'secret': 'secret',
         'potions': 'potions',
         'worlds': 'worlds',
+        'updates': 'updates',  // ADDED UPDATES
         'help': 'help',
         'peoples': 'peoples'
     };
@@ -299,7 +303,7 @@ function switchPage(page) {
     }, 100);
 }
 
-// Initialize specific page content when switching
+// Initialize specific page content when switching - WITH UPDATES
 function initializePageContent(page) {
     console.log(`🔄 Initializing content for page: ${page}`);
     
@@ -387,6 +391,17 @@ function initializePageContent(page) {
                 initializeWorlds();
             } else {
                 console.error('❌ initializeWorlds function not found');
+            }
+            break;
+        case 'updates':
+            console.log('📝 Initializing Updates page...');
+            if (typeof initializeUpdates === 'function') {
+                if (typeof window !== 'undefined' && window.updatesInitialized !== undefined) {
+                    window.updatesInitialized = false;
+                }
+                initializeUpdates();
+            } else {
+                console.error('❌ initializeUpdates function not found');
             }
             break;
         case 'help':
@@ -567,10 +582,10 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed with enhanced language support, page titles, and Help page');
+    console.log('✅ App initialization completed with Updates page support');
 }
 
-// Initialize all modules with proper DOM readiness checks
+// Initialize all modules with proper DOM readiness checks - WITH UPDATES
 function initializeAllModules() {
     console.log('🔧 Initializing all modules...');
     
@@ -587,6 +602,7 @@ function initializeAllModules() {
         'initializeCharms',
         'initializeCodes',
         'initializeWorlds',
+        'initializeUpdates',  // ADDED UPDATES
         'initializeHelp',
         'initializePeoples'
     ];
@@ -597,7 +613,8 @@ function initializeAllModules() {
                 // Add delay for DOM-dependent modules
                 if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || 
                     moduleName === 'initializeGrind' || moduleName === 'initializePeoples' ||
-                    moduleName === 'initializeWorlds' || moduleName === 'initializeHelp') {
+                    moduleName === 'initializeWorlds' || moduleName === 'initializeHelp' ||
+                    moduleName === 'initializeUpdates') {  // ADDED UPDATES TO DELAYED
                     setTimeout(() => {
                         try {
                             // Force reinitialization by resetting flags
@@ -615,6 +632,9 @@ function initializeAllModules() {
                             }
                             if (moduleName === 'initializeHelp' && window.helpInitialized) {
                                 window.helpInitialized = false;
+                            }
+                            if (moduleName === 'initializeUpdates' && window.updatesInitialized) {
+                                window.updatesInitialized = false;
                             }
                             
                             window[moduleName]();
@@ -645,7 +665,7 @@ function debugPageStates() {
     console.log('========================');
 }
 
-// Force reinitialization for specific modules
+// Force reinitialization for specific modules - WITH UPDATES
 function forceReinitializeModule(moduleName) {
     console.log(`🔄 Force reinitializing ${moduleName}...`);
     
@@ -664,6 +684,9 @@ function forceReinitializeModule(moduleName) {
     }
     if (moduleName === 'help' && typeof window !== 'undefined') {
         window.helpInitialized = false;
+    }
+    if (moduleName === 'updates' && typeof window !== 'undefined') {
+        window.updatesInitialized = false;
     }
     
     // Call initialization
