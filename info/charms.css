@@ -1,9 +1,9 @@
-/* Fixed Charms Page Styles - Prevents unnecessary stretching */
+/* Optimized Charms Page - Mining Theme */
 
 .charms-page {
     display: none;
     padding: 20px;
-    min-height: auto; /* Changed from 100vh to auto */
+    min-height: auto;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -16,30 +16,33 @@
     font-family: 'Orbitron', monospace;
     font-size: 2.5em;
     font-weight: 900;
-    color: #4a5568;
+    color: #FFD700;
     text-align: center;
     margin-bottom: 30px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(45deg, #667eea, #764ba2);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    background: linear-gradient(45deg, #FFD700, #FFA500);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-/* Loading State - FIXED */
+/* Loading State - Mining Style */
 .charms-loading {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 60px 40px; /* Increased padding for better visibility */
-    color: #667eea;
-    font-size: 1.2em; /* Slightly larger text */
+    padding: 60px 40px;
+    color: #FFD700;
+    font-size: 1.2em;
     font-weight: 600;
-    min-height: 200px; /* Minimum height to prevent collapse */
-    background: rgba(102, 126, 234, 0.05);
+    min-height: 200px;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.3) 0%, 
+        rgba(62, 39, 35, 0.4) 100%);
     border-radius: 16px;
-    border: 2px solid rgba(102, 126, 234, 0.1);
+    border: 2px solid #8B4513;
     margin: 20px 0;
+    backdrop-filter: blur(10px);
 }
 
 .charms-loading::after {
@@ -47,7 +50,7 @@
     margin-left: 15px;
     width: 24px;
     height: 24px;
-    border: 3px solid #667eea;
+    border: 3px solid #FFD700;
     border-top: 3px solid transparent;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -63,7 +66,7 @@
     overflow-y: auto;
     padding-right: 12px;
     scroll-behavior: smooth;
-    min-height: 200px; /* Minimum height to ensure visibility */
+    min-height: 200px;
 }
 
 .charms-container::-webkit-scrollbar { 
@@ -71,12 +74,12 @@
 }
 
 .charms-container::-webkit-scrollbar-track { 
-    background: rgba(0, 0, 0, 0.08); 
+    background: rgba(139, 69, 19, 0.2); 
     border-radius: 12px; 
 }
 
 .charms-container::-webkit-scrollbar-thumb { 
-    background: linear-gradient(135deg, #667eea, #764ba2); 
+    background: linear-gradient(135deg, #FFD700, #FFA500); 
     border-radius: 12px;
 }
 
@@ -85,13 +88,15 @@
     gap: 16px;
     padding: 24px 28px;
     margin-bottom: 16px;
-    background: rgba(246, 249, 252, 0.9);
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.2) 0%, 
+        rgba(62, 39, 35, 0.3) 100%);
     border-radius: 16px;
-    border: 2px solid rgba(102, 126, 234, 0.1);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid #8B4513;
+    transition: all 0.3s ease;
     font-family: 'Roboto', sans-serif;
     align-items: flex-start;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
     min-height: 140px;
@@ -114,35 +119,13 @@
     }
 }
 
-.charm-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.05), transparent);
-    transition: left 0.6s ease;
-}
-
-.charm-item:hover::before {
-    left: 100%;
-}
-
 .charm-item:hover {
-    background: rgba(102, 126, 234, 0.12);
-    border-color: rgba(102, 126, 234, 0.3);
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.2) 0%, 
+        rgba(139, 69, 19, 0.4) 100%);
+    border-color: #FFD700;
     transform: translateX(8px) translateY(-2px);
-    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.15);
-}
-
-.charm-item:nth-child(even) {
-    background: rgba(118, 75, 162, 0.08);
-}
-
-.charm-item:nth-child(even):hover {
-    background: rgba(118, 75, 162, 0.15);
-    border-color: rgba(118, 75, 162, 0.3);
+    box-shadow: 0 12px 35px rgba(255, 215, 0, 0.3);
 }
 
 .charm-image-container {
@@ -151,8 +134,8 @@
     height: 112px;
     border-radius: 12px;
     overflow: hidden;
-    border: 2px solid rgba(102, 126, 234, 0.2);
-    background: rgba(255, 255, 255, 0.5);
+    border: 2px solid #8B4513;
+    background: rgba(139, 69, 19, 0.2);
     transition: transform 0.3s ease;
 }
 
@@ -174,29 +157,31 @@
 
 .charm-title {
     font-weight: 700;
-    color: #2d3748;
+    color: #FFD700;
     font-size: 1.3em;
     margin-bottom: 10px;
     font-family: 'Orbitron', monospace;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     line-height: 1.3;
 }
 
 .charm-description {
-    color: #4a5568;
+    color: #F5DEB3;
     font-size: 1.05em;
     line-height: 1.6;
     margin-bottom: 10px;
     font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .charm-details {
-    color: #6b7280;
+    color: #D4AF37;
     font-size: 0.95em;
     line-height: 1.5;
     font-style: italic;
-    opacity: 0.8;
+    opacity: 0.9;
     margin-bottom: 12px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .charm-category {
@@ -207,101 +192,109 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.6px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .charm-category.gameplay {
-    background: rgba(34, 197, 94, 0.2);
-    color: #16a34a;
-    border: 1px solid rgba(34, 197, 94, 0.3);
+    background: linear-gradient(135deg, #22C55E, #16A34A);
+    color: white;
+    border: 1px solid #16A34A;
 }
 
 .charm-category.info {
-    background: rgba(59, 130, 246, 0.2);
-    color: #2563eb;
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+    color: white;
+    border: 1px solid #2563EB;
 }
 
 .charm-category.tips {
-    background: rgba(245, 158, 11, 0.2);
-    color: #d97706;
-    border: 1px solid rgba(245, 158, 11, 0.3);
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: white;
+    border: 1px solid #D97706;
 }
 
 .charm-category.charm {
-    background: rgba(168, 85, 247, 0.2);
-    color: #9333ea;
-    border: 1px solid rgba(168, 85, 247, 0.3);
+    background: linear-gradient(135deg, #A855F7, #9333EA);
+    color: white;
+    border: 1px solid #9333EA;
 }
 
 .charm-category.general {
-    background: rgba(156, 163, 175, 0.2);
-    color: #4b5563;
-    border: 1px solid rgba(156, 163, 175, 0.3);
+    background: linear-gradient(135deg, #8B4513, #654321);
+    color: #FFD700;
+    border: 1px solid #8B4513;
 }
 
-/* Error State - IMPROVED */
+/* Error State - Mining Style */
 .charms-error {
     text-align: center;
-    padding: 50px 30px; /* Increased padding */
-    color: #e53e3e;
+    padding: 50px 30px;
+    color: #FF6347;
     font-size: 1.1em;
     font-weight: 500;
-    background: rgba(239, 68, 68, 0.05);
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.3) 0%, 
+        rgba(62, 39, 35, 0.4) 100%);
     border-radius: 16px;
-    border: 2px solid rgba(239, 68, 68, 0.15);
-    margin: 20px 0;
-    min-height: 200px; /* Minimum height */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.retry-btn {
-    margin-top: 20px;
-    padding: 14px 28px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border: none;
-    color: white;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: 'Orbitron', monospace;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.retry-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-}
-
-.retry-btn:active {
-    transform: translateY(0);
-}
-
-/* Empty state helper */
-.charms-empty {
-    text-align: center;
-    padding: 60px 30px;
-    color: #6b7280;
-    font-size: 1.1em;
-    font-weight: 500;
-    background: rgba(107, 114, 128, 0.05);
-    border-radius: 16px;
-    border: 2px solid rgba(107, 114, 128, 0.1);
+    border: 2px solid #DC143C;
     margin: 20px 0;
     min-height: 200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-/* Mobile Styles - ENHANCED */
+.retry-btn {
+    margin-top: 20px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border: none;
+    color: #2F1B14;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: 'Orbitron', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.retry-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+}
+
+.retry-btn:active {
+    transform: translateY(0);
+}
+
+/* Empty state */
+.charms-empty {
+    text-align: center;
+    padding: 60px 30px;
+    color: #D4AF37;
+    font-size: 1.1em;
+    font-weight: 500;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.2) 0%, 
+        rgba(62, 39, 35, 0.3) 100%);
+    border-radius: 16px;
+    border: 2px solid #8B4513;
+    margin: 20px 0;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Mobile Styles */
 @media (max-width: 768px) {
     .charms-page {
         padding: 15px;
@@ -394,12 +387,6 @@
         font-size: 1em;
     }
     
-    .charms-loading::after {
-        width: 16px;
-        height: 16px;
-        margin-left: 8px;
-    }
-    
     .charm-item {
         padding: 16px 18px;
         margin-bottom: 12px;
@@ -440,22 +427,4 @@
         padding: 10px 20px;
         font-size: 0.85em;
     }
-}
-
-/* Debug helper styles */
-.charms-debug {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 12px;
-    z-index: 9999;
-    display: none;
-}
-
-.charms-debug.show {
-    display: block;
 }
