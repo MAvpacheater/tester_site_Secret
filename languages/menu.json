@@ -1,7 +1,7 @@
 {
   "en": {
     "menu": "Menu",
-    "calculator": "Calculator",
+    "calculator": "Calculator", 
     "info": "Info",
     "others": "Others",
     "pages": {
@@ -17,7 +17,8 @@
       "charms": "🔮 Charms",
       "potions": "🧪 Potions & Food",
       "worlds": "🌍 Worlds",
-      "thanks": "🙎‍♂️ Peoples"
+      "help": "🆘 Help",
+      "peoples": "🙏 Peoples"
     },
     "auth": {
       "login": "Login (Soon...)"
@@ -25,47 +26,49 @@
   },
   "uk": {
     "menu": "Меню",
-    "calculator": "Калькулятор",
+    "calculator": "Калькулятор", 
     "info": "Інформація",
     "others": "Інше",
     "pages": {
-      "calculator": "🐾 Калькулятор Петів",
-      "arm": "💪 Калькулятор Рук",
-      "grind": "🏋️‍♂️ Калькулятор Качу",
-      "boosts": "🚀 Бусти",
-      "shiny": "✨ Статистика Шайні",
-      "secret": "🔮 Секретні Пети",
+      "calculator": "🐾 Калькулятор Питомців",
+      "arm": "💪 Калькулятор Сили",
+      "grind": "🏋️‍♂️ Калькулятор Грайнду",
+      "boosts": "🚀 Прискорення",
+      "shiny": "✨ Статистика Блискучих",
+      "secret": "🔮 Секретні Питомці",
       "codes": "🎁 Коди",
       "aura": "🌟 Аура",
       "trainer": "🏆 Тренер",
-      "charms": "🔮 Чарми",
+      "charms": "🔮 Чарівності",
       "potions": "🧪 Зілля та Їжа",
       "worlds": "🌍 Світи",
-      "thanks": "🙎‍♂️ Люди"
+      "help": "🆘 Допомога",
+      "peoples": "🙏 Люди"
     },
     "auth": {
-      "login": "Увійти (Незабаром...)"
+      "login": "Увійти (Скоро...)"
     }
   },
   "ru": {
     "menu": "Меню",
-    "calculator": "Калькулятор",
+    "calculator": "Калькулятор", 
     "info": "Информация",
-    "others": "Другое",
+    "others": "Прочее",
     "pages": {
-      "calculator": "🐾 Калькулятор Петов",
-      "arm": "💪 Калькулятор Силы Руки",
-      "grind": "🏋️‍♂️ Калькулятор Кача",
-      "boosts": "🚀 Бусты",
-      "shiny": "✨ Статистика Шайни",
-      "secret": "🔮 Секретные Петы",
+      "calculator": "🐾 Калькулятор Питомцев",
+      "arm": "💪 Калькулятор Силы",
+      "grind": "🏋️‍♂️ Калькулятор Грайнда",
+      "boosts": "🚀 Ускорения",
+      "shiny": "✨ Статистика Блестящих",
+      "secret": "🔮 Секретные Питомцы",
       "codes": "🎁 Коды",
       "aura": "🌟 Аура",
       "trainer": "🏆 Тренер",
-      "charms": "🔮 Чармы",
+      "charms": "🔮 Чары",
       "potions": "🧪 Зелья и Еда",
       "worlds": "🌍 Миры",
-      "thanks": "🙎‍♂️ Человеки"
+      "help": "🆘 Помощь",
+      "peoples": "🙏 Люди"
     },
     "auth": {
       "login": "Войти (Скоро...)"
