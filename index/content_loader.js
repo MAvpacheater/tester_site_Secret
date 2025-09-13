@@ -126,12 +126,17 @@ async function loadContent() {
                         </div>
                     </div>
                     
-                    <!-- Settings button and Language flags -->
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding: 20px; border-top: 2px solid #8B4513; background: linear-gradient(135deg, rgba(139, 69, 19, 0.2) 0%, rgba(62, 39, 35, 0.3) 100%);">
-                        <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">
+                    <!-- Settings button and Language flags - UPDATED LAYOUT -->
+                    <div class="sidebar-controls">
+                        <!-- Settings Button - LEFT SIDE -->
+                        <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings" style="order: 1;">
                             ⚙️
                         </button>
-                        <!-- Language flags will be added here by JavaScript -->
+                        
+                        <!-- Language Flags - RIGHT SIDE -->
+                        <div class="language-flags" style="order: 2;">
+                            <!-- Language flags will be added here by JavaScript -->
+                        </div>
                     </div>
                     
                     <!-- Simplified User Section -->
