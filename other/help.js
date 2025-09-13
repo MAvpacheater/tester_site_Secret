@@ -458,9 +458,6 @@ window.updateHelpLanguage = updateHelpLanguage;
 window.loadHelpTranslations = loadHelpTranslations;
 window.openAdminTelegram = openAdminTelegram;
 window.openAdminDiscord = openAdminDiscord;
-window.showFeedbackForm = showFeedbackForm;
-window.showBugReport = showBugReport;
-window.showFeatureRequest = showFeatureRequest;
-window.closeFeedbackModal = closeFeedbackModal;
+window.scrollToAdminContact = scrollToAdminContact;
 
 console.log('✅ help.js loaded successfully with multilingual support');
