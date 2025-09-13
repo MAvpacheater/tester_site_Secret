@@ -51,7 +51,7 @@ body::before {
                 rgba(41, 39, 35, 0.3) 0%, 
                 rgba(28, 26, 23, 0.5) 50%, 
                 rgba(20, 19, 17, 0.7) 100%),
-            url('https://i.postimg.cc/rmW86W6S/Gemini-Generated-Image-fh66csfh66csfh66.png') center center / cover no-repeat fixed;
+            url('https://i.postimg.cc/43yVBkY8/Generated-image-1.png') center center / cover no-repeat fixed;
     }
 }
 
@@ -63,7 +63,7 @@ body::before {
                 rgba(41, 39, 35, 0.5) 0%, 
                 rgba(28, 26, 23, 0.7) 50%, 
                 rgba(20, 19, 17, 0.9) 100%),
-            url('https://i.postimg.cc/rmW86W6S/Gemini-Generated-Image-fh66csfh66csfh66.png') center top / cover no-repeat;
+            url('https://i.postimg.cc/43yVBkY8/Generated-image-1.png') center top / cover no-repeat;
         background-attachment: scroll;
         animation: mobileBackgroundScroll 25s ease-in-out infinite;
     }
