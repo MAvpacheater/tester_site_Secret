@@ -5,59 +5,34 @@
     "gameUpdates": "🎮 Game Updates",
     "siteUpdates": "🌐 Site Updates",
     "gameContent": {
-      "version": "Game Update v1.2.3",
-      "date": "December 15, 2024",
-      "newFeatures": "🎮 New Features",
-      "improvements": "⚡ Improvements",
-      "bugFixes": "🐛 Bug Fixes",
-      "features": [
-        "Added new secret pets in the Crystal Cave",
-        "Introduced legendary aura system with special effects",
-        "New world unlocked: Mystic Forest",
-        "Added rare pet breeding mechanics",
-        "Implemented guild system for players"
-      ],
-      "improvementsList": [
-        "Increased drop rates for rare items by 15%",
-        "Improved pet training efficiency by 25%",
-        "Balanced potion effects for better gameplay",
-        "Enhanced combat mechanics and animations",
-        "Optimized world loading times"
-      ],
-      "bugFixesList": [
-        "Fixed pet calculator accuracy issues",
-        "Resolved charm stacking problems",
-        "Fixed teleportation glitches in certain worlds",
-        "Corrected experience point calculations",
-        "Fixed inventory sorting bugs"
-      ]
+      "version": "Game Update Soon..",
+      "date": "Soon..",
+      "newFeatures": "🎮 Soon..",
+      "improvements": "⚡ Soon..",
+      "bugFixes": "🐛 Soon..",
+      "features": ["Soon.."],
+      "improvementsList": ["Soon.."],
+      "bugFixesList": ["Soon.."]
     },
     "siteContent": {
-      "version": "Site Update v2.1.0",
-      "date": "December 10, 2024",
+      "version": "Site Update v2.2.0",
+      "date": "September 13, 2025",
       "newFeatures": "🌟 New Features",
       "improvements": "🔧 Improvements",
       "bugFixes": "🐛 Bug Fixes",
       "features": [
-        "Added dark/light theme switcher",
-        "Implemented multi-language support (EN/UK/RU)",
-        "New Updates page with changelog",
-        "Added user feedback system",
-        "Implemented advanced search functionality"
+        "Added 3 new pages",
+        "Added 1 new category",
+        "Implemented language switcher",
+        "Introduced new site theme"
       ],
       "improvementsList": [
-        "Optimized page loading speed by 40%",
-        "Enhanced mobile responsiveness",
-        "Improved calculator performance",
-        "Updated user interface design",
-        "Enhanced security measures"
+        "Improved overall site code",
+        "Enhanced structure and design"
       ],
       "bugFixesList": [
-        "Fixed sidebar navigation on mobile devices",
-        "Resolved translation loading issues",
-        "Fixed settings panel positioning",
-        "Corrected form validation errors",
-        "Fixed memory leaks in animations"
+        "Fixed lag issues",
+        "Fixed image loading problems"
       ]
     }
   },
@@ -67,59 +42,34 @@
     "gameUpdates": "🎮 Оновлення Гри",
     "siteUpdates": "🌐 Оновлення Сайту",
     "gameContent": {
-      "version": "Оновлення Гри v1.2.3",
-      "date": "15 грудня 2024",
-      "newFeatures": "🎮 Нові Функції",
-      "improvements": "⚡ Покращення",
-      "bugFixes": "🐛 Виправлення Помилок",
-      "features": [
-        "Додано нових секретних тварин у Кришталеву Печеру",
-        "Впроваджено легендарну систему аур зі спеціальними ефектами",
-        "Відкрито новий світ: Містичний Ліс",
-        "Додано механіку розведення рідкісних тварин",
-        "Впроваджено гільдійну систему для гравців"
-      ],
-      "improvementsList": [
-        "Збільшено шанс випадіння рідкісних предметів на 15%",
-        "Покращено ефективність тренування тварин на 25%",
-        "Збалансовано ефекти зілль для кращого геймплею",
-        "Покращено механіку бою та анімації",
-        "Оптимізовано час завантаження світів"
-      ],
-      "bugFixesList": [
-        "Виправлено проблеми з точністю калькулятора тварин",
-        "Вирішено проблеми зі складуванням чарів",
-        "Виправлено глюки телепортації в деяких світах",
-        "Виправлено розрахунки очок досвіду",
-        "Виправлено помилки сортування інвентарю"
-      ]
+      "version": "Оновлення Гри Скоро..",
+      "date": "Скоро..",
+      "newFeatures": "🎮 Скоро..",
+      "improvements": "⚡ Скоро..",
+      "bugFixes": "🐛 Скоро..",
+      "features": ["Скоро.."],
+      "improvementsList": ["Скоро.."],
+      "bugFixesList": ["Скоро.."]
     },
     "siteContent": {
-      "version": "Оновлення Сайту v2.1.0",
-      "date": "10 грудня 2024",
+      "version": "Оновлення Сайту v2.2.0",
+      "date": "13 вересня 2025",
       "newFeatures": "🌟 Нові Функції",
       "improvements": "🔧 Покращення",
       "bugFixes": "🐛 Виправлення Помилок",
       "features": [
-        "Додано перемикач темної/світлої теми",
-        "Впроваджено підтримку кількох мов (АНГ/УКР/РОС)",
-        "Нова сторінка Оновлень з журналом змін",
-        "Додано систему відгуків користувачів",
-        "Впроваджено розширену функцію пошуку"
+        "Додано 3 нові сторінки",
+        "Додано 1 нову категорію",
+        "Додано зміну мови",
+        "Нова тематика сайту"
       ],
       "improvementsList": [
-        "Оптимізовано швидкість завантаження сторінок на 40%",
-        "Покращено адаптивність для мобільних пристроїв",
-        "Покращено продуктивність калькулятора",
-        "Оновлено дизайн користувацького інтерфейсу",
-        "Посилено заходи безпеки"
+        "Виправлено деякий код",
+        "Оновлено структуру та дизайн"
       ],
       "bugFixesList": [
-        "Виправлено навігацію бічної панелі на мобільних пристроях",
-        "Вирішено проблеми завантаження перекладів",
-        "Виправлено позиціонування панелі налаштувань",
-        "Виправлено помилки валідації форм",
-        "Виправлено витоки пам'яті в анімаціях"
+        "Виправлено проблеми з лагами",
+        "Виправлено проблеми із завантаженням зображень"
       ]
     }
   },
@@ -129,59 +79,34 @@
     "gameUpdates": "🎮 Обновления Игры",
     "siteUpdates": "🌐 Обновления Сайта",
     "gameContent": {
-      "version": "Обновление Игры v1.2.3",
-      "date": "15 декабря 2024",
-      "newFeatures": "🎮 Новые Функции",
-      "improvements": "⚡ Улучшения",
-      "bugFixes": "🐛 Исправления Ошибок",
-      "features": [
-        "Добавлены новые секретные питомцы в Кристальную Пещеру",
-        "Внедрена легендарная система аур со специальными эффектами",
-        "Открыт новый мир: Мистический Лес",
-        "Добавлена механика разведения редких питомцев",
-        "Внедрена гильдийная система для игроков"
-      ],
-      "improvementsList": [
-        "Увеличен шанс выпадения редких предметов на 15%",
-        "Улучшена эффективность тренировки питомцев на 25%",
-        "Сбалансированы эффекты зелий для лучшего геймплея",
-        "Улучшена механика боя и анимации",
-        "Оптимизировано время загрузки миров"
-      ],
-      "bugFixesList": [
-        "Исправлены проблемы с точностью калькулятора питомцев",
-        "Решены проблемы со складированием чар",
-        "Исправлены глюки телепортации в некоторых мирах",
-        "Исправлены расчеты очков опыта",
-        "Исправлены ошибки сортировки инвентаря"
-      ]
+      "version": "Обновление Игры Скоро..",
+      "date": "Скоро..",
+      "newFeatures": "🎮 Скоро..",
+      "improvements": "⚡ Скоро..",
+      "bugFixes": "🐛 Скоро..",
+      "features": ["Скоро.."],
+      "improvementsList": ["Скоро.."],
+      "bugFixesList": ["Скоро.."]
     },
     "siteContent": {
-      "version": "Обновление Сайта v2.1.0",
-      "date": "10 декабря 2024",
+      "version": "Обновление Сайта v2.2.0",
+      "date": "13 сентября 2025",
       "newFeatures": "🌟 Новые Функции",
       "improvements": "🔧 Улучшения",
       "bugFixes": "🐛 Исправления Ошибок",
       "features": [
-        "Добавлен переключатель темной/светлой темы",
-        "Внедрена поддержка нескольких языков (EN/UK/RU)",
-        "Новая страница Обновлений с журналом изменений",
-        "Добавлена система отзывов пользователей",
-        "Внедрена расширенная функция поиска"
+        "Добавлены 3 новые страницы",
+        "Добавлена 1 новая категория",
+        "Реализована смена языка",
+        "Новая тематика сайта"
       ],
       "improvementsList": [
-        "Оптимизирована скорость загрузки страниц на 40%",
-        "Улучшена адаптивность для мобильных устройств",
-        "Улучшена производительность калькулятора",
-        "Обновлен дизайн пользовательского интерфейса",
-        "Усилены меры безопасности"
+        "Исправлен некоторый код",
+        "Обновлена структура и дизайн"
       ],
       "bugFixesList": [
-        "Исправлена навигация боковой панели на мобильных устройствах",
-        "Решены проблемы загрузки переводов",
-        "Исправлено позиционирование панели настроек",
-        "Исправлены ошибки валидации форм",
-        "Исправлены утечки памяти в анимациях"
+        "Исправлены лаги",
+        "Исправлены проблемы с загрузкой изображений"
       ]
     }
   }
