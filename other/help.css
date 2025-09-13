@@ -118,7 +118,7 @@
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
 
-/* Mining-themed cards */
+/* Mining-themed cards - ВИПРАВЛЕНО: видалені білі контури */
 .admin-contact-section,
 .info-request-section,
 .recruitment-section {
