@@ -1,4 +1,4 @@
-// Updated content loader script - With flag-only language selector, peoples naming, and Help page
+// Updated content loader script - With Updates page and all existing pages
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -24,7 +24,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with categorized navigation and flag-only language selector
+            // Create the main structure with Updates page included
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -108,6 +108,9 @@ async function loadContent() {
                                 <span class="category-toggle">▼</span>
                             </div>
                             <div class="category-buttons" id="othersButtons">
+                                <button class="nav-btn" data-page="updates" onclick="switchPage('updates')">
+                                    📝 Updates
+                                </button>
                                 <button class="nav-btn" data-page="help" onclick="switchPage('help')">
                                     🆘 Help
                                 </button>
@@ -154,7 +157,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully with flag-only language selector, peoples naming, and Help page');
+            console.log('✅ Content loaded successfully with Updates page included');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -205,4 +208,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ content_loader.js loaded with flag-only language selector, peoples naming, and Help page ready');
+console.log('✅ content_loader.js loaded with Updates page ready');
