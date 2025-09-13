@@ -142,18 +142,17 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    padding: 25px 20px;
     border-bottom: 2px solid #8B4513;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.3) 0%, 
         rgba(101, 67, 33, 0.4) 50%, 
         rgba(62, 39, 35, 0.5) 100%);
-    flex-shrink: 0;
 }
 
 .sidebar-header h3 {
     color: #FFD700;
-    font-size: 1.6em;
+    font-size: 1.8em;
     font-weight: 700;
     margin: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -165,14 +164,14 @@ body::before {
         rgba(101, 67, 33, 0.4));
     border: 2px solid #8B4513;
     color: #FFD700;
-    font-size: 1.3em;
+    font-size: 1.5em;
     cursor: pointer;
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 50%;
     transition: all 0.2s ease;
     font-weight: bold;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -185,56 +184,34 @@ body::before {
     transform: scale(1.1);
 }
 
-/* Navigation - optimized with proper scrolling */
+/* Navigation - optimized */
 .nav-buttons {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 20px;
-    padding-bottom: 30px; /* Extra padding at bottom */
+    gap: 15px;
+    padding: 30px 20px;
     overflow-y: auto;
     flex: 1;
-    max-height: calc(100vh - 180px); /* Ensure proper max height */
-    /* Fixed scrollbar styles */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 215, 0, 0.3) transparent;
-}
-
-.nav-buttons::-webkit-scrollbar {
-    width: 6px;
-}
-
-.nav-buttons::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.nav-buttons::-webkit-scrollbar-thumb {
-    background: rgba(255, 215, 0, 0.3);
-    border-radius: 3px;
-}
-
-.nav-buttons::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 215, 0, 0.5);
 }
 
 .nav-category {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .category-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 12px;
-    margin-bottom: 8px;
+    padding: 12px 15px;
+    margin-bottom: 10px;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.4) 0%, 
         rgba(101, 67, 33, 0.5) 50%, 
         rgba(62, 39, 35, 0.6) 100%);
     border: 2px solid #8B4513;
-    border-radius: 10px;
+    border-radius: 12px;
     color: #FFD700;
-    font-size: 1em;
+    font-size: 1.1em;
     font-weight: 700;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     cursor: pointer;
@@ -251,7 +228,7 @@ body::before {
 .category-title {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .category-toggle {
@@ -265,15 +242,15 @@ body::before {
 .category-buttons {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
-    padding-left: 10px;
+    padding-left: 15px;
 }
 
 .category-buttons.expanded {
-    max-height: 400px;
+    max-height: 500px;
 }
 
 .nav-btn {
@@ -282,17 +259,17 @@ body::before {
         rgba(62, 39, 35, 0.3) 100%);
     border: 2px solid rgba(139, 69, 19, 0.5);
     color: #F5DEB3;
-    padding: 10px 12px;
-    border-radius: 10px;
+    padding: 14px 16px;
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 0.9em;
+    font-size: 0.95em;
     font-weight: 600;
     transition: all 0.2s ease;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 6px;
+    gap: 8px;
     width: 100%;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
@@ -310,21 +287,20 @@ body::before {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #8B4513;
     color: #2F1B14;
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
 }
 
-/* Language Selection - компактно оптимізовано */
+/* Language Selection - simplified */
 .language-flags {
     margin-top: auto;
-    padding: 15px;
+    padding: 20px;
     border-top: 2px solid #8B4513;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.2) 0%, 
         rgba(62, 39, 35, 0.3) 100%);
     display: flex;
     justify-content: center;
-    gap: 10px;
-    flex-shrink: 0;
+    gap: 15px;
 }
 
 .lang-flag-btn {
@@ -333,13 +309,13 @@ body::before {
         rgba(62, 39, 35, 0.4) 100%);
     border: 2px solid #8B4513;
     color: #F5DEB3;
-    padding: 8px;
+    padding: 12px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.2em;
+    font-size: 1.5em;
     transition: all 0.2s ease;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -357,34 +333,33 @@ body::before {
     transform: scale(1.02);
 }
 
-/* Sidebar User Section - компактно оптимізовано */
+/* Sidebar User Section */
 .sidebar-user {
-    padding: 15px;
+    padding: 20px;
     border-top: 2px solid #8B4513;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.2) 0%, 
         rgba(62, 39, 35, 0.3) 100%);
-    flex-shrink: 0;
 }
 
 .user-info {
     color: #F5DEB3;
     text-align: center;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
 }
 
 .auth-btn-sidebar {
     width: 100%;
-    padding: 10px 16px;
+    padding: 12px 20px;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.4) 0%, 
         rgba(101, 67, 33, 0.5) 50%, 
         rgba(62, 39, 35, 0.6) 100%);
     border: 2px solid #8B4513;
     color: #FFD700;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 0.9em;
+    font-size: 1em;
     font-weight: 600;
     transition: all 0.2s ease;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -443,70 +418,15 @@ body::before {
     backdrop-filter: blur(10px);
 }
 
-/* Mobile Responsiveness - збільшена прокрутка для мобільних */
+/* Mobile Responsiveness - simplified */
 @media (max-width: 768px) {
     body {
         background-attachment: scroll;
     }
     
     .sidebar {
-        width: 290px;
-        left: -290px;
-    }
-    
-    .sidebar-header {
-        padding: 12px;
-    }
-    
-    .sidebar-header h3 {
-        font-size: 1.3em;
-    }
-    
-    .close-sidebar {
-        width: 32px;
-        height: 32px;
-        font-size: 1.1em;
-    }
-    
-    .nav-buttons {
-        padding: 12px;
-        padding-bottom: 40px; /* Increase bottom padding for mobile */
-        gap: 8px;
-        max-height: calc(100vh - 220px); /* Increase available height */
-    }
-    
-    .nav-category {
-        margin-bottom: 6px;
-    }
-    
-    .category-header {
-        padding: 6px 8px;
-        font-size: 0.9em;
-    }
-    
-    .nav-btn {
-        padding: 6px 8px;
-        font-size: 0.8em;
-    }
-    
-    .sidebar-footer {
-        padding: 8px;
-    }
-    
-    .language-flags {
-        gap: 4px;
-        margin-bottom: 6px;
-    }
-    
-    .lang-flag-btn {
-        width: 26px;
-        height: 26px;
-        font-size: 0.9em;
-    }
-    
-    .auth-btn-sidebar {
-        padding: 4px 8px;
-        font-size: 0.7em;
+        width: 300px;
+        left: -300px;
     }
     
     .container {
@@ -517,65 +437,8 @@ body::before {
 
 @media (max-width: 480px) {
     .sidebar {
-        width: 270px;
-        left: -270px;
-    }
-    
-    .sidebar-header {
-        padding: 10px;
-    }
-    
-    .sidebar-header h3 {
-        font-size: 1.1em;
-    }
-    
-    .close-sidebar {
-        width: 28px;
-        height: 28px;
-        font-size: 1em;
-        padding: 2px;
-    }
-    
-    .nav-buttons {
-        padding: 10px;
-        padding-bottom: 50px; /* Even more bottom padding for small screens */
-        gap: 6px;
-        max-height: calc(100vh - 200px); /* Максимальна висота для маленьких екранів */
-    }
-    
-    .nav-category {
-        margin-bottom: 4px;
-    }
-    
-    .category-header {
-        padding: 4px 6px;
-        font-size: 0.85em;
-    }
-    
-    .nav-btn {
-        padding: 4px 6px;
-        font-size: 0.75em;
-    }
-    
-    .sidebar-footer {
-        padding: 6px;
-    }
-    
-    .language-flags {
-        gap: 3px;
-        margin-bottom: 4px;
-    }
-    
-    .lang-flag-btn {
-        width: 24px;
-        height: 24px;
-        font-size: 0.8em;
-        padding: 2px;
-    }
-    
-    .auth-btn-sidebar {
-        padding: 3px 6px;
-        font-size: 0.65em;
+        width: 280px;
+        left: -280px;
     }
     
     .container {
