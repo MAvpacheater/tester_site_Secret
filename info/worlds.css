@@ -1,9 +1,9 @@
-/* Fixed Worlds Page Styles - Prevents unnecessary stretching */
+/* Worlds Page Styles - Mining Theme */
 
 .worlds-page {
     display: none;
     padding: 20px;
-    min-height: auto; /* Changed from 100vh to auto */
+    min-height: auto;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -13,33 +13,37 @@
 }
 
 .worlds-page .title {
-    font-family: 'Orbitron', monospace;
+    color: #FFD700;
     font-size: 2.5em;
     font-weight: 900;
-    color: #4a5568;
     text-align: center;
     margin-bottom: 30px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(45deg, #667eea, #764ba2);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: 'Orbitron', monospace;
+    background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-/* Loading State - FIXED */
+/* Loading State */
 .worlds-loading {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 60px 40px; /* Increased padding for better visibility */
-    color: #667eea;
-    font-size: 1.2em; /* Slightly larger text */
-    font-weight: 600;
-    min-height: 200px; /* Minimum height to prevent collapse */
-    background: rgba(102, 126, 234, 0.05);
+    padding: 60px 40px;
+    color: #FFD700;
+    font-size: 1.2em;
+    font-weight: 700;
+    min-height: 200px;
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.6), rgba(101, 67, 33, 0.7));
     border-radius: 16px;
-    border: 2px solid rgba(102, 126, 234, 0.1);
+    border: 3px solid #8B4513;
     margin: 20px 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: 'Orbitron', monospace;
 }
 
 .worlds-loading::after {
@@ -47,55 +51,53 @@
     margin-left: 15px;
     width: 24px;
     height: 24px;
-    border: 3px solid #667eea;
+    border: 3px solid #FFD700;
     border-top: 3px solid transparent;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
+/* Container */
 .worlds-container {
     max-height: 600px;
     overflow-y: auto;
     padding-right: 12px;
     scroll-behavior: smooth;
-    min-height: 200px; /* Minimum height to ensure visibility */
+    min-height: 200px;
 }
 
-.worlds-container::-webkit-scrollbar { 
-    width: 10px; 
+.worlds-container::-webkit-scrollbar {
+    width: 10px;
 }
 
-.worlds-container::-webkit-scrollbar-track { 
-    background: rgba(0, 0, 0, 0.08); 
-    border-radius: 12px; 
-}
-
-.worlds-container::-webkit-scrollbar-thumb { 
-    background: linear-gradient(135deg, #667eea, #764ba2); 
+.worlds-container::-webkit-scrollbar-track {
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.3), rgba(101, 67, 33, 0.4));
     border-radius: 12px;
 }
 
+.worlds-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-radius: 12px;
+    border: 1px solid #8B4513;
+}
+
+/* World Items */
 .world-item {
     padding: 24px 28px;
     margin-bottom: 16px;
-    background: rgba(246, 249, 252, 0.9);
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.7), rgba(101, 67, 33, 0.8));
     border-radius: 16px;
-    border: 2px solid rgba(102, 126, 234, 0.1);
+    border: 3px solid rgba(139, 69, 19, 0.6);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: 'Roboto', sans-serif;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     position: relative;
     overflow: hidden;
     min-height: 140px;
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInUp 0.6s ease forwards;
-    display: block; /* Ensure proper display */
+    backdrop-filter: blur(8px);
 }
 
 .world-item:nth-child(1) { animation-delay: 0.1s; }
@@ -105,13 +107,6 @@
 .world-item:nth-child(5) { animation-delay: 0.3s; }
 .world-item:nth-child(n+6) { animation-delay: 0.35s; }
 
-@keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 .world-item::before {
     content: '';
     position: absolute;
@@ -119,7 +114,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
     transition: left 0.6s ease;
 }
 
@@ -128,31 +123,32 @@
 }
 
 .world-item:hover {
-    background: rgba(102, 126, 234, 0.12);
-    border-color: rgba(102, 126, 234, 0.3);
-    transform: translateX(8px) translateY(-2px);
-    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.15);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(139, 69, 19, 0.8));
+    border-color: rgba(255, 215, 0, 0.5);
+    transform: translateX(8px) translateY(-4px);
+    box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
 }
 
 .world-item:nth-child(even) {
-    background: rgba(118, 75, 162, 0.08);
+    background: linear-gradient(135deg, rgba(101, 67, 33, 0.7), rgba(62, 39, 35, 0.8));
 }
 
 .world-item:nth-child(even):hover {
-    background: rgba(118, 75, 162, 0.15);
-    border-color: rgba(118, 75, 162, 0.3);
+    background: linear-gradient(135deg, rgba(255, 140, 0, 0.2), rgba(101, 67, 33, 0.8));
+    border-color: rgba(255, 140, 0, 0.5);
 }
 
+/* World Content */
 .world-title {
     font-weight: 700;
-    color: #2d3748;
+    color: #FFD700;
     font-size: 1.4em;
     margin-bottom: 12px;
     font-family: 'Orbitron', monospace;
     display: flex;
     align-items: center;
     gap: 12px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     line-height: 1.3;
 }
 
@@ -160,92 +156,112 @@
     font-size: 1.3em;
     min-width: 1.8em;
     text-align: center;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
     flex-shrink: 0;
 }
 
 .world-description {
-    color: #4a5568;
+    color: #F5DEB3;
     font-size: 1.05em;
     line-height: 1.6;
     margin-bottom: 12px;
     font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .world-details {
-    color: #6b7280;
+    color: #D4AF37;
     font-size: 0.95em;
     line-height: 1.5;
     font-style: italic;
-    opacity: 0.8;
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
 }
 
-/* Error State - IMPROVED */
+/* Error State */
 .worlds-error {
     text-align: center;
-    padding: 50px 30px; /* Increased padding */
-    color: #e53e3e;
+    padding: 50px 30px;
+    color: #FF6347;
     font-size: 1.1em;
-    font-weight: 500;
-    background: rgba(239, 68, 68, 0.05);
-    border-radius: 16px;
-    border: 2px solid rgba(239, 68, 68, 0.15);
-    margin: 20px 0;
-    min-height: 200px; /* Minimum height */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.retry-btn {
-    margin-top: 20px;
-    padding: 14px 28px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border: none;
-    color: white;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 1em;
     font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: 'Orbitron', monospace;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.retry-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-}
-
-.retry-btn:active {
-    transform: translateY(0);
-}
-
-/* Empty state helper */
-.worlds-empty {
-    text-align: center;
-    padding: 60px 30px;
-    color: #6b7280;
-    font-size: 1.1em;
-    font-weight: 500;
-    background: rgba(107, 114, 128, 0.05);
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.7), rgba(101, 67, 33, 0.8));
     border-radius: 16px;
-    border: 2px solid rgba(107, 114, 128, 0.1);
+    border: 3px solid rgba(255, 99, 71, 0.5);
     margin: 20px 0;
     min-height: 200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    backdrop-filter: blur(10px);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
-/* Mobile Styles - ENHANCED */
+.worlds-empty {
+    text-align: center;
+    padding: 60px 30px;
+    color: #D4AF37;
+    font-size: 1.1em;
+    font-weight: 600;
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.5), rgba(101, 67, 33, 0.6));
+    border-radius: 16px;
+    border: 3px solid rgba(212, 175, 55, 0.3);
+    margin: 20px 0;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(8px);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.retry-btn {
+    margin-top: 20px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border: 2px solid #8B4513;
+    color: #2F1B14;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    font-family: 'Orbitron', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.retry-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(255, 215, 0, 0.4);
+    border-color: #FFD700;
+}
+
+.retry-btn:active {
+    transform: translateY(0);
+}
+
+/* Animations */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile Styles */
 @media (max-width: 768px) {
     .worlds-page {
         padding: 15px;
-        min-height: auto;
     }
     
     .worlds-page .title {
@@ -296,7 +312,8 @@
         font-size: 0.9em;
     }
     
-    .worlds-error {
+    .worlds-error,
+    .worlds-empty {
         padding: 40px 20px;
         font-size: 1em;
         min-height: 150px;
@@ -368,7 +385,8 @@
         font-size: 0.85em;
     }
     
-    .worlds-error {
+    .worlds-error,
+    .worlds-empty {
         padding: 30px 15px;
         font-size: 0.95em;
         min-height: 120px;
@@ -378,22 +396,4 @@
         padding: 10px 20px;
         font-size: 0.85em;
     }
-}
-
-/* Debug helper styles */
-.worlds-debug {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 12px;
-    z-index: 9999;
-    display: none;
-}
-
-.worlds-debug.show {
-    display: block;
 }
