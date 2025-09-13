@@ -50,7 +50,7 @@ async function loadMenuTranslations() {
                     charms: "🔮 Charms",
                     potions: "🧪 Potions & Food",
                     worlds: "🌍 Worlds",
-                    thanks: "🙏 Peoples"
+                    peoples: "🙏 Peoples"
                 },
                 auth: {
                     login: "Login (Soon...)"
@@ -105,7 +105,7 @@ async function switchAppLanguage(lang) {
         { name: 'worlds', func: 'updateWorldsLanguage' },
         { name: 'potions', func: 'updatePotionsLanguage' },
         { name: 'secret', func: 'updateSecretLanguage' },
-        { name: 'thanks', func: 'updateThanksLanguage' }
+        { name: 'peoples', func: 'updatePeoplesLanguage' }
     ];
     
     moduleNotifications.forEach(({ name, func }) => {
@@ -197,7 +197,7 @@ function updatePageTitles() {
         'charmsPage': 'charms',
         'potionsPage': 'potions',
         'worldsPage': 'worlds',
-        'thanksPage': 'thanks'
+        'peoplesPage': 'peoples'
     };
     
     // Update each page title
@@ -205,7 +205,7 @@ function updatePageTitles() {
         const page = document.getElementById(pageId);
         if (page && translations.pages[translationKey]) {
             // Find the h1 title element in the page
-            const titleElement = page.querySelector('h1, .title, .thanks-title');
+            const titleElement = page.querySelector('h1, .title, .peoples-title');
             if (titleElement) {
                 titleElement.textContent = translations.pages[translationKey];
                 console.log(`✅ Updated title for ${pageId}: ${translations.pages[translationKey]}`);
@@ -277,7 +277,7 @@ function switchPage(page) {
         'secret': 'secret',
         'potions': 'potions',
         'worlds': 'worlds',
-        'thanks': 'thanks'
+        'peoples': 'peoples'
     };
     
     const targetButton = document.querySelector(`[data-page="${pageMap[page]}"]`);
@@ -385,15 +385,15 @@ function initializePageContent(page) {
                 console.error('❌ initializeWorlds function not found');
             }
             break;
-        case 'thanks':
-            console.log('🙏 Initializing Thanks page...');
-            if (typeof initializeThanks === 'function') {
-                if (typeof window !== 'undefined' && window.thanksInitialized !== undefined) {
-                    window.thanksInitialized = false;
+        case 'peoples':
+            console.log('🙏 Initializing Peoples page...');
+            if (typeof initializePeoples === 'function') {
+                if (typeof window !== 'undefined' && window.peoplesInitialized !== undefined) {
+                    window.peoplesInitialized = false;
                 }
-                initializeThanks();
+                initializePeoples();
             } else {
-                console.error('❌ initializeThanks function not found');
+                console.error('❌ initializePeoples function not found');
             }
             break;
     }
@@ -572,7 +572,7 @@ function initializeAllModules() {
         'initializeCharms',
         'initializeCodes',
         'initializeWorlds',
-        'initializeThanks'
+        'initializePeoples'
     ];
 
     modules.forEach(moduleName => {
@@ -580,7 +580,7 @@ function initializeAllModules() {
             if (typeof window[moduleName] === 'function') {
                 // Add delay for DOM-dependent modules
                 if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || 
-                    moduleName === 'initializeGrind' || moduleName === 'initializeThanks' ||
+                    moduleName === 'initializeGrind' || moduleName === 'initializePeoples' ||
                     moduleName === 'initializeWorlds') {
                     setTimeout(() => {
                         try {
@@ -594,8 +594,8 @@ function initializeAllModules() {
                             if (moduleName === 'initializeGrind' && window.grindInitialized) {
                                 window.grindInitialized = false;
                             }
-                            if (moduleName === 'initializeThanks' && window.thanksInitialized) {
-                                window.thanksInitialized = false;
+                            if (moduleName === 'initializePeoples' && window.peoplesInitialized) {
+                                window.peoplesInitialized = false;
                             }
                             
                             window[moduleName]();
@@ -640,8 +640,8 @@ function forceReinitializeModule(moduleName) {
     if (moduleName === 'grind' && typeof window !== 'undefined') {
         window.grindInitialized = false;
     }
-    if (moduleName === 'thanks' && typeof window !== 'undefined') {
-        window.thanksInitialized = false;
+    if (moduleName === 'peoples' && typeof window !== 'undefined') {
+        window.peoplesInitialized = false;
     }
     
     // Call initialization
@@ -670,4 +670,4 @@ window.switchAppLanguage = switchAppLanguage;
 window.getCurrentAppLanguage = getCurrentAppLanguage;
 window.saveAppLanguage = saveAppLanguage;
 window.updateMenuTranslations = updateMenuTranslations;
-window.updatePageTitles = updatePageTitles; // NEW FUNCTION EXPOSED
+window.updatePageTitles = updatePageTitles;
