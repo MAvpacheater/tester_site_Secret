@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="info/charms.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="info/potions.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="info/worlds.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="moderations/settings.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="other/updates.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="other/peoples.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="other/help.css" media="print" onload="this.media='all'">
@@ -110,6 +111,9 @@
                 'info/potions.js',
                 'info/worlds.js',
                 
+                // Moderation modules (Settings)
+                'moderations/settings.js',
+                
                 // Other modules
                 'other/updates.js',
                 'other/peoples.js',
@@ -127,6 +131,16 @@
                     loadedCount++;
                     if (loadedCount === totalScripts) {
                         // All scripts loaded, now load content
+                        const contentScript = document.createElement('script');
+                        contentScript.src = 'index/content_loader.js';
+                        contentScript.onload = () => updateLoadingText('Ready!');
+                        document.head.appendChild(contentScript);
+                    }
+                };
+                script.onerror = () => {
+                    console.warn(`Failed to load script: ${src}`);
+                    loadedCount++; // Still count as loaded to prevent hanging
+                    if (loadedCount === totalScripts) {
                         const contentScript = document.createElement('script');
                         contentScript.src = 'index/content_loader.js';
                         contentScript.onload = () => updateLoadingText('Ready!');
