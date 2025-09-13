@@ -1,6 +1,255 @@
-// Fixed General JavaScript functions - PROPER MODULE INITIALIZATION
+// Updated General JavaScript functions - With Page Title Language Support + Help Page
 
-// Page switching functionality - fixed
+// Global language state
+let currentAppLanguage = 'en';
+let menuTranslations = null;
+
+// Language management functions
+function getCurrentAppLanguage() {
+    const saved = localStorage.getItem('armHelper_language');
+    return saved || 'en';
+}
+
+function saveAppLanguage(lang) {
+    localStorage.setItem('armHelper_language', lang);
+    console.log(`App language saved: ${lang}`);
+}
+
+// Load menu translations
+async function loadMenuTranslations() {
+    if (menuTranslations) return menuTranslations;
+    
+    try {
+        console.log('📥 Loading menu translations...');
+        const response = await fetch('languages/menu.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        menuTranslations = await response.json();
+        console.log('✅ Menu translations loaded successfully');
+        return menuTranslations;
+    } catch (error) {
+        console.error('❌ Error loading menu translations:', error);
+        // Fallback to English
+        menuTranslations = {
+            en: {
+                menu: "Menu",
+                calculator: "Calculator", 
+                info: "Info",
+                others: "Others",
+                pages: {
+                    calculator: "🐾 Pet Calculator",
+                    arm: "💪 Arm Calculator",
+                    grind: "🏋️‍♂️ Grind Calculator",
+                    boosts: "🚀 Boosts",
+                    shiny: "✨ Shiny Stats",
+                    secret: "🔮 Secret Pets",
+                    codes: "🎁 Codes",
+                    aura: "🌟 Aura",
+                    trainer: "🏆 Trainer",
+                    charms: "🔮 Charms",
+                    potions: "🧪 Potions & Food",
+                    worlds: "🌍 Worlds",
+                    help: "🆘 Help",
+                    peoples: "🙏 Peoples"
+                },
+                auth: {
+                    login: "Login (Soon...)"
+                }
+            }
+        };
+        return menuTranslations;
+    }
+}
+
+// Switch app language - ENHANCED WITH PAGE TITLES
+async function switchAppLanguage(lang) {
+    if (!menuTranslations) {
+        await loadMenuTranslations();
+    }
+    
+    if (!menuTranslations[lang]) {
+        console.error(`❌ Language ${lang} not found, defaulting to English`);
+        lang = 'en';
+    }
+    
+    const previousLanguage = currentAppLanguage;
+    currentAppLanguage = lang;
+    saveAppLanguage(lang);
+    
+    // Update language flag buttons
+    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.lang === lang) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Update menu text AND page titles
+    updateMenuTranslations();
+    updatePageTitles();
+    
+    // Notify ALL modules about language change
+    console.log(`🌍 Broadcasting language change from ${previousLanguage} to ${lang}`);
+    
+    // Dispatch custom event for language change
+    const languageChangeEvent = new CustomEvent('languageChanged', {
+        detail: {
+            language: lang,
+            previousLanguage: previousLanguage
+        }
+    });
+    document.dispatchEvent(languageChangeEvent);
+    
+    // Directly notify specific modules if their functions exist
+    const moduleNotifications = [
+        { name: 'worlds', func: 'updateWorldsLanguage' },
+        { name: 'potions', func: 'updatePotionsLanguage' },
+        { name: 'secret', func: 'updateSecretLanguage' },
+        { name: 'peoples', func: 'updatePeoplesLanguage' },
+        { name: 'help', func: 'updateHelpLanguage' }
+    ];
+    
+    moduleNotifications.forEach(({ name, func }) => {
+        if (typeof window[func] === 'function') {
+            try {
+                window[func](lang);
+                console.log(`✅ ${name} language updated via ${func}`);
+            } catch (error) {
+                console.error(`❌ Error updating ${name} language:`, error);
+            }
+        }
+    });
+    
+    // Legacy support for older function names
+    if (typeof window.switchWorldsLanguage === 'function') {
+        try {
+            window.switchWorldsLanguage(lang);
+            console.log('✅ Worlds language updated via legacy function');
+        } catch (error) {
+            console.error('❌ Error in legacy worlds language update:', error);
+        }
+    }
+    
+    console.log(`🌍 App language switched to: ${lang}`);
+}
+
+// Update menu text with translations
+function updateMenuTranslations() {
+    if (!menuTranslations || !currentAppLanguage) return;
+    
+    const translations = menuTranslations[currentAppLanguage];
+    if (!translations) return;
+    
+    // Update sidebar header
+    const sidebarHeader = document.querySelector('.sidebar-header h3');
+    if (sidebarHeader) {
+        sidebarHeader.textContent = translations.menu;
+    }
+    
+    // Update category headers
+    const categoryMappings = {
+        'calculatorButtons': 'calculator',
+        'infoButtons': 'info',
+        'othersButtons': 'others'
+    };
+    
+    Object.entries(categoryMappings).forEach(([categoryId, translationKey]) => {
+        const categoryHeader = document.querySelector(`[data-category="${categoryId}"] .category-title span:last-child`);
+        if (categoryHeader && translations[translationKey]) {
+            categoryHeader.textContent = translations[translationKey];
+        }
+    });
+    
+    // Update page buttons
+    Object.entries(translations.pages).forEach(([page, translation]) => {
+        const pageButton = document.querySelector(`[data-page="${page}"]`);
+        if (pageButton) {
+            pageButton.textContent = translation; // Full text with emoji
+        }
+    });
+    
+    // Update auth button
+    const authButton = document.getElementById('authButton');
+    if (authButton && translations.auth.login) {
+        authButton.textContent = translations.auth.login;
+    }
+    
+    console.log(`✅ Menu translations updated for ${currentAppLanguage}`);
+}
+
+// NEW FUNCTION: Update page titles
+function updatePageTitles() {
+    if (!menuTranslations || !currentAppLanguage) return;
+    
+    const translations = menuTranslations[currentAppLanguage];
+    if (!translations || !translations.pages) return;
+    
+    // Page title mappings (page ID -> translation key)
+    const pageTitleMappings = {
+        'calculatorPage': 'calculator',
+        'armPage': 'arm',
+        'grindPage': 'grind',
+        'boostsPage': 'boosts',
+        'shinyPage': 'shiny',
+        'secretPage': 'secret',
+        'codesPage': 'codes',
+        'auraPage': 'aura',
+        'trainerPage': 'trainer',
+        'charmsPage': 'charms',
+        'potionsPage': 'potions',
+        'worldsPage': 'worlds',
+        'helpPage': 'help',
+        'peoplesPage': 'peoples'
+    };
+    
+    // Update each page title
+    Object.entries(pageTitleMappings).forEach(([pageId, translationKey]) => {
+        const page = document.getElementById(pageId);
+        if (page && translations.pages[translationKey]) {
+            // Find the h1 title element in the page
+            const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title');
+            if (titleElement) {
+                titleElement.textContent = translations.pages[translationKey];
+                console.log(`✅ Updated title for ${pageId}: ${translations.pages[translationKey]}`);
+            }
+            
+            // Special handling for header-controls h1 elements
+            const headerControlsTitle = page.querySelector('.header-controls h1');
+            if (headerControlsTitle) {
+                headerControlsTitle.textContent = translations.pages[translationKey];
+                console.log(`✅ Updated header title for ${pageId}: ${translations.pages[translationKey]}`);
+            }
+        }
+    });
+    
+    console.log(`✅ Page titles updated for ${currentAppLanguage}`);
+}
+
+// Create language flags section
+function createLanguageFlags() {
+    const languages = [
+        { code: 'en', flag: '🇺🇸' },
+        { code: 'uk', flag: '🇺🇦' },
+        { code: 'ru', flag: '🇷🇺' }
+    ];
+    
+    const languageFlags = document.createElement('div');
+    languageFlags.className = 'language-flags';
+    
+    languageFlags.innerHTML = languages.map(({ code, flag }) => `
+        <button class="lang-flag-btn ${currentAppLanguage === code ? 'active' : ''}" 
+                data-lang="${code}" 
+                onclick="switchAppLanguage('${code}')"
+                title="${code.toUpperCase()}">
+            ${flag}
+        </button>
+    `).join('');
+    
+    return languageFlags;
+}
+
+// Page switching functionality
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
     
@@ -30,7 +279,9 @@ function switchPage(page) {
         'charms': 'charms',
         'secret': 'secret',
         'potions': 'potions',
-        'worlds': 'worlds'
+        'worlds': 'worlds',
+        'help': 'help',
+        'peoples': 'peoples'
     };
     
     const targetButton = document.querySelector(`[data-page="${pageMap[page]}"]`);
@@ -42,13 +293,13 @@ function switchPage(page) {
     // Close sidebar after selection
     closeSidebar();
     
-    // FIXED: Force re-initialize specific page content when switching
+    // Force re-initialize specific page content when switching
     setTimeout(() => {
         initializePageContent(page);
     }, 100);
 }
 
-// FIXED: Initialize specific page content when switching - with proper DOM checks
+// Initialize specific page content when switching
 function initializePageContent(page) {
     console.log(`🔄 Initializing content for page: ${page}`);
     
@@ -72,6 +323,9 @@ function initializePageContent(page) {
             break;
         case 'grind':
             if (typeof initializeGrind === 'function') {
+                if (typeof window !== 'undefined' && window.grindInitialized !== undefined) {
+                    window.grindInitialized = false;
+                }
                 initializeGrind();
             }
             break;
@@ -108,7 +362,6 @@ function initializePageContent(page) {
         case 'secret':
             console.log('🔮 Initializing Secret Pets page...');
             if (typeof initializeSecret === 'function') {
-                // FIXED: Reset the initialization flag to force re-init
                 if (typeof window !== 'undefined' && window.secretInitialized !== undefined) {
                     window.secretInitialized = false;
                 }
@@ -120,7 +373,6 @@ function initializePageContent(page) {
         case 'potions':
             console.log('🧪 Initializing Potions & Food page...');
             if (typeof initializePotions === 'function') {
-                // FIXED: Reset the initialization flag to force re-init
                 if (typeof window !== 'undefined' && window.potionsInitialized !== undefined) {
                     window.potionsInitialized = false;
                 }
@@ -130,8 +382,33 @@ function initializePageContent(page) {
             }
             break;
         case 'worlds':
+            console.log('🌍 Initializing Worlds page...');
             if (typeof initializeWorlds === 'function') {
                 initializeWorlds();
+            } else {
+                console.error('❌ initializeWorlds function not found');
+            }
+            break;
+        case 'help':
+            console.log('🆘 Initializing Help page...');
+            if (typeof initializeHelp === 'function') {
+                if (typeof window !== 'undefined' && window.helpInitialized !== undefined) {
+                    window.helpInitialized = false;
+                }
+                initializeHelp();
+            } else {
+                console.error('❌ initializeHelp function not found');
+            }
+            break;
+        case 'peoples':
+            console.log('🙏 Initializing Peoples page...');
+            if (typeof initializePeoples === 'function') {
+                if (typeof window !== 'undefined' && window.peoplesInitialized !== undefined) {
+                    window.peoplesInitialized = false;
+                }
+                initializePeoples();
+            } else {
+                console.error('❌ initializePeoples function not found');
             }
             break;
     }
@@ -214,8 +491,8 @@ function loadSettingsFromStorage(key) {
 // Flag to prevent repeated initialization
 let appInitialized = false;
 
-// FIXED: App initialization with proper module loading
-function initializeApp() {
+// App initialization with enhanced language support
+async function initializeApp() {
     if (appInitialized) {
         console.log('⚠️ App already initialized');
         return;
@@ -230,10 +507,27 @@ function initializeApp() {
         return;
     }
     
+    // Load current language
+    currentAppLanguage = getCurrentAppLanguage();
+    
+    // Load menu translations
+    await loadMenuTranslations();
+    
+    // Add language flags to sidebar
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        const languageFlags = createLanguageFlags();
+        sidebar.appendChild(languageFlags);
+    }
+    
+    // Update menu translations AND page titles
+    updateMenuTranslations();
+    updatePageTitles();
+    
     // Initialize categories
     initializeCategories();
     
-    // FIXED: Initialize all modules first, THEN switch to calculator
+    // Initialize all modules first, THEN switch to calculator
     initializeAllModules();
     
     // Start with calculator page
@@ -258,11 +552,14 @@ function initializeApp() {
                 const isClickOnCategorySwitch = e.target.closest('.category-switch');
                 const isClickOnSimpleModifier = e.target.closest('.simple-modifier');
                 const isClickOnCategoryHeader = e.target.closest('.category-header');
+                const isClickOnGrindCategoryHeader = e.target.closest('.category-header-modifier');
+                const isClickOnLanguageFlag = e.target.closest('.lang-flag-btn');
                 
                 if (!isClickInsidePanel && !isClickOnSettingsBtn && 
                     !isClickOnCategoryButton && !isClickOnBackButton && 
                     !isClickOnCategorySwitch && !isClickOnSimpleModifier &&
-                    !isClickOnCategoryHeader) {
+                    !isClickOnCategoryHeader && !isClickOnGrindCategoryHeader &&
+                    !isClickOnLanguageFlag) {
                     panel.classList.remove('show');
                 }
             }
@@ -270,10 +567,10 @@ function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed');
+    console.log('✅ App initialization completed with enhanced language support, page titles, and Help page');
 }
 
-// FIXED: Initialize all modules with proper DOM readiness checks
+// Initialize all modules with proper DOM readiness checks
 function initializeAllModules() {
     console.log('🔧 Initializing all modules...');
     
@@ -283,28 +580,41 @@ function initializeAllModules() {
         'initializeGrind',
         'initializeBoosts',
         'initializeShiny',
-        'initializeSecret',     // FIXED: Make sure this runs
-        'initializePotions',    // FIXED: Make sure this runs  
+        'initializeSecret',
+        'initializePotions',
         'initializeAura',
         'initializeTrainer',
         'initializeCharms',
         'initializeCodes',
-        'initializeWorlds'
+        'initializeWorlds',
+        'initializeHelp',
+        'initializePeoples'
     ];
 
     modules.forEach(moduleName => {
         try {
             if (typeof window[moduleName] === 'function') {
-                // FIXED: Add delay for DOM-dependent modules
-                if (moduleName === 'initializeSecret' || moduleName === 'initializePotions') {
+                // Add delay for DOM-dependent modules
+                if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || 
+                    moduleName === 'initializeGrind' || moduleName === 'initializePeoples' ||
+                    moduleName === 'initializeWorlds' || moduleName === 'initializeHelp') {
                     setTimeout(() => {
                         try {
-                            // FIXED: Force reinitialization by resetting flags
+                            // Force reinitialization by resetting flags
                             if (moduleName === 'initializeSecret' && window.secretInitialized) {
                                 window.secretInitialized = false;
                             }
                             if (moduleName === 'initializePotions' && window.potionsInitialized) {
                                 window.potionsInitialized = false;
+                            }
+                            if (moduleName === 'initializeGrind' && window.grindInitialized) {
+                                window.grindInitialized = false;
+                            }
+                            if (moduleName === 'initializePeoples' && window.peoplesInitialized) {
+                                window.peoplesInitialized = false;
+                            }
+                            if (moduleName === 'initializeHelp' && window.helpInitialized) {
+                                window.helpInitialized = false;
                             }
                             
                             window[moduleName]();
@@ -335,7 +645,7 @@ function debugPageStates() {
     console.log('========================');
 }
 
-// FIXED: Force reinitialization for specific modules
+// Force reinitialization for specific modules
 function forceReinitializeModule(moduleName) {
     console.log(`🔄 Force reinitializing ${moduleName}...`);
     
@@ -345,6 +655,15 @@ function forceReinitializeModule(moduleName) {
     }
     if (moduleName === 'potions' && typeof window !== 'undefined') {
         window.potionsInitialized = false;
+    }
+    if (moduleName === 'grind' && typeof window !== 'undefined') {
+        window.grindInitialized = false;
+    }
+    if (moduleName === 'peoples' && typeof window !== 'undefined') {
+        window.peoplesInitialized = false;
+    }
+    if (moduleName === 'help' && typeof window !== 'undefined') {
+        window.helpInitialized = false;
     }
     
     // Call initialization
@@ -369,3 +688,8 @@ window.loadSettingsFromStorage = loadSettingsFromStorage;
 window.toggleCategory = toggleCategory;
 window.initializeCategories = initializeCategories;
 window.forceReinitializeModule = forceReinitializeModule;
+window.switchAppLanguage = switchAppLanguage;
+window.getCurrentAppLanguage = getCurrentAppLanguage;
+window.saveAppLanguage = saveAppLanguage;
+window.updateMenuTranslations = updateMenuTranslations;
+window.updatePageTitles = updatePageTitles;
