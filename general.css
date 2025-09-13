@@ -441,7 +441,7 @@ body::before {
     backdrop-filter: blur(10px);
 }
 
-/* Mobile Responsiveness - оптимізовано для правильної висоти сайдбару */
+/* Mobile Responsiveness - оптимізовано для максимальної висоти контенту */
 @media (max-width: 768px) {
     body {
         background-attachment: scroll;
@@ -453,77 +453,17 @@ body::before {
     }
     
     .sidebar-header {
-        padding: 15px;
-    }
-    
-    .sidebar-header h3 {
-        font-size: 1.4em;
-    }
-    
-    .nav-buttons {
-        padding: 15px;
-        gap: 10px;
-    }
-    
-    .nav-category {
-        margin-bottom: 8px;
-    }
-    
-    .category-header {
-        padding: 8px 10px;
-        font-size: 0.95em;
-    }
-    
-    .nav-btn {
-        padding: 8px 10px;
-        font-size: 0.85em;
-    }
-    
-    .language-flags {
-        padding: 12px;
-        gap: 8px;
-    }
-    
-    .lang-flag-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1em;
-    }
-    
-    .sidebar-user {
-        padding: 12px;
-    }
-    
-    .auth-btn-sidebar {
-        padding: 8px 12px;
-        font-size: 0.85em;
-    }
-    
-    .container {
-        padding: 30px;
-        margin: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .sidebar {
-        width: 270px;
-        left: -270px;
-    }
-    
-    .sidebar-header {
         padding: 12px;
     }
     
     .sidebar-header h3 {
-        font-size: 1.2em;
+        font-size: 1.3em;
     }
     
     .close-sidebar {
         width: 32px;
         height: 32px;
         font-size: 1.1em;
-        padding: 4px 6px;
     }
     
     .nav-buttons {
@@ -545,25 +485,91 @@ body::before {
         font-size: 0.8em;
     }
     
+    .sidebar-footer {
+        padding: 8px;
+    }
+    
     .language-flags {
+        gap: 4px;
+        margin-bottom: 6px;
+    }
+    
+    .lang-flag-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 0.9em;
+    }
+    
+    .auth-btn-sidebar {
+        padding: 4px 8px;
+        font-size: 0.7em;
+    }
+    
+    .container {
+        padding: 30px;
+        margin: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        width: 270px;
+        left: -270px;
+    }
+    
+    .sidebar-header {
+        padding: 10px;
+    }
+    
+    .sidebar-header h3 {
+        font-size: 1.1em;
+    }
+    
+    .close-sidebar {
+        width: 28px;
+        height: 28px;
+        font-size: 1em;
+        padding: 2px;
+    }
+    
+    .nav-buttons {
         padding: 10px;
         gap: 6px;
     }
     
-    .lang-flag-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 1em;
+    .nav-category {
+        margin-bottom: 4px;
+    }
+    
+    .category-header {
+        padding: 4px 6px;
+        font-size: 0.85em;
+    }
+    
+    .nav-btn {
+        padding: 4px 6px;
+        font-size: 0.75em;
+    }
+    
+    .sidebar-footer {
         padding: 6px;
     }
     
-    .sidebar-user {
-        padding: 10px;
+    .language-flags {
+        gap: 3px;
+        margin-bottom: 4px;
+    }
+    
+    .lang-flag-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 0.8em;
+        padding: 2px;
     }
     
     .auth-btn-sidebar {
-        padding: 6px 10px;
-        font-size: 0.8em;
+        padding: 3px 6px;
+        font-size: 0.65em;
     }
     
     .container {
