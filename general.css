@@ -341,7 +341,7 @@ body::before {
     box-shadow: 0 0 8px rgba(47, 27, 20, 0.8);
 }
 
-/* Settings and Language Flags Container - UPDATED LAYOUT */
+/* Settings and Language Flags Container - CORRECTED LAYOUT */
 .sidebar-controls {
     display: flex;
     align-items: center;
@@ -354,7 +354,7 @@ body::before {
         rgba(62, 39, 35, 0.3) 100%);
 }
 
-/* Settings Button - NOW ON THE LEFT */
+/* Settings Button - LEFT SIDE (as shown in images) */
 .settings-btn-sidebar {
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.4) 0%, 
@@ -377,7 +377,8 @@ body::before {
     box-shadow: 
         0 4px 12px rgba(0, 0, 0, 0.3),
         inset 0 2px 5px rgba(255, 215, 0, 0.1);
-    order: 1; /* Ставимо налево */
+    order: 1; /* Left side */
+    margin-right: auto; /* Push language flags to right */
 }
 
 .settings-btn-sidebar:hover {
@@ -401,11 +402,12 @@ body::before {
         inset 0 3px 15px rgba(255, 255, 255, 0.3);
 }
 
-/* Language Selection - NOW ON THE RIGHT */
+/* Language Selection - RIGHT SIDE (as shown in image 2) */
 .language-flags {
     display: flex;
     gap: 12px;
-    order: 2; /* Ставимо направо */
+    order: 2; /* Right side */
+    margin-left: auto; /* Ensure it stays on the right */
 }
 
 .lang-flag-btn {
@@ -424,6 +426,7 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .lang-flag-btn:hover {
@@ -436,7 +439,9 @@ body::before {
 .lang-flag-btn.active {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #8B4513;
-    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.5);
+    box-shadow: 
+        0 8px 20px rgba(255, 215, 0, 0.5),
+        inset 0 2px 5px rgba(255, 255, 255, 0.2);
     transform: translateY(-2px) scale(1.05);
 }
 
@@ -560,7 +565,7 @@ body::before {
     text-align: center;
 }
 
-/* Mobile Responsiveness - UPDATED FOR NEW LAYOUT */
+/* Mobile Responsiveness - UPDATED FOR CORRECTED LAYOUT */
 @media (max-width: 768px) {
     .sidebar {
         width: 300px;
@@ -577,7 +582,7 @@ body::before {
     
     .sidebar-controls {
         padding: 15px;
-        gap: 10px;
+        gap: 0; /* Remove gap since we use margins */
     }
     
     .settings-btn-sidebar {
@@ -620,7 +625,7 @@ body::before {
     
     .sidebar-controls {
         padding: 12px 10px;
-        gap: 8px;
+        gap: 0;
     }
     
     .settings-btn-sidebar {
