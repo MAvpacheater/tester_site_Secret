@@ -284,7 +284,7 @@ body::before {
 }
 
 .category-buttons.expanded {
-    max-height: 500px;
+    max-height: 800px;
 }
 
 .nav-btn {
