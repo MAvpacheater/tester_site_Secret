@@ -1,4 +1,4 @@
-// Updated General JavaScript functions - With Settings page support
+// Updated General JavaScript functions - Fixed layout without duplication
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -232,46 +232,8 @@ function updatePageTitles() {
     console.log(`✅ Page titles updated for ${currentAppLanguage}`);
 }
 
-// Create language flags section with settings button - UPDATED LAYOUT
-function createLanguageFlags() {
-    const languages = [
-        { code: 'en', flag: '🇺🇸' },
-        { code: 'uk', flag: '🇺🇦' },
-        { code: 'ru', flag: '🇷🇺' }
-    ];
-    
-    // Create the main container
-    const sidebarControls = document.createElement('div');
-    sidebarControls.className = 'sidebar-controls';
-    
-    // Create settings button (LEFT SIDE)
-    const settingsButton = document.createElement('button');
-    settingsButton.className = 'settings-btn-sidebar';
-    settingsButton.onclick = () => switchPage('settings');
-    settingsButton.title = 'Settings';
-    settingsButton.innerHTML = '⚙️';
-    settingsButton.style.order = '1'; // Явно ставимо налево
-    
-    // Create language flags container (RIGHT SIDE)
-    const languageFlags = document.createElement('div');
-    languageFlags.className = 'language-flags';
-    languageFlags.style.order = '2'; // Явно ставимо направо
-    
-    languageFlags.innerHTML = languages.map(({ code, flag }) => `
-        <button class="lang-flag-btn ${currentAppLanguage === code ? 'active' : ''}" 
-                data-lang="${code}" 
-                onclick="switchAppLanguage('${code}')"
-                title="${code.toUpperCase()}">
-            ${flag}
-        </button>
-    `).join('');
-    
-    // Assemble the container (Settings button first, then flags)
-    sidebarControls.appendChild(settingsButton);
-    sidebarControls.appendChild(languageFlags);
-    
-    return sidebarControls;
-}
+// REMOVED createLanguageFlags function to prevent duplication
+// The language flags are now created directly in the HTML
 
 // Page switching functionality - WITH SETTINGS
 function switchPage(page) {
@@ -570,17 +532,23 @@ async function initializeApp() {
     // Load menu translations
     await loadMenuTranslations();
     
-    // Add language flags with settings button to sidebar
-    const sidebar = document.querySelector('.sidebar');
-    if (sidebar) {
-        const sidebarControls = createLanguageFlags();
-        // Insert before user section
-        const userSection = sidebar.querySelector('.sidebar-user');
-        if (userSection) {
-            sidebar.insertBefore(sidebarControls, userSection);
-        } else {
-            sidebar.appendChild(sidebarControls);
-        }
+    // Add language flags to existing container (no duplication)
+    const languageFlags = document.querySelector('.language-flags');
+    if (languageFlags && !languageFlags.hasChildNodes()) {
+        const languages = [
+            { code: 'en', flag: '🇺🇸' },
+            { code: 'uk', flag: '🇺🇦' },
+            { code: 'ru', flag: '🇷🇺' }
+        ];
+        
+        languageFlags.innerHTML = languages.map(({ code, flag }) => `
+            <button class="lang-flag-btn ${currentAppLanguage === code ? 'active' : ''}" 
+                    data-lang="${code}" 
+                    onclick="switchAppLanguage('${code}')"
+                    title="${code.toUpperCase()}">
+                ${flag}
+            </button>
+        `).join('');
     }
     
     // Update menu translations AND page titles
@@ -631,7 +599,7 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed with Settings page support');
+    console.log('✅ App initialization completed - Fixed layout without duplication');
 }
 
 // Initialize all modules with proper DOM readiness checks - WITH SETTINGS
