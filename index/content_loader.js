@@ -26,7 +26,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with Settings page properly included
+            // Create the main structure with proper order: Login above, Settings+Flags below
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -126,8 +126,15 @@ async function loadContent() {
                         </div>
                     </div>
                     
-                    <!-- Settings button and Language flags - UPDATED LAYOUT -->
-                    <div class="sidebar-controls">
+                    <!-- User Section - MOVED ABOVE (Login above everything) -->
+                    <div class="sidebar-user" id="sidebarUser" style="margin-top: auto; border-bottom: 2px solid #8B4513; border-top: none;">
+                        <button class="auth-btn-sidebar disabled" id="authButton" title="Coming Soon!" onclick="handleAuthAction()">
+                            Login (Soon...)
+                        </button>
+                    </div>
+                    
+                    <!-- Settings button and Language flags - MOVED BELOW (Below login) -->
+                    <div class="sidebar-controls" style="border-top: none;">
                         <!-- Settings Button - LEFT SIDE -->
                         <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings" style="order: 1;">
                             ⚙️
@@ -137,13 +144,6 @@ async function loadContent() {
                         <div class="language-flags" style="order: 2;">
                             <!-- Language flags will be added here by JavaScript -->
                         </div>
-                    </div>
-                    
-                    <!-- Simplified User Section -->
-                    <div class="sidebar-user" id="sidebarUser">
-                        <button class="auth-btn-sidebar disabled" id="authButton" title="Coming Soon!" onclick="handleAuthAction()">
-                            Login (Soon...)
-                        </button>
                     </div>
                 </div>
 
@@ -159,7 +159,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully with Settings and Updates pages properly integrated');
+            console.log('✅ Content loaded successfully with proper layout: Login above, Settings+Flags below');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -221,4 +221,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ Final content_loader.js loaded with complete Settings and Updates page integration');
+console.log('✅ Fixed content_loader.js - Login above, Settings+Flags below');
