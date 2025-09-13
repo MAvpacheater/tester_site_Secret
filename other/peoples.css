@@ -1,11 +1,11 @@
-/* Thanks Page Styles */
-.thanks-page {
+/* Peoples Page Styles */
+.peoples-page {
     padding: 20px;
     max-width: 100%;
     margin: 0 auto;
 }
 
-.thanks-header {
+.peoples-header {
     text-align: center;
     margin-bottom: 30px;
     padding: 20px;
@@ -14,7 +14,7 @@
     border: 1px solid rgba(102, 126, 234, 0.2);
 }
 
-.thanks-title {
+.peoples-title {
     font-size: 2.5em;
     font-weight: 700;
     color: #4a4a4a;
@@ -22,14 +22,14 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.thanks-subtitle {
+.peoples-subtitle {
     font-size: 1.2em;
     color: #666;
     font-weight: 400;
     margin-bottom: 15px;
 }
 
-.thanks-description {
+.peoples-description {
     font-size: 1em;
     color: #777;
     line-height: 1.6;
@@ -274,7 +274,7 @@
 }
 
 /* Notifications */
-.thanks-notification {
+.peoples-notification {
     position: fixed;
     top: 20px;
     right: 20px;
@@ -290,24 +290,24 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.thanks-notification.show {
+.peoples-notification.show {
     transform: translateX(0);
 }
 
-.thanks-notification-info {
+.peoples-notification-info {
     background: linear-gradient(135deg, rgba(52, 152, 219, 0.9), rgba(41, 128, 185, 0.9));
 }
 
-.thanks-notification-error {
+.peoples-notification-error {
     background: linear-gradient(135deg, rgba(231, 76, 60, 0.9), rgba(192, 57, 43, 0.9));
 }
 
-.thanks-notification-success {
+.peoples-notification-success {
     background: linear-gradient(135deg, rgba(46, 204, 113, 0.9), rgba(39, 174, 96, 0.9));
 }
 
 /* Statistics section (for future use) */
-.thanks-stats {
+.peoples-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 15px;
@@ -348,11 +348,11 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-    .thanks-title {
+    .peoples-title {
         font-size: 2em;
     }
     
-    .thanks-subtitle {
+    .peoples-subtitle {
         font-size: 1.1em;
     }
     
@@ -384,19 +384,19 @@
         min-width: unset;
     }
     
-    .thanks-notification {
+    .peoples-notification {
         right: 10px;
         left: 10px;
         transform: translateY(-100%);
     }
     
-    .thanks-notification.show {
+    .peoples-notification.show {
         transform: translateY(0);
     }
 }
 
 @media (max-width: 480px) {
-    .thanks-page {
+    .peoples-page {
         padding: 15px;
     }
     
