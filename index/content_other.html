@@ -113,37 +113,18 @@
 
     <!-- Quick Actions -->
     <div class="quick-actions">
-        <button class="quick-action-btn" onclick="showFeedbackForm()">
+        <button class="quick-action-btn" onclick="scrollToAdminContact()">
             💭 Send Feedback
         </button>
-        <button class="quick-action-btn" onclick="showBugReport()">
+        <button class="quick-action-btn" onclick="scrollToAdminContact()">
             🐛 Report Bug
         </button>
-        <button class="quick-action-btn" onclick="showFeatureRequest()">
+        <button class="quick-action-btn" onclick="scrollToAdminContact()">
             ⭐ Request Feature
         </button>
     </div>
 
-    <!-- Feedback Modal (hidden by default) -->
-    <div class="feedback-modal" id="feedbackModal" style="display: none;">
-        <div class="feedback-content">
-            <div class="feedback-header">
-                <h3>💭 Send Feedback</h3>
-                <button class="close-modal" onclick="closeFeedbackModal()">×</button>
-            </div>
-            <div class="feedback-body">
-                <p>Please contact the admin directly via Telegram or Discord to send your feedback:</p>
-                <div class="feedback-actions">
-                    <button class="contact-btn telegram-btn" onclick="openAdminTelegram()">
-                        📱 Telegram
-                    </button>
-                    <button class="contact-btn discord-btn" onclick="openAdminDiscord()">
-                        🎮 Discord
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Feedback Modal removed - no longer needed -->
 </div>
 
 <!-- Peoples Page -->
