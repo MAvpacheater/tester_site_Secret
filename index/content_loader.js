@@ -1,30 +1,32 @@
-// Final content loader script - With proper Updates page integration
+// Final content loader script - With proper Settings and Updates page integration
 console.log('🔄 Loading content...');
 
 // Function to load content
 async function loadContent() {
     try {
-        // Load calculator, info, and other content
-        const [calcResponse, infoResponse, otherResponse] = await Promise.all([
+        // Load calculator, info, other, and moderation content
+        const [calcResponse, infoResponse, otherResponse, moderationResponse] = await Promise.all([
             fetch('index/content_calc.html'),
             fetch('index/content_info.html'),
-            fetch('index/content_other.html')
+            fetch('index/content_other.html'),
+            fetch('index/content_moderation.html')
         ]);
 
-        if (!calcResponse.ok || !infoResponse.ok || !otherResponse.ok) {
-            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, other: ${otherResponse.status}`);
+        if (!calcResponse.ok || !infoResponse.ok || !otherResponse.ok || !moderationResponse.ok) {
+            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, other: ${otherResponse.status}, moderation: ${moderationResponse.status}`);
         }
         
-        const [calcContent, infoContent, otherContent] = await Promise.all([
+        const [calcContent, infoContent, otherContent, moderationContent] = await Promise.all([
             calcResponse.text(),
             infoResponse.text(),
-            otherResponse.text()
+            otherResponse.text(),
+            moderationResponse.text()
         ]);
 
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with Updates page properly included
+            // Create the main structure with Settings page properly included
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -98,7 +100,7 @@ async function loadContent() {
                             </div>
                         </div>
 
-                        <!-- Others Category - WITH UPDATES -->
+                        <!-- Others Category - WITH SETTINGS AND UPDATES -->
                         <div class="nav-category">
                             <div class="category-header" data-category="othersButtons" onclick="toggleCategory('othersButtons')">
                                 <div class="category-title">
@@ -108,6 +110,9 @@ async function loadContent() {
                                 <span class="category-toggle">▼</span>
                             </div>
                             <div class="category-buttons" id="othersButtons">
+                                <button class="nav-btn" data-page="settings" onclick="switchPage('settings')">
+                                    ⚙️ Settings
+                                </button>
                                 <button class="nav-btn" data-page="updates" onclick="switchPage('updates')">
                                     📝 Updates
                                 </button>
@@ -121,7 +126,13 @@ async function loadContent() {
                         </div>
                     </div>
                     
-                    <!-- Language flags will be added here by JavaScript -->
+                    <!-- Settings button and Language flags -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding: 20px; border-top: 2px solid #8B4513; background: linear-gradient(135deg, rgba(139, 69, 19, 0.2) 0%, rgba(62, 39, 35, 0.3) 100%);">
+                        <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">
+                            ⚙️
+                        </button>
+                        <!-- Language flags will be added here by JavaScript -->
+                    </div>
                     
                     <!-- Simplified User Section -->
                     <div class="sidebar-user" id="sidebarUser">
@@ -138,11 +149,12 @@ async function loadContent() {
                     ${calcContent}
                     ${infoContent}
                     ${otherContent}
+                    ${moderationContent}
                 </div>
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully with Updates page properly integrated');
+            console.log('✅ Content loaded successfully with Settings and Updates pages properly integrated');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -204,4 +216,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ Final content_loader.js loaded with complete Updates page integration');
+console.log('✅ Final content_loader.js loaded with complete Settings and Updates page integration');
