@@ -1,4 +1,4 @@
-// Updated content loader script - With Updates page and all existing pages
+// Final content loader script - With proper Updates page integration
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -24,7 +24,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with Updates page included
+            // Create the main structure with Updates page properly included
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -98,7 +98,7 @@ async function loadContent() {
                             </div>
                         </div>
 
-                        <!-- Others Category -->
+                        <!-- Others Category - WITH UPDATES -->
                         <div class="nav-category">
                             <div class="category-header" data-category="othersButtons" onclick="toggleCategory('othersButtons')">
                                 <div class="category-title">
@@ -125,7 +125,9 @@ async function loadContent() {
                     
                     <!-- Simplified User Section -->
                     <div class="sidebar-user" id="sidebarUser">
-                        <button class="auth-btn-sidebar disabled" id="authButton" title="Coming Soon!">Login (Soon...)</button>
+                        <button class="auth-btn-sidebar disabled" id="authButton" title="Coming Soon!" onclick="handleAuthAction()">
+                            Login (Soon...)
+                        </button>
                     </div>
                 </div>
 
@@ -137,27 +139,10 @@ async function loadContent() {
                     ${infoContent}
                     ${otherContent}
                 </div>
-
-                <style>
-                    .auth-btn-sidebar.disabled {
-                        opacity: 0.6;
-                        cursor: not-allowed !important;
-                        background: rgba(255, 255, 255, 0.1);
-                        color: rgba(255, 255, 255, 0.7);
-                        pointer-events: none;
-                    }
-                    
-                    .auth-btn-sidebar.disabled:hover {
-                        background: rgba(255, 255, 255, 0.1) !important;
-                        border-color: rgba(102, 126, 234, 0.4) !important;
-                        transform: none !important;
-                        box-shadow: none !important;
-                    }
-                </style>
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully with Updates page included');
+            console.log('✅ Content loaded successfully with Updates page properly integrated');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -190,10 +175,21 @@ async function loadContent() {
     }
 }
 
-// Enhanced auth action handler - DISABLED
+// Enhanced auth action handler
 function handleAuthAction() {
     console.log('⚠️ Login feature is disabled - coming soon');
-    // Не робить нічого - кнопка заблокована
+    // Show a subtle notification instead of doing nothing
+    const authBtn = document.getElementById('authButton');
+    if (authBtn) {
+        const originalText = authBtn.textContent;
+        authBtn.textContent = '🔒 Coming Soon!';
+        authBtn.style.transform = 'scale(0.95)';
+        
+        setTimeout(() => {
+            authBtn.textContent = originalText;
+            authBtn.style.transform = 'scale(1)';
+        }, 1000);
+    }
 }
 
 // Initialize when DOM is ready
@@ -208,4 +204,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ content_loader.js loaded with Updates page ready');
+console.log('✅ Final content_loader.js loaded with complete Updates page integration');
