@@ -127,7 +127,7 @@ const potionsData = [
         rarity: "rare", 
         boost: "Increases your training power by 90%", 
         time: "30 min",
-        image: "https://i.postimg.cc/8zbYXdBH/training-potion-3.png"
+        image: "https://i.postimg.cc/v8gRc12S/2025-09-13-21-19-55.png"
     },
     { 
         name: "Pet Xp Potion", 
