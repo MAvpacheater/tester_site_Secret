@@ -341,7 +341,7 @@ body::before {
     box-shadow: 0 0 8px rgba(47, 27, 20, 0.8);
 }
 
-/* Settings and Language Flags Container */
+/* Settings and Language Flags Container - UPDATED LAYOUT */
 .sidebar-controls {
     display: flex;
     align-items: center;
@@ -354,7 +354,7 @@ body::before {
         rgba(62, 39, 35, 0.3) 100%);
 }
 
-/* Settings Button */
+/* Settings Button - NOW ON THE LEFT */
 .settings-btn-sidebar {
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.4) 0%, 
@@ -377,6 +377,7 @@ body::before {
     box-shadow: 
         0 4px 12px rgba(0, 0, 0, 0.3),
         inset 0 2px 5px rgba(255, 215, 0, 0.1);
+    order: 1; /* Ставимо налево */
 }
 
 .settings-btn-sidebar:hover {
@@ -400,10 +401,11 @@ body::before {
         inset 0 3px 15px rgba(255, 255, 255, 0.3);
 }
 
-/* Language Selection */
+/* Language Selection - NOW ON THE RIGHT */
 .language-flags {
     display: flex;
     gap: 12px;
+    order: 2; /* Ставимо направо */
 }
 
 .lang-flag-btn {
@@ -558,7 +560,7 @@ body::before {
     text-align: center;
 }
 
-/* Mobile Responsiveness */
+/* Mobile Responsiveness - UPDATED FOR NEW LAYOUT */
 @media (max-width: 768px) {
     .sidebar {
         width: 300px;
