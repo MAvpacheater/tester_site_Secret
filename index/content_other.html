@@ -1,3 +1,151 @@
+<!-- Help Page -->
+<div id="helpPage" class="page help-page">
+    <div class="help-header">
+        <h1 class="help-title">🆘 Help & Support</h1>
+        <p class="help-subtitle">Need assistance? Contact our team!</p>
+    </div>
+
+    <!-- Admin Contact Section -->
+    <div class="admin-contact-section">
+        <div class="admin-card">
+            <div class="admin-info">
+                <div class="admin-avatar">👨‍💻</div>
+                <div class="admin-details">
+                    <div class="admin-name">Mr dep Dodep</div>
+                    <div class="admin-role">Project Creator & Developer</div>
+                    <div class="admin-status">🟢 Active</div>
+                </div>
+            </div>
+            <div class="admin-contact">
+                <button class="contact-btn telegram-btn" onclick="openAdminTelegram()">
+                    📱 Contact on Telegram
+                </button>
+                <button class="contact-btn discord-btn" onclick="openAdminDiscord()">
+                    🎮 Contact on Discord
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Information Request Section -->
+    <div class="info-request-section">
+        <div class="info-request-card">
+            <div class="info-request-header">
+                <h3>📋 Information Needed</h3>
+                <p class="info-request-subtitle">Write to me if you have this information:</p>
+            </div>
+            <div class="info-request-list">
+                <div class="info-item">
+                    <span class="info-icon">🐾</span>
+                    <span class="info-text">Pet statistics and multipliers</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🚀</span>
+                    <span class="info-text">New boost information</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🔮</span>
+                    <span class="info-text">Secret pets data</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🌍</span>
+                    <span class="info-text">World unlock requirements</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🎁</span>
+                    <span class="info-text">New codes and promotions</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🧪</span>
+                    <span class="info-text">Potion effects and recipes</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">✨</span>
+                    <span class="info-text">Shiny pet chances</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🏆</span>
+                    <span class="info-text">Achievement requirements</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">💎</span>
+                    <span class="info-text">Game mechanics and formulas</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🎯</span>
+                    <span class="info-text">Quest rewards and objectives</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recruitment Section -->
+    <div class="recruitment-section">
+        <div class="recruitment-card">
+            <div class="recruitment-header">
+                <h3>👥 Developer & Tester Recruitment</h3>
+                <div class="recruitment-status closed">
+                    <span class="status-indicator">🔒</span>
+                    <span class="status-text">Currently Closed</span>
+                </div>
+            </div>
+            <div class="recruitment-content">
+                <p class="recruitment-description">
+                    We are always looking for talented developers and dedicated testers to join our team. 
+                    Currently, recruitment is closed, but we will announce when new positions become available.
+                </p>
+                <div class="recruitment-requirements">
+                    <h4>What we're looking for:</h4>
+                    <ul class="requirements-list">
+                        <li>🔧 JavaScript/HTML/CSS developers</li>
+                        <li>🎮 Game testers and QA specialists</li>
+                        <li>🌍 Multi-language translators</li>
+                        <li>🎨 UI/UX designers</li>
+                        <li>📊 Data analysts</li>
+                    </ul>
+                </div>
+                <div class="recruitment-note">
+                    <p>Stay tuned to our channels for recruitment announcements!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <button class="quick-action-btn" onclick="showFeedbackForm()">
+            💭 Send Feedback
+        </button>
+        <button class="quick-action-btn" onclick="showBugReport()">
+            🐛 Report Bug
+        </button>
+        <button class="quick-action-btn" onclick="showFeatureRequest()">
+            ⭐ Request Feature
+        </button>
+    </div>
+
+    <!-- Feedback Modal (hidden by default) -->
+    <div class="feedback-modal" id="feedbackModal" style="display: none;">
+        <div class="feedback-content">
+            <div class="feedback-header">
+                <h3>💭 Send Feedback</h3>
+                <button class="close-modal" onclick="closeFeedbackModal()">×</button>
+            </div>
+            <div class="feedback-body">
+                <p>Please contact the admin directly via Telegram or Discord to send your feedback:</p>
+                <div class="feedback-actions">
+                    <button class="contact-btn telegram-btn" onclick="openAdminTelegram()">
+                        📱 Telegram
+                    </button>
+                    <button class="contact-btn discord-btn" onclick="openAdminDiscord()">
+                        🎮 Discord
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Peoples Page -->
 <div id="peoplesPage" class="page peoples-page">
     <div class="peoples-header">
