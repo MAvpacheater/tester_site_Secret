@@ -87,6 +87,7 @@ async function loadContent() {
                                 <span class="category-toggle">▼</span>
                             </div>
                             <div class="category-buttons" id="othersButtons">
+                                <button class="nav-btn" data-page="worlds" onclick="switchPage('worlds')">🌍 Worlds</button>
                                 <button class="nav-btn" data-page="help" onclick="switchPage('help')">🆘 Help</button>
                                 <button class="nav-btn" data-page="peoples" onclick="switchPage('peoples')">🙏 Peoples</button>
                             </div>
