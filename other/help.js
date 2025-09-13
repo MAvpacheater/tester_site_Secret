@@ -340,14 +340,20 @@ function showFeedbackForm() {
 }
 
 function showBugReport() {
-    showHelpNotification('🐛 Please contact the admin via Telegram or Discord to report bugs', 'info');
+    const translations = helpTranslations && helpTranslations[currentHelpLanguage];
+    const bugMsg = (translations && translations.notifications.bugReport) 
+        || '🐛 Please contact the admin via Telegram or Discord to report bugs';
+    showHelpNotification(bugMsg, 'info');
     setTimeout(() => {
         scrollToAdminContact();
     }, 1000);
 }
 
 function showFeatureRequest() {
-    showHelpNotification('⭐ Please contact the admin via Telegram or Discord to request features', 'info');
+    const translations = helpTranslations && helpTranslations[currentHelpLanguage];
+    const featureMsg = (translations && translations.notifications.featureRequest) 
+        || '⭐ Please contact the admin via Telegram or Discord to request features';
+    showHelpNotification(featureMsg, 'info');
     setTimeout(() => {
         scrollToAdminContact();
     }, 1000);
