@@ -29,6 +29,11 @@ async function updateHelpLanguage(lang) {
         await loadHelpTranslations();
     }
     
+    if (!helpTranslations) {
+        console.error('❌ Help translations not available');
+        return;
+    }
+    
     currentHelpLanguage = lang;
     
     if (!helpTranslations[lang]) {
@@ -39,7 +44,7 @@ async function updateHelpLanguage(lang) {
     const translations = helpTranslations[currentHelpLanguage];
     if (!translations) return;
     
-    // Update page title and subtitle
+    // Update ONLY existing elements, don't create new ones or add text where it shouldn't be
     const pageTitle = document.querySelector('#helpPage .help-title');
     const pageSubtitle = document.querySelector('#helpPage .help-subtitle');
     
@@ -51,16 +56,10 @@ async function updateHelpLanguage(lang) {
         pageSubtitle.textContent = translations.subtitle;
     }
     
-    // Update admin section
+    // Only update sections that actually exist in the HTML
     updateAdminSection(translations);
-    
-    // Update info request section
     updateInfoRequestSection(translations);
-    
-    // Update recruitment section
     updateRecruitmentSection(translations);
-    
-    // Update quick actions
     updateQuickActions(translations);
     
     console.log(`✅ Help page language updated to: ${currentHelpLanguage}`);
@@ -69,6 +68,7 @@ async function updateHelpLanguage(lang) {
 function updateAdminSection(translations) {
     if (!translations.admin) return;
     
+    // Only update elements that exist in the DOM
     const adminName = document.querySelector('.admin-name');
     const adminRole = document.querySelector('.admin-role');
     const adminStatus = document.querySelector('.admin-status');
@@ -99,6 +99,7 @@ function updateAdminSection(translations) {
 function updateInfoRequestSection(translations) {
     if (!translations.infoRequest) return;
     
+    // Only update if these elements exist in the current HTML structure
     const infoTitle = document.querySelector('.info-request-header h3');
     const infoSubtitle = document.querySelector('.info-request-subtitle');
     
@@ -110,30 +111,35 @@ function updateInfoRequestSection(translations) {
         infoSubtitle.textContent = translations.infoRequest.subtitle;
     }
     
-    // Update info items
+    // Update info items ONLY if they exist in the DOM
     if (translations.infoRequest.items) {
         const infoItems = document.querySelectorAll('.info-text');
-        translations.infoRequest.items.forEach((item, index) => {
-            if (infoItems[index]) {
-                // Extract emoji and text
-                const parts = item.split(' ');
-                const emoji = parts[0];
-                const text = parts.slice(1).join(' ');
-                
-                // Update icon and text separately
-                const infoItem = infoItems[index].closest('.info-item');
-                const infoIcon = infoItem.querySelector('.info-icon');
-                
-                if (infoIcon) infoIcon.textContent = emoji;
-                infoItems[index].textContent = text;
-            }
-        });
+        if (infoItems.length > 0) {
+            translations.infoRequest.items.forEach((item, index) => {
+                if (infoItems[index]) {
+                    // Extract emoji and text
+                    const parts = item.split(' ');
+                    const emoji = parts[0];
+                    const text = parts.slice(1).join(' ');
+                    
+                    // Update icon and text separately
+                    const infoItem = infoItems[index].closest('.info-item');
+                    if (infoItem) {
+                        const infoIcon = infoItem.querySelector('.info-icon');
+                        
+                        if (infoIcon) infoIcon.textContent = emoji;
+                        infoItems[index].textContent = text;
+                    }
+                }
+            });
+        }
     }
 }
 
 function updateRecruitmentSection(translations) {
     if (!translations.recruitment) return;
     
+    // Only update elements that actually exist
     const recruitmentTitle = document.querySelector('.recruitment-header h3');
     const recruitmentStatus = document.querySelector('.status-text');
     const recruitmentDescription = document.querySelector('.recruitment-description');
@@ -152,7 +158,7 @@ function updateRecruitmentSection(translations) {
         recruitmentDescription.textContent = translations.recruitment.description;
     }
     
-    if (requirementsTitle && translations.recruitment.requirements.title) {
+    if (requirementsTitle && translations.recruitment.requirements && translations.recruitment.requirements.title) {
         requirementsTitle.textContent = translations.recruitment.requirements.title;
     }
     
@@ -160,37 +166,38 @@ function updateRecruitmentSection(translations) {
         recruitmentNote.textContent = translations.recruitment.note;
     }
     
-    // Update requirements list
-    if (translations.recruitment.requirements.items) {
-        const requirementsList = document.querySelector('.requirements-list');
-        if (requirementsList) {
-            requirementsList.innerHTML = '';
-            
-            // Create new items from translations
-            translations.recruitment.requirements.items.forEach((item, index) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = item;
-                requirementsList.appendChild(listItem);
-            });
-        }
+    // Update requirements list ONLY if it exists
+    const requirementsList = document.querySelector('.requirements-list');
+    if (requirementsList && translations.recruitment.requirements && translations.recruitment.requirements.items) {
+        requirementsList.innerHTML = '';
+        
+        // Create new items from translations
+        translations.recruitment.requirements.items.forEach((item) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = item;
+            requirementsList.appendChild(listItem);
+        });
     }
 }
 
 function updateQuickActions(translations) {
     if (!translations.quickActions) return;
     
+    // Only update if quick action buttons exist
     const quickActionBtns = document.querySelectorAll('.quick-action-btn');
     
-    if (quickActionBtns[0] && translations.quickActions.feedback) {
-        quickActionBtns[0].textContent = translations.quickActions.feedback;
-    }
-    
-    if (quickActionBtns[1] && translations.quickActions.bug) {
-        quickActionBtns[1].textContent = translations.quickActions.bug;
-    }
-    
-    if (quickActionBtns[2] && translations.quickActions.feature) {
-        quickActionBtns[2].textContent = translations.quickActions.feature;
+    if (quickActionBtns.length > 0) {
+        if (quickActionBtns[0] && translations.quickActions.feedback) {
+            quickActionBtns[0].textContent = translations.quickActions.feedback;
+        }
+        
+        if (quickActionBtns[1] && translations.quickActions.bug) {
+            quickActionBtns[1].textContent = translations.quickActions.bug;
+        }
+        
+        if (quickActionBtns[2] && translations.quickActions.feature) {
+            quickActionBtns[2].textContent = translations.quickActions.feature;
+        }
     }
 }
 
@@ -216,11 +223,13 @@ async function initializeHelp() {
         ? getCurrentAppLanguage() 
         : 'en';
     
-    // Update help page language
-    await updateHelpLanguage(currentAppLanguage);
+    // Update help page language ONLY if translations loaded successfully
+    if (helpTranslations) {
+        await updateHelpLanguage(currentAppLanguage);
+    }
 
     helpInitialized = true;
-    console.log('✅ Help page initialized successfully with multilingual support');
+    console.log('✅ Help page initialized successfully');
 }
 
 // Admin contact functions
@@ -231,38 +240,21 @@ function openAdminTelegram() {
     try {
         window.open(url, '_blank', 'noopener,noreferrer');
         console.log(`📱 Opening admin Telegram: ${url}`);
-        
-        const translations = helpTranslations && helpTranslations[currentHelpLanguage];
-        const successMsg = (translations && translations.notifications.telegramOpening) 
-            || '📱 Opening Telegram...';
-        showHelpNotification(successMsg, 'success');
+        showHelpNotification('📱 Opening Telegram...', 'success');
     } catch (error) {
         console.error('❌ Error opening Telegram:', error);
-        
-        const translations = helpTranslations && helpTranslations[currentHelpLanguage];
-        const errorMsg = (translations && translations.notifications.telegramFailed) 
-            || '❌ Failed to open Telegram';
-        showHelpNotification(errorMsg, 'error');
+        showHelpNotification('❌ Failed to open Telegram', 'error');
     }
 }
 
 function openAdminDiscord() {
     const discordTag = 'trader_aws';
-    const discordUrl = `discord://users/${discordTag}`;
     
     try {
-        // Try to open Discord app
-        window.location.href = discordUrl;
-        
-        const translations = helpTranslations && helpTranslations[currentHelpLanguage];
-        const openingMsg = translations && translations.notifications.discordOpening 
-            ? translations.notifications.discordOpening.replace('{tag}', discordTag)
-            : `🎮 Opening Discord... Tag: ${discordTag}`;
-        showHelpNotification(openingMsg, 'info');
-        
-        // Copy Discord tag to clipboard as backup
+        // Copy Discord tag to clipboard
         navigator.clipboard.writeText(discordTag).then(() => {
             console.log(`🎮 Discord tag copied to clipboard: ${discordTag}`);
+            showHelpNotification(`📋 Discord tag copied: ${discordTag}`, 'success');
         }).catch(() => {
             // Fallback for older browsers
             const textArea = document.createElement('textarea');
@@ -271,35 +263,16 @@ function openAdminDiscord() {
             textArea.select();
             document.execCommand('copy');
             document.body.removeChild(textArea);
+            showHelpNotification(`📋 Discord tag copied: ${discordTag}`, 'success');
         });
         
-        // Show fallback message after delay
-        setTimeout(() => {
-            const copiedMsg = translations && translations.notifications.discordCopied 
-                ? translations.notifications.discordCopied.replace('{tag}', discordTag)
-                : `📋 Discord tag copied: ${discordTag}`;
-            showHelpNotification(copiedMsg, 'success');
-        }, 2000);
-        
     } catch (error) {
-        console.error('❌ Error opening Discord:', error);
-        
-        const translations = helpTranslations && helpTranslations[currentHelpLanguage];
-        const fallbackMsg = translations && translations.notifications.discordCopied 
-            ? translations.notifications.discordCopied.replace('{tag}', discordTag)
-            : `📋 Discord: ${discordTag} (copied to clipboard)`;
-        showHelpNotification(fallbackMsg, 'info');
-        
-        // Copy to clipboard as fallback
-        try {
-            navigator.clipboard.writeText(discordTag);
-        } catch (clipboardError) {
-            console.error('❌ Error copying to clipboard:', clipboardError);
-        }
+        console.error('❌ Error copying Discord tag:', error);
+        showHelpNotification('❌ Failed to copy Discord tag', 'error');
     }
 }
 
-// Scroll to admin contact section - ДОДАНА ВІДСУТНЯ ФУНКЦІЯ
+// Scroll to admin contact section
 function scrollToAdminContact() {
     const adminSection = document.querySelector('.admin-contact-section');
     if (adminSection) {
@@ -321,70 +294,20 @@ function scrollToAdminContact() {
 
 // Quick action functions
 function showFeedbackForm() {
-    const modal = document.getElementById('feedbackModal');
-    if (modal) {
-        modal.style.display = 'flex';
-        
-        // Update modal text with translations
-        const translations = helpTranslations && helpTranslations[currentHelpLanguage];
-        if (translations && translations.modal && translations.modal.feedback) {
-            const modalTitle = modal.querySelector('.feedback-header h3');
-            const modalText = modal.querySelector('.feedback-body p');
-            const modalTelegramBtn = modal.querySelector('.feedback-actions .telegram-btn');
-            const modalDiscordBtn = modal.querySelector('.feedback-actions .discord-btn');
-            
-            if (modalTitle) modalTitle.textContent = translations.modal.feedback.title;
-            if (modalText) modalText.textContent = translations.modal.feedback.text;
-            if (modalTelegramBtn) modalTelegramBtn.textContent = translations.modal.feedback.telegram;
-            if (modalDiscordBtn) modalDiscordBtn.textContent = translations.modal.feedback.discord;
-        }
-    } else {
-        // Fallback - scroll to admin contact if modal doesn't exist
-        scrollToAdminContact();
-    }
+    // Scroll to admin contact instead of showing modal
+    scrollToAdminContact();
+    showHelpNotification('💭 Contact admin via Telegram or Discord', 'info');
 }
 
 function showBugReport() {
-    const translations = helpTranslations && helpTranslations[currentHelpLanguage];
-    const bugMsg = (translations && translations.notifications.bugReport) 
-        || '🐛 Please contact the admin via Telegram or Discord to report bugs';
-    showHelpNotification(bugMsg, 'info');
-    setTimeout(() => {
-        scrollToAdminContact();
-    }, 1000);
+    scrollToAdminContact();
+    showHelpNotification('🐛 Contact admin to report bugs', 'info');
 }
 
 function showFeatureRequest() {
-    const translations = helpTranslations && helpTranslations[currentHelpLanguage];
-    const featureMsg = (translations && translations.notifications.featureRequest) 
-        || '⭐ Please contact the admin via Telegram or Discord to request features';
-    showHelpNotification(featureMsg, 'info');
-    setTimeout(() => {
-        scrollToAdminContact();
-    }, 1000);
+    scrollToAdminContact();
+    showHelpNotification('⭐ Contact admin to request features', 'info');
 }
-
-function closeFeedbackModal() {
-    const modal = document.getElementById('feedbackModal');
-    if (modal) {
-        modal.style.display = 'none';
-    }
-}
-
-// Click outside modal to close
-document.addEventListener('click', (e) => {
-    const modal = document.getElementById('feedbackModal');
-    if (modal && e.target === modal) {
-        closeFeedbackModal();
-    }
-});
-
-// ESC key to close modal
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        closeFeedbackModal();
-    }
-});
 
 function showHelpNotification(message, type = 'info') {
     // Remove existing notifications
@@ -404,13 +327,13 @@ function showHelpNotification(message, type = 'info') {
             notification.classList.add('show');
         }, 10);
 
-        // Hide notification after 4 seconds
+        // Hide notification after 3 seconds
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => {
                 notification.remove();
             }, 300);
-        }, 4000);
+        }, 3000);
     }
 }
 
@@ -418,7 +341,9 @@ function showHelpNotification(message, type = 'info') {
 document.addEventListener('languageChanged', async (event) => {
     const newLanguage = event.detail.language;
     console.log('🌍 Help page received language change:', newLanguage);
-    await updateHelpLanguage(newLanguage);
+    if (helpTranslations) {
+        await updateHelpLanguage(newLanguage);
+    }
 });
 
 // Make functions globally available
@@ -427,11 +352,10 @@ window.updateHelpLanguage = updateHelpLanguage;
 window.loadHelpTranslations = loadHelpTranslations;
 window.openAdminTelegram = openAdminTelegram;
 window.openAdminDiscord = openAdminDiscord;
-window.scrollToAdminContact = scrollToAdminContact; // ВИПРАВЛЕНО: функція тепер існує
+window.scrollToAdminContact = scrollToAdminContact;
 window.showFeedbackForm = showFeedbackForm;
 window.showBugReport = showBugReport;
 window.showFeatureRequest = showFeatureRequest;
-window.closeFeedbackModal = closeFeedbackModal;
 window.showHelpNotification = showHelpNotification;
 
 console.log('✅ help.js loaded successfully with multilingual support');
