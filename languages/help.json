@@ -14,14 +14,11 @@
       "title": "📋 Information Needed",
       "subtitle": "Write to me if you have this information:",
       "items": [
-        "🐾 Pet statistics and multipliers",
         "🚀 New boost information",
         "🔮 Secret pets data",
-        "🌍 World unlock requirements",
         "🎁 New codes and promotions",
         "🧪 Potion effects and recipes",
-        "💎 Game mechanics and formulas",
-        "🎯 Quest rewards and objectives"
+        "💎 Game mechanics and formulas"
       ]
     },
     "recruitment": {
@@ -31,14 +28,12 @@
       "requirements": {
         "title": "What we're looking for:",
         "items": [
-          "🔧 JavaScript/HTML/CSS developers",
+          "🔧 CSS developers",
           "🎮 Game testers and QA specialists",
-          "🌍 Multi-language translators",
-          "🎨 UI/UX designers",
-          "📊 Data analysts"
+          "🎨 UI/UX designers"
         ]
       },
-      "note": "Stay tuned to our channels for recruitment announcements!"
+      "note": "Stay tuned to our this page for recruitment announcements!"
     },
     "quickActions": {
       "feedback": "💭 Send Feedback",
@@ -78,16 +73,11 @@
       "title": "📋 Потрібна Інформація",
       "subtitle": "Напишіть мені, якщо у вас є ця інформація:",
       "items": [
-        "🐾 Статистика та множники питомців",
         "🚀 Інформація про нові прискорення",
         "🔮 Дані про секретних питомців",
-        "🌍 Вимоги для розблокування світів",
         "🎁 Нові коди та акції",
         "🧪 Ефекти та рецепти зілля",
-        "✨ Шанси на блискучих питомців",
-        "🏆 Вимоги для досягнень",
-        "💎 Ігрові механіки та формули",
-        "🎯 Винагороди та цілі квестів"
+        "💎 Ігрові механіки та формули"
       ]
     },
     "recruitment": {
@@ -97,14 +87,12 @@
       "requirements": {
         "title": "Кого ми шукаємо:",
         "items": [
-          "🔧 Розробники JavaScript/HTML/CSS",
+          "🔧 Розробники CSS",
           "🎮 Тестери ігор та спеціалісти QA",
-          "🌍 Багатомовні перекладачі",
-          "🎨 UI/UX дизайнери",
-          "📊 Аналітики даних"
+          "🎨 UI/UX дизайнери"
         ]
       },
-      "note": "Слідкуйте за нашими каналами для оголошень про набір!"
+      "note": "Слідкуйте за цією сторінкою для оголошень про набір!"
     },
     "quickActions": {
       "feedback": "💭 Надіслати Відгук",
@@ -144,16 +132,11 @@
       "title": "📋 Нужная Информация",
       "subtitle": "Напишите мне, если у вас есть эта информация:",
       "items": [
-        "🐾 Статистика и множители питомцев",
         "🚀 Информация о новых ускорениях",
         "🔮 Данные о секретных питомцах",
-        "🌍 Требования для разблокировки миров",
         "🎁 Новые коды и акции",
         "🧪 Эффекты и рецепты зелий",
-        "✨ Шансы на блестящих питомцев",
-        "🏆 Требования для достижений",
-        "💎 Игровые механики и формулы",
-        "🎯 Награды и цели квестов"
+        "💎 Игровые механики и формулы"
       ]
     },
     "recruitment": {
@@ -163,14 +146,12 @@
       "requirements": {
         "title": "Кого мы ищем:",
         "items": [
-          "🔧 Разработчики JavaScript/HTML/CSS",
+          "🔧 Разработчики CSS",
           "🎮 Тестеры игр и специалисты QA",
-          "🌍 Многоязычные переводчики",
           "🎨 UI/UX дизайнеры",
-          "📊 Аналитики данных"
         ]
       },
-      "note": "Следите за нашими каналами для объявлений о наборе!"
+      "note": "Следите за етой страницей для объявлений о наборе!"
     },
     "quickActions": {
       "feedback": "💭 Отправить Отзыв",
