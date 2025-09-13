@@ -430,18 +430,32 @@ body::before {
     }
     
     .nav-buttons {
-        padding: 15px;
-        max-height: calc(100vh - 160px); /* Adjusted for mobile */
-        gap: 12px;
+        padding: 12px 15px;
+        max-height: calc(100vh - 140px); /* More space for mobile */
+        gap: 8px;
+    }
+    
+    .nav-category {
+        margin-bottom: 8px;
+    }
+    
+    .category-header {
+        padding: 8px 12px;
+        font-size: 1em;
+    }
+    
+    .nav-btn {
+        padding: 8px 12px;
+        font-size: 0.85em;
     }
     
     .language-flags {
-        padding: 12px 15px;
+        padding: 10px 15px;
         gap: 12px;
     }
     
     .sidebar-user {
-        padding: 12px 15px;
+        padding: 10px 15px;
     }
     
     .container {
@@ -457,13 +471,27 @@ body::before {
     }
     
     .nav-buttons {
-        padding: 12px;
-        max-height: calc(100vh - 140px); /* Further adjusted for small screens */
-        gap: 10px;
+        padding: 10px 12px;
+        max-height: calc(100vh - 120px); /* Even more space for small screens */
+        gap: 6px;
+    }
+    
+    .nav-category {
+        margin-bottom: 6px;
+    }
+    
+    .category-header {
+        padding: 6px 10px;
+        font-size: 0.95em;
+    }
+    
+    .nav-btn {
+        padding: 6px 10px;
+        font-size: 0.8em;
     }
     
     .language-flags {
-        padding: 10px;
+        padding: 8px 10px;
         gap: 10px;
     }
     
@@ -475,7 +503,7 @@ body::before {
     }
     
     .sidebar-user {
-        padding: 10px;
+        padding: 8px 10px;
     }
     
     .container {
