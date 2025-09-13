@@ -1,4 +1,4 @@
-// Updated General JavaScript functions - With Updates page support
+// Updated General JavaScript functions - With Settings page support
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -50,6 +50,7 @@ async function loadMenuTranslations() {
                     charms: "🔮 Charms",
                     potions: "🧪 Potions & Food",
                     worlds: "🌍 Worlds",
+                    settings: "⚙️ Settings",
                     updates: "📝 Updates",
                     help: "🆘 Help",
                     peoples: "🙏 Peoples"
@@ -109,6 +110,7 @@ async function switchAppLanguage(lang) {
         { name: 'secret', func: 'updateSecretLanguage' },
         { name: 'peoples', func: 'updatePeoplesLanguage' },
         { name: 'help', func: 'updateHelpLanguage' },
+        { name: 'settings', func: 'updateSettingsLanguage' },
         { name: 'updates', func: 'updateUpdatesLanguage' }
     ];
     
@@ -187,7 +189,7 @@ function updatePageTitles() {
     const translations = menuTranslations[currentAppLanguage];
     if (!translations || !translations.pages) return;
     
-    // Page title mappings (page ID -> translation key) - WITH UPDATES
+    // Page title mappings (page ID -> translation key) - WITH SETTINGS
     const pageTitleMappings = {
         'calculatorPage': 'calculator',
         'armPage': 'arm',
@@ -201,7 +203,8 @@ function updatePageTitles() {
         'charmsPage': 'charms',
         'potionsPage': 'potions',
         'worldsPage': 'worlds',
-        'updatesPage': 'updates',  // ADDED UPDATES
+        'settingsPage': 'settings',  // ADDED SETTINGS
+        'updatesPage': 'updates',
         'helpPage': 'help',
         'peoplesPage': 'peoples'
     };
@@ -211,7 +214,7 @@ function updatePageTitles() {
         const page = document.getElementById(pageId);
         if (page && translations.pages[translationKey]) {
             // Find the h1 title element in the page
-            const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title, .updates-title');
+            const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title, .updates-title, .settings-title');
             if (titleElement) {
                 titleElement.textContent = translations.pages[translationKey];
                 console.log(`✅ Updated title for ${pageId}: ${translations.pages[translationKey]}`);
@@ -229,7 +232,7 @@ function updatePageTitles() {
     console.log(`✅ Page titles updated for ${currentAppLanguage}`);
 }
 
-// Create language flags section
+// Create language flags section with settings button
 function createLanguageFlags() {
     const languages = [
         { code: 'en', flag: '🇺🇸' },
@@ -237,6 +240,18 @@ function createLanguageFlags() {
         { code: 'ru', flag: '🇷🇺' }
     ];
     
+    // Create the main container
+    const sidebarControls = document.createElement('div');
+    sidebarControls.className = 'sidebar-controls';
+    
+    // Create settings button
+    const settingsButton = document.createElement('button');
+    settingsButton.className = 'settings-btn-sidebar';
+    settingsButton.onclick = () => switchPage('settings');
+    settingsButton.title = 'Settings';
+    settingsButton.innerHTML = '⚙️';
+    
+    // Create language flags container
     const languageFlags = document.createElement('div');
     languageFlags.className = 'language-flags';
     
@@ -249,16 +264,21 @@ function createLanguageFlags() {
         </button>
     `).join('');
     
-    return languageFlags;
+    // Assemble the container
+    sidebarControls.appendChild(settingsButton);
+    sidebarControls.appendChild(languageFlags);
+    
+    return sidebarControls;
 }
 
-// Page switching functionality
+// Page switching functionality - WITH SETTINGS
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
     
     // Remove active class from all pages and nav buttons
     document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.settings-btn-sidebar').forEach(el => el.classList.remove('active'));
     
     // Add active class to selected page
     const targetPage = document.getElementById(page + 'Page');
@@ -269,7 +289,7 @@ function switchPage(page) {
         console.error(`Page ${page}Page not found`);
     }
     
-    // Update active nav button - WITH UPDATES
+    // Update active nav button - WITH SETTINGS
     const pageMap = {
         'calculator': 'calculator',
         'arm': 'arm',
@@ -283,7 +303,8 @@ function switchPage(page) {
         'secret': 'secret',
         'potions': 'potions',
         'worlds': 'worlds',
-        'updates': 'updates',  // ADDED UPDATES
+        'settings': 'settings',  // ADDED SETTINGS
+        'updates': 'updates',
         'help': 'help',
         'peoples': 'peoples'
     };
@@ -292,6 +313,14 @@ function switchPage(page) {
     if (targetButton) {
         targetButton.classList.add('active');
         console.log(`Nav button activated for ${page}`);
+    }
+    
+    // Special handling for settings button
+    if (page === 'settings') {
+        const settingsBtn = document.querySelector('.settings-btn-sidebar');
+        if (settingsBtn) {
+            settingsBtn.classList.add('active');
+        }
     }
     
     // Close sidebar after selection
@@ -303,7 +332,7 @@ function switchPage(page) {
     }, 100);
 }
 
-// Initialize specific page content when switching - WITH UPDATES
+// Initialize specific page content when switching - WITH SETTINGS
 function initializePageContent(page) {
     console.log(`🔄 Initializing content for page: ${page}`);
     
@@ -391,6 +420,17 @@ function initializePageContent(page) {
                 initializeWorlds();
             } else {
                 console.error('❌ initializeWorlds function not found');
+            }
+            break;
+        case 'settings':
+            console.log('⚙️ Initializing Settings page...');
+            if (typeof initializeSettings === 'function') {
+                if (typeof window !== 'undefined' && window.settingsInitialized !== undefined) {
+                    window.settingsInitialized = false;
+                }
+                initializeSettings();
+            } else {
+                console.error('❌ initializeSettings function not found');
             }
             break;
         case 'updates':
@@ -528,11 +568,17 @@ async function initializeApp() {
     // Load menu translations
     await loadMenuTranslations();
     
-    // Add language flags to sidebar
+    // Add language flags with settings button to sidebar
     const sidebar = document.querySelector('.sidebar');
     if (sidebar) {
-        const languageFlags = createLanguageFlags();
-        sidebar.appendChild(languageFlags);
+        const sidebarControls = createLanguageFlags();
+        // Insert before user section
+        const userSection = sidebar.querySelector('.sidebar-user');
+        if (userSection) {
+            sidebar.insertBefore(sidebarControls, userSection);
+        } else {
+            sidebar.appendChild(sidebarControls);
+        }
     }
     
     // Update menu translations AND page titles
@@ -569,12 +615,13 @@ async function initializeApp() {
                 const isClickOnCategoryHeader = e.target.closest('.category-header');
                 const isClickOnGrindCategoryHeader = e.target.closest('.category-header-modifier');
                 const isClickOnLanguageFlag = e.target.closest('.lang-flag-btn');
+                const isClickOnSettingsSidebarBtn = e.target.closest('.settings-btn-sidebar');
                 
                 if (!isClickInsidePanel && !isClickOnSettingsBtn && 
                     !isClickOnCategoryButton && !isClickOnBackButton && 
                     !isClickOnCategorySwitch && !isClickOnSimpleModifier &&
                     !isClickOnCategoryHeader && !isClickOnGrindCategoryHeader &&
-                    !isClickOnLanguageFlag) {
+                    !isClickOnLanguageFlag && !isClickOnSettingsSidebarBtn) {
                     panel.classList.remove('show');
                 }
             }
@@ -582,10 +629,10 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed with Updates page support');
+    console.log('✅ App initialization completed with Settings page support');
 }
 
-// Initialize all modules with proper DOM readiness checks - WITH UPDATES
+// Initialize all modules with proper DOM readiness checks - WITH SETTINGS
 function initializeAllModules() {
     console.log('🔧 Initializing all modules...');
     
@@ -602,7 +649,8 @@ function initializeAllModules() {
         'initializeCharms',
         'initializeCodes',
         'initializeWorlds',
-        'initializeUpdates',  // ADDED UPDATES
+        'initializeSettings',  // ADDED SETTINGS
+        'initializeUpdates',
         'initializeHelp',
         'initializePeoples'
     ];
@@ -614,7 +662,7 @@ function initializeAllModules() {
                 if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || 
                     moduleName === 'initializeGrind' || moduleName === 'initializePeoples' ||
                     moduleName === 'initializeWorlds' || moduleName === 'initializeHelp' ||
-                    moduleName === 'initializeUpdates') {  // ADDED UPDATES TO DELAYED
+                    moduleName === 'initializeUpdates' || moduleName === 'initializeSettings') {  // ADDED SETTINGS
                     setTimeout(() => {
                         try {
                             // Force reinitialization by resetting flags
@@ -635,6 +683,9 @@ function initializeAllModules() {
                             }
                             if (moduleName === 'initializeUpdates' && window.updatesInitialized) {
                                 window.updatesInitialized = false;
+                            }
+                            if (moduleName === 'initializeSettings' && window.settingsInitialized) {
+                                window.settingsInitialized = false;
                             }
                             
                             window[moduleName]();
@@ -665,7 +716,7 @@ function debugPageStates() {
     console.log('========================');
 }
 
-// Force reinitialization for specific modules - WITH UPDATES
+// Force reinitialization for specific modules - WITH SETTINGS
 function forceReinitializeModule(moduleName) {
     console.log(`🔄 Force reinitializing ${moduleName}...`);
     
@@ -687,6 +738,9 @@ function forceReinitializeModule(moduleName) {
     }
     if (moduleName === 'updates' && typeof window !== 'undefined') {
         window.updatesInitialized = false;
+    }
+    if (moduleName === 'settings' && typeof window !== 'undefined') {
+        window.settingsInitialized = false;
     }
     
     // Call initialization
