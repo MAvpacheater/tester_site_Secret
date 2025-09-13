@@ -1,4 +1,4 @@
-// Clean Updates Page JavaScript - All text from JSON only
+// Complete Updates Page JavaScript - Clean version, all text from JSON
 let updatesInitialized = false;
 let updatesTranslations = null;
 let currentUpdateType = 'game';
@@ -319,4 +319,4 @@ Object.assign(window, {
 // Also make the function available for external calls
 window.updateUpdatesLanguage = updateUpdatesLanguage;
 
-console.log('✅ Clean Updates page JavaScript loaded (no hardcoded text)');
+console.log('✅ Complete clean Updates page JavaScript loaded (no hardcoded text)');
