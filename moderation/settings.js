@@ -9,7 +9,7 @@ const backgroundOptions = {
         url: 'https://i.postimg.cc/43yVBkY8/Generated-image-1.png'
     },
     game: {
-        icon: '🎮',
+        icon: '🎮', 
         url: 'https://i.postimg.cc/VNpqK2Ht/game-background.jpg'
     },
     code: {
@@ -39,13 +39,12 @@ function applyBackground(background) {
     }
     
     const body = document.body;
-    const currentBg = body.style.backgroundImage;
-    const newBg = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${config.url}') center center / cover no-repeat`;
+    const backgroundStyle = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${config.url}') center center / cover no-repeat`;
     
-    if (currentBg !== newBg) {
-        body.style.backgroundImage = newBg;
-        console.log(`Background applied: ${background}`);
-    }
+    body.style.background = backgroundStyle;
+    body.style.backgroundAttachment = window.innerWidth > 768 ? 'fixed' : 'scroll';
+    
+    console.log(`Background applied: ${background}`);
 }
 
 // Change background
