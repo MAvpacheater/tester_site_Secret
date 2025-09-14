@@ -4,20 +4,22 @@ console.log('🔄 Loading content...');
 // Function to load content
 async function loadContent() {
     try {
-        // Load calculator, info, and other content
-        const [calcResponse, infoResponse, otherResponse] = await Promise.all([
+        // Load calculator, info, moderation, and other content
+        const [calcResponse, infoResponse, moderationResponse, otherResponse] = await Promise.all([
             fetch('index/content_calc.html'),
             fetch('index/content_info.html'),
+            fetch('index/content_moderation.html'),
             fetch('index/content_other.html')
         ]);
 
-        if (!calcResponse.ok || !infoResponse.ok || !otherResponse.ok) {
-            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, other: ${otherResponse.status}`);
+        if (!calcResponse.ok || !infoResponse.ok || !moderationResponse.ok || !otherResponse.ok) {
+            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, moderation: ${moderationResponse.status}, other: ${otherResponse.status}`);
         }
         
-        const [calcContent, infoContent, otherContent] = await Promise.all([
+        const [calcContent, infoContent, moderationContent, otherContent] = await Promise.all([
             calcResponse.text(),
             infoResponse.text(),
+            moderationResponse.text(),
             otherResponse.text()
         ]);
 
@@ -108,6 +110,9 @@ async function loadContent() {
                                 <span class="category-toggle">▼</span>
                             </div>
                             <div class="category-buttons" id="othersButtons">
+                                <button class="nav-btn" data-page="settings" onclick="switchPage('settings')">
+                                    ⚙️ Settings
+                                </button>
                                 <button class="nav-btn" data-page="updates" onclick="switchPage('updates')">
                                     📝 Updates
                                 </button>
@@ -144,6 +149,7 @@ async function loadContent() {
                 <div class="container">
                     ${calcContent}
                     ${infoContent}
+                    ${moderationContent}
                     ${otherContent}
                 </div>
             `;
