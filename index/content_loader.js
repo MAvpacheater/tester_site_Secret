@@ -1,10 +1,10 @@
-// Content loader script - Settings removed
+// Content loader script - Cleaned version
 console.log('🔄 Loading content...');
 
 // Function to load content
 async function loadContent() {
     try {
-        // Load calculator, info, and other content (no moderation content)
+        // Load calculator, info, and other content
         const [calcResponse, infoResponse, otherResponse] = await Promise.all([
             fetch('index/content_calc.html'),
             fetch('index/content_info.html'),
@@ -24,7 +24,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with language flags only
+            // Create the main structure
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -121,16 +121,15 @@ async function loadContent() {
                         </div>
                     </div>
                     
-                    <!-- User Section - Login at top -->
-                    <div class="sidebar-user" id="sidebarUser" style="margin-top: auto; border-bottom: 2px solid #8B4513; border-top: none;">
+                    <!-- User Section -->
+                    <div class="sidebar-user" id="sidebarUser">
                         <button class="auth-btn-sidebar disabled" id="authButton" title="Coming Soon!" onclick="handleAuthAction()">
                             Login (Soon...)
                         </button>
                     </div>
                     
-                    <!-- Language Flags only -->
-                    <div class="sidebar-controls" style="border-top: none; justify-content: center;">
-                        <!-- Language Flags centered -->
+                    <!-- Language Flags -->
+                    <div class="sidebar-controls">
                         <div class="language-flags">
                             <button class="lang-flag-btn active" data-lang="en" onclick="switchAppLanguage('en')" title="English">🇺🇸</button>
                             <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="Українська">🇺🇦</button>
@@ -150,7 +149,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully - Settings removed, page state preserved');
+            console.log('✅ Content loaded successfully');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -183,10 +182,9 @@ async function loadContent() {
     }
 }
 
-// Enhanced auth action handler
+// Auth action handler
 function handleAuthAction() {
     console.log('⚠️ Login feature is disabled - coming soon');
-    // Show a subtle notification instead of doing nothing
     const authBtn = document.getElementById('authButton');
     if (authBtn) {
         const originalText = authBtn.textContent;
@@ -212,4 +210,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ Content loader updated - Settings removed, language flags centered');
+console.log('✅ Content loader ready');
