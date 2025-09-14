@@ -1,74 +1,37 @@
-<!-- Settings Page Content -->
-<div class="page settings-page" id="settingsPage">
-    <div class="settings-header">
+<!-- Settings Page -->
+<div class="page" id="settingsPage">
+    <div class="settings-container">
         <h1 class="settings-title">⚙️ Settings</h1>
-    </div>
-    
-    <div class="settings-groups">
-        <!-- Background Settings -->
-        <div class="settings-group" data-group="background">
-            <div class="settings-group-header" onclick="toggleSettingsGroup('background')">
-                <h2 class="settings-group-title">
-                    <span class="settings-group-icon">🎨</span>
-                    <span>Background</span>
-                </h2>
-                <span class="settings-group-toggle">▼</span>
+        
+        <div class="settings-section">
+            <div class="section-title">
+                <span class="section-icon">🎨</span>
+                <span>Background</span>
             </div>
-            <div class="settings-group-content">
-                <p class="settings-group-description">Customize your app's visual theme</p>
+            
+            <div class="background-options">
+                <div class="background-option" data-background="penguin" onclick="changeBackground('penguin')">
+                    <div class="option-icon">🐧</div>
+                    <div class="option-name">Penguin</div>
+                    <div class="background-preview" style="background-image: url('https://i.postimg.cc/43yVBkY8/Generated-image-1.png')"></div>
+                </div>
                 
-                <div class="background-options">
-                    <div class="background-option bg-penguin active" 
-                         data-background="penguin" 
-                         onclick="selectBackground('penguin')">
-                        <div class="background-preview"></div>
-                        <div class="background-info">
-                            <div class="background-name">Penguin Theme</div>
-                            <div class="background-description">Default mining theme</div>
-                        </div>
-                    </div>
-                    
-                    <div class="background-option bg-game" 
-                         data-background="game" 
-                         onclick="selectBackground('game')">
-                        <div class="background-preview"></div>
-                        <div class="background-info">
-                            <div class="background-name">Gaming Theme</div>
-                            <div class="background-description">Blue gradient theme</div>
-                        </div>
-                    </div>
-                    
-                    <div class="background-option bg-code" 
-                         data-background="code" 
-                         onclick="selectBackground('code')">
-                        <div class="background-preview"></div>
-                        <div class="background-info">
-                            <div class="background-name">Code Theme</div>
-                            <div class="background-description">Green matrix theme</div>
-                        </div>
-                    </div>
+                <div class="background-option" data-background="game" onclick="changeBackground('game')">
+                    <div class="option-icon">🎮</div>
+                    <div class="option-name">Game</div>
+                    <div class="background-preview" style="background-image: url('https://i.postimg.cc/VNpqK2Ht/game-background.jpg')"></div>
+                </div>
+                
+                <div class="background-option" data-background="code" onclick="changeBackground('code')">
+                    <div class="option-icon">💻</div>
+                    <div class="option-name">Code</div>
+                    <div class="background-preview" style="background-image: url('https://i.postimg.cc/9FXzrptm/code-background.jpg')"></div>
                 </div>
             </div>
         </div>
         
-        <!-- Menu Settings -->
-        <div class="settings-group" data-group="menu">
-            <div class="settings-group-header" onclick="toggleSettingsGroup('menu')">
-                <h2 class="settings-group-title">
-                    <span class="settings-group-icon">🧭</span>
-                    <span>Menu</span>
-                </h2>
-                <span class="settings-group-toggle">▼</span>
-            </div>
-            <div class="settings-group-content">
-                <p class="settings-group-description">Configure navigation preferences</p>
-                
-                <div class="coming-soon">
-                    <div class="coming-soon-icon">🔄</div>
-                    <div class="coming-soon-text">Coming Soon!</div>
-                    <div class="coming-soon-description">Menu options will be available here</div>
-                </div>
-            </div>
+        <div class="reset-section">
+            <button class="reset-btn" onclick="resetSettings()">Reset Settings</button>
         </div>
     </div>
 </div>
