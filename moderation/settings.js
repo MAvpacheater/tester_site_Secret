@@ -1,4 +1,4 @@
-// Settings functionality - With language support
+// Settings functionality - With collapsible categories
 console.log('⚙️ Loading Settings module...');
 
 let settingsTranslations = null;
@@ -50,9 +50,45 @@ async function loadSettingsTranslations() {
                 },
                 menu: {
                     title: "🧭 Menu",
-                    description: "Configure navigation preferences",
+                    description: "Configure navigation preferences", 
                     comingSoon: "Coming Soon!",
                     placeholder: "Menu options will be available here"
+                }
+            },
+            uk: {
+                title: "⚙️ Налаштування",
+                background: {
+                    title: "🎨 Фон",
+                    description: "Налаштуйте візуальну тему додатку",
+                    options: {
+                        penguin: { name: "Тема Пінгвін", description: "Стандартна гірнича тема" },
+                        game: { name: "Ігрова тема", description: "Синя градієнтна тема" },
+                        code: { name: "Тема Код", description: "Зелена тема для розробників" }
+                    }
+                },
+                menu: {
+                    title: "🧭 Меню",
+                    description: "Налаштуйте параметри навігації",
+                    comingSoon: "Незабаром!",
+                    placeholder: "Тут будуть параметри меню"
+                }
+            },
+            ru: {
+                title: "⚙️ Настройки",
+                background: {
+                    title: "🎨 Фон",
+                    description: "Настройте визуальную тему приложения",
+                    options: {
+                        penguin: { name: "Тема Пингвин", description: "Стандартная горная тема" },
+                        game: { name: "Игровая тема", description: "Синяя градиентная тема" },
+                        code: { name: "Тема Код", description: "Зеленая тема для разработчиков" }
+                    }
+                },
+                menu: {
+                    title: "🧭 Меню",
+                    description: "Настройте параметры навигации",
+                    comingSoon: "Скоро!",
+                    placeholder: "Здесь будут параметры меню"
                 }
             }
         };
@@ -129,7 +165,31 @@ function selectBackground(theme) {
     applyBackgroundTheme(theme);
 }
 
-// Create settings content
+// Toggle settings group
+function toggleSettingsGroup(groupName) {
+    const content = document.querySelector(`[data-group="${groupName}"] .settings-group-content`);
+    const toggle = document.querySelector(`[data-group="${groupName}"] .settings-group-toggle`);
+    
+    if (content && toggle) {
+        const isExpanded = content.classList.contains('expanded');
+        
+        // Close all groups first
+        document.querySelectorAll('.settings-group-content').forEach(el => {
+            el.classList.remove('expanded');
+        });
+        document.querySelectorAll('.settings-group-toggle').forEach(el => {
+            el.classList.remove('expanded');
+        });
+        
+        // If this group wasn't expanded, expand it
+        if (!isExpanded) {
+            content.classList.add('expanded');
+            toggle.classList.add('expanded');
+        }
+    }
+}
+
+// Create settings content with collapsible groups
 function createSettingsContent() {
     const lang = getCurrentLanguage();
     const translations = settingsTranslations[lang] || settingsTranslations.en;
@@ -143,35 +203,45 @@ function createSettingsContent() {
         <div class="settings-groups">
             <!-- Background Settings -->
             <div class="settings-group" data-group="background">
-                <h2 class="settings-group-title">
-                    ${translations.background.title}
-                </h2>
-                <p class="settings-group-description">${translations.background.description}</p>
-                
-                <div class="background-options">
-                    ${Object.entries(BACKGROUND_CONFIGS).map(([key, config]) => `
-                        <div class="background-option bg-${key} ${currentBg === key ? 'active' : ''}" 
-                             data-background="${key}" 
-                             onclick="selectBackground('${key}')">
-                            <div class="background-preview"></div>
-                            <div class="background-name">${translations.background.options[key]?.name || key}</div>
-                            <div class="background-description">${translations.background.options[key]?.description || ''}</div>
-                        </div>
-                    `).join('')}
+                <div class="settings-group-header" onclick="toggleSettingsGroup('background')">
+                    <h2 class="settings-group-title">
+                        ${translations.background.title}
+                    </h2>
+                    <span class="settings-group-toggle">▼</span>
+                </div>
+                <div class="settings-group-content">
+                    <p class="settings-group-description">${translations.background.description}</p>
+                    
+                    <div class="background-options">
+                        ${Object.entries(BACKGROUND_CONFIGS).map(([key, config]) => `
+                            <div class="background-option bg-${key} ${currentBg === key ? 'active' : ''}" 
+                                 data-background="${key}" 
+                                 onclick="selectBackground('${key}')">
+                                <div class="background-preview"></div>
+                                <div class="background-name">${translations.background.options[key]?.name || key}</div>
+                                <div class="background-description">${translations.background.options[key]?.description || ''}</div>
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
             </div>
             
             <!-- Menu Settings -->
             <div class="settings-group" data-group="menu">
-                <h2 class="settings-group-title">
-                    ${translations.menu.title}
-                </h2>
-                <p class="settings-group-description">${translations.menu.description}</p>
-                
-                <div class="coming-soon">
-                    <div class="coming-soon-icon">🔄</div>
-                    <div class="coming-soon-text">${translations.menu.comingSoon}</div>
-                    <div class="coming-soon-description">${translations.menu.placeholder}</div>
+                <div class="settings-group-header" onclick="toggleSettingsGroup('menu')">
+                    <h2 class="settings-group-title">
+                        ${translations.menu.title}
+                    </h2>
+                    <span class="settings-group-toggle">▼</span>
+                </div>
+                <div class="settings-group-content">
+                    <p class="settings-group-description">${translations.menu.description}</p>
+                    
+                    <div class="coming-soon">
+                        <div class="coming-soon-icon">🔄</div>
+                        <div class="coming-soon-text">${translations.menu.comingSoon}</div>
+                        <div class="coming-soon-description">${translations.menu.placeholder}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -183,12 +253,12 @@ function updateSettingsLanguage(lang = null) {
     if (!settingsTranslations || !settingsInitialized) return;
     
     const language = lang || getCurrentLanguage();
-    console.log(`🌍 Updating settings for language: ${language}`);
+    console.log(`🌍 Updating settings language to: ${language}`);
     
     const settingsPage = document.getElementById('settingsPage');
     if (settingsPage) {
         settingsPage.innerHTML = createSettingsContent();
-        console.log('✅ Settings language updated');
+        console.log('✅ Settings language updated and content refreshed');
     }
 }
 
@@ -209,7 +279,7 @@ async function initializeSettings() {
         const settingsPage = document.getElementById('settingsPage');
         if (settingsPage) {
             settingsPage.innerHTML = createSettingsContent();
-            console.log('✅ Settings content created');
+            console.log('✅ Settings content created with collapsed groups');
         }
         
         // Apply saved background theme
@@ -235,6 +305,7 @@ async function initializeSettings() {
 // Make functions globally available
 window.initializeSettings = initializeSettings;
 window.selectBackground = selectBackground;
+window.toggleSettingsGroup = toggleSettingsGroup;
 window.updateSettingsLanguage = updateSettingsLanguage;
 window.applyBackgroundTheme = applyBackgroundTheme;
 
