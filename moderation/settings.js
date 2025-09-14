@@ -218,8 +218,10 @@ function createSettingsContent() {
                                  data-background="${key}" 
                                  onclick="selectBackground('${key}')">
                                 <div class="background-preview"></div>
-                                <div class="background-name">${translations.background.options[key]?.name || key}</div>
-                                <div class="background-description">${translations.background.options[key]?.description || ''}</div>
+                                <div class="background-info">
+                                    <div class="background-name">${translations.background.options[key]?.name || key}</div>
+                                    <div class="background-description">${translations.background.options[key]?.description || ''}</div>
+                                </div>
                             </div>
                         `).join('')}
                     </div>
