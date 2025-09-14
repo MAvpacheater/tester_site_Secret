@@ -1,8 +1,18 @@
-// Updated General JavaScript functions - Settings removed
+// Updated General JavaScript functions - Page state persistence added
 
 // Global language state
 let currentAppLanguage = 'en';
 let menuTranslations = null;
+
+// Page state management
+function saveCurrentPage(page) {
+    localStorage.setItem('armHelper_currentPage', page);
+    console.log(`Current page saved: ${page}`);
+}
+
+function getCurrentPage() {
+    return localStorage.getItem('armHelper_currentPage') || 'calculator';
+}
 
 // Language management functions
 function getCurrentAppLanguage() {
@@ -229,9 +239,12 @@ function updatePageTitles() {
     console.log(`✅ Page titles updated for ${currentAppLanguage}`);
 }
 
-// Page switching functionality
+// Page switching functionality with persistence
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
+    
+    // Save current page to localStorage
+    saveCurrentPage(page);
     
     // Remove active class from all pages and nav buttons
     document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
@@ -483,7 +496,7 @@ function loadSettingsFromStorage(key) {
 // Flag to prevent repeated initialization
 let appInitialized = false;
 
-// App initialization with enhanced language support
+// App initialization with enhanced language support and page state restoration
 async function initializeApp() {
     if (appInitialized) {
         console.log('⚠️ App already initialized');
@@ -520,12 +533,16 @@ async function initializeApp() {
     // Initialize categories
     initializeCategories();
     
-    // Initialize all modules first, THEN switch to calculator
+    // Initialize all modules first
     initializeAllModules();
     
-    // Start with calculator page
+    // Restore last page or default to calculator
+    const lastPage = getCurrentPage();
+    console.log(`🔄 Restoring last page: ${lastPage}`);
+    
     setTimeout(() => {
-        switchPage('calculator');
+        switchPage(lastPage);
+        console.log(`✅ Page restored to: ${lastPage}`);
     }, 200);
     
     // Enhanced click outside settings panel handler (for other modules)
@@ -560,7 +577,7 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed - Page state will be preserved on refresh');
+    console.log('✅ App initialization completed - Page state persistence enabled');
 }
 
 // Initialize all modules with proper DOM readiness checks
@@ -640,6 +657,7 @@ function debugPageStates() {
     document.querySelectorAll('.page').forEach(page => {
         console.log(`${page.id}: ${page.classList.contains('active') ? 'ACTIVE' : 'INACTIVE'}`);
     });
+    console.log(`Current saved page: ${getCurrentPage()}`);
     console.log('========================');
 }
 
@@ -694,3 +712,5 @@ window.getCurrentAppLanguage = getCurrentAppLanguage;
 window.saveAppLanguage = saveAppLanguage;
 window.updateMenuTranslations = updateMenuTranslations;
 window.updatePageTitles = updatePageTitles;
+window.saveCurrentPage = saveCurrentPage;
+window.getCurrentPage = getCurrentPage;
