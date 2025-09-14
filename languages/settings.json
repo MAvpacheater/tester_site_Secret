@@ -1,83 +1,29 @@
 {
   "en": {
     "title": "⚙️ Settings",
-    "background": {
-      "title": "🎨 Background",
-      "description": "Customize your app's visual theme",
-      "options": {
-        "penguin": {
-          "name": "Penguin Theme",
-          "description": "Default mining theme with penguin character"
-        },
-        "game": {
-          "name": "Gaming Theme",
-          "description": "Gaming-inspired blue gradient theme"
-        },
-        "code": {
-          "name": "Code Theme",
-          "description": "Developer-friendly green matrix theme"
-        }
-      }
-    },
-    "menu": {
-      "title": "🧭 Menu",
-      "description": "Configure navigation and menu preferences",
-      "comingSoon": "Coming Soon!",
-      "placeholder": "Menu customization options will be available here"
-    }
+    "background": "Background",
+    "penguin": "Penguin",
+    "game": "Game", 
+    "code": "Code",
+    "reset": "Reset Settings",
+    "confirmReset": "Are you sure you want to reset all settings?"
   },
   "uk": {
-    "title": "⚙️ Налаштування",
-    "background": {
-      "title": "🎨 Фон",
-      "description": "Налаштуйте візуальну тему додатку",
-      "options": {
-        "penguin": {
-          "name": "Тема Пінгвін",
-          "description": "Стандартна гірнича тема з персонажем пінгвіном"
-        },
-        "game": {
-          "name": "Ігрова тема",
-          "description": "Ігрова тема з синім градієнтом"
-        },
-        "code": {
-          "name": "Тема Код",
-          "description": "Зелена тема для розробників"
-        }
-      }
-    },
-    "menu": {
-      "title": "🧭 Меню",
-      "description": "Налаштуйте навігацію та параметри меню",
-      "comingSoon": "Незабаром!",
-      "placeholder": "Тут будуть доступні параметри налаштування меню"
-    }
+    "title": "⚙️ Налаштування", 
+    "background": "Фон",
+    "penguin": "Пінгвін",
+    "game": "Гра",
+    "code": "Код", 
+    "reset": "Скинути налаштування",
+    "confirmReset": "Ви впевнені, що хочете скинути всі налаштування?"
   },
   "ru": {
     "title": "⚙️ Настройки",
-    "background": {
-      "title": "🎨 Фон",
-      "description": "Настройте визуальную тему приложения",
-      "options": {
-        "penguin": {
-          "name": "Тема Пингвин",
-          "description": "Стандартная горная тема с персонажем пингвином"
-        },
-        "game": {
-          "name": "Игровая тема",
-          "description": "Игровая тема с синим градиентом"
-        },
-        "code": {
-          "name": "Тема Код",
-          "description": "Зеленая тема для разработчиков"
-        }
-      }
-    },
-    "menu": {
-      "title": "🧭 Меню",
-      "description": "Настройте навигацию и параметры меню",
-      "comingSoon": "Скоро!",
-      "placeholder": "Здесь будут доступны параметры настройки меню"
-    }
+    "background": "Фон", 
+    "penguin": "Пингвин",
+    "game": "Игра",
+    "code": "Код",
+    "reset": "Сбросить настройки",
+    "confirmReset": "Вы уверены, что хотите сбросить все настройки?"
   }
 }
