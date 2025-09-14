@@ -150,7 +150,7 @@ async function loadContent() {
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully - Settings removed');
+            console.log('✅ Content loaded successfully - Settings removed, page state preserved');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
