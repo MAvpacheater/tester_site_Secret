@@ -560,7 +560,7 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed');
+    console.log('✅ App initialization completed - Page state will be preserved on refresh');
 }
 
 // Initialize all modules with proper DOM readiness checks
