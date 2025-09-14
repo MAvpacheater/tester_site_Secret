@@ -535,8 +535,19 @@ body::before {
         padding: 12px 10px;
     }
     
+    .control-buttons {
+        gap: 8px;
+    }
+    
     .language-flags {
         gap: 8px;
+    }
+    
+    .settings-btn-sidebar {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1em;
+        padding: 6px;
     }
     
     .lang-flag-btn {
