@@ -578,14 +578,6 @@ body::before {
 }
 
 @media (max-width: 480px) {
-    .settings-gear-btn {
-        bottom: 60px;
-        left: 10px;
-        width: 36px;
-        height: 36px;
-        font-size: 18px;
-    }
-    
     .sidebar {
         width: 280px;
         left: -280px;
@@ -601,6 +593,17 @@ body::before {
     
     .sidebar-controls {
         padding: 12px 10px;
+    }
+    
+    .control-buttons {
+        gap: 8px;
+    }
+    
+    .settings-btn-sidebar {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1em;
+        padding: 6px;
     }
     
     .language-flags {
