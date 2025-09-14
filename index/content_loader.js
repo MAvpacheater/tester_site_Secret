@@ -133,12 +133,15 @@ async function loadContent() {
                         </button>
                     </div>
                     
-                    <!-- Language Flags - Settings button removed -->
+                    <!-- Language Flags and Settings Button -->
                     <div class="sidebar-controls">
-                        <div class="language-flags">
-                            <button class="lang-flag-btn active" data-lang="en" onclick="switchAppLanguage('en')" title="English">🇺🇸</button>
-                            <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="Українська">🇺🇦</button>
-                            <button class="lang-flag-btn" data-lang="ru" onclick="switchAppLanguage('ru')" title="Русский">🇷🇺</button>
+                        <div class="control-buttons">
+                            <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">⚙️</button>
+                            <div class="language-flags">
+                                <button class="lang-flag-btn active" data-lang="en" onclick="switchAppLanguage('en')" title="English">🇺🇸</button>
+                                <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="Українська">🇺🇦</button>
+                                <button class="lang-flag-btn" data-lang="ru" onclick="switchAppLanguage('ru')" title="Русский">🇷🇺</button>
+                            </div>
                         </div>
                     </div>
                 </div>
