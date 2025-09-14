@@ -1,204 +1,215 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arm Helper</title>
-    
-    <!-- Preload critical resources -->
-    <link rel="preload" href="general.css" as="style">
-    <link rel="preload" href="general.js" as="script">
-    
-    <!-- Critical CSS - load immediately -->
-    <link rel="stylesheet" href="general.css">
-    
-    <!-- Non-critical CSS - load deferred (settings.css removed) -->
-    <link rel="stylesheet" href="calc/calculator.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="calc/arms.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="calc/grind.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/boosts.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/shiny.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/secret.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/codes.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/aura.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/trainer.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/charms.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/potions.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/worlds.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="other/updates.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="other/peoples.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="other/help.css" media="print" onload="this.media='all'">
-    
-    <!-- Inline critical CSS for loading screen -->
-    <style>
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            font-family: system-ui, -apple-system, sans-serif;
-            color: white;
-            font-size: 18px;
-            transition: opacity 0.3s ease-out;
-        }
-        
-        .loading-content {
-            text-align: center;
-        }
-        
-        .loading-icon {
-            font-size: 24px;
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .loading-subtitle {
-            font-size: 14px;
-            margin-top: 10px;
-            opacity: 0.8;
-        }
-    </style>
-</head>
-<body>
-    <!-- Optimized loading screen -->
-    <div id="loading-screen">
-        <div class="loading-content">
-            <div class="loading-icon">🚀</div>
-            <div>Loading Arm Helper...</div>
-            <div class="loading-subtitle">Initializing...</div>
-        </div>
-    </div>
+// Content loader script - Settings removed
+console.log('🔄 Loading content...');
 
-    <!-- App content container -->
-    <div id="app-content"></div>
-    
-    <!-- Signature -->
-    <div class="signature">Your ideas on @privatefanat_dep (telegram)</div>
-    
-    <!-- Critical JavaScript - load immediately -->
-    <script src="general.js"></script>
-    
-    <!-- Non-critical JavaScript - load deferred (settings.js removed) -->
-    <script>
-        // Deferred script loading function
-        function loadScriptsDeferred() {
-            const scripts = [
-                // Calculator modules
-                'calc/calculator.js',
-                'calc/arm.js', 
-                'calc/grind.js',
-                
-                // Info modules
-                'info/boosts.js',
-                'info/shiny.js',
-                'info/secret.js',
-                'info/codes.js',
-                'info/aura.js',
-                'info/trainer.js',
-                'info/charms.js',
-                'info/potions.js',
-                'info/worlds.js',
-                
-                // Other modules (settings.js removed)
-                'other/updates.js',
-                'other/peoples.js',
-                'other/help.js'
-            ];
-            
-            let loadedCount = 0;
-            const totalScripts = scripts.length;
-            
-            scripts.forEach(src => {
-                const script = document.createElement('script');
-                script.src = src;
-                script.defer = true;
-                script.onload = () => {
-                    loadedCount++;
-                    if (loadedCount === totalScripts) {
-                        // All scripts loaded, now load content
-                        const contentScript = document.createElement('script');
-                        contentScript.src = 'index/content_loader.js';
-                        contentScript.onload = () => updateLoadingText('Ready!');
-                        document.head.appendChild(contentScript);
-                    }
-                };
-                script.onerror = () => {
-                    console.warn(`Failed to load script: ${src}`);
-                    loadedCount++; // Still count as loaded to prevent hanging
-                    if (loadedCount === totalScripts) {
-                        const contentScript = document.createElement('script');
-                        contentScript.src = 'index/content_loader.js';
-                        contentScript.onload = () => updateLoadingText('Ready!');
-                        document.head.appendChild(contentScript);
-                    }
-                };
-                document.head.appendChild(script);
-            });
-        }
-        
-        function updateLoadingText(text) {
-            const subtitle = document.querySelector('.loading-subtitle');
-            if (subtitle) subtitle.textContent = text;
-        }
-        
-        function hideLoadingScreen() {
-            const loadingScreen = document.getElementById('loading-screen');
-            if (loadingScreen) {
-                loadingScreen.style.opacity = '0';
-                setTimeout(() => loadingScreen.remove(), 300);
-            }
-        }
-        
-        // Initialize loading process
-        document.addEventListener('DOMContentLoaded', function() {
-            updateLoadingText('Loading modules...');
-            
-            // Start loading scripts
-            setTimeout(loadScriptsDeferred, 100);
-            
-            // Hide loading screen after content is ready
-            setTimeout(() => {
-                updateLoadingText('Ready!');
-                setTimeout(hideLoadingScreen, 200);
-            }, 1500);
-        });
+// Function to load content
+async function loadContent() {
+    try {
+        // Load calculator, info, and other content (no moderation content)
+        const [calcResponse, infoResponse, otherResponse] = await Promise.all([
+            fetch('index/content_calc.html'),
+            fetch('index/content_info.html'),
+            fetch('index/content_other.html')
+        ]);
 
-        // Error handling
-        window.addEventListener('error', function(e) {
-            console.error('Error:', e.error);
-            
-            const loadingScreen = document.getElementById('loading-screen');
-            if (loadingScreen) {
-                loadingScreen.innerHTML = `
-                    <div class="loading-content" style="color: #ff6b6b;">
-                        <div style="font-size: 24px; margin-bottom: 20px;">⚠️</div>
-                        <div>Loading Error</div>
-                        <div style="font-size: 14px; margin-top: 10px;">Please refresh the page</div>
-                        <button onclick="location.reload()" style="
-                            margin-top: 15px;
-                            padding: 8px 16px;
-                            background: rgba(255, 255, 255, 0.2);
-                            border: 1px solid rgba(255, 255, 255, 0.3);
-                            color: white;
-                            border-radius: 5px;
-                            cursor: pointer;
-                            font-size: 14px;
-                        ">Refresh</button>
+        if (!calcResponse.ok || !infoResponse.ok || !otherResponse.ok) {
+            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, other: ${otherResponse.status}`);
+        }
+        
+        const [calcContent, infoContent, otherContent] = await Promise.all([
+            calcResponse.text(),
+            infoResponse.text(),
+            otherResponse.text()
+        ]);
+
+        const appContent = document.getElementById('app-content');
+        
+        if (appContent) {
+            // Create the main structure with language flags only
+            const fullContent = `
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+
+                <!-- Sidebar Navigation -->
+                <div class="sidebar" id="sidebar">
+                    <div class="sidebar-header">
+                        <h3>Menu</h3>
+                        <button class="close-sidebar" onclick="closeSidebar()">×</button>
                     </div>
-                `;
+                    <div class="nav-buttons">
+                        <!-- Calculator Category -->
+                        <div class="nav-category">
+                            <div class="category-header" data-category="calculatorButtons" onclick="toggleCategory('calculatorButtons')">
+                                <div class="category-title">
+                                    <span class="category-icon">🧮</span>
+                                    <span>Calculator</span>
+                                </div>
+                                <span class="category-toggle">▼</span>
+                            </div>
+                            <div class="category-buttons" id="calculatorButtons">
+                                <button class="nav-btn active" data-page="calculator" onclick="switchPage('calculator')">
+                                    🐾 Pet Calculator
+                                </button>
+                                <button class="nav-btn" data-page="arm" onclick="switchPage('arm')">
+                                    💪 Arm Calculator
+                                </button>
+                                <button class="nav-btn" data-page="grind" onclick="switchPage('grind')">
+                                    🏋️‍♂️ Grind Calculator
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Info Category -->
+                        <div class="nav-category">
+                            <div class="category-header" data-category="infoButtons" onclick="toggleCategory('infoButtons')">
+                                <div class="category-title">
+                                    <span class="category-icon">📋</span>
+                                    <span>Info</span>
+                                </div>
+                                <span class="category-toggle">▼</span>
+                            </div>
+                            <div class="category-buttons" id="infoButtons">
+                                <button class="nav-btn" data-page="boosts" onclick="switchPage('boosts')">
+                                    🚀 Boosts
+                                </button>
+                                <button class="nav-btn" data-page="shiny" onclick="switchPage('shiny')">
+                                    ✨ Shiny Stats
+                                </button>
+                                <button class="nav-btn" data-page="secret" onclick="switchPage('secret')">
+                                    🔮 Secret Pets
+                                </button>
+                                <button class="nav-btn" data-page="codes" onclick="switchPage('codes')">
+                                    🎁 Codes
+                                </button>
+                                <button class="nav-btn" data-page="aura" onclick="switchPage('aura')">
+                                    🌟 Aura
+                                </button>
+                                <button class="nav-btn" data-page="trainer" onclick="switchPage('trainer')">
+                                    🏆 Trainer
+                                </button>
+                                <button class="nav-btn" data-page="charms" onclick="switchPage('charms')">
+                                    🔮 Charms
+                                </button>
+                                <button class="nav-btn" data-page="potions" onclick="switchPage('potions')">
+                                    🧪 Potions & Food
+                                </button>
+                                <button class="nav-btn" data-page="worlds" onclick="switchPage('worlds')">
+                                    🌍 Worlds
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Others Category -->
+                        <div class="nav-category">
+                            <div class="category-header" data-category="othersButtons" onclick="toggleCategory('othersButtons')">
+                                <div class="category-title">
+                                    <span class="category-icon">🔧</span>
+                                    <span>Others</span>
+                                </div>
+                                <span class="category-toggle">▼</span>
+                            </div>
+                            <div class="category-buttons" id="othersButtons">
+                                <button class="nav-btn" data-page="updates" onclick="switchPage('updates')">
+                                    📝 Updates
+                                </button>
+                                <button class="nav-btn" data-page="help" onclick="switchPage('help')">
+                                    🆘 Help
+                                </button>
+                                <button class="nav-btn" data-page="peoples" onclick="switchPage('peoples')">
+                                    🙏 Peoples
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Section - Login at top -->
+                    <div class="sidebar-user" id="sidebarUser" style="margin-top: auto; border-bottom: 2px solid #8B4513; border-top: none;">
+                        <button class="auth-btn-sidebar disabled" id="authButton" title="Coming Soon!" onclick="handleAuthAction()">
+                            Login (Soon...)
+                        </button>
+                    </div>
+                    
+                    <!-- Language Flags only -->
+                    <div class="sidebar-controls" style="border-top: none; justify-content: center;">
+                        <!-- Language Flags centered -->
+                        <div class="language-flags">
+                            <button class="lang-flag-btn active" data-lang="en" onclick="switchAppLanguage('en')" title="English">🇺🇸</button>
+                            <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="Українська">🇺🇦</button>
+                            <button class="lang-flag-btn" data-lang="ru" onclick="switchAppLanguage('ru')" title="Русский">🇷🇺</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Overlay -->
+                <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+                   
+                <div class="container">
+                    ${calcContent}
+                    ${infoContent}
+                    ${otherContent}
+                </div>
+            `;
+
+            appContent.innerHTML = fullContent;
+            console.log('✅ Content loaded successfully - Settings removed');
+            
+            // Dispatch event that content is loaded
+            document.dispatchEvent(new CustomEvent('contentLoaded'));
+            
+            // Wait a bit for DOM to be ready, then initialize
+            setTimeout(() => {
+                if (typeof initializeApp === 'function') {
+                    initializeApp();
+                } else {
+                    console.error('❌ initializeApp function not found');
+                }
+            }, 100);
+        } else {
+            console.error('❌ app-content element not found');
+        }
+    } catch (error) {
+        console.error('❌ Error loading content:', error);
+        
+        // Dispatch error event
+        document.dispatchEvent(new CustomEvent('contentLoadError', { 
+            detail: error 
+        }));
+        
+        // Fallback - try to initialize anyway
+        setTimeout(() => {
+            if (typeof initializeApp === 'function') {
+                initializeApp();
             }
-        });
-    </script>
-</body>
-</html>
+        }, 500);
+    }
+}
+
+// Enhanced auth action handler
+function handleAuthAction() {
+    console.log('⚠️ Login feature is disabled - coming soon');
+    // Show a subtle notification instead of doing nothing
+    const authBtn = document.getElementById('authButton');
+    if (authBtn) {
+        const originalText = authBtn.textContent;
+        authBtn.textContent = '🔒 Coming Soon!';
+        authBtn.style.transform = 'scale(0.95)';
+        
+        setTimeout(() => {
+            authBtn.textContent = originalText;
+            authBtn.style.transform = 'scale(1)';
+        }, 1000);
+    }
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        loadContent();
+    });
+} else {
+    loadContent();
+}
+
+// Make functions globally available
+window.handleAuthAction = handleAuthAction;
+
+console.log('✅ Content loader updated - Settings removed, language flags centered');
