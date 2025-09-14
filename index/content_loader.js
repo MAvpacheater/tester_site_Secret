@@ -1,32 +1,30 @@
-// Final content loader script - With proper Settings and Language flags on RIGHT side
+// Content loader script - Settings removed
 console.log('🔄 Loading content...');
 
 // Function to load content
 async function loadContent() {
     try {
-        // Load calculator, info, other, and moderation content
-        const [calcResponse, infoResponse, otherResponse, moderationResponse] = await Promise.all([
+        // Load calculator, info, and other content (no moderation content)
+        const [calcResponse, infoResponse, otherResponse] = await Promise.all([
             fetch('index/content_calc.html'),
             fetch('index/content_info.html'),
-            fetch('index/content_other.html'),
-            fetch('index/content_moderation.html')
+            fetch('index/content_other.html')
         ]);
 
-        if (!calcResponse.ok || !infoResponse.ok || !otherResponse.ok || !moderationResponse.ok) {
-            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, other: ${otherResponse.status}, moderation: ${moderationResponse.status}`);
+        if (!calcResponse.ok || !infoResponse.ok || !otherResponse.ok) {
+            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, other: ${otherResponse.status}`);
         }
         
-        const [calcContent, infoContent, otherContent, moderationContent] = await Promise.all([
+        const [calcContent, infoContent, otherContent] = await Promise.all([
             calcResponse.text(),
             infoResponse.text(),
-            otherResponse.text(),
-            moderationResponse.text()
+            otherResponse.text()
         ]);
 
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure with FIXED layout: Settings LEFT, Language flags RIGHT
+            // Create the main structure with language flags only
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -110,9 +108,6 @@ async function loadContent() {
                                 <span class="category-toggle">▼</span>
                             </div>
                             <div class="category-buttons" id="othersButtons">
-                                <button class="nav-btn" data-page="settings" onclick="switchPage('settings')">
-                                    ⚙️ Settings
-                                </button>
                                 <button class="nav-btn" data-page="updates" onclick="switchPage('updates')">
                                     📝 Updates
                                 </button>
@@ -133,14 +128,9 @@ async function loadContent() {
                         </button>
                     </div>
                     
-                    <!-- CORRECTED: Settings LEFT, Language flags RIGHT -->
-                    <div class="sidebar-controls" style="border-top: none;">
-                        <!-- Settings Button - LEFT SIDE -->
-                        <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">
-                            ⚙️
-                        </button>
-                        
-                        <!-- Language Flags - RIGHT SIDE (as in image 2) -->
+                    <!-- Language Flags only -->
+                    <div class="sidebar-controls" style="border-top: none; justify-content: center;">
+                        <!-- Language Flags centered -->
                         <div class="language-flags">
                             <button class="lang-flag-btn active" data-lang="en" onclick="switchAppLanguage('en')" title="English">🇺🇸</button>
                             <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="Українська">🇺🇦</button>
@@ -156,12 +146,11 @@ async function loadContent() {
                     ${calcContent}
                     ${infoContent}
                     ${otherContent}
-                    ${moderationContent}
                 </div>
             `;
 
             appContent.innerHTML = fullContent;
-            console.log('✅ Content loaded successfully - Language flags are now on the RIGHT side');
+            console.log('✅ Content loaded successfully - Settings removed');
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -223,4 +212,4 @@ if (document.readyState === 'loading') {
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
 
-console.log('✅ FIXED content_loader.js - Language flags moved to RIGHT side as shown in image 2');
+console.log('✅ Content loader updated - Settings removed, language flags centered');
