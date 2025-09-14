@@ -6,7 +6,7 @@ let settingsTranslations = null;
 const backgroundOptions = {
     penguin: {
         icon: '🐧',
-        url: 'https://i.postimg.cc/43yVBkY8/Generated-image-1.png'
+        url: 'https://i.postimg.cc/rmW86W6S/Gemini-Generated-Image-fh66csfh66csfh66.png'
     },
     game: {
         icon: '🎮', 
@@ -14,7 +14,7 @@ const backgroundOptions = {
     },
     code: {
         icon: '💻',
-        url: 'https://i.postimg.cc/9FXzrptm/code-background.jpg'
+        url: 'https://i.postimg.cc/nrvZbvKw/image.png'
     }
 };
 
