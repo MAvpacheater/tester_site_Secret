@@ -86,7 +86,7 @@ async function loadSecretTranslations() {
                     { name: "Kingdom Hydra", boosts: "Percentage 225% | Power 340m", world: "World 13" },
                     { name: "Sapphire Cat", boosts: "Percentage 230% | Power 385m", world: "World 14" },
                     { name: "Heavenly Secret", boosts: "Percentage 240% | Power 425m", world: "World 15" },
-                    { name: "???", boosts: "Percentage ??? | Power ???", world: "World 21" },
+                    { name: "Mega Desert Snake", boosts: "Percentage 340% | Power 1.3b", world: "World 21" },
                     { name: "Halloween Secret", boosts: "Percentage 240% | Power 435m", world: "Halloween" },
                     { name: "Mega American Serpent", boosts: "Percentage 315% | Power 1.3b", world: "USA" }
                 ],
