@@ -189,66 +189,7 @@ function toggleSettingsGroup(groupName) {
     }
 }
 
-// Create settings content with collapsible groups
-function createSettingsContent() {
-    const lang = getCurrentLanguage();
-    const translations = settingsTranslations[lang] || settingsTranslations.en;
-    const currentBg = loadSettings().background || 'penguin';
-    
-    return `
-        <div class="settings-header">
-            <h1 class="settings-title">${translations.title}</h1>
-        </div>
-        
-        <div class="settings-groups">
-            <!-- Background Settings -->
-            <div class="settings-group" data-group="background">
-                <div class="settings-group-header" onclick="toggleSettingsGroup('background')">
-                    <h2 class="settings-group-title">
-                        ${translations.background.title}
-                    </h2>
-                    <span class="settings-group-toggle">▼</span>
-                </div>
-                <div class="settings-group-content">
-                    <p class="settings-group-description">${translations.background.description}</p>
-                    
-                    <div class="background-options">
-                        ${Object.entries(BACKGROUND_CONFIGS).map(([key, config]) => `
-                            <div class="background-option bg-${key} ${currentBg === key ? 'active' : ''}" 
-                                 data-background="${key}" 
-                                 onclick="selectBackground('${key}')">
-                                <div class="background-preview"></div>
-                                <div class="background-info">
-                                    <div class="background-name">${translations.background.options[key]?.name || key}</div>
-                                    <div class="background-description">${translations.background.options[key]?.description || ''}</div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Menu Settings -->
-            <div class="settings-group" data-group="menu">
-                <div class="settings-group-header" onclick="toggleSettingsGroup('menu')">
-                    <h2 class="settings-group-title">
-                        ${translations.menu.title}
-                    </h2>
-                    <span class="settings-group-toggle">▼</span>
-                </div>
-                <div class="settings-group-content">
-                    <p class="settings-group-description">${translations.menu.description}</p>
-                    
-                    <div class="coming-soon">
-                        <div class="coming-soon-icon">🔄</div>
-                        <div class="coming-soon-text">${translations.menu.comingSoon}</div>
-                        <div class="coming-soon-description">${translations.menu.placeholder}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-}
+// Create settings content with collapsible groups - REMOVED, using HTML structure
 
 // Update settings language
 function updateSettingsLanguage(lang = null) {
