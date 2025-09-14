@@ -193,7 +193,7 @@
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .settings-title {
-        font-size: 1.8em;
+        font-size: 2em;
         margin-bottom: 20px;
     }
     
@@ -218,11 +218,23 @@
     .section-title {
         font-size: 1.3em;
     }
+    
+    .settings-container {
+        max-width: 100%;
+        padding: 15px;
+    }
+    
+    .settings-btn-sidebar {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
+        padding: 8px;
+    }
 }
 
 @media (max-width: 480px) {
     .settings-container {
-        padding: 15px 0;
+        padding: 10px;
     }
     
     .settings-title {
@@ -243,5 +255,12 @@
     
     .option-description {
         font-size: 0.8em;
+    }
+    
+    .settings-btn-sidebar {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1em;
+        padding: 6px;
     }
 }
