@@ -60,6 +60,7 @@ async function loadMenuTranslations() {
                     charms: "🔮 Charms",
                     potions: "🧪 Potions & Food",
                     worlds: "🌍 Worlds",
+                    settings: "⚙️ Settings",
                     updates: "📝 Updates",
                     help: "🆘 Help",
                     peoples: "🙏 Peoples"
@@ -119,7 +120,8 @@ async function switchAppLanguage(lang) {
         { name: 'secret', func: 'updateSecretLanguage' },
         { name: 'peoples', func: 'updatePeoplesLanguage' },
         { name: 'help', func: 'updateHelpLanguage' },
-        { name: 'updates', func: 'updateUpdatesLanguage' }
+        { name: 'updates', func: 'updateUpdatesLanguage' },
+        { name: 'settings', func: 'updateSettingsLanguage' }
     ];
     
     moduleNotifications.forEach(({ name, func }) => {
@@ -211,6 +213,7 @@ function updatePageTitles() {
         'charmsPage': 'charms',
         'potionsPage': 'potions',
         'worldsPage': 'worlds',
+        'settingsPage': 'settings',
         'updatesPage': 'updates',
         'helpPage': 'help',
         'peoplesPage': 'peoples'
@@ -220,7 +223,7 @@ function updatePageTitles() {
     Object.entries(pageTitleMappings).forEach(([pageId, translationKey]) => {
         const page = document.getElementById(pageId);
         if (page && translations.pages[translationKey]) {
-            const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title, .updates-title');
+            const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title, .updates-title, .settings-title');
             if (titleElement) {
                 titleElement.textContent = translations.pages[translationKey];
                 console.log(`✅ Updated title for ${pageId}: ${translations.pages[translationKey]}`);
@@ -272,6 +275,7 @@ function switchPage(page) {
         'secret': 'secret',
         'potions': 'potions',
         'worlds': 'worlds',
+        'settings': 'settings',
         'updates': 'updates',
         'help': 'help',
         'peoples': 'peoples'
@@ -380,6 +384,14 @@ function initializePageContent(page) {
                 initializeWorlds();
             } else {
                 console.error('❌ initializeWorlds function not found');
+            }
+            break;
+        case 'settings':
+            console.log('⚙️ Initializing Settings page...');
+            if (typeof initializeSettings === 'function') {
+                initializeSettings();
+            } else {
+                console.error('❌ initializeSettings function not found');
             }
             break;
         case 'updates':
@@ -596,6 +608,7 @@ function initializeAllModules() {
         'initializeCharms',
         'initializeCodes',
         'initializeWorlds',
+        'initializeSettings',
         'initializeUpdates',
         'initializeHelp',
         'initializePeoples'
@@ -608,7 +621,7 @@ function initializeAllModules() {
                 if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || 
                     moduleName === 'initializeGrind' || moduleName === 'initializePeoples' ||
                     moduleName === 'initializeWorlds' || moduleName === 'initializeHelp' ||
-                    moduleName === 'initializeUpdates') {
+                    moduleName === 'initializeUpdates' || moduleName === 'initializeSettings') {
                     setTimeout(() => {
                         try {
                             // Force reinitialization by resetting flags
@@ -629,6 +642,9 @@ function initializeAllModules() {
                             }
                             if (moduleName === 'initializeUpdates' && window.updatesInitialized) {
                                 window.updatesInitialized = false;
+                            }
+                            if (moduleName === 'initializeSettings' && window.settingsInitialized) {
+                                window.settingsInitialized = false;
                             }
                             
                             window[moduleName]();
@@ -682,6 +698,9 @@ function forceReinitializeModule(moduleName) {
     }
     if (moduleName === 'updates' && typeof window !== 'undefined') {
         window.updatesInitialized = false;
+    }
+    if (moduleName === 'settings' && typeof window !== 'undefined') {
+        window.settingsInitialized = false;
     }
     
     // Call initialization
