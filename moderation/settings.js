@@ -1,24 +1,93 @@
-// Settings functionality - With collapsible categories
-console.log('⚙️ Loading Settings module...');
-
-let settingsTranslations = null;
+// Moderation Settings - Background Management
 let settingsInitialized = false;
+let settingsTranslations = null;
 
 // Background configurations
-const BACKGROUND_CONFIGS = {
+const backgroundOptions = {
     penguin: {
-        key: 'penguin',
-        gradient: 'linear-gradient(135deg, rgba(139, 69, 19, 0.4), rgba(101, 67, 33, 0.6))'
+        icon: '🐧',
+        url: 'https://i.postimg.cc/43yVBkY8/Generated-image-1.png'
     },
     game: {
-        key: 'game', 
-        gradient: 'linear-gradient(135deg, rgba(25, 118, 210, 0.4), rgba(13, 71, 161, 0.8))'
+        icon: '🎮',
+        url: 'https://i.postimg.cc/VNpqK2Ht/game-background.jpg'
     },
     code: {
-        key: 'code',
-        gradient: 'linear-gradient(135deg, rgba(46, 125, 50, 0.4), rgba(1, 87, 155, 0.8))'
+        icon: '💻',
+        url: 'https://i.postimg.cc/9FXzrptm/code-background.jpg'
     }
 };
+
+// Get current background setting
+function getCurrentBackground() {
+    const saved = localStorage.getItem('armHelper_background');
+    return saved || 'penguin';
+}
+
+// Save background setting
+function saveBackground(background) {
+    localStorage.setItem('armHelper_background', background);
+    console.log(`Background saved: ${background}`);
+}
+
+// Apply background to body
+function applyBackground(background) {
+    const config = backgroundOptions[background];
+    if (!config) {
+        console.error(`Background ${background} not found`);
+        return;
+    }
+    
+    const body = document.body;
+    const currentBg = body.style.backgroundImage;
+    const newBg = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${config.url}') center center / cover no-repeat`;
+    
+    if (currentBg !== newBg) {
+        body.style.backgroundImage = newBg;
+        console.log(`Background applied: ${background}`);
+    }
+}
+
+// Change background
+function changeBackground(background) {
+    if (!backgroundOptions[background]) {
+        console.error(`Invalid background: ${background}`);
+        return;
+    }
+    
+    // Save setting
+    saveBackground(background);
+    
+    // Apply background
+    applyBackground(background);
+    
+    // Update UI
+    updateBackgroundUI();
+    
+    console.log(`Background changed to: ${background}`);
+}
+
+// Update background UI
+function updateBackgroundUI() {
+    const currentBg = getCurrentBackground();
+    
+    // Update active states
+    document.querySelectorAll('.background-option').forEach(option => {
+        option.classList.remove('active');
+        if (option.dataset.background === currentBg) {
+            option.classList.add('active');
+        }
+    });
+}
+
+// Reset settings to default
+function resetSettings() {
+    if (confirm(getTranslation('confirmReset', 'Are you sure you want to reset all settings?'))) {
+        localStorage.removeItem('armHelper_background');
+        changeBackground('penguin');
+        console.log('Settings reset to default');
+    }
+}
 
 // Load settings translations
 async function loadSettingsTranslations() {
@@ -31,178 +100,119 @@ async function loadSettingsTranslations() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         settingsTranslations = await response.json();
-        console.log('✅ Settings translations loaded successfully');
+        console.log('✅ Settings translations loaded');
         return settingsTranslations;
     } catch (error) {
         console.error('❌ Error loading settings translations:', error);
-        // Fallback translations
+        // Fallback
         settingsTranslations = {
             en: {
                 title: "⚙️ Settings",
-                background: {
-                    title: "🎨 Background",
-                    description: "Customize your app's visual theme",
-                    options: {
-                        penguin: { name: "Penguin Theme", description: "Default mining theme" },
-                        game: { name: "Gaming Theme", description: "Blue gradient theme" },
-                        code: { name: "Code Theme", description: "Green matrix theme" }
-                    }
-                },
-                menu: {
-                    title: "🧭 Menu",
-                    description: "Configure navigation preferences", 
-                    comingSoon: "Coming Soon!",
-                    placeholder: "Menu options will be available here"
-                }
-            },
-            uk: {
-                title: "⚙️ Налаштування",
-                background: {
-                    title: "🎨 Фон",
-                    description: "Налаштуйте візуальну тему додатку",
-                    options: {
-                        penguin: { name: "Тема Пінгвін", description: "Стандартна гірнича тема" },
-                        game: { name: "Ігрова тема", description: "Синя градієнтна тема" },
-                        code: { name: "Тема Код", description: "Зелена тема для розробників" }
-                    }
-                },
-                menu: {
-                    title: "🧭 Меню",
-                    description: "Налаштуйте параметри навігації",
-                    comingSoon: "Незабаром!",
-                    placeholder: "Тут будуть параметри меню"
-                }
-            },
-            ru: {
-                title: "⚙️ Настройки",
-                background: {
-                    title: "🎨 Фон",
-                    description: "Настройте визуальную тему приложения",
-                    options: {
-                        penguin: { name: "Тема Пингвин", description: "Стандартная горная тема" },
-                        game: { name: "Игровая тема", description: "Синяя градиентная тема" },
-                        code: { name: "Тема Код", description: "Зеленая тема для разработчиков" }
-                    }
-                },
-                menu: {
-                    title: "🧭 Меню",
-                    description: "Настройте параметры навигации",
-                    comingSoon: "Скоро!",
-                    placeholder: "Здесь будут параметры меню"
-                }
+                background: "Background",
+                penguin: "Penguin",
+                game: "Game",
+                code: "Code",
+                reset: "Reset Settings",
+                confirmReset: "Are you sure you want to reset all settings?"
             }
         };
         return settingsTranslations;
     }
 }
 
-// Get current app language
-function getCurrentLanguage() {
-    return localStorage.getItem('armHelper_language') || 'en';
-}
-
-// Save settings to localStorage
-function saveSettings(settings) {
-    const currentSettings = {
-        ...loadSettings(),
-        ...settings,
-        timestamp: Date.now()
-    };
+// Get translation
+function getTranslation(key, fallback) {
+    const currentLang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
     
-    localStorage.setItem('armHelper_settings', JSON.stringify(currentSettings));
-    console.log('✅ Settings saved:', currentSettings);
-}
-
-// Load settings from localStorage
-function loadSettings() {
-    try {
-        const settings = localStorage.getItem('armHelper_settings');
-        if (settings) {
-            const parsed = JSON.parse(settings);
-            console.log('📥 Settings loaded:', parsed);
-            return parsed;
-        }
-    } catch (error) {
-        console.error('❌ Error loading settings:', error);
+    if (settingsTranslations && settingsTranslations[currentLang] && settingsTranslations[currentLang][key]) {
+        return settingsTranslations[currentLang][key];
     }
     
-    return {
-        background: 'penguin',
-        language: 'en'
-    };
+    return fallback || key;
 }
 
-// Apply background theme
-function applyBackgroundTheme(theme) {
-    const config = BACKGROUND_CONFIGS[theme];
-    if (!config) {
-        console.error(`❌ Unknown background theme: ${theme}`);
+// Update settings language
+async function updateSettingsLanguage(lang = null) {
+    if (!settingsInitialized) return;
+    
+    const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en');
+    
+    await loadSettingsTranslations();
+    
+    if (!settingsTranslations[currentLang]) {
+        console.warn(`Settings language ${currentLang} not found, using English`);
         return;
     }
     
-    console.log(`🎨 Applying background theme: ${theme}`);
-    document.body.style.background = config.gradient;
+    const translations = settingsTranslations[currentLang];
     
-    updateBackgroundSelection(theme);
-    saveSettings({ background: theme });
+    // Update title
+    const titleElement = document.querySelector('#settingsPage .settings-title');
+    if (titleElement) {
+        titleElement.textContent = translations.title;
+    }
     
-    console.log(`✅ Background theme applied: ${theme}`);
-}
-
-// Update background selection UI
-function updateBackgroundSelection(selectedTheme) {
-    document.querySelectorAll('.background-option').forEach(option => {
-        option.classList.remove('active');
-        if (option.dataset.background === selectedTheme) {
-            option.classList.add('active');
+    // Update section title
+    const sectionTitle = document.querySelector('#settingsPage .section-title span:last-child');
+    if (sectionTitle) {
+        sectionTitle.textContent = translations.background;
+    }
+    
+    // Update background option names
+    Object.keys(backgroundOptions).forEach(bg => {
+        const option = document.querySelector(`[data-background="${bg}"] .option-name`);
+        if (option && translations[bg]) {
+            option.textContent = translations[bg];
         }
     });
-}
-
-// Handle background selection
-function selectBackground(theme) {
-    console.log(`🎯 Background selected: ${theme}`);
-    applyBackgroundTheme(theme);
-}
-
-// Toggle settings group
-function toggleSettingsGroup(groupName) {
-    const content = document.querySelector(`[data-group="${groupName}"] .settings-group-content`);
-    const toggle = document.querySelector(`[data-group="${groupName}"] .settings-group-toggle`);
     
-    if (content && toggle) {
-        const isExpanded = content.classList.contains('expanded');
-        
-        // Close all groups first
-        document.querySelectorAll('.settings-group-content').forEach(el => {
-            el.classList.remove('expanded');
-        });
-        document.querySelectorAll('.settings-group-toggle').forEach(el => {
-            el.classList.remove('expanded');
-        });
-        
-        // If this group wasn't expanded, expand it
-        if (!isExpanded) {
-            content.classList.add('expanded');
-            toggle.classList.add('expanded');
-        }
+    // Update reset button
+    const resetBtn = document.querySelector('.reset-btn');
+    if (resetBtn && translations.reset) {
+        resetBtn.textContent = translations.reset;
     }
+    
+    console.log(`✅ Settings language updated to ${currentLang}`);
 }
 
-// Create settings content with collapsible groups - REMOVED, using HTML structure
-
-// Update settings language
-function updateSettingsLanguage(lang = null) {
-    if (!settingsTranslations || !settingsInitialized) return;
-    
-    const language = lang || getCurrentLanguage();
-    console.log(`🌍 Updating settings language to: ${language}`);
-    
-    const settingsPage = document.getElementById('settingsPage');
-    if (settingsPage) {
-        settingsPage.innerHTML = createSettingsContent();
-        console.log('✅ Settings language updated and content refreshed');
-    }
+// Create settings HTML
+function createSettingsHTML() {
+    return `
+        <div class="settings-container">
+            <h1 class="settings-title">⚙️ Settings</h1>
+            
+            <div class="settings-section">
+                <div class="section-title">
+                    <span class="section-icon">🎨</span>
+                    <span>Background</span>
+                </div>
+                
+                <div class="background-options">
+                    <div class="background-option" data-background="penguin" onclick="changeBackground('penguin')">
+                        <div class="option-icon">🐧</div>
+                        <div class="option-name">Penguin</div>
+                        <div class="background-preview" style="background-image: url('${backgroundOptions.penguin.url}')"></div>
+                    </div>
+                    
+                    <div class="background-option" data-background="game" onclick="changeBackground('game')">
+                        <div class="option-icon">🎮</div>
+                        <div class="option-name">Game</div>
+                        <div class="background-preview" style="background-image: url('${backgroundOptions.game.url}')"></div>
+                    </div>
+                    
+                    <div class="background-option" data-background="code" onclick="changeBackground('code')">
+                        <div class="option-icon">💻</div>
+                        <div class="option-name">Code</div>
+                        <div class="background-preview" style="background-image: url('${backgroundOptions.code.url}')"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="reset-section">
+                <button class="reset-btn" onclick="resetSettings()">Reset Settings</button>
+            </div>
+        </div>
+    `;
 }
 
 // Initialize settings page
@@ -212,44 +222,60 @@ async function initializeSettings() {
         return;
     }
     
-    console.log('🔧 Initializing Settings...');
+    console.log('⚙️ Initializing Settings...');
     
-    try {
-        // Load translations
-        await loadSettingsTranslations();
-        
-        // Create settings content
-        const settingsPage = document.getElementById('settingsPage');
-        if (settingsPage) {
-            settingsPage.innerHTML = createSettingsContent();
-            console.log('✅ Settings content created with collapsed groups');
-        }
-        
-        // Apply saved background theme
-        const savedSettings = loadSettings();
-        if (savedSettings.background) {
-            applyBackgroundTheme(savedSettings.background);
-        }
-        
-        // Listen for language changes
-        document.addEventListener('languageChanged', (event) => {
-            updateSettingsLanguage(event.detail.language);
-        });
-        
-        settingsInitialized = true;
-        console.log('✅ Settings initialized successfully');
-        
-    } catch (error) {
-        console.error('❌ Error initializing settings:', error);
-        settingsInitialized = true;
+    const settingsPage = document.getElementById('settingsPage');
+    if (!settingsPage) {
+        console.error('❌ Settings page not found');
+        return;
     }
+    
+    // Load translations
+    await loadSettingsTranslations();
+    
+    // Set HTML content
+    settingsPage.innerHTML = createSettingsHTML();
+    
+    // Apply current background
+    const currentBg = getCurrentBackground();
+    applyBackground(currentBg);
+    updateBackgroundUI();
+    
+    // Update language
+    await updateSettingsLanguage();
+    
+    settingsInitialized = true;
+    console.log('✅ Settings initialized');
 }
 
-// Make functions globally available
-window.initializeSettings = initializeSettings;
-window.selectBackground = selectBackground;
-window.toggleSettingsGroup = toggleSettingsGroup;
-window.updateSettingsLanguage = updateSettingsLanguage;
-window.applyBackgroundTheme = applyBackgroundTheme;
+// Apply background on app start
+function initializeBackgroundOnStart() {
+    const currentBg = getCurrentBackground();
+    applyBackground(currentBg);
+    console.log(`Initial background applied: ${currentBg}`);
+}
 
-console.log('✅ Settings module loaded successfully');
+// Listen for language changes
+document.addEventListener('languageChanged', (event) => {
+    if (settingsInitialized) {
+        updateSettingsLanguage(event.detail.language);
+    }
+});
+
+// Apply background immediately when script loads
+document.addEventListener('DOMContentLoaded', () => {
+    initializeBackgroundOnStart();
+});
+
+// If DOM already loaded, apply immediately
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeBackgroundOnStart);
+} else {
+    initializeBackgroundOnStart();
+}
+
+// Global functions
+window.initializeSettings = initializeSettings;
+window.changeBackground = changeBackground;
+window.resetSettings = resetSettings;
+window.updateSettingsLanguage = updateSettingsLanguage;
