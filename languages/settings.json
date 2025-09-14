@@ -1,80 +1,83 @@
 {
-    "en": {
-        "title": "⚙️ Settings",
-        "appearance": {
-            "title": "🎨 Appearance",
-            "background": {
-                "title": "Background Theme",
-                "penguin": {
-                    "name": "Penguin",
-                    "description": "Default mining theme with penguin character"
-                },
-                "game": {
-                    "name": "Game",
-                    "description": "Gaming-inspired blue gradient theme"
-                },
-                "code": {
-                    "name": "Code",
-                    "description": "Developer-friendly green matrix theme"
-                }
-            }
+  "en": {
+    "title": "⚙️ Settings",
+    "background": {
+      "title": "🎨 Background",
+      "description": "Customize your app's visual theme",
+      "options": {
+        "penguin": {
+          "name": "Penguin Theme",
+          "description": "Default mining theme with penguin character"
         },
-        "navigation": {
-            "title": "🧭 Navigation",
-            "comingSoon": "Coming Soon!",
-            "description": "Menu style and layout options will be available here"
+        "game": {
+          "name": "Gaming Theme",
+          "description": "Gaming-inspired blue gradient theme"
+        },
+        "code": {
+          "name": "Code Theme",
+          "description": "Developer-friendly green matrix theme"
         }
+      }
     },
-    "uk": {
-        "title": "⚙️ Налаштування",
-        "appearance": {
-            "title": "🎨 Зовнішній вигляд",
-            "background": {
-                "title": "Тема фону",
-                "penguin": {
-                    "name": "Пінгвін",
-                    "description": "Стандартна гірнича тема з персонажем пінгвіном"
-                },
-                "game": {
-                    "name": "Гра",
-                    "description": "Ігрова тема з синім градієнтом"
-                },
-                "code": {
-                    "name": "Код",
-                    "description": "Зелена тема в стилі матриці для розробників"
-                }
-            }
-        },
-        "navigation": {
-            "title": "🧭 Навігація",
-            "comingSoon": "Незабаром!",
-            "description": "Тут будуть доступні параметри стилю та розкладки меню"
-        }
-    },
-    "ru": {
-        "title": "⚙️ Настройки",
-        "appearance": {
-            "title": "🎨 Внешний вид",
-            "background": {
-                "title": "Тема фона",
-                "penguin": {
-                    "name": "Пингвин",
-                    "description": "Стандартная горная тема с персонажем пингвином"
-                },
-                "game": {
-                    "name": "Игра",
-                    "description": "Игровая тема с синим градиентом"
-                },
-                "code": {
-                    "name": "Код",
-                    "description": "Зеленая тема в стиле матрицы для разработчиков"
-                }
-            }
-        },
-        "navigation": {
-            "title": "🧭 Навигация",
-            "comingSoon": "Скоро!",
-            "description": "Здесь будут доступны параметры стиля и раскладки меню"
-        }
+    "menu": {
+      "title": "🧭 Menu",
+      "description": "Configure navigation and menu preferences",
+      "comingSoon": "Coming Soon!",
+      "placeholder": "Menu customization options will be available here"
     }
+  },
+  "uk": {
+    "title": "⚙️ Налаштування",
+    "background": {
+      "title": "🎨 Фон",
+      "description": "Налаштуйте візуальну тему додатку",
+      "options": {
+        "penguin": {
+          "name": "Тема Пінгвін",
+          "description": "Стандартна гірнича тема з персонажем пінгвіном"
+        },
+        "game": {
+          "name": "Ігрова тема",
+          "description": "Ігрова тема з синім градієнтом"
+        },
+        "code": {
+          "name": "Тема Код",
+          "description": "Зелена тема для розробників"
+        }
+      }
+    },
+    "menu": {
+      "title": "🧭 Меню",
+      "description": "Налаштуйте навігацію та параметри меню",
+      "comingSoon": "Незабаром!",
+      "placeholder": "Тут будуть доступні параметри налаштування меню"
+    }
+  },
+  "ru": {
+    "title": "⚙️ Настройки",
+    "background": {
+      "title": "🎨 Фон",
+      "description": "Настройте визуальную тему приложения",
+      "options": {
+        "penguin": {
+          "name": "Тема Пингвин",
+          "description": "Стандартная горная тема с персонажем пингвином"
+        },
+        "game": {
+          "name": "Игровая тема",
+          "description": "Игровая тема с синим градиентом"
+        },
+        "code": {
+          "name": "Тема Код",
+          "description": "Зеленая тема для разработчиков"
+        }
+      }
+    },
+    "menu": {
+      "title": "🧭 Меню",
+      "description": "Настройте навигацию и параметры меню",
+      "comingSoon": "Скоро!",
+      "placeholder": "Здесь будут доступны параметры настройки меню"
+    }
+  }
 }
