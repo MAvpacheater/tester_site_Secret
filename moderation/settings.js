@@ -10,7 +10,7 @@ const backgroundOptions = {
     },
     game: {
         icon: '🎮', 
-        url: 'https://i.postimg.cc/VNpqK2Ht/game-background.jpg'
+        url: 'https://i.postimg.cc/43yVBkY8/Generated-image-1.png'
     },
     code: {
         icon: '💻',
