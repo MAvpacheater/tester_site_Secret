@@ -12,7 +12,7 @@
     <!-- Critical CSS - load immediately -->
     <link rel="stylesheet" href="general.css">
     
-    <!-- Non-critical CSS - load deferred -->
+    <!-- Non-critical CSS - load deferred (settings.css removed) -->
     <link rel="stylesheet" href="calc/calculator.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="calc/arms.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="calc/grind.css" media="print" onload="this.media='all'">
@@ -25,7 +25,6 @@
     <link rel="stylesheet" href="info/charms.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="info/potions.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="info/worlds.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="moderations/settings.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="other/updates.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="other/peoples.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="other/help.css" media="print" onload="this.media='all'">
@@ -90,7 +89,7 @@
     <!-- Critical JavaScript - load immediately -->
     <script src="general.js"></script>
     
-    <!-- Non-critical JavaScript - load deferred -->
+    <!-- Non-critical JavaScript - load deferred (settings.js removed) -->
     <script>
         // Deferred script loading function
         function loadScriptsDeferred() {
@@ -111,10 +110,7 @@
                 'info/potions.js',
                 'info/worlds.js',
                 
-                // Moderation modules (Settings)
-                'moderations/settings.js',
-                
-                // Other modules
+                // Other modules (settings.js removed)
                 'other/updates.js',
                 'other/peoples.js',
                 'other/help.js'
