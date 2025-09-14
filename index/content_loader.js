@@ -1,4 +1,4 @@
-// Content loader script - Cleaned version
+// Content loader script - Updated with Settings Gear Button
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -30,6 +30,9 @@ async function loadContent() {
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+
+                <!-- Settings Gear Button - Bottom Left -->
+                <button class="settings-gear-btn" onclick="switchPage('settings')" title="Settings">⚙️</button>
 
                 <!-- Sidebar Navigation -->
                 <div class="sidebar" id="sidebar">
@@ -100,7 +103,7 @@ async function loadContent() {
                             </div>
                         </div>
 
-                        <!-- Others Category -->
+                        <!-- Others Category - Settings button removed -->
                         <div class="nav-category">
                             <div class="category-header" data-category="othersButtons" onclick="toggleCategory('othersButtons')">
                                 <div class="category-title">
@@ -110,9 +113,6 @@ async function loadContent() {
                                 <span class="category-toggle">▼</span>
                             </div>
                             <div class="category-buttons" id="othersButtons">
-                                <button class="nav-btn" data-page="settings" onclick="switchPage('settings')">
-                                    ⚙️ Settings
-                                </button>
                                 <button class="nav-btn" data-page="updates" onclick="switchPage('updates')">
                                     📝 Updates
                                 </button>
@@ -133,15 +133,12 @@ async function loadContent() {
                         </button>
                     </div>
                     
-                    <!-- Language Flags -->
+                    <!-- Language Flags - Settings button removed -->
                     <div class="sidebar-controls">
-                        <div class="control-buttons">
-                            <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">⚙️</button>
-                            <div class="language-flags">
-                                <button class="lang-flag-btn active" data-lang="en" onclick="switchAppLanguage('en')" title="English">🇺🇸</button>
-                                <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="Українська">🇺🇦</button>
-                                <button class="lang-flag-btn" data-lang="ru" onclick="switchAppLanguage('ru')" title="Русский">🇷🇺</button>
-                            </div>
+                        <div class="language-flags">
+                            <button class="lang-flag-btn active" data-lang="en" onclick="switchAppLanguage('en')" title="English">🇺🇸</button>
+                            <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="Українська">🇺🇦</button>
+                            <button class="lang-flag-btn" data-lang="ru" onclick="switchAppLanguage('ru')" title="Русский">🇷🇺</button>
                         </div>
                     </div>
                 </div>
