@@ -24,6 +24,10 @@ const backgroundOptions = {
         icon: '🎮', 
         url: 'https://i.postimg.cc/nV4dxr1X/2025-09-16-22-26-42.png'
     },
+    prison: {
+        icon: '🎮', 
+        url: 'https://i.postimg.cc/ZR75v48p/2025-09-16-22-26-34.png'
+    }
 };
 
 // Menu position configurations
