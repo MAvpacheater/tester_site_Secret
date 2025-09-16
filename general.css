@@ -59,18 +59,21 @@ body::before {
         rgba(101, 67, 33, 0.95) 50%, 
         rgba(62, 39, 35, 1) 100%);
     backdrop-filter: blur(15px);
-    border-radius: 20px; /* Зменшено з 25px */
-    padding: 25px; /* Зменшено з 40px */
+    border-radius: 18px; /* Ще більше зменшено */
+    padding: 20px; /* Ще більше зменшено з 25px */
     box-shadow: 
-        0 12px 30px rgba(0, 0, 0, 0.6), /* Зменшено тіні */
-        inset 0 2px 8px rgba(255, 215, 0, 0.1),
-        0 0 25px rgba(255, 165, 0, 0.2);
-    max-width: 550px; /* Зменшено з 600px */
+        0 10px 25px rgba(0, 0, 0, 0.6), /* Ще менші тіні */
+        inset 0 2px 6px rgba(255, 215, 0, 0.1),
+        0 0 20px rgba(255, 165, 0, 0.2);
+    max-width: 480px; /* Ще більше зменшено з 550px */
     width: 100%;
     text-align: center;
-    border: 2px solid #8B4513; /* Зменшено з 3px */
+    border: 2px solid #8B4513;
     position: relative;
     overflow: hidden;
+    /* Додаємо обмеження висоти */
+    max-height: 90vh;
+    min-height: auto;
 }
 
 /* Container decorations */
@@ -702,4 +705,209 @@ body::before {
 
 .auto-reload-indicator.show {
     opacity: 1;
+}
+
+/* Додаткові стилі для контенту сторінок - ОНОВЛЕНО ДЛЯ КОМПАКТНОСТІ */
+.page-content {
+    padding: 8px 0; /* Ще більше зменшено з 15px */
+}
+
+.page h1, .page h2 {
+    margin-bottom: 10px; /* Ще більше зменшено з 15px */
+    font-size: 1.6em; /* Ще менше з 1.8em */
+    line-height: 1.2; /* Компактніша висота рядка */
+}
+
+.page h3 {
+    margin-bottom: 6px; /* Ще більше зменшено з 10px */
+    font-size: 1.2em; /* Ще менше з 1.4em */
+    line-height: 1.2;
+}
+
+.page p {
+    margin-bottom: 8px; /* Ще більше зменшено з 12px */
+    line-height: 1.3; /* Ще компактніша висота рядка */
+    font-size: 0.95em; /* Трохи менший шрифт */
+}
+
+/* Форми та кнопки - МАКСИМАЛЬНО КОМПАКТНІ */
+.form-group {
+    margin-bottom: 10px; /* Ще більше зменшено з 15px */
+}
+
+.form-group label {
+    margin-bottom: 4px; /* Ще більше зменшено з 6px */
+    display: block;
+    font-size: 0.95em;
+    line-height: 1.2;
+}
+
+.form-control {
+    padding: 8px 10px; /* Ще більше зменшено з 10px 12px */
+    border-radius: 6px; /* Ще більше зменшено з 8px */
+    font-size: 0.95em;
+    line-height: 1.2;
+}
+
+.btn {
+    padding: 8px 15px; /* Ще більше зменшено з 10px 18px */
+    border-radius: 6px; /* Ще більше зменшено з 8px */
+    font-size: 0.9em; /* Ще менший шрифт */
+    line-height: 1.2;
+    margin: 4px 2px; /* Менші відступи між кнопками */
+}
+
+/* Таблиці */
+.table {
+    margin-bottom: 15px; /* Зменшено з 20px */
+}
+
+.table th,
+.table td {
+    padding: 8px 10px; /* Зменшено з 10px 12px */
+    font-size: 0.9em; /* Менший шрифт */
+}
+
+/* Карточки та блоки */
+.card,
+.info-block {
+    padding: 15px; /* Зменшено з 20px */
+    margin-bottom: 15px; /* Зменшено з 20px */
+    border-radius: 10px; /* Зменшено з 12px */
+}
+
+/* Списки */
+ul, ol {
+    margin-bottom: 15px; /* Зменшено з 20px */
+    padding-left: 20px; /* Зменшено з 25px */
+}
+
+li {
+    margin-bottom: 6px; /* Зменшено з 8px */
+}
+
+/* Калькулятор */
+.calculator-input {
+    margin-bottom: 15px; /* Зменшено з 20px */
+}
+
+.calculator-result {
+    padding: 15px; /* Зменшено з 20px */
+    margin-top: 15px; /* Зменшено з 20px */
+}
+
+/* Код блоки */
+pre, code {
+    font-size: 0.85em; /* Менший шрифт для коду */
+    padding: 12px; /* Зменшено з 15px */
+}
+
+/* Алерти та повідомлення */
+.alert {
+    padding: 12px 15px; /* Зменшено з 15px 20px */
+    margin-bottom: 15px; /* Зменшено з 20px */
+    border-radius: 8px; /* Зменшено з 10px */
+}
+
+/* Мобільна адаптивність для контенту - УЛЬТРА КОМПАКТНА */
+@media (max-width: 768px) {
+    body {
+        padding: 5px; /* Ще менше */
+    }
+    
+    .container {
+        padding: 15px; /* Ще менше з 20px */
+        margin: 5px; /* Ще менше з 8px */
+        max-width: 95vw; /* Використовуємо майже всю ширину */
+    }
+    
+    .page-content {
+        padding: 5px 0; /* Ще менше з 10px */
+    }
+    
+    .page h1, .page h2 {
+        font-size: 1.4em; /* Ще менше з 1.6em */
+        margin-bottom: 8px; /* Ще менше з 12px */
+    }
+    
+    .page h3 {
+        font-size: 1.2em; /* Ще менше з 1.3em */
+        margin-bottom: 5px; /* Ще менше з 8px */
+    }
+    
+    .form-group {
+        margin-bottom: 8px; /* Ще менше з 12px */
+    }
+    
+    .card,
+    .info-block {
+        padding: 8px; /* Ще менше з 12px */
+        margin-bottom: 6px; /* Ще менше з 12px */
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 3px; /* Мінімальний padding */
+    }
+    
+    .container {
+        padding: 12px; /* Ще менше з 18px */
+        margin: 3px; /* Ще менше з 5px */
+        max-width: 98vw; /* Майже вся ширина екрану */
+    }
+    
+    .page-content {
+        padding: 3px 0; /* Ще менше з 8px */
+    }
+    
+    .page h1, .page h2 {
+        font-size: 1.3em; /* Ще менше з 1.5em */
+        margin-bottom: 6px; /* Ще менше з 10px */
+    }
+    
+    .page h3 {
+        font-size: 1.1em; /* Ще менше з 1.2em */
+        margin-bottom: 4px; /* Ще менше з 6px */
+    }
+    
+    .form-group {
+        margin-bottom: 6px; /* Ще менше з 10px */
+    }
+    
+    .card,
+    .info-block {
+        padding: 6px; /* Ще менше з 10px */
+        margin-bottom: 5px; /* Ще менше з 10px */
+    }
+    
+    .btn {
+        padding: 6px 12px; /* Ще менше з 8px 14px */
+        font-size: 0.85em; /* Ще менше з 0.9em */
+    }
+    
+    .container::before {
+        font-size: 1.1em; /* Ще менше з 1.3em */
+        top: 6px; /* Ще менше з 8px */
+        right: 10px; /* Ще менше з 12px */
+    }
+    
+    .container::after {
+        font-size: 1em; /* Ще менше з 1.1em */
+        bottom: 6px; /* Ще менше з 8px */
+        left: 10px; /* Ще менше з 12px */
+    }
+    
+    /* Спеціально для калькулятора на мобільних */
+    textarea, input[type="text"], input[type="number"] {
+        min-height: 60px; /* Ще менше */
+        max-height: 100px; /* Ще менше */
+        padding: 6px 8px;
+        font-size: 0.9em;
+    }
+    
+    .calc-results {
+        max-height: 150px; /* Ще менше */
+        font-size: 0.85em;
+    }
 }
