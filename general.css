@@ -1,4 +1,4 @@
-/* Optimized General Styles - Mining Theme */
+/* Optimized General Styles - Mining Theme - Compact Version */
 * { 
     margin: 0; 
     padding: 0; 
@@ -17,7 +17,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 10px; /* Зменшено з 20px */
     position: relative;
     overflow-x: hidden;
 }
@@ -49,6 +49,7 @@ body::before {
 @media (max-width: 768px) {
     body {
         background-attachment: scroll;
+        padding: 8px; /* Ще менше для мобільних */
     }
 }
 
@@ -58,16 +59,16 @@ body::before {
         rgba(101, 67, 33, 0.95) 50%, 
         rgba(62, 39, 35, 1) 100%);
     backdrop-filter: blur(15px);
-    border-radius: 25px;
-    padding: 40px;
+    border-radius: 20px; /* Зменшено з 25px */
+    padding: 25px; /* Зменшено з 40px */
     box-shadow: 
-        0 15px 40px rgba(0, 0, 0, 0.6),
-        inset 0 2px 10px rgba(255, 215, 0, 0.1),
-        0 0 30px rgba(255, 165, 0, 0.2);
-    max-width: 600px;
+        0 12px 30px rgba(0, 0, 0, 0.6), /* Зменшено тіні */
+        inset 0 2px 8px rgba(255, 215, 0, 0.1),
+        0 0 25px rgba(255, 165, 0, 0.2);
+    max-width: 550px; /* Зменшено з 600px */
     width: 100%;
     text-align: center;
-    border: 3px solid #8B4513;
+    border: 2px solid #8B4513; /* Зменшено з 3px */
     position: relative;
     overflow: hidden;
 }
@@ -76,18 +77,18 @@ body::before {
 .container::before {
     content: '⛏️';
     position: absolute;
-    top: 15px;
-    right: 25px;
-    font-size: 2em;
+    top: 10px; /* Зменшено з 15px */
+    right: 20px; /* Зменшено з 25px */
+    font-size: 1.5em; /* Зменшено з 2em */
     opacity: 0.6;
 }
 
 .container::after {
     content: '💎';
     position: absolute;
-    bottom: 15px;
-    left: 25px;
-    font-size: 1.5em;
+    bottom: 10px; /* Зменшено з 15px */
+    left: 20px; /* Зменшено з 25px */
+    font-size: 1.2em; /* Зменшено з 1.5em */
     opacity: 0.7;
 }
 
@@ -103,14 +104,14 @@ body::before {
 /* Settings Gear Button - Bottom Left Corner */
 .settings-gear-btn {
     position: fixed;
-    bottom: 20px;
-    left: 20px;
-    width: 50px;
-    height: 50px;
+    bottom: 15px; /* Зменшено з 20px */
+    left: 15px; /* Зменшено з 20px */
+    width: 45px; /* Зменшено з 50px */
+    height: 45px; /* Зменшено з 50px */
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 28px;
+    font-size: 24px; /* Зменшено з 28px */
     color: #FFD700;
     z-index: 1000;
     transition: all 0.3s ease;
@@ -155,23 +156,23 @@ body::before {
 /* Mobile Menu Toggle */
 .mobile-menu-toggle {
     position: fixed;
-    top: 20px;
-    left: 20px;
+    top: 15px; /* Зменшено з 20px */
+    left: 15px; /* Зменшено з 20px */
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.9) 0%, 
         rgba(101, 67, 33, 0.95) 50%, 
         rgba(62, 39, 35, 1) 100%);
-    border: 3px solid #8B4513;
+    border: 2px solid #8B4513; /* Зменшено з 3px */
     color: #FFD700;
-    padding: 14px 18px;
-    border-radius: 15px;
+    padding: 12px 16px; /* Зменшено з 14px 18px */
+    border-radius: 12px; /* Зменшено з 15px */
     cursor: pointer;
-    font-size: 1.3em;
+    font-size: 1.2em; /* Зменшено з 1.3em */
     font-weight: 700;
     transition: all 0.3s ease;
     z-index: 1001;
     box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.4),
+        0 6px 20px rgba(0, 0, 0, 0.4), /* Зменшено тіні */
         inset 0 2px 5px rgba(255, 215, 0, 0.2);
     backdrop-filter: blur(10px);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -183,7 +184,7 @@ body::before {
     color: #2F1B14;
     transform: scale(1.05);
     box-shadow: 
-        0 12px 35px rgba(255, 215, 0, 0.4),
+        0 10px 30px rgba(255, 215, 0, 0.4),
         inset 0 2px 10px rgba(255, 255, 255, 0.2);
 }
 
@@ -191,21 +192,21 @@ body::before {
 .sidebar {
     position: fixed;
     top: 0;
-    left: -320px;
-    width: 320px;
+    left: -300px; /* Зменшено з -320px */
+    width: 300px; /* Зменшено з 320px */
     height: 100vh;
     background: linear-gradient(135deg, 
         rgba(41, 39, 35, 0.98) 0%, 
         rgba(28, 26, 23, 0.99) 50%, 
         rgba(20, 19, 17, 1) 100%);
     backdrop-filter: blur(15px);
-    border-right: 3px solid #8B4513;
+    border-right: 2px solid #8B4513; /* Зменшено з 3px */
     transition: left 0.3s ease;
     z-index: 1002;
     box-shadow: 
-        2px 0 40px rgba(0, 0, 0, 0.6),
-        inset -2px 0 10px rgba(255, 215, 0, 0.1);
-    border-radius: 0 15px 15px 0;
+        2px 0 30px rgba(0, 0, 0, 0.6), /* Зменшено тіні */
+        inset -2px 0 8px rgba(255, 215, 0, 0.1);
+    border-radius: 0 12px 12px 0; /* Зменшено з 15px */
     display: flex;
     flex-direction: column;
 }
@@ -218,7 +219,7 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 25px 20px;
+    padding: 20px 18px; /* Зменшено з 25px 20px */
     border-bottom: 2px solid #8B4513;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.3) 0%, 
@@ -228,7 +229,7 @@ body::before {
 
 .sidebar-header h3 {
     color: #FFD700;
-    font-size: 1.8em;
+    font-size: 1.6em; /* Зменшено з 1.8em */
     font-weight: 700;
     margin: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -241,14 +242,14 @@ body::before {
         rgba(101, 67, 33, 0.4));
     border: 2px solid #8B4513;
     color: #FFD700;
-    font-size: 1.5em;
+    font-size: 1.4em; /* Зменшено з 1.5em */
     cursor: pointer;
-    padding: 8px 12px;
+    padding: 6px 10px; /* Зменшено з 8px 12px */
     border-radius: 50%;
     transition: all 0.3s ease;
     font-weight: bold;
-    width: 40px;
-    height: 40px;
+    width: 36px; /* Зменшено з 40px */
+    height: 36px; /* Зменшено з 40px */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -267,30 +268,30 @@ body::before {
 .nav-buttons {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    padding: 30px 20px;
+    gap: 12px; /* Зменшено з 15px */
+    padding: 25px 18px; /* Зменшено з 30px 20px */
     overflow-y: auto;
     flex: 1;
 }
 
 .nav-category {
-    margin-bottom: 15px;
+    margin-bottom: 12px; /* Зменшено з 15px */
 }
 
 .category-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 15px;
-    margin-bottom: 10px;
+    padding: 10px 12px; /* Зменшено з 12px 15px */
+    margin-bottom: 8px; /* Зменшено з 10px */
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.4) 0%, 
         rgba(101, 67, 33, 0.5) 50%, 
         rgba(62, 39, 35, 0.6) 100%);
     border: 2px solid #8B4513;
-    border-radius: 12px;
+    border-radius: 10px; /* Зменшено з 12px */
     color: #FFD700;
-    font-size: 1.1em;
+    font-size: 1.05em; /* Зменшено з 1.1em */
     font-weight: 700;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     cursor: pointer;
@@ -309,15 +310,15 @@ body::before {
 .category-title {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px; /* Зменшено з 8px */
 }
 
 .category-icon {
-    font-size: 1.2em;
+    font-size: 1.1em; /* Зменшено з 1.2em */
 }
 
 .category-toggle {
-    font-size: 1em;
+    font-size: 0.9em; /* Зменшено з 1em */
     transition: transform 0.3s ease;
 }
 
@@ -328,15 +329,15 @@ body::before {
 .category-buttons {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px; /* Зменшено з 8px */
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease-out;
-    padding-left: 15px;
+    padding-left: 12px; /* Зменшено з 15px */
 }
 
 .category-buttons.expanded {
-    max-height: 800px;
+    max-height: 600px; /* Зменшено з 800px */
 }
 
 .nav-btn {
@@ -345,17 +346,17 @@ body::before {
         rgba(62, 39, 35, 0.3) 100%);
     border: 2px solid rgba(139, 69, 19, 0.5);
     color: #F5DEB3;
-    padding: 14px 16px;
-    border-radius: 12px;
+    padding: 12px 14px; /* Зменшено з 14px 16px */
+    border-radius: 10px; /* Зменшено з 12px */
     cursor: pointer;
-    font-size: 0.95em;
+    font-size: 0.9em; /* Зменшено з 0.95em */
     font-weight: 600;
     transition: all 0.3s ease;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 8px;
+    gap: 6px; /* Зменшено з 8px */
     width: 100%;
     position: relative;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
@@ -367,35 +368,35 @@ body::before {
         rgba(139, 69, 19, 0.6));
     border-color: #FFD700;
     color: #FFD700;
-    transform: translateX(6px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+    transform: translateX(5px) scale(1.02); /* Зменшено з 6px */
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3); /* Зменшено тінь */
 }
 
 .nav-btn.active {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #8B4513;
     color: #2F1B14;
-    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-    transform: translateX(4px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4); /* Зменшено тінь */
+    transform: translateX(3px); /* Зменшено з 4px */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .nav-btn.active::after {
     content: '';
     position: absolute;
-    right: 10px;
+    right: 8px; /* Зменшено з 10px */
     top: 50%;
     transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
+    width: 5px; /* Зменшено з 6px */
+    height: 5px; /* Зменшено з 6px */
     background: #2F1B14;
     border-radius: 50%;
-    box-shadow: 0 0 8px rgba(47, 27, 20, 0.8);
+    box-shadow: 0 0 6px rgba(47, 27, 20, 0.8); /* Зменшено тінь */
 }
 
 /* User Section */
 .sidebar-user {
-    padding: 20px;
+    padding: 16px; /* Зменшено з 20px */
     border-top: 2px solid #8B4513;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.2) 0%, 
@@ -404,16 +405,16 @@ body::before {
 
 .auth-btn-sidebar {
     width: 100%;
-    padding: 12px 20px;
+    padding: 10px 16px; /* Зменшено з 12px 20px */
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.4) 0%, 
         rgba(101, 67, 33, 0.5) 50%, 
         rgba(62, 39, 35, 0.6) 100%);
     border: 2px solid #8B4513;
     color: #FFD700;
-    border-radius: 12px;
+    border-radius: 10px; /* Зменшено з 12px */
     cursor: pointer;
-    font-size: 1em;
+    font-size: 0.95em; /* Зменшено з 1em */
     font-weight: 600;
     transition: all 0.3s ease;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -424,7 +425,7 @@ body::before {
     border-color: #FFD700;
     color: #2F1B14;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4); /* Зменшено тінь */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -448,7 +449,7 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 16px; /* Зменшено з 20px */
     border-top: 2px solid #8B4513;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.2) 0%, 
@@ -457,7 +458,7 @@ body::before {
 
 .language-flags {
     display: flex;
-    gap: 12px;
+    gap: 10px; /* Зменшено з 12px */
 }
 
 .lang-flag-btn {
@@ -466,13 +467,13 @@ body::before {
         rgba(62, 39, 35, 0.4) 100%);
     border: 2px solid #8B4513;
     color: #F5DEB3;
-    padding: 12px;
+    padding: 10px; /* Зменшено з 12px */
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.5em;
+    font-size: 1.3em; /* Зменшено з 1.5em */
     transition: all 0.3s ease;
-    width: 50px;
-    height: 50px;
+    width: 45px; /* Зменшено з 50px */
+    height: 45px; /* Зменшено з 50px */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -483,14 +484,14 @@ body::before {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #FFD700;
     transform: translateY(-3px) scale(1.1);
-    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 5px 12px rgba(255, 215, 0, 0.4); /* Зменшено тінь */
 }
 
 .lang-flag-btn.active {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #8B4513;
     box-shadow: 
-        0 8px 20px rgba(255, 215, 0, 0.5),
+        0 6px 15px rgba(255, 215, 0, 0.5), /* Зменшено тінь */
         inset 0 2px 5px rgba(255, 255, 255, 0.2);
     transform: translateY(-2px) scale(1.05);
 }
@@ -517,18 +518,18 @@ body::before {
 /* Signature */
 .signature {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 15px; /* Зменшено з 20px */
+    right: 15px; /* Зменшено з 20px */
     color: #D4AF37;
-    font-size: 14px;
+    font-size: 13px; /* Зменшено з 14px */
     font-weight: 600;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     z-index: 1000;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.3), 
         rgba(62, 39, 35, 0.4));
-    padding: 8px 15px;
-    border-radius: 20px;
+    padding: 6px 12px; /* Зменшено з 8px 15px */
+    border-radius: 16px; /* Зменшено з 20px */
     border: 2px solid rgba(139, 69, 19, 0.5);
     backdrop-filter: blur(10px);
 }
@@ -536,102 +537,110 @@ body::before {
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .settings-gear-btn {
-        bottom: 15px;
-        left: 15px;
-        width: 40px;
-        height: 40px;
-        font-size: 22px;
+        bottom: 12px; /* Зменшено з 15px */
+        left: 12px; /* Зменшено з 15px */
+        width: 38px; /* Зменшено з 40px */
+        height: 38px; /* Зменшено з 40px */
+        font-size: 20px; /* Зменшено з 22px */
     }
     
     .sidebar {
-        width: 300px;
-        left: -300px;
+        width: 280px; /* Зменшено з 300px */
+        left: -280px; /* Зменшено з -300px */
     }
     
     .nav-buttons {
-        padding: 20px 15px;
+        padding: 18px 14px; /* Зменшено з 20px 15px */
     }
     
     .sidebar-user {
-        padding: 15px;
+        padding: 12px; /* Зменшено з 15px */
     }
     
     .sidebar-controls {
-        padding: 15px;
+        padding: 12px; /* Зменшено з 15px */
     }
     
     .language-flags {
-        gap: 10px;
+        gap: 8px; /* Зменшено з 10px */
     }
     
     .lang-flag-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2em;
-        padding: 8px;
+        width: 38px; /* Зменшено з 40px */
+        height: 38px; /* Зменшено з 40px */
+        font-size: 1.1em; /* Зменшено з 1.2em */
+        padding: 6px; /* Зменшено з 8px */
     }
     
     .container {
-        padding: 30px;
-        margin: 15px;
+        padding: 20px; /* Зменшено з 30px */
+        margin: 8px; /* Зменшено з 15px */
+    }
+    
+    body {
+        padding: 5px; /* Додано для мобільних */
     }
 }
 
 @media (max-width: 480px) {
     .sidebar {
-        width: 280px;
-        left: -280px;
+        width: 260px; /* Зменшено з 280px */
+        left: -260px; /* Зменшено з -280px */
     }
     
     .sidebar-user {
-        padding: 15px 10px;
+        padding: 10px; /* Зменшено з 15px 10px */
     }
     
     .nav-buttons {
-        padding: 15px 10px 10px 10px;
+        padding: 15px 10px; /* Зменшено */
     }
     
     .sidebar-controls {
-        padding: 12px 10px;
+        padding: 10px; /* Зменшено з 12px 10px */
     }
     
     .control-buttons {
-        gap: 8px;
+        gap: 6px; /* Зменшено з 8px */
     }
     
     .settings-btn-sidebar {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1em;
-        padding: 6px;
+        width: 32px; /* Зменшено з 36px */
+        height: 32px; /* Зменшено з 36px */
+        font-size: 1em; /* Зменшено з 1.1em */
+        padding: 4px; /* Зменшено з 6px */
     }
     
     .language-flags {
-        gap: 8px;
+        gap: 6px; /* Зменшено з 8px */
     }
     
     .lang-flag-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1em;
-        padding: 6px;
+        width: 32px; /* Зменшено з 36px */
+        height: 32px; /* Зменшено з 36px */
+        font-size: 1em; /* Зменшено з 1.1em */
+        padding: 4px; /* Зменшено з 6px */
     }
     
     .container {
-        padding: 25px;
-        margin: 10px;
+        padding: 18px; /* Зменшено з 25px */
+        margin: 5px; /* Зменшено з 10px */
     }
     
     .container::before {
-        font-size: 1.5em;
-        top: 10px;
-        right: 15px;
+        font-size: 1.3em; /* Зменшено з 1.5em */
+        top: 8px; /* Зменшено з 10px */
+        right: 12px; /* Зменшено з 15px */
     }
     
     .container::after {
-        font-size: 1.2em;
-        bottom: 10px;
-        left: 15px;
+        font-size: 1.1em; /* Зменшено з 1.2em */
+        bottom: 8px; /* Зменшено з 10px */
+        left: 12px; /* Зменшено з 15px */
+    }
+    
+    body {
+        padding: 3px; /* Ще менше для маленьких екранів */
     }
 }
 
@@ -649,7 +658,7 @@ body::before {
     z-index: 9999;
     font-family: system-ui, -apple-system, sans-serif;
     color: white;
-    font-size: 18px;
+    font-size: 16px; /* Зменшено з 18px */
     transition: opacity 0.3s ease-out;
 }
 
@@ -658,8 +667,8 @@ body::before {
 }
 
 .loading-icon {
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 22px; /* Зменшено з 24px */
+    margin-bottom: 18px; /* Зменшено з 20px */
     animation: pulse 2s infinite;
 }
 
@@ -669,21 +678,21 @@ body::before {
 }
 
 .loading-subtitle {
-    font-size: 14px;
-    margin-top: 10px;
+    font-size: 13px; /* Зменшено з 14px */
+    margin-top: 8px; /* Зменшено з 10px */
     opacity: 0.8;
 }
 
 /* Auto-reload indicator */
 .auto-reload-indicator {
     position: fixed;
-    bottom: 20px;
-    left: 20px;
+    bottom: 15px; /* Зменшено з 20px */
+    left: 15px; /* Зменшено з 20px */
     background: rgba(0, 0, 0, 0.8);
     color: #4CAF50;
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 12px;
+    padding: 4px 8px; /* Зменшено з 5px 10px */
+    border-radius: 12px; /* Зменшено з 15px */
+    font-size: 11px; /* Зменшено з 12px */
     z-index: 10000;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(76, 175, 80, 0.3);
