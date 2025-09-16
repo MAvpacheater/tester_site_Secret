@@ -1,6 +1,9 @@
-// Moderation Settings - Background Management
+// Moderation Settings - Background Management with Collapsible Categories
 let settingsInitialized = false;
 let settingsTranslations = null;
+let categoriesState = {
+    background: false // false = collapsed, true = expanded
+};
 
 // Background configurations
 const backgroundOptions = {
@@ -17,6 +20,62 @@ const backgroundOptions = {
         url: 'https://i.postimg.cc/nrvZbvKw/image.png'
     }
 };
+
+// Toggle category visibility
+function toggleCategory(categoryName) {
+    const isBackgroundCategory = categoryName === 'background';
+    if (!isBackgroundCategory) return;
+    
+    const categoryKey = 'background';
+    categoriesState[categoryKey] = !categoriesState[categoryKey];
+    
+    const header = document.querySelector('.category-header');
+    const options = document.querySelector('.background-options');
+    
+    if (!header || !options) return;
+    
+    if (categoriesState[categoryKey]) {
+        // Expand
+        header.classList.remove('collapsed');
+        options.classList.remove('collapsed');
+    } else {
+        // Collapse
+        header.classList.add('collapsed');
+        options.classList.add('collapsed');
+    }
+    
+    // Save state
+    localStorage.setItem('armHelper_categoriesState', JSON.stringify(categoriesState));
+    console.log(`Category ${categoryKey} ${categoriesState[categoryKey] ? 'expanded' : 'collapsed'}`);
+}
+
+// Load categories state
+function loadCategoriesState() {
+    const saved = localStorage.getItem('armHelper_categoriesState');
+    if (saved) {
+        try {
+            categoriesState = { ...categoriesState, ...JSON.parse(saved) };
+        } catch (e) {
+            console.warn('Failed to load categories state, using defaults');
+        }
+    }
+}
+
+// Apply categories state to UI
+function applyCategoriesState() {
+    const header = document.querySelector('.category-header');
+    const options = document.querySelector('.background-options');
+    
+    if (!header || !options) return;
+    
+    if (categoriesState.background) {
+        header.classList.remove('collapsed');
+        options.classList.remove('collapsed');
+    } else {
+        header.classList.add('collapsed');
+        options.classList.add('collapsed');
+    }
+}
 
 // Get current background setting
 function getCurrentBackground() {
@@ -83,7 +142,14 @@ function updateBackgroundUI() {
 function resetSettings() {
     if (confirm(getTranslation('confirmReset', 'Are you sure you want to reset all settings?'))) {
         localStorage.removeItem('armHelper_background');
+        localStorage.removeItem('armHelper_categoriesState');
+        
+        // Reset state
+        categoriesState = { background: false };
+        
         changeBackground('penguin');
+        applyCategoriesState();
+        
         console.log('Settings reset to default');
     }
 }
@@ -152,7 +218,7 @@ async function updateSettingsLanguage(lang = null) {
     }
     
     // Update section title
-    const sectionTitle = document.querySelector('#settingsPage .section-title span:last-child');
+    const sectionTitle = document.querySelector('#settingsPage .category-title span:last-child');
     if (sectionTitle) {
         sectionTitle.textContent = translations.background;
     }
@@ -181,12 +247,15 @@ function createSettingsHTML() {
             <h1 class="settings-title">⚙️ Settings</h1>
             
             <div class="settings-section">
-                <div class="section-title">
-                    <span class="section-icon">🎨</span>
-                    <span>Background</span>
+                <div class="category-header collapsed" onclick="toggleCategory('background')">
+                    <div class="category-title">
+                        <span class="section-icon">🎨</span>
+                        <span>Background</span>
+                    </div>
+                    <span class="category-toggle">▼</span>
                 </div>
                 
-                <div class="background-options">
+                <div class="background-options collapsed">
                     <div class="background-option" data-background="penguin" onclick="changeBackground('penguin')">
                         <div class="option-icon">🐧</div>
                         <div class="option-name">Penguin</div>
@@ -229,6 +298,9 @@ async function initializeSettings() {
         return;
     }
     
+    // Load categories state
+    loadCategoriesState();
+    
     // Load translations
     await loadSettingsTranslations();
     
@@ -239,6 +311,9 @@ async function initializeSettings() {
     const currentBg = getCurrentBackground();
     applyBackground(currentBg);
     updateBackgroundUI();
+    
+    // Apply categories state
+    applyCategoriesState();
     
     // Update language
     await updateSettingsLanguage();
@@ -277,4 +352,5 @@ if (document.readyState === 'loading') {
 window.initializeSettings = initializeSettings;
 window.changeBackground = changeBackground;
 window.resetSettings = resetSettings;
+window.toggleCategory = toggleCategory;
 window.updateSettingsLanguage = updateSettingsLanguage;
