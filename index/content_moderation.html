@@ -4,12 +4,15 @@
         <h1 class="settings-title">⚙️ Settings</h1>
         
         <div class="settings-section">
-            <div class="section-title">
-                <span class="section-icon">🎨</span>
-                <span>Background</span>
+            <div class="category-header collapsed" onclick="toggleCategory('background')">
+                <div class="category-title">
+                    <span class="section-icon">🎨</span>
+                    <span>Background</span>
+                </div>
+                <span class="category-toggle">▼</span>
             </div>
             
-            <div class="background-options">
+            <div class="background-options collapsed">
                 <div class="background-option" data-background="penguin" onclick="changeBackground('penguin')">
                     <div class="option-icon">🐧</div>
                     <div class="option-name">Penguin</div>
