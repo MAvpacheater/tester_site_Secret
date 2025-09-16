@@ -34,13 +34,32 @@ const menuPositions = {
     },
     up: {
         icon: '⬆️',
-        description: 'Static Menu Top'
+        description: 'Icon Menu Top'
     },
     down: {
         icon: '⬇️',
-        description: 'Static Menu Bottom'
+        description: 'Icon Menu Bottom'
     }
 };
+
+// Menu items configuration with icons
+const menuItems = [
+    { page: 'calculator', icon: '🐾', title: 'Pet Calculator' },
+    { page: 'arm', icon: '💪', title: 'Arm Calculator' },
+    { page: 'grind', icon: '🏋️‍♂️', title: 'Grind Calculator' },
+    { page: 'boosts', icon: '🚀', title: 'Boosts' },
+    { page: 'shiny', icon: '✨', title: 'Shiny Stats' },
+    { page: 'secret', icon: '🔮', title: 'Secret Pets' },
+    { page: 'codes', icon: '🎁', title: 'Codes' },
+    { page: 'aura', icon: '🌟', title: 'Aura' },
+    { page: 'trainer', icon: '🏆', title: 'Trainer' },
+    { page: 'charms', icon: '🔮', title: 'Charms' },
+    { page: 'potions', icon: '🧪', title: 'Potions & Food' },
+    { page: 'worlds', icon: '🌍', title: 'Worlds' },
+    { page: 'updates', icon: '📝', title: 'Updates' },
+    { page: 'help', icon: '🆘', title: 'Help' },
+    { page: 'peoples', icon: '🙏', title: 'Peoples' }
+];
 
 // Toggle category visibility
 function toggleCategory(categoryName) {
@@ -198,7 +217,7 @@ function applyMenuPosition(position) {
     console.log(`Menu position applied: ${position}`);
 }
 
-// Create static menu for top/bottom positions
+// Create static menu for top/bottom positions with icons only
 function createStaticMenu(position) {
     // Remove existing static menu
     removeStaticMenu();
@@ -208,18 +227,26 @@ function createStaticMenu(position) {
     staticMenu.className = `static-menu ${menuClass}`;
     staticMenu.id = 'staticMenu';
     
-    // Create navigation buttons from sidebar
-    const sidebarButtons = document.querySelectorAll('.sidebar .nav-btn');
+    // Create navigation buttons container
     const navButtons = document.createElement('div');
     navButtons.className = 'nav-buttons';
     
-    sidebarButtons.forEach(btn => {
-        const newBtn = btn.cloneNode(true);
-        newBtn.onclick = () => {
-            switchPage(newBtn.dataset.page);
-            updateStaticMenuActiveState(newBtn.dataset.page);
+    // Create buttons for all menu items with icons only
+    menuItems.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'nav-btn';
+        btn.dataset.page = item.page;
+        btn.title = item.title; // Tooltip shows full name
+        btn.textContent = item.icon; // Only show icon
+        
+        btn.onclick = () => {
+            if (typeof switchPage === 'function') {
+                switchPage(item.page);
+            }
+            updateStaticMenuActiveState(item.page);
         };
-        navButtons.appendChild(newBtn);
+        
+        navButtons.appendChild(btn);
     });
     
     staticMenu.appendChild(navButtons);
@@ -228,6 +255,8 @@ function createStaticMenu(position) {
     // Update active state for current page
     const currentPage = typeof getCurrentPage === 'function' ? getCurrentPage() : 'calculator';
     updateStaticMenuActiveState(currentPage);
+    
+    console.log(`Static ${position} menu created with ${menuItems.length} items`);
 }
 
 // Remove static menu
@@ -235,6 +264,7 @@ function removeStaticMenu() {
     const existingMenu = document.getElementById('staticMenu');
     if (existingMenu) {
         existingMenu.remove();
+        console.log('Static menu removed');
     }
 }
 
@@ -249,6 +279,8 @@ function updateStaticMenuActiveState(activePage) {
             btn.classList.add('active');
         }
     });
+    
+    console.log(`Static menu active state updated: ${activePage}`);
 }
 
 // Change menu position
