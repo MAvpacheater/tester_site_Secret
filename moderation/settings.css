@@ -1,4 +1,4 @@
-/* Оптимізований Settings Styles - Mining Theme */
+/* Оптимізований Settings Styles - Mining Theme з меншими кнопками та згортанням */
 
 .settings-container {
     width: 100%;
@@ -50,12 +50,28 @@
         transparent 100%);
 }
 
-.section-title {
+/* Заголовок категорії */
+.category-header {
     color: #FFD700;
     font-size: 1.4em;
     font-weight: 700;
     margin-bottom: 15px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 12px;
+}
+
+.category-header:hover {
+    background: rgba(255, 215, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.category-title {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -65,29 +81,51 @@
     font-size: 1.3em;
 }
 
+.category-toggle {
+    font-size: 0.8em;
+    transition: transform 0.3s ease;
+    color: #D4AF37;
+}
+
+.category-header.collapsed .category-toggle {
+    transform: rotate(-90deg);
+}
+
+/* Контейнер для кнопок фонів */
 .background-options {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 15px;
-    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: flex-start;
+    max-height: 500px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    opacity: 1;
 }
 
+.background-options.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    gap: 0;
+}
+
+/* Зменшені кнопки фонів */
 .background-option {
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.2) 0%, 
         rgba(62, 39, 35, 0.3) 100%);
-    border: 3px solid rgba(139, 69, 19, 0.5);
-    border-radius: 15px;
-    padding: 15px;
+    border: 2px solid rgba(139, 69, 19, 0.5);
+    border-radius: 12px;
+    padding: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
     position: relative;
-    flex: 1;
-    min-width: 200px;
-    max-width: 300px;
-    min-height: 140px;
+    flex: 0 0 auto;
+    width: 140px;
+    min-height: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -100,8 +138,8 @@
         rgba(255, 215, 0, 0.2) 0%, 
         rgba(139, 69, 19, 0.4) 100%);
     border-color: #FFD700;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
 }
 
 .background-option.active {
@@ -110,49 +148,50 @@
         rgba(255, 165, 0, 0.2) 100%);
     border-color: #FFD700;
     box-shadow: 
-        0 8px 30px rgba(255, 215, 0, 0.4),
-        inset 0 2px 10px rgba(255, 215, 0, 0.2);
-    transform: translateY(-2px);
+        0 6px 25px rgba(255, 215, 0, 0.4),
+        inset 0 2px 8px rgba(255, 215, 0, 0.2);
+    transform: translateY(-1px);
 }
 
 .background-option.active::after {
     content: '✓';
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: 6px;
+    right: 8px;
     color: #FFD700;
-    font-size: 1.2em;
+    font-size: 1em;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .option-icon {
-    font-size: 2.2em;
-    margin-bottom: 8px;
+    font-size: 1.6em;
+    margin-bottom: 6px;
     display: block;
 }
 
 .option-name {
     color: #F5DEB3;
-    font-size: 1em;
+    font-size: 0.85em;
     font-weight: 600;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .option-description {
     color: #D4AF37;
-    font-size: 0.85em;
+    font-size: 0.75em;
     opacity: 0.8;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
 }
 
+/* Зменшений прев'ю фону */
 .background-preview {
     width: 100%;
-    height: 50px;
-    border-radius: 10px;
-    margin: 8px 0;
-    border: 2px solid rgba(139, 69, 19, 0.3);
+    height: 35px;
+    border-radius: 8px;
+    margin: 6px 0 0 0;
+    border: 1px solid rgba(139, 69, 19, 0.3);
     background-size: cover;
     background-position: center;
     position: relative;
@@ -166,6 +205,7 @@
         rgba(0, 0, 0, 0.3) 0%, 
         transparent 50%, 
         rgba(0, 0, 0, 0.3) 100%);
+    border-radius: 8px;
 }
 
 /* Reset Button */
@@ -205,8 +245,13 @@
     }
     
     .background-option {
-        min-width: 180px;
-        max-width: 250px;
+        width: 130px;
+        min-height: 95px;
+        padding: 8px;
+    }
+    
+    .option-icon {
+        font-size: 1.4em;
     }
 }
 
@@ -225,26 +270,32 @@
         margin-bottom: 15px;
     }
     
+    .category-header {
+        font-size: 1.2em;
+    }
+    
     .background-options {
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
+        gap: 8px;
+        justify-content: center;
     }
     
     .background-option {
-        width: 100%;
-        max-width: 400px;
-        min-width: unset;
-        min-height: 120px;
-        padding: 12px;
+        width: 120px;
+        min-height: 85px;
+        padding: 8px;
     }
     
     .option-icon {
-        font-size: 1.8em;
+        font-size: 1.3em;
+        margin-bottom: 4px;
     }
     
-    .section-title {
-        font-size: 1.2em;
+    .option-name {
+        font-size: 0.8em;
+    }
+    
+    .background-preview {
+        height: 30px;
     }
 }
 
@@ -261,20 +312,44 @@
         padding: 12px;
     }
     
+    .background-options {
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+    
     .background-option {
-        min-height: 100px;
-        padding: 10px;
+        width: 100%;
+        max-width: 280px;
+        min-height: 75px;
+        padding: 8px;
+        flex-direction: row;
+        justify-content: flex-start;
+        text-align: left;
+    }
+    
+    .option-icon {
+        font-size: 1.2em;
+        margin-right: 10px;
+        margin-bottom: 0;
     }
     
     .option-name {
-        font-size: 0.9em;
-    }
-    
-    .option-description {
-        font-size: 0.75em;
+        font-size: 0.85em;
+        margin-bottom: 2px;
     }
     
     .background-preview {
-        height: 40px;
+        height: 25px;
+        margin: 2px 0;
+        flex-shrink: 0;
+        width: 40px;
+        margin-left: auto;
+    }
+    
+    .background-option.active::after {
+        top: 4px;
+        right: 6px;
+        font-size: 0.9em;
     }
 }
