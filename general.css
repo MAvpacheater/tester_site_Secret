@@ -1,4 +1,4 @@
-/* Optimized General Styles - Mining Theme - Compact Version */
+/* Оптимізований General Styles - Mining Theme */
 * { 
     margin: 0; 
     padding: 0; 
@@ -17,19 +17,15 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px; /* Зменшено з 20px */
+    padding: 10px;
     position: relative;
     overflow-x: hidden;
 }
 
-/* Background pattern */
 body::before {
     content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: 
         radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.03) 0%, transparent 40%),
         radial-gradient(circle at 75% 75%, rgba(255, 165, 0, 0.03) 0%, transparent 40%);
@@ -38,60 +34,41 @@ body::before {
     z-index: -1;
 }
 
-/* Desktop background */
-@media (min-width: 769px) {
-    body {
-        background-attachment: fixed;
-    }
-}
-
-/* Mobile background */
-@media (max-width: 768px) {
-    body {
-        background-attachment: scroll;
-        padding: 8px; /* Ще менше для мобільних */
-    }
-}
-
 .container {
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.9) 0%, 
         rgba(101, 67, 33, 0.95) 50%, 
         rgba(62, 39, 35, 1) 100%);
     backdrop-filter: blur(15px);
-    border-radius: 18px; /* Ще більше зменшено */
-    padding: 20px; /* Ще більше зменшено з 25px */
+    border-radius: 18px;
+    padding: 20px;
     box-shadow: 
-        0 10px 25px rgba(0, 0, 0, 0.6), /* Ще менші тіні */
+        0 10px 25px rgba(0, 0, 0, 0.6),
         inset 0 2px 6px rgba(255, 215, 0, 0.1),
         0 0 20px rgba(255, 165, 0, 0.2);
-    max-width: 480px; /* Ще більше зменшено з 550px */
+    max-width: 480px;
     width: 100%;
     text-align: center;
     border: 2px solid #8B4513;
     position: relative;
-    overflow: hidden;
-    /* Додаємо обмеження висоти */
     max-height: 90vh;
-    min-height: auto;
 }
 
-/* Container decorations */
 .container::before {
     content: '⛏️';
     position: absolute;
-    top: 10px; /* Зменшено з 15px */
-    right: 20px; /* Зменшено з 25px */
-    font-size: 1.5em; /* Зменшено з 2em */
+    top: 10px;
+    right: 20px;
+    font-size: 1.5em;
     opacity: 0.6;
 }
 
 .container::after {
     content: '💎';
     position: absolute;
-    bottom: 10px; /* Зменшено з 15px */
-    left: 20px; /* Зменшено з 25px */
-    font-size: 1.2em; /* Зменшено з 1.5em */
+    bottom: 10px;
+    left: 20px;
+    font-size: 1.2em;
     opacity: 0.7;
 }
 
@@ -104,25 +81,23 @@ body::before {
     display: block !important;
 }
 
-/* Settings Gear Button - Bottom Left Corner */
+/* Settings Gear Button */
 .settings-gear-btn {
     position: fixed;
-    bottom: 15px; /* Зменшено з 20px */
-    left: 15px; /* Зменшено з 20px */
-    width: 45px; /* Зменшено з 50px */
-    height: 45px; /* Зменшено з 50px */
+    bottom: 15px;
+    left: 15px;
+    width: 45px;
+    height: 45px;
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 24px; /* Зменшено з 28px */
+    font-size: 24px;
     color: #FFD700;
     z-index: 1000;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0;
-    margin: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
@@ -132,11 +107,6 @@ body::before {
     text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
 }
 
-.settings-gear-btn:active {
-    transform: rotate(90deg) scale(1.1);
-}
-
-/* Animation for gear rotation */
 .settings-gear-btn.rotating {
     animation: gearSpin 1s linear infinite;
 }
@@ -146,36 +116,26 @@ body::before {
     to { transform: rotate(360deg); }
 }
 
-/* Hide settings button from Others category */
-[data-page="settings"].nav-btn {
-    display: none !important;
-}
-
-/* Hide settings button from sidebar controls */
-.settings-btn-sidebar {
-    display: none !important;
-}
-
 /* Mobile Menu Toggle */
 .mobile-menu-toggle {
     position: fixed;
-    top: 15px; /* Зменшено з 20px */
-    left: 15px; /* Зменшено з 20px */
+    top: 15px;
+    left: 15px;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.9) 0%, 
         rgba(101, 67, 33, 0.95) 50%, 
         rgba(62, 39, 35, 1) 100%);
-    border: 2px solid #8B4513; /* Зменшено з 3px */
+    border: 2px solid #8B4513;
     color: #FFD700;
-    padding: 12px 16px; /* Зменшено з 14px 18px */
-    border-radius: 12px; /* Зменшено з 15px */
+    padding: 12px 16px;
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 1.2em; /* Зменшено з 1.3em */
+    font-size: 1.2em;
     font-weight: 700;
     transition: all 0.3s ease;
     z-index: 1001;
     box-shadow: 
-        0 6px 20px rgba(0, 0, 0, 0.4), /* Зменшено тіні */
+        0 6px 20px rgba(0, 0, 0, 0.4),
         inset 0 2px 5px rgba(255, 215, 0, 0.2);
     backdrop-filter: blur(10px);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -195,21 +155,21 @@ body::before {
 .sidebar {
     position: fixed;
     top: 0;
-    left: -300px; /* Зменшено з -320px */
-    width: 300px; /* Зменшено з 320px */
+    left: -300px;
+    width: 300px;
     height: 100vh;
     background: linear-gradient(135deg, 
         rgba(41, 39, 35, 0.98) 0%, 
         rgba(28, 26, 23, 0.99) 50%, 
         rgba(20, 19, 17, 1) 100%);
     backdrop-filter: blur(15px);
-    border-right: 2px solid #8B4513; /* Зменшено з 3px */
+    border-right: 2px solid #8B4513;
     transition: left 0.3s ease;
     z-index: 1002;
     box-shadow: 
-        2px 0 30px rgba(0, 0, 0, 0.6), /* Зменшено тіні */
+        2px 0 30px rgba(0, 0, 0, 0.6),
         inset -2px 0 8px rgba(255, 215, 0, 0.1);
-    border-radius: 0 12px 12px 0; /* Зменшено з 15px */
+    border-radius: 0 12px 12px 0;
     display: flex;
     flex-direction: column;
 }
@@ -222,7 +182,7 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 18px; /* Зменшено з 25px 20px */
+    padding: 20px 18px;
     border-bottom: 2px solid #8B4513;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.3) 0%, 
@@ -232,7 +192,7 @@ body::before {
 
 .sidebar-header h3 {
     color: #FFD700;
-    font-size: 1.6em; /* Зменшено з 1.8em */
+    font-size: 1.6em;
     font-weight: 700;
     margin: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -245,14 +205,14 @@ body::before {
         rgba(101, 67, 33, 0.4));
     border: 2px solid #8B4513;
     color: #FFD700;
-    font-size: 1.4em; /* Зменшено з 1.5em */
+    font-size: 1.4em;
     cursor: pointer;
-    padding: 6px 10px; /* Зменшено з 8px 12px */
+    padding: 6px 10px;
     border-radius: 50%;
     transition: all 0.3s ease;
     font-weight: bold;
-    width: 36px; /* Зменшено з 40px */
-    height: 36px; /* Зменшено з 40px */
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -271,30 +231,30 @@ body::before {
 .nav-buttons {
     display: flex;
     flex-direction: column;
-    gap: 12px; /* Зменшено з 15px */
-    padding: 25px 18px; /* Зменшено з 30px 20px */
+    gap: 12px;
+    padding: 25px 18px;
     overflow-y: auto;
     flex: 1;
 }
 
 .nav-category {
-    margin-bottom: 12px; /* Зменшено з 15px */
+    margin-bottom: 12px;
 }
 
 .category-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 12px; /* Зменшено з 12px 15px */
-    margin-bottom: 8px; /* Зменшено з 10px */
+    padding: 10px 12px;
+    margin-bottom: 8px;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.4) 0%, 
         rgba(101, 67, 33, 0.5) 50%, 
         rgba(62, 39, 35, 0.6) 100%);
     border: 2px solid #8B4513;
-    border-radius: 10px; /* Зменшено з 12px */
+    border-radius: 10px;
     color: #FFD700;
-    font-size: 1.05em; /* Зменшено з 1.1em */
+    font-size: 1.05em;
     font-weight: 700;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     cursor: pointer;
@@ -313,15 +273,15 @@ body::before {
 .category-title {
     display: flex;
     align-items: center;
-    gap: 6px; /* Зменшено з 8px */
+    gap: 6px;
 }
 
 .category-icon {
-    font-size: 1.1em; /* Зменшено з 1.2em */
+    font-size: 1.1em;
 }
 
 .category-toggle {
-    font-size: 0.9em; /* Зменшено з 1em */
+    font-size: 0.9em;
     transition: transform 0.3s ease;
 }
 
@@ -332,15 +292,15 @@ body::before {
 .category-buttons {
     display: flex;
     flex-direction: column;
-    gap: 6px; /* Зменшено з 8px */
+    gap: 6px;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease-out;
-    padding-left: 12px; /* Зменшено з 15px */
+    padding-left: 12px;
 }
 
 .category-buttons.expanded {
-    max-height: 600px; /* Зменшено з 800px */
+    max-height: 600px;
 }
 
 .nav-btn {
@@ -349,17 +309,17 @@ body::before {
         rgba(62, 39, 35, 0.3) 100%);
     border: 2px solid rgba(139, 69, 19, 0.5);
     color: #F5DEB3;
-    padding: 12px 14px; /* Зменшено з 14px 16px */
-    border-radius: 10px; /* Зменшено з 12px */
+    padding: 12px 14px;
+    border-radius: 10px;
     cursor: pointer;
-    font-size: 0.9em; /* Зменшено з 0.95em */
+    font-size: 0.9em;
     font-weight: 600;
     transition: all 0.3s ease;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 6px; /* Зменшено з 8px */
+    gap: 6px;
     width: 100%;
     position: relative;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
@@ -371,35 +331,35 @@ body::before {
         rgba(139, 69, 19, 0.6));
     border-color: #FFD700;
     color: #FFD700;
-    transform: translateX(5px) scale(1.02); /* Зменшено з 6px */
-    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3); /* Зменшено тінь */
+    transform: translateX(5px) scale(1.02);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
 }
 
 .nav-btn.active {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #8B4513;
     color: #2F1B14;
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4); /* Зменшено тінь */
-    transform: translateX(3px); /* Зменшено з 4px */
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+    transform: translateX(3px);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .nav-btn.active::after {
     content: '';
     position: absolute;
-    right: 8px; /* Зменшено з 10px */
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
-    width: 5px; /* Зменшено з 6px */
-    height: 5px; /* Зменшено з 6px */
+    width: 5px;
+    height: 5px;
     background: #2F1B14;
     border-radius: 50%;
-    box-shadow: 0 0 6px rgba(47, 27, 20, 0.8); /* Зменшено тінь */
+    box-shadow: 0 0 6px rgba(47, 27, 20, 0.8);
 }
 
 /* User Section */
 .sidebar-user {
-    padding: 16px; /* Зменшено з 20px */
+    padding: 16px;
     border-top: 2px solid #8B4513;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.2) 0%, 
@@ -408,16 +368,16 @@ body::before {
 
 .auth-btn-sidebar {
     width: 100%;
-    padding: 10px 16px; /* Зменшено з 12px 20px */
+    padding: 10px 16px;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.4) 0%, 
         rgba(101, 67, 33, 0.5) 50%, 
         rgba(62, 39, 35, 0.6) 100%);
     border: 2px solid #8B4513;
     color: #FFD700;
-    border-radius: 10px; /* Зменшено з 12px */
+    border-radius: 10px;
     cursor: pointer;
-    font-size: 0.95em; /* Зменшено з 1em */
+    font-size: 0.95em;
     font-weight: 600;
     transition: all 0.3s ease;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -428,7 +388,7 @@ body::before {
     border-color: #FFD700;
     color: #2F1B14;
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4); /* Зменшено тінь */
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -440,19 +400,12 @@ body::before {
     pointer-events: none;
 }
 
-.auth-btn-sidebar.disabled:hover {
-    background: rgba(139, 69, 19, 0.2) !important;
-    border-color: #8B4513 !important;
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-/* Language Flags - Updated without settings button */
+/* Language Flags */
 .sidebar-controls {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px; /* Зменшено з 20px */
+    padding: 16px;
     border-top: 2px solid #8B4513;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.2) 0%, 
@@ -461,7 +414,7 @@ body::before {
 
 .language-flags {
     display: flex;
-    gap: 10px; /* Зменшено з 12px */
+    gap: 10px;
 }
 
 .lang-flag-btn {
@@ -470,13 +423,13 @@ body::before {
         rgba(62, 39, 35, 0.4) 100%);
     border: 2px solid #8B4513;
     color: #F5DEB3;
-    padding: 10px; /* Зменшено з 12px */
+    padding: 10px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.3em; /* Зменшено з 1.5em */
+    font-size: 1.3em;
     transition: all 0.3s ease;
-    width: 45px; /* Зменшено з 50px */
-    height: 45px; /* Зменшено з 50px */
+    width: 45px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -487,14 +440,14 @@ body::before {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #FFD700;
     transform: translateY(-3px) scale(1.1);
-    box-shadow: 0 5px 12px rgba(255, 215, 0, 0.4); /* Зменшено тінь */
+    box-shadow: 0 5px 12px rgba(255, 215, 0, 0.4);
 }
 
 .lang-flag-btn.active {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #8B4513;
     box-shadow: 
-        0 6px 15px rgba(255, 215, 0, 0.5), /* Зменшено тінь */
+        0 6px 15px rgba(255, 215, 0, 0.5),
         inset 0 2px 5px rgba(255, 255, 255, 0.2);
     transform: translateY(-2px) scale(1.05);
 }
@@ -502,10 +455,7 @@ body::before {
 /* Sidebar Overlay */
 .sidebar-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background: rgba(20, 19, 17, 0.8);
     z-index: 1001;
     opacity: 0;
@@ -521,139 +471,26 @@ body::before {
 /* Signature */
 .signature {
     position: fixed;
-    bottom: 15px; /* Зменшено з 20px */
-    right: 15px; /* Зменшено з 20px */
+    bottom: 15px;
+    right: 15px;
     color: #D4AF37;
-    font-size: 13px; /* Зменшено з 14px */
+    font-size: 13px;
     font-weight: 600;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     z-index: 1000;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.3), 
         rgba(62, 39, 35, 0.4));
-    padding: 6px 12px; /* Зменшено з 8px 15px */
-    border-radius: 16px; /* Зменшено з 20px */
+    padding: 6px 12px;
+    border-radius: 16px;
     border: 2px solid rgba(139, 69, 19, 0.5);
     backdrop-filter: blur(10px);
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    .settings-gear-btn {
-        bottom: 12px; /* Зменшено з 15px */
-        left: 12px; /* Зменшено з 15px */
-        width: 38px; /* Зменшено з 40px */
-        height: 38px; /* Зменшено з 40px */
-        font-size: 20px; /* Зменшено з 22px */
-    }
-    
-    .sidebar {
-        width: 280px; /* Зменшено з 300px */
-        left: -280px; /* Зменшено з -300px */
-    }
-    
-    .nav-buttons {
-        padding: 18px 14px; /* Зменшено з 20px 15px */
-    }
-    
-    .sidebar-user {
-        padding: 12px; /* Зменшено з 15px */
-    }
-    
-    .sidebar-controls {
-        padding: 12px; /* Зменшено з 15px */
-    }
-    
-    .language-flags {
-        gap: 8px; /* Зменшено з 10px */
-    }
-    
-    .lang-flag-btn {
-        width: 38px; /* Зменшено з 40px */
-        height: 38px; /* Зменшено з 40px */
-        font-size: 1.1em; /* Зменшено з 1.2em */
-        padding: 6px; /* Зменшено з 8px */
-    }
-    
-    .container {
-        padding: 20px; /* Зменшено з 30px */
-        margin: 8px; /* Зменшено з 15px */
-    }
-    
-    body {
-        padding: 5px; /* Додано для мобільних */
-    }
-}
-
-@media (max-width: 480px) {
-    .sidebar {
-        width: 260px; /* Зменшено з 280px */
-        left: -260px; /* Зменшено з -280px */
-    }
-    
-    .sidebar-user {
-        padding: 10px; /* Зменшено з 15px 10px */
-    }
-    
-    .nav-buttons {
-        padding: 15px 10px; /* Зменшено */
-    }
-    
-    .sidebar-controls {
-        padding: 10px; /* Зменшено з 12px 10px */
-    }
-    
-    .control-buttons {
-        gap: 6px; /* Зменшено з 8px */
-    }
-    
-    .settings-btn-sidebar {
-        width: 32px; /* Зменшено з 36px */
-        height: 32px; /* Зменшено з 36px */
-        font-size: 1em; /* Зменшено з 1.1em */
-        padding: 4px; /* Зменшено з 6px */
-    }
-    
-    .language-flags {
-        gap: 6px; /* Зменшено з 8px */
-    }
-    
-    .lang-flag-btn {
-        width: 32px; /* Зменшено з 36px */
-        height: 32px; /* Зменшено з 36px */
-        font-size: 1em; /* Зменшено з 1.1em */
-        padding: 4px; /* Зменшено з 6px */
-    }
-    
-    .container {
-        padding: 18px; /* Зменшено з 25px */
-        margin: 5px; /* Зменшено з 10px */
-    }
-    
-    .container::before {
-        font-size: 1.3em; /* Зменшено з 1.5em */
-        top: 8px; /* Зменшено з 10px */
-        right: 12px; /* Зменшено з 15px */
-    }
-    
-    .container::after {
-        font-size: 1.1em; /* Зменшено з 1.2em */
-        bottom: 8px; /* Зменшено з 10px */
-        left: 12px; /* Зменшено з 15px */
-    }
-    
-    body {
-        padding: 3px; /* Ще менше для маленьких екранів */
-    }
-}
-
-/* Loading Screen Styles */
+/* Loading Screen */
 #loading-screen {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     justify-content: center;
@@ -661,7 +498,7 @@ body::before {
     z-index: 9999;
     font-family: system-ui, -apple-system, sans-serif;
     color: white;
-    font-size: 16px; /* Зменшено з 18px */
+    font-size: 16px;
     transition: opacity 0.3s ease-out;
 }
 
@@ -670,8 +507,8 @@ body::before {
 }
 
 .loading-icon {
-    font-size: 22px; /* Зменшено з 24px */
-    margin-bottom: 18px; /* Зменшено з 20px */
+    font-size: 22px;
+    margin-bottom: 18px;
     animation: pulse 2s infinite;
 }
 
@@ -681,21 +518,20 @@ body::before {
 }
 
 .loading-subtitle {
-    font-size: 13px; /* Зменшено з 14px */
-    margin-top: 8px; /* Зменшено з 10px */
+    font-size: 13px;
+    margin-top: 8px;
     opacity: 0.8;
 }
 
-/* Auto-reload indicator */
 .auto-reload-indicator {
     position: fixed;
-    bottom: 15px; /* Зменшено з 20px */
-    left: 15px; /* Зменшено з 20px */
+    bottom: 15px;
+    left: 15px;
     background: rgba(0, 0, 0, 0.8);
     color: #4CAF50;
-    padding: 4px 8px; /* Зменшено з 5px 10px */
-    border-radius: 12px; /* Зменшено з 15px */
-    font-size: 11px; /* Зменшено з 12px */
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
     z-index: 10000;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(76, 175, 80, 0.3);
@@ -707,207 +543,276 @@ body::before {
     opacity: 1;
 }
 
-/* Додаткові стилі для контенту сторінок - ОНОВЛЕНО ДЛЯ КОМПАКТНОСТІ */
+/* Content Styles */
 .page-content {
-    padding: 8px 0; /* Ще більше зменшено з 15px */
+    padding: 8px 0;
 }
 
 .page h1, .page h2 {
-    margin-bottom: 10px; /* Ще більше зменшено з 15px */
-    font-size: 1.6em; /* Ще менше з 1.8em */
-    line-height: 1.2; /* Компактніша висота рядка */
+    margin-bottom: 10px;
+    font-size: 1.6em;
+    line-height: 1.2;
 }
 
 .page h3 {
-    margin-bottom: 6px; /* Ще більше зменшено з 10px */
-    font-size: 1.2em; /* Ще менше з 1.4em */
+    margin-bottom: 6px;
+    font-size: 1.2em;
     line-height: 1.2;
 }
 
 .page p {
-    margin-bottom: 8px; /* Ще більше зменшено з 12px */
-    line-height: 1.3; /* Ще компактніша висота рядка */
-    font-size: 0.95em; /* Трохи менший шрифт */
+    margin-bottom: 8px;
+    line-height: 1.3;
+    font-size: 0.95em;
 }
 
-/* Форми та кнопки - МАКСИМАЛЬНО КОМПАКТНІ */
 .form-group {
-    margin-bottom: 10px; /* Ще більше зменшено з 15px */
+    margin-bottom: 10px;
 }
 
 .form-group label {
-    margin-bottom: 4px; /* Ще більше зменшено з 6px */
+    margin-bottom: 4px;
     display: block;
     font-size: 0.95em;
     line-height: 1.2;
 }
 
 .form-control {
-    padding: 8px 10px; /* Ще більше зменшено з 10px 12px */
-    border-radius: 6px; /* Ще більше зменшено з 8px */
+    padding: 8px 10px;
+    border-radius: 6px;
     font-size: 0.95em;
     line-height: 1.2;
 }
 
 .btn {
-    padding: 8px 15px; /* Ще більше зменшено з 10px 18px */
-    border-radius: 6px; /* Ще більше зменшено з 8px */
-    font-size: 0.9em; /* Ще менший шрифт */
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 0.9em;
     line-height: 1.2;
-    margin: 4px 2px; /* Менші відступи між кнопками */
+    margin: 4px 2px;
 }
 
-/* Таблиці */
 .table {
-    margin-bottom: 15px; /* Зменшено з 20px */
+    margin-bottom: 15px;
 }
 
 .table th,
 .table td {
-    padding: 8px 10px; /* Зменшено з 10px 12px */
-    font-size: 0.9em; /* Менший шрифт */
+    padding: 8px 10px;
+    font-size: 0.9em;
 }
 
-/* Карточки та блоки */
 .card,
 .info-block {
-    padding: 15px; /* Зменшено з 20px */
-    margin-bottom: 15px; /* Зменшено з 20px */
-    border-radius: 10px; /* Зменшено з 12px */
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
 }
 
-/* Списки */
 ul, ol {
-    margin-bottom: 15px; /* Зменшено з 20px */
-    padding-left: 20px; /* Зменшено з 25px */
+    margin-bottom: 15px;
+    padding-left: 20px;
 }
 
 li {
-    margin-bottom: 6px; /* Зменшено з 8px */
+    margin-bottom: 6px;
 }
 
-/* Калькулятор */
 .calculator-input {
-    margin-bottom: 15px; /* Зменшено з 20px */
+    margin-bottom: 15px;
 }
 
 .calculator-result {
-    padding: 15px; /* Зменшено з 20px */
-    margin-top: 15px; /* Зменшено з 20px */
+    padding: 15px;
+    margin-top: 15px;
 }
 
-/* Код блоки */
 pre, code {
-    font-size: 0.85em; /* Менший шрифт для коду */
-    padding: 12px; /* Зменшено з 15px */
+    font-size: 0.85em;
+    padding: 12px;
 }
 
-/* Алерти та повідомлення */
 .alert {
-    padding: 12px 15px; /* Зменшено з 15px 20px */
-    margin-bottom: 15px; /* Зменшено з 20px */
-    border-radius: 8px; /* Зменшено з 10px */
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
 }
 
-/* Мобільна адаптивність для контенту - УЛЬТРА КОМПАКТНА */
+/* Hidden Elements */
+[data-page="settings"].nav-btn,
+.settings-btn-sidebar {
+    display: none !important;
+}
+
+/* Mobile Responsiveness */
+@media (min-width: 769px) {
+    body {
+        background-attachment: fixed;
+    }
+}
+
 @media (max-width: 768px) {
     body {
-        padding: 5px; /* Ще менше */
+        background-attachment: scroll;
+        padding: 5px;
     }
     
     .container {
-        padding: 15px; /* Ще менше з 20px */
-        margin: 5px; /* Ще менше з 8px */
-        max-width: 95vw; /* Використовуємо майже всю ширину */
+        padding: 15px;
+        margin: 5px;
+        max-width: 95vw;
+    }
+    
+    .settings-gear-btn {
+        bottom: 12px;
+        left: 12px;
+        width: 38px;
+        height: 38px;
+        font-size: 20px;
+    }
+    
+    .sidebar {
+        width: 280px;
+        left: -280px;
+    }
+    
+    .nav-buttons {
+        padding: 18px 14px;
+    }
+    
+    .sidebar-user {
+        padding: 12px;
+    }
+    
+    .sidebar-controls {
+        padding: 12px;
+    }
+    
+    .language-flags {
+        gap: 8px;
+    }
+    
+    .lang-flag-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1em;
+        padding: 6px;
     }
     
     .page-content {
-        padding: 5px 0; /* Ще менше з 10px */
+        padding: 5px 0;
     }
     
     .page h1, .page h2 {
-        font-size: 1.4em; /* Ще менше з 1.6em */
-        margin-bottom: 8px; /* Ще менше з 12px */
+        font-size: 1.4em;
+        margin-bottom: 8px;
     }
     
     .page h3 {
-        font-size: 1.2em; /* Ще менше з 1.3em */
-        margin-bottom: 5px; /* Ще менше з 8px */
+        font-size: 1.2em;
+        margin-bottom: 5px;
     }
     
     .form-group {
-        margin-bottom: 8px; /* Ще менше з 12px */
+        margin-bottom: 8px;
     }
     
     .card,
     .info-block {
-        padding: 8px; /* Ще менше з 12px */
-        margin-bottom: 6px; /* Ще менше з 12px */
+        padding: 8px;
+        margin-bottom: 6px;
     }
 }
 
 @media (max-width: 480px) {
     body {
-        padding: 3px; /* Мінімальний padding */
+        padding: 3px;
     }
     
     .container {
-        padding: 12px; /* Ще менше з 18px */
-        margin: 3px; /* Ще менше з 5px */
-        max-width: 98vw; /* Майже вся ширина екрану */
+        padding: 12px;
+        margin: 3px;
+        max-width: 98vw;
+    }
+    
+    .sidebar {
+        width: 260px;
+        left: -260px;
+    }
+    
+    .sidebar-user {
+        padding: 10px;
+    }
+    
+    .nav-buttons {
+        padding: 15px 10px;
+    }
+    
+    .sidebar-controls {
+        padding: 10px;
+    }
+    
+    .language-flags {
+        gap: 6px;
+    }
+    
+    .lang-flag-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 1em;
+        padding: 4px;
+    }
+    
+    .container::before {
+        font-size: 1.1em;
+        top: 6px;
+        right: 10px;
+    }
+    
+    .container::after {
+        font-size: 1em;
+        bottom: 6px;
+        left: 10px;
     }
     
     .page-content {
-        padding: 3px 0; /* Ще менше з 8px */
+        padding: 3px 0;
     }
     
     .page h1, .page h2 {
-        font-size: 1.3em; /* Ще менше з 1.5em */
-        margin-bottom: 6px; /* Ще менше з 10px */
+        font-size: 1.3em;
+        margin-bottom: 6px;
     }
     
     .page h3 {
-        font-size: 1.1em; /* Ще менше з 1.2em */
-        margin-bottom: 4px; /* Ще менше з 6px */
+        font-size: 1.1em;
+        margin-bottom: 4px;
     }
     
     .form-group {
-        margin-bottom: 6px; /* Ще менше з 10px */
+        margin-bottom: 6px;
     }
     
     .card,
     .info-block {
-        padding: 6px; /* Ще менше з 10px */
-        margin-bottom: 5px; /* Ще менше з 10px */
+        padding: 6px;
+        margin-bottom: 5px;
     }
     
     .btn {
-        padding: 6px 12px; /* Ще менше з 8px 14px */
-        font-size: 0.85em; /* Ще менше з 0.9em */
+        padding: 6px 12px;
+        font-size: 0.85em;
     }
     
-    .container::before {
-        font-size: 1.1em; /* Ще менше з 1.3em */
-        top: 6px; /* Ще менше з 8px */
-        right: 10px; /* Ще менше з 12px */
-    }
-    
-    .container::after {
-        font-size: 1em; /* Ще менше з 1.1em */
-        bottom: 6px; /* Ще менше з 8px */
-        left: 10px; /* Ще менше з 12px */
-    }
-    
-    /* Спеціально для калькулятора на мобільних */
     textarea, input[type="text"], input[type="number"] {
-        min-height: 60px; /* Ще менше */
-        max-height: 100px; /* Ще менше */
+        min-height: 60px;
+        max-height: 100px;
         padding: 6px 8px;
         font-size: 0.9em;
     }
     
     .calc-results {
-        max-height: 150px; /* Ще менше */
+        max-height: 150px;
         font-size: 0.85em;
     }
 }
