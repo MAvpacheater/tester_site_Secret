@@ -1,4 +1,4 @@
-/* Оптимізований General Styles - Mining Theme */
+/* Optimized General Styles - Mining Theme */
 * { 
     margin: 0; 
     padding: 0; 
@@ -17,15 +17,19 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    padding: 20px;
     position: relative;
     overflow-x: hidden;
 }
 
+/* Background pattern */
 body::before {
     content: '';
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: 
         radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.03) 0%, transparent 40%),
         radial-gradient(circle at 75% 75%, rgba(255, 165, 0, 0.03) 0%, transparent 40%);
@@ -34,41 +38,56 @@ body::before {
     z-index: -1;
 }
 
+/* Desktop background */
+@media (min-width: 769px) {
+    body {
+        background-attachment: fixed;
+    }
+}
+
+/* Mobile background */
+@media (max-width: 768px) {
+    body {
+        background-attachment: scroll;
+    }
+}
+
 .container {
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.9) 0%, 
         rgba(101, 67, 33, 0.95) 50%, 
         rgba(62, 39, 35, 1) 100%);
     backdrop-filter: blur(15px);
-    border-radius: 18px;
-    padding: 20px;
+    border-radius: 25px;
+    padding: 40px;
     box-shadow: 
-        0 10px 25px rgba(0, 0, 0, 0.6),
-        inset 0 2px 6px rgba(255, 215, 0, 0.1),
-        0 0 20px rgba(255, 165, 0, 0.2);
-    max-width: 480px;
+        0 15px 40px rgba(0, 0, 0, 0.6),
+        inset 0 2px 10px rgba(255, 215, 0, 0.1),
+        0 0 30px rgba(255, 165, 0, 0.2);
+    max-width: 600px;
     width: 100%;
     text-align: center;
-    border: 2px solid #8B4513;
+    border: 3px solid #8B4513;
     position: relative;
-    max-height: 90vh;
+    overflow: hidden;
 }
 
+/* Container decorations */
 .container::before {
     content: '⛏️';
     position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 1.5em;
+    top: 15px;
+    right: 25px;
+    font-size: 2em;
     opacity: 0.6;
 }
 
 .container::after {
     content: '💎';
     position: absolute;
-    bottom: 10px;
-    left: 20px;
-    font-size: 1.2em;
+    bottom: 15px;
+    left: 25px;
+    font-size: 1.5em;
     opacity: 0.7;
 }
 
@@ -81,23 +100,25 @@ body::before {
     display: block !important;
 }
 
-/* Settings Gear Button */
+/* Settings Gear Button - Bottom Left Corner */
 .settings-gear-btn {
     position: fixed;
-    bottom: 15px;
-    left: 15px;
-    width: 45px;
-    height: 45px;
+    bottom: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 28px;
     color: #FFD700;
     z-index: 1000;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
+    margin: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
@@ -107,6 +128,11 @@ body::before {
     text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
 }
 
+.settings-gear-btn:active {
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* Animation for gear rotation */
 .settings-gear-btn.rotating {
     animation: gearSpin 1s linear infinite;
 }
@@ -116,26 +142,36 @@ body::before {
     to { transform: rotate(360deg); }
 }
 
+/* Hide settings button from Others category */
+[data-page="settings"].nav-btn {
+    display: none !important;
+}
+
+/* Hide settings button from sidebar controls */
+.settings-btn-sidebar {
+    display: none !important;
+}
+
 /* Mobile Menu Toggle */
 .mobile-menu-toggle {
     position: fixed;
-    top: 15px;
-    left: 15px;
+    top: 20px;
+    left: 20px;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.9) 0%, 
         rgba(101, 67, 33, 0.95) 50%, 
         rgba(62, 39, 35, 1) 100%);
-    border: 2px solid #8B4513;
+    border: 3px solid #8B4513;
     color: #FFD700;
-    padding: 12px 16px;
-    border-radius: 12px;
+    padding: 14px 18px;
+    border-radius: 15px;
     cursor: pointer;
-    font-size: 1.2em;
+    font-size: 1.3em;
     font-weight: 700;
     transition: all 0.3s ease;
     z-index: 1001;
     box-shadow: 
-        0 6px 20px rgba(0, 0, 0, 0.4),
+        0 8px 25px rgba(0, 0, 0, 0.4),
         inset 0 2px 5px rgba(255, 215, 0, 0.2);
     backdrop-filter: blur(10px);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -147,7 +183,7 @@ body::before {
     color: #2F1B14;
     transform: scale(1.05);
     box-shadow: 
-        0 10px 30px rgba(255, 215, 0, 0.4),
+        0 12px 35px rgba(255, 215, 0, 0.4),
         inset 0 2px 10px rgba(255, 255, 255, 0.2);
 }
 
@@ -155,21 +191,21 @@ body::before {
 .sidebar {
     position: fixed;
     top: 0;
-    left: -300px;
-    width: 300px;
+    left: -320px;
+    width: 320px;
     height: 100vh;
     background: linear-gradient(135deg, 
         rgba(41, 39, 35, 0.98) 0%, 
         rgba(28, 26, 23, 0.99) 50%, 
         rgba(20, 19, 17, 1) 100%);
     backdrop-filter: blur(15px);
-    border-right: 2px solid #8B4513;
+    border-right: 3px solid #8B4513;
     transition: left 0.3s ease;
     z-index: 1002;
     box-shadow: 
-        2px 0 30px rgba(0, 0, 0, 0.6),
-        inset -2px 0 8px rgba(255, 215, 0, 0.1);
-    border-radius: 0 12px 12px 0;
+        2px 0 40px rgba(0, 0, 0, 0.6),
+        inset -2px 0 10px rgba(255, 215, 0, 0.1);
+    border-radius: 0 15px 15px 0;
     display: flex;
     flex-direction: column;
 }
@@ -182,7 +218,7 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 18px;
+    padding: 25px 20px;
     border-bottom: 2px solid #8B4513;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.3) 0%, 
@@ -192,7 +228,7 @@ body::before {
 
 .sidebar-header h3 {
     color: #FFD700;
-    font-size: 1.6em;
+    font-size: 1.8em;
     font-weight: 700;
     margin: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -205,14 +241,14 @@ body::before {
         rgba(101, 67, 33, 0.4));
     border: 2px solid #8B4513;
     color: #FFD700;
-    font-size: 1.4em;
+    font-size: 1.5em;
     cursor: pointer;
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 50%;
     transition: all 0.3s ease;
     font-weight: bold;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -231,30 +267,30 @@ body::before {
 .nav-buttons {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 25px 18px;
+    gap: 15px;
+    padding: 30px 20px;
     overflow-y: auto;
     flex: 1;
 }
 
 .nav-category {
-    margin-bottom: 12px;
+    margin-bottom: 15px;
 }
 
 .category-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 12px;
-    margin-bottom: 8px;
+    padding: 12px 15px;
+    margin-bottom: 10px;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.4) 0%, 
         rgba(101, 67, 33, 0.5) 50%, 
         rgba(62, 39, 35, 0.6) 100%);
     border: 2px solid #8B4513;
-    border-radius: 10px;
+    border-radius: 12px;
     color: #FFD700;
-    font-size: 1.05em;
+    font-size: 1.1em;
     font-weight: 700;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     cursor: pointer;
@@ -273,15 +309,15 @@ body::before {
 .category-title {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .category-icon {
-    font-size: 1.1em;
+    font-size: 1.2em;
 }
 
 .category-toggle {
-    font-size: 0.9em;
+    font-size: 1em;
     transition: transform 0.3s ease;
 }
 
@@ -292,15 +328,15 @@ body::before {
 .category-buttons {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease-out;
-    padding-left: 12px;
+    padding-left: 15px;
 }
 
 .category-buttons.expanded {
-    max-height: 600px;
+    max-height: 800px;
 }
 
 .nav-btn {
@@ -309,17 +345,17 @@ body::before {
         rgba(62, 39, 35, 0.3) 100%);
     border: 2px solid rgba(139, 69, 19, 0.5);
     color: #F5DEB3;
-    padding: 12px 14px;
-    border-radius: 10px;
+    padding: 14px 16px;
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 0.9em;
+    font-size: 0.95em;
     font-weight: 600;
     transition: all 0.3s ease;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 6px;
+    gap: 8px;
     width: 100%;
     position: relative;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
@@ -331,35 +367,35 @@ body::before {
         rgba(139, 69, 19, 0.6));
     border-color: #FFD700;
     color: #FFD700;
-    transform: translateX(5px) scale(1.02);
-    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+    transform: translateX(6px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
 }
 
 .nav-btn.active {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #8B4513;
     color: #2F1B14;
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
-    transform: translateX(3px);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    transform: translateX(4px);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .nav-btn.active::after {
     content: '';
     position: absolute;
-    right: 8px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
     background: #2F1B14;
     border-radius: 50%;
-    box-shadow: 0 0 6px rgba(47, 27, 20, 0.8);
+    box-shadow: 0 0 8px rgba(47, 27, 20, 0.8);
 }
 
 /* User Section */
 .sidebar-user {
-    padding: 16px;
+    padding: 20px;
     border-top: 2px solid #8B4513;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.2) 0%, 
@@ -368,16 +404,16 @@ body::before {
 
 .auth-btn-sidebar {
     width: 100%;
-    padding: 10px 16px;
+    padding: 12px 20px;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.4) 0%, 
         rgba(101, 67, 33, 0.5) 50%, 
         rgba(62, 39, 35, 0.6) 100%);
     border: 2px solid #8B4513;
     color: #FFD700;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 0.95em;
+    font-size: 1em;
     font-weight: 600;
     transition: all 0.3s ease;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -388,7 +424,7 @@ body::before {
     border-color: #FFD700;
     color: #2F1B14;
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -400,12 +436,19 @@ body::before {
     pointer-events: none;
 }
 
-/* Language Flags */
+.auth-btn-sidebar.disabled:hover {
+    background: rgba(139, 69, 19, 0.2) !important;
+    border-color: #8B4513 !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Language Flags - Updated without settings button */
 .sidebar-controls {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px;
+    padding: 20px;
     border-top: 2px solid #8B4513;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.2) 0%, 
@@ -414,7 +457,7 @@ body::before {
 
 .language-flags {
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
 .lang-flag-btn {
@@ -423,13 +466,13 @@ body::before {
         rgba(62, 39, 35, 0.4) 100%);
     border: 2px solid #8B4513;
     color: #F5DEB3;
-    padding: 10px;
+    padding: 12px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.3em;
+    font-size: 1.5em;
     transition: all 0.3s ease;
-    width: 45px;
-    height: 45px;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -440,14 +483,14 @@ body::before {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #FFD700;
     transform: translateY(-3px) scale(1.1);
-    box-shadow: 0 5px 12px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
 }
 
 .lang-flag-btn.active {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #8B4513;
     box-shadow: 
-        0 6px 15px rgba(255, 215, 0, 0.5),
+        0 8px 20px rgba(255, 215, 0, 0.5),
         inset 0 2px 5px rgba(255, 255, 255, 0.2);
     transform: translateY(-2px) scale(1.05);
 }
@@ -455,7 +498,10 @@ body::before {
 /* Sidebar Overlay */
 .sidebar-overlay {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(20, 19, 17, 0.8);
     z-index: 1001;
     opacity: 0;
@@ -471,26 +517,131 @@ body::before {
 /* Signature */
 .signature {
     position: fixed;
-    bottom: 15px;
-    right: 15px;
+    bottom: 20px;
+    right: 20px;
     color: #D4AF37;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     z-index: 1000;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.3), 
         rgba(62, 39, 35, 0.4));
-    padding: 6px 12px;
-    border-radius: 16px;
+    padding: 8px 15px;
+    border-radius: 20px;
     border: 2px solid rgba(139, 69, 19, 0.5);
     backdrop-filter: blur(10px);
 }
 
-/* Loading Screen */
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .settings-gear-btn {
+        bottom: 15px;
+        left: 15px;
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+    }
+    
+    .sidebar {
+        width: 300px;
+        left: -300px;
+    }
+    
+    .nav-buttons {
+        padding: 20px 15px;
+    }
+    
+    .sidebar-user {
+        padding: 15px;
+    }
+    
+    .sidebar-controls {
+        padding: 15px;
+    }
+    
+    .language-flags {
+        gap: 10px;
+    }
+    
+    .lang-flag-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
+        padding: 8px;
+    }
+    
+    .container {
+        padding: 30px;
+        margin: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        width: 280px;
+        left: -280px;
+    }
+    
+    .sidebar-user {
+        padding: 15px 10px;
+    }
+    
+    .nav-buttons {
+        padding: 15px 10px 10px 10px;
+    }
+    
+    .sidebar-controls {
+        padding: 12px 10px;
+    }
+    
+    .control-buttons {
+        gap: 8px;
+    }
+    
+    .settings-btn-sidebar {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1em;
+        padding: 6px;
+    }
+    
+    .language-flags {
+        gap: 8px;
+    }
+    
+    .lang-flag-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1em;
+        padding: 6px;
+    }
+    
+    .container {
+        padding: 25px;
+        margin: 10px;
+    }
+    
+    .container::before {
+        font-size: 1.5em;
+        top: 10px;
+        right: 15px;
+    }
+    
+    .container::after {
+        font-size: 1.2em;
+        bottom: 10px;
+        left: 15px;
+    }
+}
+
+/* Loading Screen Styles */
 #loading-screen {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     justify-content: center;
@@ -498,7 +649,7 @@ body::before {
     z-index: 9999;
     font-family: system-ui, -apple-system, sans-serif;
     color: white;
-    font-size: 16px;
+    font-size: 18px;
     transition: opacity 0.3s ease-out;
 }
 
@@ -507,8 +658,8 @@ body::before {
 }
 
 .loading-icon {
-    font-size: 22px;
-    margin-bottom: 18px;
+    font-size: 24px;
+    margin-bottom: 20px;
     animation: pulse 2s infinite;
 }
 
@@ -518,20 +669,21 @@ body::before {
 }
 
 .loading-subtitle {
-    font-size: 13px;
-    margin-top: 8px;
+    font-size: 14px;
+    margin-top: 10px;
     opacity: 0.8;
 }
 
+/* Auto-reload indicator */
 .auto-reload-indicator {
     position: fixed;
-    bottom: 15px;
-    left: 15px;
+    bottom: 20px;
+    left: 20px;
     background: rgba(0, 0, 0, 0.8);
     color: #4CAF50;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
     z-index: 10000;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(76, 175, 80, 0.3);
@@ -541,278 +693,4 @@ body::before {
 
 .auto-reload-indicator.show {
     opacity: 1;
-}
-
-/* Content Styles */
-.page-content {
-    padding: 8px 0;
-}
-
-.page h1, .page h2 {
-    margin-bottom: 10px;
-    font-size: 1.6em;
-    line-height: 1.2;
-}
-
-.page h3 {
-    margin-bottom: 6px;
-    font-size: 1.2em;
-    line-height: 1.2;
-}
-
-.page p {
-    margin-bottom: 8px;
-    line-height: 1.3;
-    font-size: 0.95em;
-}
-
-.form-group {
-    margin-bottom: 10px;
-}
-
-.form-group label {
-    margin-bottom: 4px;
-    display: block;
-    font-size: 0.95em;
-    line-height: 1.2;
-}
-
-.form-control {
-    padding: 8px 10px;
-    border-radius: 6px;
-    font-size: 0.95em;
-    line-height: 1.2;
-}
-
-.btn {
-    padding: 8px 15px;
-    border-radius: 6px;
-    font-size: 0.9em;
-    line-height: 1.2;
-    margin: 4px 2px;
-}
-
-.table {
-    margin-bottom: 15px;
-}
-
-.table th,
-.table td {
-    padding: 8px 10px;
-    font-size: 0.9em;
-}
-
-.card,
-.info-block {
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 10px;
-}
-
-ul, ol {
-    margin-bottom: 15px;
-    padding-left: 20px;
-}
-
-li {
-    margin-bottom: 6px;
-}
-
-.calculator-input {
-    margin-bottom: 15px;
-}
-
-.calculator-result {
-    padding: 15px;
-    margin-top: 15px;
-}
-
-pre, code {
-    font-size: 0.85em;
-    padding: 12px;
-}
-
-.alert {
-    padding: 12px 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-}
-
-/* Hidden Elements */
-[data-page="settings"].nav-btn,
-.settings-btn-sidebar {
-    display: none !important;
-}
-
-/* Mobile Responsiveness */
-@media (min-width: 769px) {
-    body {
-        background-attachment: fixed;
-    }
-}
-
-@media (max-width: 768px) {
-    body {
-        background-attachment: scroll;
-        padding: 5px;
-    }
-    
-    .container {
-        padding: 15px;
-        margin: 5px;
-        max-width: 95vw;
-    }
-    
-    .settings-gear-btn {
-        bottom: 12px;
-        left: 12px;
-        width: 38px;
-        height: 38px;
-        font-size: 20px;
-    }
-    
-    .sidebar {
-        width: 280px;
-        left: -280px;
-    }
-    
-    .nav-buttons {
-        padding: 18px 14px;
-    }
-    
-    .sidebar-user {
-        padding: 12px;
-    }
-    
-    .sidebar-controls {
-        padding: 12px;
-    }
-    
-    .language-flags {
-        gap: 8px;
-    }
-    
-    .lang-flag-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 1.1em;
-        padding: 6px;
-    }
-    
-    .page-content {
-        padding: 5px 0;
-    }
-    
-    .page h1, .page h2 {
-        font-size: 1.4em;
-        margin-bottom: 8px;
-    }
-    
-    .page h3 {
-        font-size: 1.2em;
-        margin-bottom: 5px;
-    }
-    
-    .form-group {
-        margin-bottom: 8px;
-    }
-    
-    .card,
-    .info-block {
-        padding: 8px;
-        margin-bottom: 6px;
-    }
-}
-
-@media (max-width: 480px) {
-    body {
-        padding: 3px;
-    }
-    
-    .container {
-        padding: 12px;
-        margin: 3px;
-        max-width: 98vw;
-    }
-    
-    .sidebar {
-        width: 260px;
-        left: -260px;
-    }
-    
-    .sidebar-user {
-        padding: 10px;
-    }
-    
-    .nav-buttons {
-        padding: 15px 10px;
-    }
-    
-    .sidebar-controls {
-        padding: 10px;
-    }
-    
-    .language-flags {
-        gap: 6px;
-    }
-    
-    .lang-flag-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 1em;
-        padding: 4px;
-    }
-    
-    .container::before {
-        font-size: 1.1em;
-        top: 6px;
-        right: 10px;
-    }
-    
-    .container::after {
-        font-size: 1em;
-        bottom: 6px;
-        left: 10px;
-    }
-    
-    .page-content {
-        padding: 3px 0;
-    }
-    
-    .page h1, .page h2 {
-        font-size: 1.3em;
-        margin-bottom: 6px;
-    }
-    
-    .page h3 {
-        font-size: 1.1em;
-        margin-bottom: 4px;
-    }
-    
-    .form-group {
-        margin-bottom: 6px;
-    }
-    
-    .card,
-    .info-block {
-        padding: 6px;
-        margin-bottom: 5px;
-    }
-    
-    .btn {
-        padding: 6px 12px;
-        font-size: 0.85em;
-    }
-    
-    textarea, input[type="text"], input[type="number"] {
-        min-height: 60px;
-        max-height: 100px;
-        padding: 6px 8px;
-        font-size: 0.9em;
-    }
-    
-    .calc-results {
-        max-height: 150px;
-        font-size: 0.85em;
-    }
 }
