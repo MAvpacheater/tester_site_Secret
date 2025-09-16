@@ -150,12 +150,12 @@ body.menu-right .settings-gear-btn {
     top: auto;
 }
 
-/* Top menu - move settings to top right */
+/* Top menu - move settings to top left (before menu) */
 body.menu-up .settings-gear-btn {
     top: 10px;
-    right: 20px;
+    left: 20px;
     bottom: auto;
-    left: auto;
+    right: auto;
 }
 
 /* Bottom menu - move settings ABOVE the menu bar */
@@ -603,7 +603,7 @@ body.menu-right .sidebar.open {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding: 0 20px;
+    padding: 0 15px;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
     overflow-x: auto;
     overflow-y: hidden;
@@ -613,20 +613,21 @@ body.menu-right .sidebar.open {
     top: 0;
     border-bottom: 3px solid #8B4513;
     border-top: none;
-    height: 60px;
+    height: 55px;
+    padding-left: 85px; /* Space for settings button */
 }
 
 .static-menu.menu-bottom {
     bottom: 0;
     border-top: 3px solid #8B4513;
     border-bottom: none;
-    height: 60px;
+    height: 55px;
 }
 
 .static-menu .nav-buttons {
     display: flex;
     flex-direction: row;
-    gap: 6px;
+    gap: 4px;
     padding: 0;
     overflow: visible;
     max-width: none;
@@ -638,14 +639,14 @@ body.menu-right .sidebar.open {
 
 .static-menu .nav-btn {
     flex-shrink: 0;
-    padding: 6px 8px;
-    font-size: 1.6em;
-    min-width: 44px;
-    height: 40px;
+    padding: 4px 6px;
+    font-size: 1.3em;
+    min-width: 36px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
+    border-radius: 8px;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.2) 0%, 
         rgba(62, 39, 35, 0.3) 100%);
@@ -687,11 +688,11 @@ body.menu-down .sidebar-overlay {
 
 /* Adjust body padding for top/bottom menus */
 body.menu-up {
-    padding-top: 80px;
+    padding-top: 70px;
 }
 
 body.menu-down {
-    padding-bottom: 80px;
+    padding-bottom: 70px;
 }
 
 /* Custom scrollbar for static menus */
@@ -726,14 +727,14 @@ body.menu-down {
     /* Adjusted positioning for mobile */
     body.menu-up .settings-gear-btn {
         top: 8px;
-        right: 15px;
-        width: 40px;
-        height: 40px;
-        font-size: 22px;
+        left: 15px;
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
     }
     
     body.menu-down .settings-gear-btn {
-        bottom: 70px; /* Mobile bottom menu height + padding */
+        bottom: 65px; /* Mobile bottom menu height + padding */
         left: 15px;
         width: 40px;
         height: 40px;
@@ -780,24 +781,28 @@ body.menu-down {
     }
     
     .static-menu {
-        height: 55px;
-        padding: 0 15px;
+        height: 50px;
+        padding: 0 10px;
+    }
+    
+    .static-menu.menu-top {
+        padding-left: 65px; /* Space for smaller settings button */
     }
     
     .static-menu .nav-btn {
-        padding: 5px 7px;
-        font-size: 1.4em;
-        min-width: 40px;
-        height: 36px;
-        gap: 5px;
+        padding: 3px 5px;
+        font-size: 1.2em;
+        min-width: 32px;
+        height: 28px;
+        gap: 3px;
     }
     
     body.menu-up {
-        padding-top: 70px;
+        padding-top: 65px;
     }
     
     body.menu-down {
-        padding-bottom: 70px;
+        padding-bottom: 65px;
     }
 }
 
@@ -848,40 +853,44 @@ body.menu-down {
     }
     
     .static-menu {
-        height: 50px;
-        padding: 0 10px;
+        height: 45px;
+        padding: 0 8px;
+    }
+    
+    .static-menu.menu-top {
+        padding-left: 55px; /* Space for smaller settings button */
     }
     
     .static-menu .nav-btn {
-        padding: 4px 6px;
-        font-size: 1.2em;
-        min-width: 36px;
-        height: 32px;
-        gap: 4px;
+        padding: 2px 4px;
+        font-size: 1.1em;
+        min-width: 28px;
+        height: 26px;
+        gap: 2px;
     }
     
     body.menu-up {
-        padding-top: 65px;
+        padding-top: 60px;
     }
     
     body.menu-down {
-        padding-bottom: 65px;
+        padding-bottom: 60px;
     }
     
     body.menu-down .settings-gear-btn {
-        bottom: 60px;
+        bottom: 55px;
         left: 10px;
-        width: 35px;
-        height: 35px;
-        font-size: 18px;
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
     }
     
     body.menu-up .settings-gear-btn {
         top: 5px;
-        right: 10px;
-        width: 35px;
-        height: 35px;
-        font-size: 18px;
+        left: 8px;
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
     }
 }
 
@@ -891,16 +900,35 @@ body.menu-down {
         padding: 0 5px;
     }
     
+    .static-menu.menu-top {
+        padding-left: 50px; /* Space for very small settings button */
+    }
+    
     .static-menu .nav-btn {
-        padding: 3px 5px;
-        font-size: 1.1em;
-        min-width: 32px;
-        height: 30px;
-        gap: 3px;
+        padding: 2px 3px;
+        font-size: 1.0em;
+        min-width: 26px;
+        height: 24px;
+        gap: 2px;
     }
     
     .static-menu .nav-buttons {
-        gap: 3px;
+        gap: 2px;
+    }
+    
+    body.menu-up .settings-gear-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+        top: 3px;
+        left: 6px;
+    }
+    
+    body.menu-down .settings-gear-btn {
+        bottom: 50px;
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
     }
 }
 
