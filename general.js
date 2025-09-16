@@ -1,5 +1,5 @@
 // General JavaScript functions - Cleaned version
-
+import { Analytics } from "@vercel/analytics/next"
 // Global language state
 let currentAppLanguage = 'en';
 let menuTranslations = null;
