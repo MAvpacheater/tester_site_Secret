@@ -19,7 +19,11 @@ const backgroundOptions = {
     code: {
         icon: '💻',
         url: 'https://i.postimg.cc/nrvZbvKw/image.png'
-    }
+    },
+    dodep: {
+        icon: '🎮', 
+        url: 'https://i.postimg.cc/nV4dxr1X/2025-09-16-22-26-42.png'
+    },
 };
 
 // Menu position configurations
