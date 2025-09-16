@@ -333,13 +333,13 @@
 }
 
 /* Menu Position Styles */
-/* Top Menu */
+/* Top Menu - Icon Only */
 .menu-top {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 80px;
+    height: 60px;
     background: linear-gradient(135deg, 
         rgba(41, 39, 35, 0.98) 0%, 
         rgba(28, 26, 23, 0.99) 50%, 
@@ -349,33 +349,69 @@
     z-index: 1002;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 0 20px;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .menu-top .nav-buttons {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 8px;
     padding: 0;
-    overflow-x: auto;
-    max-width: 100%;
+    overflow: visible;
+    max-width: none;
+    width: auto;
+    flex: 1;
 }
 
 .menu-top .nav-btn {
     flex-shrink: 0;
-    padding: 8px 12px;
-    font-size: 0.9em;
+    padding: 8px 10px;
+    font-size: 1.8em;
+    min-width: 50px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.2) 0%, 
+        rgba(62, 39, 35, 0.3) 100%);
+    border: 2px solid rgba(139, 69, 19, 0.5);
+    color: #F5DEB3;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
 }
 
-/* Bottom Menu */
+.menu-top .nav-btn:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.3) 0%, 
+        rgba(139, 69, 19, 0.6) 100%);
+    border-color: #FFD700;
+    color: #FFD700;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+}
+
+.menu-top .nav-btn.active {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-color: #8B4513;
+    color: #2F1B14;
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Bottom Menu - Icon Only */
 .menu-bottom {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 80px;
+    height: 60px;
     background: linear-gradient(135deg, 
         rgba(41, 39, 35, 0.98) 0%, 
         rgba(28, 26, 23, 0.99) 50%, 
@@ -385,24 +421,60 @@
     z-index: 1002;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 0 20px;
     box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.6);
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .menu-bottom .nav-buttons {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 8px;
     padding: 0;
-    overflow-x: auto;
-    max-width: 100%;
+    overflow: visible;
+    max-width: none;
+    width: auto;
+    flex: 1;
 }
 
 .menu-bottom .nav-btn {
     flex-shrink: 0;
-    padding: 8px 12px;
-    font-size: 0.9em;
+    padding: 8px 10px;
+    font-size: 1.8em;
+    min-width: 50px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.2) 0%, 
+        rgba(62, 39, 35, 0.3) 100%);
+    border: 2px solid rgba(139, 69, 19, 0.5);
+    color: #F5DEB3;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.menu-bottom .nav-btn:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.3) 0%, 
+        rgba(139, 69, 19, 0.6) 100%);
+    border-color: #FFD700;
+    color: #FFD700;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+}
+
+.menu-bottom .nav-btn.active {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-color: #8B4513;
+    color: #2F1B14;
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    transform: translateY(-1px);
 }
 
 /* Hide mobile toggle and sidebar for top/bottom menus */
@@ -417,11 +489,41 @@ body.menu-bottom .sidebar-overlay {
 
 /* Adjust body padding for top/bottom menus */
 body.menu-top {
-    padding-top: 100px;
+    padding-top: 80px;
 }
 
 body.menu-bottom {
-    padding-bottom: 100px;
+    padding-bottom: 80px;
+}
+
+/* Settings button positioning for different menu positions */
+/* Default position (left/right menu) */
+.settings-gear-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    transition: all 0.3s ease;
+}
+
+/* Top menu - move settings to top right */
+body.menu-top .settings-gear-btn {
+    top: 10px;
+    bottom: auto;
+    right: 20px;
+    left: auto;
+}
+
+/* Bottom menu - move settings to bottom right */
+body.menu-bottom .settings-gear-btn {
+    bottom: 70px;
+    right: 20px;
+    left: auto;
+}
+
+/* Right menu - move settings to bottom right */
+body.menu-right .settings-gear-btn {
+    right: 20px;
+    left: auto;
 }
 
 /* Right sidebar positioning */
@@ -442,6 +544,29 @@ body.menu-right .sidebar.open {
 body.menu-right .mobile-menu-toggle {
     left: auto;
     right: 20px;
+}
+
+/* Custom scrollbar for top/bottom menus */
+.menu-top::-webkit-scrollbar,
+.menu-bottom::-webkit-scrollbar {
+    height: 4px;
+}
+
+.menu-top::-webkit-scrollbar-track,
+.menu-bottom::-webkit-scrollbar-track {
+    background: rgba(139, 69, 19, 0.2);
+    border-radius: 2px;
+}
+
+.menu-top::-webkit-scrollbar-thumb,
+.menu-bottom::-webkit-scrollbar-thumb {
+    background: rgba(255, 215, 0, 0.5);
+    border-radius: 2px;
+}
+
+.menu-top::-webkit-scrollbar-thumb:hover,
+.menu-bottom::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 215, 0, 0.8);
 }
 
 /* Mobile Responsiveness */
@@ -538,22 +663,40 @@ body.menu-right .mobile-menu-toggle {
     
     .menu-top,
     .menu-bottom {
-        height: 70px;
+        height: 55px;
         padding: 0 15px;
     }
     
     .menu-top .nav-btn,
     .menu-bottom .nav-btn {
-        padding: 6px 10px;
-        font-size: 0.85em;
+        padding: 6px 8px;
+        font-size: 1.6em;
+        min-width: 44px;
+        height: 40px;
     }
     
     body.menu-top {
-        padding-top: 85px;
+        padding-top: 70px;
     }
     
     body.menu-bottom {
-        padding-bottom: 85px;
+        padding-bottom: 70px;
+    }
+    
+    body.menu-top .settings-gear-btn {
+        top: 8px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+    }
+    
+    body.menu-bottom .settings-gear-btn {
+        bottom: 65px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
     }
 }
 
@@ -632,21 +775,39 @@ body.menu-right .mobile-menu-toggle {
     
     .menu-top,
     .menu-bottom {
-        height: 60px;
+        height: 50px;
         padding: 0 10px;
     }
     
     .menu-top .nav-btn,
     .menu-bottom .nav-btn {
-        padding: 5px 8px;
-        font-size: 0.8em;
+        padding: 5px 7px;
+        font-size: 1.4em;
+        min-width: 40px;
+        height: 36px;
     }
     
     body.menu-top {
-        padding-top: 75px;
+        padding-top: 65px;
     }
     
     body.menu-bottom {
-        padding-bottom: 75px;
+        padding-bottom: 65px;
+    }
+    
+    body.menu-top .settings-gear-btn {
+        top: 5px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+    
+    body.menu-bottom .settings-gear-btn {
+        bottom: 60px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
     }
 }
