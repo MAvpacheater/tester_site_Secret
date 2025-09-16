@@ -1,8 +1,9 @@
-// Moderation Settings - Background Management with Collapsible Categories
+// Moderation Settings - Background Management and Menu Position with Collapsible Categories
 let settingsInitialized = false;
 let settingsTranslations = null;
 let categoriesState = {
-    background: false // false = collapsed, true = expanded
+    background: false, // false = collapsed, true = expanded
+    menu: false
 };
 
 // Background configurations
@@ -21,20 +22,38 @@ const backgroundOptions = {
     }
 };
 
+// Menu position configurations
+const menuPositions = {
+    left: {
+        icon: '⬅️',
+        description: 'Hamburger Menu Left'
+    },
+    right: {
+        icon: '➡️',
+        description: 'Hamburger Menu Right'
+    },
+    up: {
+        icon: '⬆️',
+        description: 'Static Menu Top'
+    },
+    down: {
+        icon: '⬇️',
+        description: 'Static Menu Bottom'
+    }
+};
+
 // Toggle category visibility
 function toggleCategory(categoryName) {
-    const isBackgroundCategory = categoryName === 'background';
-    if (!isBackgroundCategory) return;
+    if (!categoriesState.hasOwnProperty(categoryName)) return;
     
-    const categoryKey = 'background';
-    categoriesState[categoryKey] = !categoriesState[categoryKey];
+    categoriesState[categoryName] = !categoriesState[categoryName];
     
-    const header = document.querySelector('.category-header');
-    const options = document.querySelector('.background-options');
+    const header = document.querySelector(`[data-category="${categoryName}"] .category-header`);
+    const options = document.querySelector(`.${categoryName}-options`);
     
     if (!header || !options) return;
     
-    if (categoriesState[categoryKey]) {
+    if (categoriesState[categoryName]) {
         // Expand
         header.classList.remove('collapsed');
         options.classList.remove('collapsed');
@@ -46,7 +65,7 @@ function toggleCategory(categoryName) {
     
     // Save state
     localStorage.setItem('armHelper_categoriesState', JSON.stringify(categoriesState));
-    console.log(`Category ${categoryKey} ${categoriesState[categoryKey] ? 'expanded' : 'collapsed'}`);
+    console.log(`Category ${categoryName} ${categoriesState[categoryName] ? 'expanded' : 'collapsed'}`);
 }
 
 // Load categories state
@@ -63,18 +82,20 @@ function loadCategoriesState() {
 
 // Apply categories state to UI
 function applyCategoriesState() {
-    const header = document.querySelector('.category-header');
-    const options = document.querySelector('.background-options');
-    
-    if (!header || !options) return;
-    
-    if (categoriesState.background) {
-        header.classList.remove('collapsed');
-        options.classList.remove('collapsed');
-    } else {
-        header.classList.add('collapsed');
-        options.classList.add('collapsed');
-    }
+    Object.keys(categoriesState).forEach(category => {
+        const header = document.querySelector(`[data-category="${category}"] .category-header`);
+        const options = document.querySelector(`.${category}-options`);
+        
+        if (!header || !options) return;
+        
+        if (categoriesState[category]) {
+            header.classList.remove('collapsed');
+            options.classList.remove('collapsed');
+        } else {
+            header.classList.add('collapsed');
+            options.classList.add('collapsed');
+        }
+    });
 }
 
 // Get current background setting
@@ -138,16 +159,142 @@ function updateBackgroundUI() {
     });
 }
 
+// Get current menu position setting
+function getCurrentMenuPosition() {
+    const saved = localStorage.getItem('armHelper_menuPosition');
+    return saved || 'left';
+}
+
+// Save menu position setting
+function saveMenuPosition(position) {
+    localStorage.setItem('armHelper_menuPosition', position);
+    console.log(`Menu position saved: ${position}`);
+}
+
+// Apply menu position
+function applyMenuPosition(position) {
+    if (!menuPositions[position]) {
+        console.error(`Menu position ${position} not found`);
+        return;
+    }
+    
+    const body = document.body;
+    
+    // Remove all menu position classes
+    Object.keys(menuPositions).forEach(pos => {
+        body.classList.remove(`menu-${pos}`);
+    });
+    
+    // Add new menu position class
+    body.classList.add(`menu-${position}`);
+    
+    // Handle static menu rendering
+    if (position === 'up' || position === 'down') {
+        createStaticMenu(position);
+    } else {
+        removeStaticMenu();
+    }
+    
+    console.log(`Menu position applied: ${position}`);
+}
+
+// Create static menu for top/bottom positions
+function createStaticMenu(position) {
+    // Remove existing static menu
+    removeStaticMenu();
+    
+    const menuClass = position === 'up' ? 'menu-top' : 'menu-bottom';
+    const staticMenu = document.createElement('div');
+    staticMenu.className = `static-menu ${menuClass}`;
+    staticMenu.id = 'staticMenu';
+    
+    // Create navigation buttons from sidebar
+    const sidebarButtons = document.querySelectorAll('.sidebar .nav-btn');
+    const navButtons = document.createElement('div');
+    navButtons.className = 'nav-buttons';
+    
+    sidebarButtons.forEach(btn => {
+        const newBtn = btn.cloneNode(true);
+        newBtn.onclick = () => {
+            switchPage(newBtn.dataset.page);
+            updateStaticMenuActiveState(newBtn.dataset.page);
+        };
+        navButtons.appendChild(newBtn);
+    });
+    
+    staticMenu.appendChild(navButtons);
+    document.body.appendChild(staticMenu);
+    
+    // Update active state for current page
+    const currentPage = typeof getCurrentPage === 'function' ? getCurrentPage() : 'calculator';
+    updateStaticMenuActiveState(currentPage);
+}
+
+// Remove static menu
+function removeStaticMenu() {
+    const existingMenu = document.getElementById('staticMenu');
+    if (existingMenu) {
+        existingMenu.remove();
+    }
+}
+
+// Update static menu active state
+function updateStaticMenuActiveState(activePage) {
+    const staticMenu = document.getElementById('staticMenu');
+    if (!staticMenu) return;
+    
+    staticMenu.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.page === activePage) {
+            btn.classList.add('active');
+        }
+    });
+}
+
+// Change menu position
+function changeMenuPosition(position) {
+    if (!menuPositions[position]) {
+        console.error(`Invalid menu position: ${position}`);
+        return;
+    }
+    
+    // Save setting
+    saveMenuPosition(position);
+    
+    // Apply menu position
+    applyMenuPosition(position);
+    
+    // Update UI
+    updateMenuPositionUI();
+    
+    console.log(`Menu position changed to: ${position}`);
+}
+
+// Update menu position UI
+function updateMenuPositionUI() {
+    const currentPos = getCurrentMenuPosition();
+    
+    // Update active states
+    document.querySelectorAll('.menu-option').forEach(option => {
+        option.classList.remove('active');
+        if (option.dataset.position === currentPos) {
+            option.classList.add('active');
+        }
+    });
+}
+
 // Reset settings to default
 function resetSettings() {
     if (confirm(getTranslation('confirmReset', 'Are you sure you want to reset all settings?'))) {
         localStorage.removeItem('armHelper_background');
+        localStorage.removeItem('armHelper_menuPosition');
         localStorage.removeItem('armHelper_categoriesState');
         
         // Reset state
-        categoriesState = { background: false };
+        categoriesState = { background: false, menu: false };
         
         changeBackground('penguin');
+        changeMenuPosition('left');
         applyCategoriesState();
         
         console.log('Settings reset to default');
@@ -174,9 +321,14 @@ async function loadSettingsTranslations() {
             en: {
                 title: "⚙️ Settings",
                 background: "Background",
+                menu: "Menu Position",
                 penguin: "Penguin",
                 game: "Game",
                 code: "Code",
+                up: "Top",
+                down: "Bottom",
+                left: "Left", 
+                right: "Right",
                 reset: "Reset Settings",
                 confirmReset: "Are you sure you want to reset all settings?"
             }
@@ -217,10 +369,16 @@ async function updateSettingsLanguage(lang = null) {
         titleElement.textContent = translations.title;
     }
     
-    // Update section title
-    const sectionTitle = document.querySelector('#settingsPage .category-title span:last-child');
-    if (sectionTitle) {
-        sectionTitle.textContent = translations.background;
+    // Update background section title
+    const backgroundSectionTitle = document.querySelector('[data-category="background"] .category-title span:last-child');
+    if (backgroundSectionTitle) {
+        backgroundSectionTitle.textContent = translations.background;
+    }
+    
+    // Update menu section title
+    const menuSectionTitle = document.querySelector('[data-category="menu"] .category-title span:last-child');
+    if (menuSectionTitle) {
+        menuSectionTitle.textContent = translations.menu;
     }
     
     // Update background option names
@@ -228,6 +386,14 @@ async function updateSettingsLanguage(lang = null) {
         const option = document.querySelector(`[data-background="${bg}"] .option-name`);
         if (option && translations[bg]) {
             option.textContent = translations[bg];
+        }
+    });
+    
+    // Update menu position option names
+    Object.keys(menuPositions).forEach(pos => {
+        const option = document.querySelector(`[data-position="${pos}"] .menu-option-name`);
+        if (option && translations[pos]) {
+            option.textContent = translations[pos];
         }
     });
     
@@ -246,7 +412,7 @@ function createSettingsHTML() {
         <div class="settings-container">
             <h1 class="settings-title">⚙️ Settings</h1>
             
-            <div class="settings-section">
+            <div class="settings-section" data-category="background">
                 <div class="category-header collapsed" onclick="toggleCategory('background')">
                     <div class="category-title">
                         <span class="section-icon">🎨</span>
@@ -272,6 +438,38 @@ function createSettingsHTML() {
                         <div class="option-icon">💻</div>
                         <div class="option-name">Code</div>
                         <div class="background-preview" style="background-image: url('${backgroundOptions.code.url}')"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-section" data-category="menu">
+                <div class="category-header collapsed" onclick="toggleCategory('menu')">
+                    <div class="category-title">
+                        <span class="section-icon">📱</span>
+                        <span>Menu Position</span>
+                    </div>
+                    <span class="category-toggle">▼</span>
+                </div>
+                
+                <div class="menu-options collapsed">
+                    <div class="menu-option" data-position="up" onclick="changeMenuPosition('up')">
+                        <div class="menu-option-icon">⬆️</div>
+                        <div class="menu-option-name">Top</div>
+                    </div>
+                    
+                    <div class="menu-option" data-position="left" onclick="changeMenuPosition('left')">
+                        <div class="menu-option-icon">⬅️</div>
+                        <div class="menu-option-name">Left</div>
+                    </div>
+                    
+                    <div class="menu-option" data-position="right" onclick="changeMenuPosition('right')">
+                        <div class="menu-option-icon">➡️</div>
+                        <div class="menu-option-name">Right</div>
+                    </div>
+                    
+                    <div class="menu-option" data-position="down" onclick="changeMenuPosition('down')">
+                        <div class="menu-option-icon">⬇️</div>
+                        <div class="menu-option-name">Bottom</div>
                     </div>
                 </div>
             </div>
@@ -312,6 +510,11 @@ async function initializeSettings() {
     applyBackground(currentBg);
     updateBackgroundUI();
     
+    // Apply current menu position
+    const currentMenuPos = getCurrentMenuPosition();
+    applyMenuPosition(currentMenuPos);
+    updateMenuPositionUI();
+    
     // Apply categories state
     applyCategoriesState();
     
@@ -322,11 +525,15 @@ async function initializeSettings() {
     console.log('✅ Settings initialized');
 }
 
-// Apply background on app start
-function initializeBackgroundOnStart() {
+// Apply background and menu position on app start
+function initializeSettingsOnStart() {
     const currentBg = getCurrentBackground();
     applyBackground(currentBg);
     console.log(`Initial background applied: ${currentBg}`);
+    
+    const currentMenuPos = getCurrentMenuPosition();
+    applyMenuPosition(currentMenuPos);
+    console.log(`Initial menu position applied: ${currentMenuPos}`);
 }
 
 // Listen for language changes
@@ -336,21 +543,35 @@ document.addEventListener('languageChanged', (event) => {
     }
 });
 
-// Apply background immediately when script loads
+// Listen for page changes to update static menu active state
 document.addEventListener('DOMContentLoaded', () => {
-    initializeBackgroundOnStart();
+    // Override switchPage to update static menu
+    const originalSwitchPage = window.switchPage;
+    if (originalSwitchPage) {
+        window.switchPage = function(page) {
+            originalSwitchPage(page);
+            updateStaticMenuActiveState(page);
+        };
+    }
+});
+
+// Apply settings immediately when script loads
+document.addEventListener('DOMContentLoaded', () => {
+    initializeSettingsOnStart();
 });
 
 // If DOM already loaded, apply immediately
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeBackgroundOnStart);
+    document.addEventListener('DOMContentLoaded', initializeSettingsOnStart);
 } else {
-    initializeBackgroundOnStart();
+    initializeSettingsOnStart();
 }
 
 // Global functions
 window.initializeSettings = initializeSettings;
 window.changeBackground = changeBackground;
+window.changeMenuPosition = changeMenuPosition;
 window.resetSettings = resetSettings;
 window.toggleCategory = toggleCategory;
 window.updateSettingsLanguage = updateSettingsLanguage;
+window.updateStaticMenuActiveState = updateStaticMenuActiveState;
