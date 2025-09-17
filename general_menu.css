@@ -1,40 +1,6 @@
 /* Menu-specific styles - Mining Theme - FIXED VERSION */
 
-/* Control Buttons Container */
-.control-buttons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-}
-
-.settings-btn-sidebar {
-    background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.3) 0%, 
-        rgba(62, 39, 35, 0.4) 100%);
-    border: 2px solid #8B4513;
-    color: #F5DEB3;
-    padding: 12px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.5em;
-    transition: all 0.3s ease;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.settings-btn-sidebar:hover {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
-    border-color: #FFD700;
-    transform: translateY(-3px) scale(1.1);
-    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
-}
-
-/* Settings Gear Button - FIXED TO BE ALWAYS VISIBLE */
+/* Settings Gear Button - Always Visible */
 .settings-gear-btn {
     position: fixed;
     width: 50px;
@@ -47,18 +13,15 @@
     cursor: pointer;
     font-size: 28px;
     color: #FFD700;
-    z-index: 1500; /* Higher z-index to ensure it's always on top */
+    z-index: 1500;
     transition: all 0.3s ease;
     display: flex !important;
     align-items: center;
     justify-content: center;
-    padding: 0;
-    margin: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    opacity: 1 !important;
-    visibility: visible !important;
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    pointer-events: auto !important;
 }
 
 .settings-gear-btn:hover {
@@ -73,63 +36,33 @@
     transform: rotate(90deg) scale(1.1);
 }
 
-/* Settings button positioning for different menu positions - FIXED */
-/* Default position (left menu) */
-body.menu-left .settings-gear-btn,
-body:not([class*="menu-"]) .settings-gear-btn {
+/* Settings button positioning */
+.settings-gear-btn {
     bottom: 20px;
     left: 20px;
-    top: auto;
-    right: auto;
 }
 
-/* Right menu */
 body.menu-right .settings-gear-btn {
     bottom: 20px;
     right: 20px;
     left: auto;
-    top: auto;
 }
 
-/* Top menu - FIXED: Now visible and properly positioned */
 body.menu-up .settings-gear-btn {
     top: 20px;
     right: 20px;
     bottom: auto;
     left: auto;
-    z-index: 1600; /* Even higher for top menu */
+    z-index: 1600;
 }
 
-/* Bottom menu */
 body.menu-down .settings-gear-btn {
     bottom: 20px;
     right: 20px;
     left: auto;
-    top: auto;
-    z-index: 1600; /* Higher for bottom menu */
 }
 
-/* Animation for gear rotation */
-.settings-gear-btn.rotating {
-    animation: gearSpin 1s linear infinite;
-}
-
-@keyframes gearSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Hide settings button from Others category */
-[data-page="settings"].nav-btn {
-    display: none !important;
-}
-
-/* Hide settings button from sidebar controls */
-.settings-btn-sidebar {
-    display: none !important;
-}
-
-/* Mobile Menu Toggle - FIXED for all positions */
+/* Mobile Menu Toggle */
 .mobile-menu-toggle {
     position: fixed;
     top: 20px;
@@ -147,9 +80,7 @@ body.menu-down .settings-gear-btn {
     font-weight: 700;
     transition: all 0.3s ease;
     z-index: 1501;
-    box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.4),
-        inset 0 2px 5px rgba(255, 215, 0, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(10px);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
@@ -159,26 +90,15 @@ body.menu-down .settings-gear-btn {
     border-color: #FFD700;
     color: #2F1B14;
     transform: scale(1.05);
-    box-shadow: 
-        0 12px 35px rgba(255, 215, 0, 0.4),
-        inset 0 2px 10px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 12px 35px rgba(255, 215, 0, 0.4);
 }
 
-/* Mobile menu toggle positioning for right menu */
 body.menu-right .mobile-menu-toggle {
     left: auto;
     right: 20px;
 }
 
-/* FIXED: Hide mobile toggle for top/bottom menus only on desktop */
-@media (min-width: 769px) {
-    body.menu-up .mobile-menu-toggle,
-    body.menu-down .mobile-menu-toggle {
-        display: none !important;
-    }
-}
-
-/* Sidebar - FIXED z-index and positioning */
+/* Sidebar */
 .sidebar {
     position: fixed;
     top: 0;
@@ -193,9 +113,7 @@ body.menu-right .mobile-menu-toggle {
     border-right: 3px solid #8B4513;
     transition: left 0.3s ease;
     z-index: 1502;
-    box-shadow: 
-        2px 0 40px rgba(0, 0, 0, 0.6),
-        inset -2px 0 10px rgba(255, 215, 0, 0.1);
+    box-shadow: 2px 0 40px rgba(0, 0, 0, 0.6);
     border-radius: 0 15px 15px 0;
     display: flex;
     flex-direction: column;
@@ -205,7 +123,7 @@ body.menu-right .mobile-menu-toggle {
     left: 0;
 }
 
-/* Right sidebar positioning */
+/* Right sidebar */
 body.menu-right .sidebar {
     left: auto;
     right: -320px;
@@ -217,9 +135,9 @@ body.menu-right .sidebar {
 
 body.menu-right .sidebar.open {
     right: 0;
-    left: auto;
 }
 
+/* Sidebar Header */
 .sidebar-header {
     display: flex;
     justify-content: space-between;
@@ -269,7 +187,7 @@ body.menu-right .sidebar.open {
     box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
 }
 
-/* Navigation Categories */
+/* Navigation */
 .nav-buttons {
     display: flex;
     flex-direction: column;
@@ -301,6 +219,7 @@ body.menu-right .sidebar.open {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     cursor: pointer;
     transition: all 0.3s ease;
+    pointer-events: auto !important;
 }
 
 .category-header:hover {
@@ -365,6 +284,7 @@ body.menu-right .sidebar.open {
     width: 100%;
     position: relative;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    pointer-events: auto !important;
 }
 
 .nav-btn:hover {
@@ -384,19 +304,6 @@ body.menu-right .sidebar.open {
     box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
     transform: translateX(4px);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.nav-btn.active::after {
-    content: '';
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
-    background: #2F1B14;
-    border-radius: 50%;
-    box-shadow: 0 0 8px rgba(47, 27, 20, 0.8);
 }
 
 /* User Section */
@@ -431,7 +338,6 @@ body.menu-right .sidebar.open {
     color: #2F1B14;
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .auth-btn-sidebar.disabled {
@@ -442,14 +348,7 @@ body.menu-right .sidebar.open {
     pointer-events: none;
 }
 
-.auth-btn-sidebar.disabled:hover {
-    background: rgba(139, 69, 19, 0.2) !important;
-    border-color: #8B4513 !important;
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-/* Language Flags - Updated without settings button */
+/* Language Controls */
 .sidebar-controls {
     display: flex;
     align-items: center;
@@ -483,6 +382,7 @@ body.menu-right .sidebar.open {
     align-items: center;
     justify-content: center;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    pointer-events: auto !important;
 }
 
 .lang-flag-btn:hover {
@@ -495,13 +395,11 @@ body.menu-right .sidebar.open {
 .lang-flag-btn.active {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #8B4513;
-    box-shadow: 
-        0 8px 20px rgba(255, 215, 0, 0.5),
-        inset 0 2px 5px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.5);
     transform: translateY(-2px) scale(1.05);
 }
 
-/* Sidebar Overlay - FIXED z-index */
+/* Sidebar Overlay */
 .sidebar-overlay {
     position: fixed;
     top: 0;
@@ -520,7 +418,7 @@ body.menu-right .sidebar.open {
     visibility: visible;
 }
 
-/* Top and Bottom Menu Styles - FIXED */
+/* Static Menu (Top/Bottom) */
 .static-menu {
     position: fixed;
     left: 0;
@@ -538,21 +436,19 @@ body.menu-right .sidebar.open {
     padding: 0 80px 0 20px;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
     overflow-x: auto;
-    overflow-y: hidden;
+    height: 55px;
 }
 
 .static-menu.menu-top {
     top: 0;
     border-bottom: 3px solid #8B4513;
     border-top: none;
-    height: 55px;
 }
 
 .static-menu.menu-bottom {
     bottom: 0;
     border-top: 3px solid #8B4513;
     border-bottom: none;
-    height: 55px;
 }
 
 .static-menu .nav-buttons {
@@ -567,7 +463,6 @@ body.menu-right .sidebar.open {
     min-width: max-content;
 }
 
-/* FIXED: Better responsive button sizing */
 .static-menu .nav-btn {
     flex: 0 0 auto;
     padding: 6px 8px;
@@ -585,9 +480,8 @@ body.menu-right .sidebar.open {
     color: #F5DEB3;
     cursor: pointer;
     transition: all 0.3s ease;
-    text-decoration: none;
-    margin: 0;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    pointer-events: auto !important;
 }
 
 .static-menu .nav-btn:hover {
@@ -609,17 +503,7 @@ body.menu-right .sidebar.open {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* FIXED: Only hide sidebar elements for static menus, keep mobile toggle for smaller screens */
-@media (min-width: 769px) {
-    body.menu-up .sidebar,
-    body.menu-down .sidebar,
-    body.menu-up .sidebar-overlay,
-    body.menu-down .sidebar-overlay {
-        display: none !important;
-    }
-}
-
-/* FIXED: Adjust body padding for top/bottom menus */
+/* Body padding for static menus */
 body.menu-up {
     padding-top: 70px;
 }
@@ -628,7 +512,22 @@ body.menu-down {
     padding-bottom: 70px;
 }
 
-/* Custom scrollbar for static menus */
+/* Hide sidebar for static menus on desktop */
+@media (min-width: 769px) {
+    body.menu-up .sidebar,
+    body.menu-down .sidebar,
+    body.menu-up .sidebar-overlay,
+    body.menu-down .sidebar-overlay {
+        display: none !important;
+    }
+    
+    body.menu-up .mobile-menu-toggle,
+    body.menu-down .mobile-menu-toggle {
+        display: none !important;
+    }
+}
+
+/* Scrollbar for static menus */
 .static-menu::-webkit-scrollbar {
     height: 4px;
 }
@@ -647,130 +546,23 @@ body.menu-down {
     background: rgba(255, 215, 0, 0.8);
 }
 
-/* Desktop - All buttons fit */
-@media (min-width: 1025px) {
-    .static-menu .nav-buttons {
-        gap: 8px;
-        justify-content: center;
-        flex-wrap: nowrap;
-    }
-    
-    .static-menu .nav-btn {
-        min-width: 42px;
-        height: 38px;
-        padding: 8px 10px;
-        font-size: 1.5em;
-    }
-    
-    .static-menu {
-        padding: 0 100px 0 20px;
-    }
-}
-
-/* Large tablets */
-@media (max-width: 1024px) and (min-width: 769px) {
-    .static-menu .nav-buttons {
-        gap: 6px;
-        justify-content: center;
-        flex-wrap: nowrap;
-    }
-    
-    .static-menu .nav-btn {
-        min-width: 36px;
-        height: 34px;
-        padding: 6px 8px;
-        font-size: 1.3em;
-    }
-    
-    .static-menu {
-        padding: 0 80px 0 15px;
-    }
-}
-
-/* Mobile Responsiveness - FIXED */
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
-    /* Settings button positioning for mobile */
     .settings-gear-btn {
         bottom: 15px;
         left: 15px;
-        width: 40px;
-        height: 40px;
-        font-size: 22px;
-        z-index: 1500;
+        width: 45px;
+        height: 45px;
+        font-size: 24px;
     }
     
     body.menu-up .settings-gear-btn {
-        top: 8px;
+        top: 15px;
         right: 15px;
         left: auto;
-        width: 35px;
-        height: 35px;
-        font-size: 18px;
-        z-index: 1600;
-    }
-    
-    body.menu-down .settings-gear-btn {
-        bottom: 4px;
-        width: 28px;
-        height: 28px;
-        font-size: 14px;
-        right: 8px;
-    }
-    
-    body.menu-up {
-        padding-top: 55px;
-    }
-    
-    body.menu-down {
-        padding-bottom: 55px;
-    }
-}
-
-/* Scrollbar styling for mobile */
-@media (max-width: 768px) {
-    .static-menu::-webkit-scrollbar {
-        height: 3px;
-    }
-    
-    .static-menu::-webkit-scrollbar-track {
-        background: rgba(139, 69, 19, 0.1);
-    }
-    
-    .static-menu::-webkit-scrollbar-thumb {
-        background: rgba(255, 215, 0, 0.4);
-        border-radius: 2px;
-    }
-}
-
-/* CRITICAL FIX: Ensure settings gear button is always clickable */
-.settings-gear-btn {
-    pointer-events: auto !important;
-}
-
-/* CRITICAL FIX: Ensure nav buttons are clickable in all menu positions */
-.nav-btn,
-.static-menu .nav-btn {
-    pointer-events: auto !important;
-    cursor: pointer !important;
-}
-
-/* CRITICAL FIX: Ensure categories work properly */
-.category-header {
-    pointer-events: auto !important;
-    cursor: pointer !important;
-}
-
-/* CRITICAL FIX: Ensure language flags work */
-.lang-flag-btn {
-    pointer-events: auto !important;
-    cursor: pointer !important;
-} 8px;
-        right: 15px;
-        left: auto;
-        width: 35px;
-        height: 35px;
-        font-size: 18px;
-        z-index: 1600;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
     }
     
     body.menu-right .settings-gear-btn {
@@ -779,45 +571,21 @@ body.menu-down {
         left: auto;
     }
     
-    /* Mobile menu toggle - Show for all menu positions on mobile */
     .mobile-menu-toggle {
-        display: block !important;
-        z-index: 1501;
+        top: 15px;
+        left: 15px;
+        padding: 12px 16px;
+        font-size: 1.2em;
     }
     
     body.menu-right .mobile-menu-toggle {
         left: auto;
-        right: 20px;
+        right: 15px;
     }
     
-    /* Mobile static menu adjustments */
-    .static-menu {
-        height: 50px;
-        padding: 0 60px 0 10px;
-        justify-content: flex-start;
-        overflow-x: auto;
-    }
-    
-    .static-menu .nav-buttons {
-        gap: 4px;
-        justify-content: flex-start;
-        flex-wrap: nowrap;
-        min-width: max-content;
-    }
-    
-    .static-menu .nav-btn {
-        padding: 4px 6px;
-        font-size: 1.2em;
-        min-width: 32px;
-        height: 30px;
-        flex-shrink: 0;
-    }
-    
-    /* Sidebar mobile adjustments */
     .sidebar {
         width: 300px;
         left: -300px;
-        z-index: 1502;
     }
     
     body.menu-right .sidebar {
@@ -825,27 +593,16 @@ body.menu-down {
         left: auto;
     }
     
-    .nav-buttons {
-        padding: 20px 15px;
+    .static-menu {
+        height: 50px;
+        padding: 0 60px 0 10px;
     }
     
-    .sidebar-user {
-        padding: 15px;
-    }
-    
-    .sidebar-controls {
-        padding: 15px;
-    }
-    
-    .language-flags {
-        gap: 10px;
-    }
-    
-    .lang-flag-btn {
-        width: 40px;
-        height: 40px;
+    .static-menu .nav-btn {
+        min-width: 32px;
+        height: 30px;
         font-size: 1.2em;
-        padding: 8px;
+        padding: 4px 6px;
     }
     
     body.menu-up {
@@ -858,6 +615,18 @@ body.menu-down {
 }
 
 @media (max-width: 480px) {
+    .settings-gear-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+    
+    body.menu-up .settings-gear-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
+    
     .sidebar {
         width: 280px;
         left: -280px;
@@ -874,66 +643,9 @@ body.menu-down {
     }
     
     .static-menu .nav-btn {
-        padding: 3px 5px;
-        font-size: 1.1em;
         min-width: 28px;
         height: 28px;
-        gap: 2px;
-    }
-    
-    .static-menu .nav-buttons {
-        gap: 3px;
-    }
-    
-    body.menu-up {
-        padding-top: 60px;
-    }
-    
-    body.menu-down {
-        padding-bottom: 60px;
-    }
-    
-    body.menu-down .settings-gear-btn {
-        bottom: 5px;
-        right: 10px;
-        width: 30px;
-        height: 30px;
-        font-size: 16px;
-    }
-    
-    body.menu-up .settings-gear-btn {
-        top: 5px;
-        right: 10px;
-        width: 30px;
-        height: 30px;
-        font-size: 16px;
+        font-size: 1.1em;
+        padding: 3px 5px;
     }
 }
-
-@media (max-width: 360px) {
-    .static-menu {
-        padding: 0 45px 0 5px;
-        height: 42px;
-    }
-    
-    .static-menu .nav-btn {
-        padding: 2px 4px;
-        font-size: 1.0em;
-        min-width: 26px;
-        height: 26px;
-    }
-    
-    .static-menu .nav-buttons {
-        gap: 2px;
-    }
-    
-    body.menu-up .settings-gear-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 14px;
-        top: 4px;
-        right: 8px;
-    }
-    
-    body.menu-down .settings-gear-btn {
-        bottom:
