@@ -1,4 +1,4 @@
-/* Menu-specific styles - Mining Theme */
+/* Menu-specific styles - Mining Theme - FIXED VERSION */
 
 /* Control Buttons Container */
 .control-buttons {
@@ -34,17 +34,20 @@
     box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
 }
 
-/* Settings Gear Button - Always visible with improved positioning */
+/* Settings Gear Button - FIXED TO BE ALWAYS VISIBLE */
 .settings-gear-btn {
     position: fixed;
     width: 50px;
     height: 50px;
-    background: none;
-    border: none;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.8) 0%, 
+        rgba(62, 39, 35, 0.9) 100%);
+    border: 2px solid #8B4513;
+    border-radius: 50%;
     cursor: pointer;
     font-size: 28px;
     color: #FFD700;
-    z-index: 1000;
+    z-index: 1500; /* Higher z-index to ensure it's always on top */
     transition: all 0.3s ease;
     display: flex !important;
     align-items: center;
@@ -54,19 +57,23 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     opacity: 1 !important;
     visibility: visible !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .settings-gear-btn:hover {
-    color: #FFA500;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-color: #FFD700;
+    color: #2F1B14;
     transform: rotate(90deg) scale(1.2);
-    text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
 }
 
 .settings-gear-btn:active {
     transform: rotate(90deg) scale(1.1);
 }
 
-/* Settings button positioning for different menu positions */
+/* Settings button positioning for different menu positions - FIXED */
 /* Default position (left menu) */
 body.menu-left .settings-gear-btn,
 body:not([class*="menu-"]) .settings-gear-btn {
@@ -76,7 +83,7 @@ body:not([class*="menu-"]) .settings-gear-btn {
     right: auto;
 }
 
-/* Right menu - move settings to bottom right */
+/* Right menu */
 body.menu-right .settings-gear-btn {
     bottom: 20px;
     right: 20px;
@@ -84,20 +91,22 @@ body.menu-right .settings-gear-btn {
     top: auto;
 }
 
-/* Top menu - move settings to top right */
+/* Top menu - FIXED: Now visible and properly positioned */
 body.menu-up .settings-gear-btn {
-    top: 8px;
+    top: 20px;
     right: 20px;
     bottom: auto;
     left: auto;
+    z-index: 1600; /* Even higher for top menu */
 }
 
-/* Bottom menu - move settings to bottom right */
+/* Bottom menu */
 body.menu-down .settings-gear-btn {
-    bottom: 8px;
+    bottom: 20px;
     right: 20px;
     left: auto;
     top: auto;
+    z-index: 1600; /* Higher for bottom menu */
 }
 
 /* Animation for gear rotation */
@@ -120,7 +129,7 @@ body.menu-down .settings-gear-btn {
     display: none !important;
 }
 
-/* Mobile Menu Toggle */
+/* Mobile Menu Toggle - FIXED for all positions */
 .mobile-menu-toggle {
     position: fixed;
     top: 20px;
@@ -137,7 +146,7 @@ body.menu-down .settings-gear-btn {
     font-size: 1.3em;
     font-weight: 700;
     transition: all 0.3s ease;
-    z-index: 1001;
+    z-index: 1501;
     box-shadow: 
         0 8px 25px rgba(0, 0, 0, 0.4),
         inset 0 2px 5px rgba(255, 215, 0, 0.2);
@@ -161,7 +170,15 @@ body.menu-right .mobile-menu-toggle {
     right: 20px;
 }
 
-/* Sidebar */
+/* FIXED: Hide mobile toggle for top/bottom menus only on desktop */
+@media (min-width: 769px) {
+    body.menu-up .mobile-menu-toggle,
+    body.menu-down .mobile-menu-toggle {
+        display: none !important;
+    }
+}
+
+/* Sidebar - FIXED z-index and positioning */
 .sidebar {
     position: fixed;
     top: 0;
@@ -175,7 +192,7 @@ body.menu-right .mobile-menu-toggle {
     backdrop-filter: blur(15px);
     border-right: 3px solid #8B4513;
     transition: left 0.3s ease;
-    z-index: 1002;
+    z-index: 1502;
     box-shadow: 
         2px 0 40px rgba(0, 0, 0, 0.6),
         inset -2px 0 10px rgba(255, 215, 0, 0.1);
@@ -484,7 +501,7 @@ body.menu-right .sidebar.open {
     transform: translateY(-2px) scale(1.05);
 }
 
-/* Sidebar Overlay */
+/* Sidebar Overlay - FIXED z-index */
 .sidebar-overlay {
     position: fixed;
     top: 0;
@@ -492,7 +509,7 @@ body.menu-right .sidebar.open {
     width: 100%;
     height: 100%;
     background: rgba(20, 19, 17, 0.8);
-    z-index: 1001;
+    z-index: 1501;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
@@ -503,7 +520,7 @@ body.menu-right .sidebar.open {
     visibility: visible;
 }
 
-/* Top and Bottom Menu Styles with improved responsive design */
+/* Top and Bottom Menu Styles - FIXED */
 .static-menu {
     position: fixed;
     left: 0;
@@ -514,11 +531,11 @@ body.menu-right .sidebar.open {
         rgba(20, 19, 17, 1) 100%);
     backdrop-filter: blur(15px);
     border: 3px solid #8B4513;
-    z-index: 1002;
+    z-index: 1502;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 80px 0 20px; /* Space for settings button on right */
+    padding: 0 80px 0 20px;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
     overflow-x: auto;
     overflow-y: hidden;
@@ -550,7 +567,7 @@ body.menu-right .sidebar.open {
     min-width: max-content;
 }
 
-/* Responsive button sizing for desktop */
+/* FIXED: Better responsive button sizing */
 .static-menu .nav-btn {
     flex: 0 0 auto;
     padding: 6px 8px;
@@ -570,6 +587,7 @@ body.menu-right .sidebar.open {
     transition: all 0.3s ease;
     text-decoration: none;
     margin: 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .static-menu .nav-btn:hover {
@@ -588,19 +606,20 @@ body.menu-right .sidebar.open {
     color: #2F1B14;
     box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
     transform: translateY(-1px);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* Hide mobile toggle and sidebar for top/bottom menus but KEEP settings button */
-body.menu-up .mobile-menu-toggle,
-body.menu-down .mobile-menu-toggle,
-body.menu-up .sidebar,
-body.menu-down .sidebar,
-body.menu-up .sidebar-overlay,
-body.menu-down .sidebar-overlay {
-    display: none !important;
+/* FIXED: Only hide sidebar elements for static menus, keep mobile toggle for smaller screens */
+@media (min-width: 769px) {
+    body.menu-up .sidebar,
+    body.menu-down .sidebar,
+    body.menu-up .sidebar-overlay,
+    body.menu-down .sidebar-overlay {
+        display: none !important;
+    }
 }
 
-/* Adjust body padding for top/bottom menus */
+/* FIXED: Adjust body padding for top/bottom menus */
 body.menu-up {
     padding-top: 70px;
 }
@@ -628,7 +647,7 @@ body.menu-down {
     background: rgba(255, 215, 0, 0.8);
 }
 
-/* Laptop/Desktop - All buttons fit without scrolling */
+/* Desktop - All buttons fit */
 @media (min-width: 1025px) {
     .static-menu .nav-buttons {
         gap: 8px;
@@ -644,11 +663,11 @@ body.menu-down {
     }
     
     .static-menu {
-        padding: 0 100px 0 20px; /* More space for settings button */
+        padding: 0 100px 0 20px;
     }
 }
 
-/* Large tablets - Fit buttons with smaller size */
+/* Large tablets */
 @media (max-width: 1024px) and (min-width: 769px) {
     .static-menu .nav-buttons {
         gap: 6px;
@@ -666,42 +685,92 @@ body.menu-down {
     .static-menu {
         padding: 0 80px 0 15px;
     }
-    
-    body.menu-up .settings-gear-btn,
-    body.menu-down .settings-gear-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 22px;
-    }
 }
 
-/* Mobile Responsiveness */
+/* Mobile Responsiveness - FIXED */
 @media (max-width: 768px) {
+    /* Settings button positioning for mobile */
     .settings-gear-btn {
         bottom: 15px;
         left: 15px;
         width: 40px;
         height: 40px;
         font-size: 22px;
+        z-index: 1500;
     }
     
-    /* Adjusted positioning for mobile */
     body.menu-up .settings-gear-btn {
-        top: 6px;
-        right: 12px;
+        top: 8px;
+        right: 15px;
         left: auto;
         width: 35px;
         height: 35px;
         font-size: 18px;
+        z-index: 1600;
     }
     
     body.menu-down .settings-gear-btn {
-        bottom: 6px;
-        right: 12px;
+        bottom: 4px;
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+        right: 8px;
+    }
+    
+    body.menu-up {
+        padding-top: 55px;
+    }
+    
+    body.menu-down {
+        padding-bottom: 55px;
+    }
+}
+
+/* Scrollbar styling for mobile */
+@media (max-width: 768px) {
+    .static-menu::-webkit-scrollbar {
+        height: 3px;
+    }
+    
+    .static-menu::-webkit-scrollbar-track {
+        background: rgba(139, 69, 19, 0.1);
+    }
+    
+    .static-menu::-webkit-scrollbar-thumb {
+        background: rgba(255, 215, 0, 0.4);
+        border-radius: 2px;
+    }
+}
+
+/* CRITICAL FIX: Ensure settings gear button is always clickable */
+.settings-gear-btn {
+    pointer-events: auto !important;
+}
+
+/* CRITICAL FIX: Ensure nav buttons are clickable in all menu positions */
+.nav-btn,
+.static-menu .nav-btn {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* CRITICAL FIX: Ensure categories work properly */
+.category-header {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* CRITICAL FIX: Ensure language flags work */
+.lang-flag-btn {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+} 8px;
+        right: 15px;
         left: auto;
         width: 35px;
         height: 35px;
         font-size: 18px;
+        z-index: 1600;
     }
     
     body.menu-right .settings-gear-btn {
@@ -710,9 +779,50 @@ body.menu-down {
         left: auto;
     }
     
+    /* Mobile menu toggle - Show for all menu positions on mobile */
+    .mobile-menu-toggle {
+        display: block !important;
+        z-index: 1501;
+    }
+    
+    body.menu-right .mobile-menu-toggle {
+        left: auto;
+        right: 20px;
+    }
+    
+    /* Mobile static menu adjustments */
+    .static-menu {
+        height: 50px;
+        padding: 0 60px 0 10px;
+        justify-content: flex-start;
+        overflow-x: auto;
+    }
+    
+    .static-menu .nav-buttons {
+        gap: 4px;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        min-width: max-content;
+    }
+    
+    .static-menu .nav-btn {
+        padding: 4px 6px;
+        font-size: 1.2em;
+        min-width: 32px;
+        height: 30px;
+        flex-shrink: 0;
+    }
+    
+    /* Sidebar mobile adjustments */
     .sidebar {
         width: 300px;
         left: -300px;
+        z-index: 1502;
+    }
+    
+    body.menu-right .sidebar {
+        right: -300px;
+        left: auto;
     }
     
     .nav-buttons {
@@ -738,28 +848,6 @@ body.menu-down {
         padding: 8px;
     }
     
-    .static-menu {
-        height: 50px;
-        padding: 0 60px 0 10px;
-        justify-content: flex-start; /* Allow scrolling */
-        overflow-x: auto;
-    }
-    
-    .static-menu .nav-buttons {
-        gap: 4px;
-        justify-content: flex-start;
-        flex-wrap: nowrap;
-        min-width: max-content;
-    }
-    
-    .static-menu .nav-btn {
-        padding: 4px 6px;
-        font-size: 1.2em;
-        min-width: 32px;
-        height: 30px;
-        flex-shrink: 0; /* Prevent shrinking */
-    }
-    
     body.menu-up {
         padding-top: 65px;
     }
@@ -775,27 +863,9 @@ body.menu-down {
         left: -280px;
     }
     
-    .sidebar-user {
-        padding: 15px 10px;
-    }
-    
-    .nav-buttons {
-        padding: 15px 10px 10px 10px;
-    }
-    
-    .sidebar-controls {
-        padding: 12px 10px;
-    }
-    
-    .language-flags {
-        gap: 8px;
-    }
-    
-    .lang-flag-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1em;
-        padding: 6px;
+    body.menu-right .sidebar {
+        right: -280px;
+        left: auto;
     }
     
     .static-menu {
@@ -840,7 +910,6 @@ body.menu-down {
     }
 }
 
-/* Extra small screens - ensure all buttons fit without scrolling */
 @media (max-width: 360px) {
     .static-menu {
         padding: 0 45px 0 5px;
@@ -867,34 +936,4 @@ body.menu-down {
     }
     
     body.menu-down .settings-gear-btn {
-        bottom: 4px;
-        width: 28px;
-        height: 28px;
-        font-size: 14px;
-        right: 8px;
-    }
-    
-    body.menu-up {
-        padding-top: 55px;
-    }
-    
-    body.menu-down {
-        padding-bottom: 55px;
-    }
-}
-
-/* Scrollbar styling for mobile */
-@media (max-width: 768px) {
-    .static-menu::-webkit-scrollbar {
-        height: 3px;
-    }
-    
-    .static-menu::-webkit-scrollbar-track {
-        background: rgba(139, 69, 19, 0.1);
-    }
-    
-    .static-menu::-webkit-scrollbar-thumb {
-        background: rgba(255, 215, 0, 0.4);
-        border-radius: 2px;
-    }
-}
+        bottom:
