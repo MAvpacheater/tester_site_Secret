@@ -1,8 +1,10 @@
-/* Menu-specific styles - Mining Theme - FIXED VERSION */
+/* Optimized Menu-specific styles - Mining Theme - FIXED VERSION */
 
 /* Settings Gear Button - Always Visible */
 .settings-gear-btn {
     position: fixed;
+    bottom: 20px;
+    left: 20px;
     width: 50px;
     height: 50px;
     background: linear-gradient(135deg, 
@@ -36,32 +38,6 @@
     transform: rotate(90deg) scale(1.1);
 }
 
-/* Settings button positioning */
-.settings-gear-btn {
-    bottom: 20px;
-    left: 20px;
-}
-
-body.menu-right .settings-gear-btn {
-    bottom: 20px;
-    right: 20px;
-    left: auto;
-}
-
-body.menu-up .settings-gear-btn {
-    top: 20px;
-    right: 20px;
-    bottom: auto;
-    left: auto;
-    z-index: 1600;
-}
-
-body.menu-down .settings-gear-btn {
-    bottom: 20px;
-    right: 20px;
-    left: auto;
-}
-
 /* Mobile Menu Toggle */
 .mobile-menu-toggle {
     position: fixed;
@@ -93,11 +69,6 @@ body.menu-down .settings-gear-btn {
     box-shadow: 0 12px 35px rgba(255, 215, 0, 0.4);
 }
 
-body.menu-right .mobile-menu-toggle {
-    left: auto;
-    right: 20px;
-}
-
 /* Sidebar */
 .sidebar {
     position: fixed;
@@ -121,20 +92,6 @@ body.menu-right .mobile-menu-toggle {
 
 .sidebar.open {
     left: 0;
-}
-
-/* Right sidebar */
-body.menu-right .sidebar {
-    left: auto;
-    right: -320px;
-    border-left: 3px solid #8B4513;
-    border-right: none;
-    border-radius: 15px 0 0 15px;
-    box-shadow: -2px 0 40px rgba(0, 0, 0, 0.6);
-}
-
-body.menu-right .sidebar.open {
-    right: 0;
 }
 
 /* Sidebar Header */
@@ -219,7 +176,6 @@ body.menu-right .sidebar.open {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     cursor: pointer;
     transition: all 0.3s ease;
-    pointer-events: auto !important;
 }
 
 .category-header:hover {
@@ -276,7 +232,7 @@ body.menu-right .sidebar.open {
     font-size: 0.95em;
     font-weight: 600;
     transition: all 0.3s ease;
-    text-align: center;
+    text-align: left;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -284,7 +240,6 @@ body.menu-right .sidebar.open {
     width: 100%;
     position: relative;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    pointer-events: auto !important;
 }
 
 .nav-btn:hover {
@@ -382,7 +337,6 @@ body.menu-right .sidebar.open {
     align-items: center;
     justify-content: center;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    pointer-events: auto !important;
 }
 
 .lang-flag-btn:hover {
@@ -418,134 +372,6 @@ body.menu-right .sidebar.open {
     visibility: visible;
 }
 
-/* Static Menu (Top/Bottom) */
-.static-menu {
-    position: fixed;
-    left: 0;
-    width: 100%;
-    background: linear-gradient(135deg, 
-        rgba(41, 39, 35, 0.98) 0%, 
-        rgba(28, 26, 23, 0.99) 50%, 
-        rgba(20, 19, 17, 1) 100%);
-    backdrop-filter: blur(15px);
-    border: 3px solid #8B4513;
-    z-index: 1502;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 80px 0 20px;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
-    overflow-x: auto;
-    height: 55px;
-}
-
-.static-menu.menu-top {
-    top: 0;
-    border-bottom: 3px solid #8B4513;
-    border-top: none;
-}
-
-.static-menu.menu-bottom {
-    bottom: 0;
-    border-top: 3px solid #8B4513;
-    border-bottom: none;
-}
-
-.static-menu .nav-buttons {
-    display: flex;
-    flex-direction: row;
-    gap: 6px;
-    padding: 0;
-    overflow: visible;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    min-width: max-content;
-}
-
-.static-menu .nav-btn {
-    flex: 0 0 auto;
-    padding: 6px 8px;
-    font-size: 1.4em;
-    min-width: 38px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.2) 0%, 
-        rgba(62, 39, 35, 0.3) 100%);
-    border: 2px solid rgba(139, 69, 19, 0.5);
-    color: #F5DEB3;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    pointer-events: auto !important;
-}
-
-.static-menu .nav-btn:hover {
-    background: linear-gradient(135deg, 
-        rgba(255, 215, 0, 0.3) 0%, 
-        rgba(139, 69, 19, 0.6) 100%);
-    border-color: #FFD700;
-    color: #FFD700;
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
-}
-
-.static-menu .nav-btn.active {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
-    border-color: #8B4513;
-    color: #2F1B14;
-    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-    transform: translateY(-1px);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-/* Body padding for static menus */
-body.menu-up {
-    padding-top: 70px;
-}
-
-body.menu-down {
-    padding-bottom: 70px;
-}
-
-/* Hide sidebar for static menus on desktop */
-@media (min-width: 769px) {
-    body.menu-up .sidebar,
-    body.menu-down .sidebar,
-    body.menu-up .sidebar-overlay,
-    body.menu-down .sidebar-overlay {
-        display: none !important;
-    }
-    
-    body.menu-up .mobile-menu-toggle,
-    body.menu-down .mobile-menu-toggle {
-        display: none !important;
-    }
-}
-
-/* Scrollbar for static menus */
-.static-menu::-webkit-scrollbar {
-    height: 4px;
-}
-
-.static-menu::-webkit-scrollbar-track {
-    background: rgba(139, 69, 19, 0.2);
-    border-radius: 2px;
-}
-
-.static-menu::-webkit-scrollbar-thumb {
-    background: rgba(255, 215, 0, 0.5);
-    border-radius: 2px;
-}
-
-.static-menu::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 215, 0, 0.8);
-}
-
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .settings-gear-btn {
@@ -556,21 +382,6 @@ body.menu-down {
         font-size: 24px;
     }
     
-    body.menu-up .settings-gear-btn {
-        top: 15px;
-        right: 15px;
-        left: auto;
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-    }
-    
-    body.menu-right .settings-gear-btn {
-        bottom: 15px;
-        right: 15px;
-        left: auto;
-    }
-    
     .mobile-menu-toggle {
         top: 15px;
         left: 15px;
@@ -578,39 +389,13 @@ body.menu-down {
         font-size: 1.2em;
     }
     
-    body.menu-right .mobile-menu-toggle {
-        left: auto;
-        right: 15px;
-    }
-    
     .sidebar {
         width: 300px;
         left: -300px;
     }
     
-    body.menu-right .sidebar {
-        right: -300px;
-        left: auto;
-    }
-    
-    .static-menu {
-        height: 50px;
-        padding: 0 60px 0 10px;
-    }
-    
-    .static-menu .nav-btn {
-        min-width: 32px;
-        height: 30px;
-        font-size: 1.2em;
-        padding: 4px 6px;
-    }
-    
-    body.menu-up {
-        padding-top: 65px;
-    }
-    
-    body.menu-down {
-        padding-bottom: 65px;
+    .sidebar.open {
+        left: 0;
     }
 }
 
@@ -621,31 +406,12 @@ body.menu-down {
         font-size: 20px;
     }
     
-    body.menu-up .settings-gear-btn {
-        width: 35px;
-        height: 35px;
-        font-size: 16px;
-    }
-    
     .sidebar {
         width: 280px;
         left: -280px;
     }
     
-    body.menu-right .sidebar {
-        right: -280px;
-        left: auto;
-    }
-    
-    .static-menu {
-        height: 45px;
-        padding: 0 50px 0 8px;
-    }
-    
-    .static-menu .nav-btn {
-        min-width: 28px;
-        height: 28px;
-        font-size: 1.1em;
-        padding: 3px 5px;
+    .sidebar.open {
+        left: 0;
     }
 }
