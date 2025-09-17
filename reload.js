@@ -1,11 +1,12 @@
-// reload.js - Auto-reload system for detecting code changes
+// Fixed reload.js - Auto-reload system for detecting code changes
 
 class AutoReloadSystem {
     constructor() {
-        this.checkInterval = 3000; // Перевірка кожні 3 секунди
+        this.checkInterval = 5000; // Check every 5 seconds (increased for stability)
         this.files = [
             'general.js',
             'general.css',
+            'general_menu.css',
             'calc/calculator.js',
             'calc/arm.js',
             'calc/grind.js',
@@ -18,6 +19,7 @@ class AutoReloadSystem {
             'info/charms.js',
             'info/potions.js',
             'info/worlds.js',
+            'moderation/settings.js',
             'other/updates.js',
             'other/peoples.js',
             'other/help.js',
@@ -26,37 +28,55 @@ class AutoReloadSystem {
         this.fileHashes = new Map();
         this.isActive = false;
         this.intervalId = null;
+        this.initializationDelay = 10000; // 10 seconds delay before starting
+        this.isInitialized = false;
     }
 
-    // Початкова ініціалізація
+    // Initial initialization
     async init() {
+        if (this.isInitialized) {
+            console.log('⚠️ Auto-reload system already initialized');
+            return;
+        }
+
         console.log('🔄 Initializing auto-reload system...');
         
-        // Зберегти початкові хеші файлів
-        await this.updateFileHashes();
-        
-        // Запустити моніторинг
-        this.start();
-        
-        // Показати індикатор
-        this.showIndicator();
-        
-        console.log('✅ Auto-reload system activated');
+        try {
+            // Store initial file hashes
+            await this.updateFileHashes();
+            
+            // Start monitoring with delay
+            setTimeout(() => {
+                this.start();
+                this.showIndicator();
+            }, this.initializationDelay);
+            
+            this.isInitialized = true;
+            console.log(`✅ Auto-reload system initialized (will start monitoring in ${this.initializationDelay/1000}s)`);
+        } catch (error) {
+            console.error('❌ Failed to initialize auto-reload system:', error);
+        }
     }
 
-    // Запуск системи моніторингу
+    // Start monitoring system
     start() {
         if (this.isActive) return;
+        
+        // Only start in development mode
+        if (!this.shouldEnableAutoReload()) {
+            console.log('🚫 Auto-reload disabled (not in development mode)');
+            return;
+        }
         
         this.isActive = true;
         this.intervalId = setInterval(() => {
             this.checkForChanges();
         }, this.checkInterval);
         
-        console.log('🚀 Auto-reload monitoring started');
+        console.log(`🚀 Auto-reload monitoring started (checking every ${this.checkInterval/1000}s)`);
     }
 
-    // Зупинка системи моніторингу
+    // Stop monitoring system
     stop() {
         if (!this.isActive) return;
         
@@ -69,28 +89,39 @@ class AutoReloadSystem {
         console.log('⏸️ Auto-reload monitoring stopped');
     }
 
-    // Оновити хеші файлів
+    // Update file hashes
     async updateFileHashes() {
-        const promises = this.files.map(async (file) => {
-            try {
-                const hash = await this.getFileHash(file);
-                this.fileHashes.set(file, hash);
-                return { file, hash, success: true };
-            } catch (error) {
-                console.warn(`⚠️ Could not get hash for ${file}:`, error.message);
-                return { file, hash: null, success: false };
-            }
-        });
+        const results = await Promise.allSettled(
+            this.files.map(async (file) => {
+                try {
+                    const hash = await this.getFileHash(file);
+                    this.fileHashes.set(file, hash);
+                    return { file, success: true };
+                } catch (error) {
+                    console.warn(`⚠️ Could not get hash for ${file}: ${error.message}`);
+                    this.fileHashes.set(file, null);
+                    return { file, success: false };
+                }
+            })
+        );
 
-        const results = await Promise.all(promises);
-        const successful = results.filter(r => r.success).length;
+        const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
         console.log(`📊 File hashes updated: ${successful}/${this.files.length} files`);
     }
 
-    // Отримати хеш файлу
+    // Get file hash
     async getFileHash(file) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        
         try {
-            const response = await fetch(file + '?t=' + Date.now());
+            const response = await fetch(file + '?t=' + Date.now(), {
+                signal: controller.signal,
+                cache: 'no-cache'
+            });
+            
+            clearTimeout(timeoutId);
+            
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
             }
@@ -98,13 +129,19 @@ class AutoReloadSystem {
             const content = await response.text();
             return this.simpleHash(content);
         } catch (error) {
+            clearTimeout(timeoutId);
+            if (error.name === 'AbortError') {
+                throw new Error('Request timeout');
+            }
             throw new Error(`Failed to fetch ${file}: ${error.message}`);
         }
     }
 
-    // Простий хеш для тексту
+    // Simple hash for text
     simpleHash(str) {
         let hash = 0;
+        if (str.length === 0) return hash;
+        
         for (let i = 0; i < str.length; i++) {
             const char = str.charCodeAt(i);
             hash = ((hash << 5) - hash) + char;
@@ -113,70 +150,108 @@ class AutoReloadSystem {
         return hash;
     }
 
-    // Перевірка на зміни
+    // Check for changes
     async checkForChanges() {
         if (!this.isActive) return;
 
         try {
             let changedFiles = [];
+            let errors = 0;
 
-            for (const file of this.files) {
+            // Check files in parallel with limit
+            const checkPromises = this.files.map(async (file) => {
                 try {
                     const currentHash = await this.getFileHash(file);
                     const oldHash = this.fileHashes.get(file);
 
+                    // Only compare if we have a valid old hash
                     if (oldHash !== null && oldHash !== currentHash) {
                         changedFiles.push(file);
                         console.log(`🔄 File changed detected: ${file}`);
                     }
                 } catch (error) {
-                    // Ігноруємо помилки окремих файлів
-                    continue;
+                    errors++;
+                    // Don't log every error to avoid spam
+                    if (errors <= 3) {
+                        console.warn(`⚠️ Error checking ${file}:`, error.message);
+                    }
                 }
-            }
+            });
+
+            await Promise.allSettled(checkPromises);
 
             if (changedFiles.length > 0) {
                 console.log(`🔄 Changes detected in ${changedFiles.length} file(s):`, changedFiles);
-                this.reloadPage();
+                this.reloadPage(changedFiles);
             }
+
+            // If too many errors, reduce check frequency
+            if (errors > this.files.length / 2) {
+                console.warn('⚠️ Too many file check errors, reducing check frequency');
+                this.setCheckInterval(this.checkInterval * 2);
+            }
+
         } catch (error) {
-            console.error('❌ Error checking for changes:', error);
+            console.error('❌ Error during change check:', error);
         }
     }
 
-    // Перезагрузка сторінки з збереженням стану
-    reloadPage() {
-        console.log('🔄 Code changes detected, reloading page...');
+    // Reload page with state preservation
+    reloadPage(changedFiles) {
+        console.log('🔄 Code changes detected, reloading page...', changedFiles);
         
-        // Зупинити моніторинг перед перезагрузкою
+        // Stop monitoring before reload
         this.stop();
         
-        // Зберегти поточний стан перед перезагрузкою
+        // Save current state
         this.saveCurrentState();
         
-        // Показати повідомлення користувачу
-        this.showReloadNotification();
+        // Show notification
+        this.showReloadNotification(changedFiles);
         
-        // Перезагрузити сторінку через коротку затримку
+        // Reload page after short delay
         setTimeout(() => {
             window.location.reload();
-        }, 1000);
+        }, 1500);
     }
 
-    // Зберегти поточний стан додатка
+    // Save current application state
     saveCurrentState() {
         try {
-            // Стан вже зберігається через існуючі функції
-            console.log('💾 Current state preserved before reload');
+            // Get current page
+            let currentPage = 'calculator';
+            if (typeof window.getCurrentPage === 'function') {
+                currentPage = window.getCurrentPage();
+            }
+            
+            // Get current language
+            let currentLanguage = 'en';
+            if (typeof window.getCurrentAppLanguage === 'function') {
+                currentLanguage = window.getCurrentAppLanguage();
+            }
+            
+            // Store in sessionStorage for page reload persistence
+            try {
+                sessionStorage.setItem('armHelper_preReload_page', currentPage);
+                sessionStorage.setItem('armHelper_preReload_language', currentLanguage);
+                console.log('💾 State preserved before reload:', { currentPage, currentLanguage });
+            } catch (e) {
+                console.warn('⚠️ Could not save to sessionStorage');
+            }
         } catch (error) {
             console.error('❌ Error saving state:', error);
         }
     }
 
-    // Показати повідомлення про перезагрузку
-    showReloadNotification() {
-        // Створити повідомлення
+    // Show reload notification
+    showReloadNotification(changedFiles) {
+        // Remove any existing notifications
+        const existing = document.querySelector('.auto-reload-notification');
+        if (existing) existing.remove();
+        
+        // Create notification
         const notification = document.createElement('div');
+        notification.className = 'auto-reload-notification';
         notification.innerHTML = `
             <div style="
                 position: fixed;
@@ -185,20 +260,27 @@ class AutoReloadSystem {
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 color: white;
                 padding: 15px 20px;
-                border-radius: 10px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-                z-index: 10000;
-                font-family: 'Segoe UI', sans-serif;
+                border-radius: 12px;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+                z-index: 10001;
+                font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
                 font-size: 14px;
-                max-width: 300px;
-                backdrop-filter: blur(10px);
+                max-width: 350px;
+                backdrop-filter: blur(15px);
                 border: 1px solid rgba(255, 255, 255, 0.2);
+                transform: translateX(100%);
+                transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             ">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="font-size: 18px;">🔄</div>
-                    <div>
-                        <div style="font-weight: bold; margin-bottom: 4px;">Code Updated!</div>
-                        <div style="font-size: 12px; opacity: 0.9;">Reloading to apply changes...</div>
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                    <div style="font-size: 20px; flex-shrink: 0;">🔄</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; margin-bottom: 6px;">Code Updated!</div>
+                        <div style="font-size: 12px; opacity: 0.9; margin-bottom: 8px;">
+                            ${changedFiles.length} file(s) changed
+                        </div>
+                        <div style="font-size: 11px; opacity: 0.7;">
+                            Reloading to apply changes...
+                        </div>
                     </div>
                 </div>
             </div>
@@ -206,50 +288,68 @@ class AutoReloadSystem {
         
         document.body.appendChild(notification);
         
-        // Анімація появи
+        // Animate in
         const notificationEl = notification.firstElementChild;
-        notificationEl.style.transform = 'translateX(100%)';
-        notificationEl.style.transition = 'transform 0.3s ease-out';
-        
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             notificationEl.style.transform = 'translateX(0)';
-        }, 50);
+        });
+        
+        // Auto remove after reload
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
     }
 
-    // Показати індикатор активності
+    // Show activity indicator
     showIndicator() {
         const indicator = document.getElementById('autoReloadIndicator');
         if (indicator && this.shouldEnableAutoReload()) {
             indicator.classList.add('show');
+            
+            // Update text to show it's active
+            indicator.innerHTML = `
+                <span style="display: inline-flex; align-items: center; gap: 6px;">
+                    <span style="animation: pulse 2s infinite;">🔄</span>
+                    <span>Auto-reload active</span>
+                </span>
+            `;
+            
             setTimeout(() => {
                 indicator.classList.remove('show');
-            }, 3000);
+            }, 4000);
         }
     }
 
-    // Перевірити, чи потрібно увімкнути автоматичне оновлення
+    // Check if auto-reload should be enabled
     shouldEnableAutoReload() {
         const isDevelopment = 
             window.location.hostname === 'localhost' ||
             window.location.hostname === '127.0.0.1' ||
             window.location.hostname.includes('192.168.') ||
+            window.location.hostname.includes('10.') ||
             window.location.protocol === 'file:' ||
-            window.location.search.includes('debug=true');
+            window.location.search.includes('debug=true') ||
+            window.location.search.includes('dev=true');
         
         return isDevelopment;
     }
 
-    // Налаштування інтервалу перевірки
+    // Set check interval
     setCheckInterval(ms) {
-        this.checkInterval = ms;
+        const oldInterval = this.checkInterval;
+        this.checkInterval = Math.max(ms, 2000); // Minimum 2 seconds
+        
         if (this.isActive) {
             this.stop();
             this.start();
         }
-        console.log(`⚙️ Check interval updated to ${ms}ms`);
+        
+        console.log(`⚙️ Check interval updated from ${oldInterval}ms to ${this.checkInterval}ms`);
     }
 
-    // Додати файл до моніторингу
+    // Add file to monitoring
     addFile(filepath) {
         if (!this.files.includes(filepath)) {
             this.files.push(filepath);
@@ -257,7 +357,7 @@ class AutoReloadSystem {
         }
     }
 
-    // Видалити файл з моніторингу
+    // Remove file from monitoring
     removeFile(filepath) {
         const index = this.files.indexOf(filepath);
         if (index > -1) {
@@ -267,59 +367,106 @@ class AutoReloadSystem {
         }
     }
 
-    // Отримати статус
+    // Get status
     getStatus() {
         return {
+            isInitialized: this.isInitialized,
             isActive: this.isActive,
             checkInterval: this.checkInterval,
             filesCount: this.files.length,
-            monitoredFiles: [...this.files]
+            monitoredFiles: [...this.files],
+            isDevelopmentMode: this.shouldEnableAutoReload()
         };
+    }
+
+    // Reset system
+    reset() {
+        this.stop();
+        this.fileHashes.clear();
+        this.isInitialized = false;
+        console.log('🔄 Auto-reload system reset');
     }
 }
 
-// Глобальний екземпляр системи
+// Global instance
 let autoReloadSystem = null;
 
-// Ініціалізація системи автоматичного оновлення
+// Initialize auto-reload system
 function initAutoReload() {
-    // Перевірити, чи потрібна система (тільки в режимі розробки)
+    // Check if should be enabled
     if (!shouldEnableAutoReload()) {
         console.log('🚫 Auto-reload disabled (production mode)');
         return;
     }
 
     if (autoReloadSystem) {
-        console.log('⚠️ Auto-reload system already initialized');
+        console.log('⚠️ Auto-reload system already exists');
         return;
     }
 
+    console.log('🔧 Creating auto-reload system...');
     autoReloadSystem = new AutoReloadSystem();
     
-    // Ініціалізувати з затримкою, щоб дати час завантажитися додатку
+    // Initialize after app is fully loaded
     setTimeout(async () => {
         try {
             await autoReloadSystem.init();
         } catch (error) {
             console.error('❌ Failed to initialize auto-reload system:', error);
+            autoReloadSystem = null;
         }
-    }, 5000); // 5 секунд після завантаження
+    }, 3000);
 }
 
-// Перевірити, чи потрібно увімкнути автоматичне оновлення
+// Check if auto-reload should be enabled
 function shouldEnableAutoReload() {
-    // Увімкнути тільки в режимі розробки
     const isDevelopment = 
         window.location.hostname === 'localhost' ||
         window.location.hostname === '127.0.0.1' ||
         window.location.hostname.includes('192.168.') ||
+        window.location.hostname.includes('10.') ||
         window.location.protocol === 'file:' ||
-        window.location.search.includes('debug=true');
+        window.location.search.includes('debug=true') ||
+        window.location.search.includes('dev=true');
     
     return isDevelopment;
 }
 
-// Зупинити систему автоматичного оновлення
+// Restore state after reload
+function restoreStateAfterReload() {
+    try {
+        const savedPage = sessionStorage.getItem('armHelper_preReload_page');
+        const savedLanguage = sessionStorage.getItem('armHelper_preReload_language');
+        
+        if (savedPage || savedLanguage) {
+            console.log('🔄 Restoring state after reload:', { savedPage, savedLanguage });
+            
+            // Wait for app to be ready
+            const restoreState = () => {
+                if (savedLanguage && typeof window.switchAppLanguage === 'function') {
+                    window.switchAppLanguage(savedLanguage);
+                }
+                
+                if (savedPage && typeof window.switchPage === 'function') {
+                    window.switchPage(savedPage);
+                }
+                
+                // Clean up
+                sessionStorage.removeItem('armHelper_preReload_page');
+                sessionStorage.removeItem('armHelper_preReload_language');
+            };
+            
+            // Try multiple times with delays
+            setTimeout(restoreState, 1000);
+            setTimeout(restoreState, 2000);
+            setTimeout(restoreState, 3000);
+        }
+    } catch (error) {
+        console.warn('⚠️ Could not restore state after reload:', error);
+    }
+}
+
+// Control functions
 function stopAutoReload() {
     if (autoReloadSystem) {
         autoReloadSystem.stop();
@@ -327,7 +474,6 @@ function stopAutoReload() {
     }
 }
 
-// Запустити систему автоматичного оновлення
 function startAutoReload() {
     if (autoReloadSystem) {
         autoReloadSystem.start();
@@ -337,19 +483,22 @@ function startAutoReload() {
     }
 }
 
-// Отримати статус системи
 function getAutoReloadStatus() {
     if (!autoReloadSystem) {
-        return { initialized: false };
+        return { 
+            initialized: false, 
+            available: shouldEnableAutoReload(),
+            reason: shouldEnableAutoReload() ? 'Not initialized' : 'Production mode'
+        };
     }
     
     return {
         initialized: true,
+        available: true,
         ...autoReloadSystem.getStatus()
     };
 }
 
-// Керування інтервалом перевірки
 function setAutoReloadInterval(ms) {
     if (autoReloadSystem) {
         autoReloadSystem.setCheckInterval(ms);
@@ -358,7 +507,6 @@ function setAutoReloadInterval(ms) {
     }
 }
 
-// Додати файл до моніторингу
 function addFileToReloadMonitoring(filepath) {
     if (autoReloadSystem) {
         autoReloadSystem.addFile(filepath);
@@ -367,7 +515,6 @@ function addFileToReloadMonitoring(filepath) {
     }
 }
 
-// Видалити файл з моніторингу
 function removeFileFromReloadMonitoring(filepath) {
     if (autoReloadSystem) {
         autoReloadSystem.removeFile(filepath);
@@ -376,7 +523,15 @@ function removeFileFromReloadMonitoring(filepath) {
     }
 }
 
-// Експортувати функції для глобального доступу
+function resetAutoReload() {
+    if (autoReloadSystem) {
+        autoReloadSystem.reset();
+        autoReloadSystem = null;
+    }
+    initAutoReload();
+}
+
+// Export functions globally
 if (typeof window !== 'undefined') {
     window.initAutoReload = initAutoReload;
     window.stopAutoReload = stopAutoReload;
@@ -385,17 +540,23 @@ if (typeof window !== 'undefined') {
     window.setAutoReloadInterval = setAutoReloadInterval;
     window.addFileToReloadMonitoring = addFileToReloadMonitoring;
     window.removeFileFromReloadMonitoring = removeFileFromReloadMonitoring;
-    window.autoReloadSystem = autoReloadSystem;
+    window.resetAutoReload = resetAutoReload;
+    window.restoreStateAfterReload = restoreStateAfterReload;
 }
 
-// Автоматично ініціалізувати при завантаженні DOM
+// Auto-initialize when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
+        // Restore state first
+        restoreStateAfterReload();
+        
+        // Then init auto-reload
         setTimeout(initAutoReload, 2000);
     });
 } else {
-    // DOM вже завантажений
+    // DOM already loaded
+    restoreStateAfterReload();
     setTimeout(initAutoReload, 2000);
 }
 
-console.log('📁 Auto-reload system loaded and ready');
+console.log('📁 Auto-reloa
