@@ -170,6 +170,7 @@ function updatePageTitles() {
 
 // Page switching
 function switchPage(page) {
+    console.log(`Switching to page: ${page}`);
     saveCurrentPage(page);
     
     // Hide all pages
@@ -184,11 +185,19 @@ function switchPage(page) {
     if (targetPage) {
         targetPage.classList.add('active');
         targetPage.style.display = 'block';
+        console.log(`Page ${page} shown`);
+    } else {
+        console.error(`Page ${page}Page not found`);
     }
     
     // Update active nav button
     const targetBtn = document.querySelector(`[data-page="${page}"]`);
     if (targetBtn) targetBtn.classList.add('active');
+    
+    // Update static menu if exists
+    if (typeof updateStaticMenuActiveState === 'function') {
+        updateStaticMenuActiveState(page);
+    }
     
     closeSidebar();
     setTimeout(() => initializePageContent(page), 100);
@@ -225,6 +234,7 @@ function initializePageContent(page) {
 
 // Category functions
 function toggleCategory(categoryId) {
+    console.log(`Toggling category: ${categoryId}`);
     const categoryButtons = document.getElementById(categoryId);
     const toggleIcon = document.querySelector(`[data-category="${categoryId}"] .category-toggle`);
     
@@ -239,6 +249,7 @@ function toggleCategory(categoryId) {
         if (!isExpanded) {
             categoryButtons.classList.add('expanded');
             toggleIcon.classList.add('expanded');
+            console.log(`Category ${categoryId} expanded`);
         }
     }
 }
@@ -250,6 +261,7 @@ function initializeCategories() {
 
 // Sidebar functions
 function toggleMobileMenu() {
+    console.log('Toggling mobile menu');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     
@@ -257,10 +269,14 @@ function toggleMobileMenu() {
         const isOpen = sidebar.classList.contains('open');
         sidebar.classList.toggle('open', !isOpen);
         overlay.classList.toggle('show', !isOpen);
+        console.log(`Mobile menu ${!isOpen ? 'opened' : 'closed'}`);
+    } else {
+        console.error('Sidebar or overlay not found');
     }
 }
 
 function closeSidebar() {
+    console.log('Closing sidebar');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     
@@ -288,8 +304,11 @@ function handleAuthAction() {
 async function initializeApp() {
     if (appInitialized) return;
     
+    console.log('Initializing app...');
+    
     const appContent = document.getElementById('app-content');
     if (!appContent?.innerHTML.trim()) {
+        console.log('App content not ready, retrying...');
         setTimeout(initializeApp, 500);
         return;
     }
@@ -313,9 +332,12 @@ async function initializeApp() {
     setTimeout(() => switchPage(lastPage), 300);
     
     appInitialized = true;
+    console.log('App initialized successfully');
 }
 
 function setupEventListeners() {
+    console.log('Setting up event listeners...');
+    
     // Settings panels click outside handler
     document.addEventListener('click', e => {
         const panels = [
@@ -339,10 +361,31 @@ function setupEventListeners() {
     
     // Sidebar overlay
     const overlay = document.getElementById('sidebarOverlay');
-    if (overlay) overlay.addEventListener('click', closeSidebar);
+    if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+        console.log('Sidebar overlay listener added');
+    }
+    
+    // Mobile menu toggle
+    const mobileToggle = document.querySelector('.mobile-menu-toggle');
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', toggleMobileMenu);
+        console.log('Mobile menu toggle listener added');
+    }
+    
+    // Settings gear button
+    const settingsGear = document.querySelector('.settings-gear-btn');
+    if (settingsGear) {
+        settingsGear.addEventListener('click', () => switchPage('settings'));
+        console.log('Settings gear button listener added');
+    }
+    
+    console.log('Event listeners setup complete');
 }
 
 async function initializeAllModules() {
+    console.log('Initializing all modules...');
+    
     const modules = [
         'initializeCalculator', 'initializeArm', 'initializeGrind', 'initializeBoosts',
         'initializeShiny', 'initializeSecret', 'initializePotions', 'initializeAura',
@@ -370,6 +413,8 @@ async function initializeAllModules() {
         }
         await new Promise(resolve => setTimeout(resolve, 50));
     }
+    
+    console.log('All modules initialized');
 }
 
 // Global exports
