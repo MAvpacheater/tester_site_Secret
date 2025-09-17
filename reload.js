@@ -1,10 +1,10 @@
-// Auto-reload system for detecting code changes
+// Optimized Auto-reload system for detecting code changes
 class AutoReloadSystem {
     constructor() {
-        this.checkInterval = 5000;
+        this.checkInterval = 3000; // Reduced interval
         this.files = [
             'general.js', 'general.css', 'general_menu.css',
-            'calc/calculator.js', 'calc/arm.js', 'calc/grind.js',
+            'calc/calculator.js', 'calc/grind.js',
             'info/boosts.js', 'info/shiny.js', 'info/secret.js', 'info/codes.js',
             'info/aura.js', 'info/trainer.js', 'info/charms.js', 'info/potions.js', 'info/worlds.js',
             'moderation/settings.js', 'other/updates.js', 'other/peoples.js', 'other/help.js',
@@ -25,7 +25,7 @@ class AutoReloadSystem {
             setTimeout(() => {
                 this.start();
                 this.showIndicator();
-            }, 10000);
+            }, 5000);
             
             this.isInitialized = true;
             console.log('✅ Auto-reload system initialized');
@@ -39,7 +39,7 @@ class AutoReloadSystem {
         
         this.isActive = true;
         this.intervalId = setInterval(() => this.checkForChanges(), this.checkInterval);
-        console.log(`🚀 Auto-reload monitoring started`);
+        console.log(`🚀 Auto-reload monitoring started (${this.checkInterval}ms)`);
     }
 
     stop() {
@@ -115,6 +115,7 @@ class AutoReloadSystem {
 
                     if (oldHash !== null && oldHash !== currentHash) {
                         changedFiles.push(file);
+                        this.fileHashes.set(file, currentHash);
                     }
                 } catch (error) {
                     // Ignore errors during checking
@@ -137,7 +138,7 @@ class AutoReloadSystem {
         this.saveCurrentState();
         this.showReloadNotification(changedFiles);
         
-        setTimeout(() => window.location.reload(), 1500);
+        setTimeout(() => window.location.reload(), 1000);
     }
 
     saveCurrentState() {
@@ -156,6 +157,7 @@ class AutoReloadSystem {
             try {
                 sessionStorage.setItem('armHelper_preReload_page', currentPage);
                 sessionStorage.setItem('armHelper_preReload_language', currentLanguage);
+                sessionStorage.setItem('armHelper_preReload_timestamp', Date.now().toString());
             } catch (e) {
                 console.warn('⚠️ Could not save to sessionStorage');
             }
@@ -176,7 +178,7 @@ class AutoReloadSystem {
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 color: white; padding: 15px 20px; border-radius: 12px;
                 box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); z-index: 10001;
-                font-family: 'Segoe UI', sans-serif; font-size: 14px; max-width: 350px;
+                font-family: 'Segoe UI', sans-serif; font-size: 14px; max-width: 300px;
                 backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.2);
                 transform: translateX(100%); transition: transform 0.4s ease;
             ">
@@ -188,7 +190,7 @@ class AutoReloadSystem {
                             ${changedFiles.length} file(s) changed
                         </div>
                         <div style="font-size: 11px; opacity: 0.7;">
-                            Reloading to apply changes...
+                            Reloading in 1 second...
                         </div>
                     </div>
                 </div>
@@ -211,14 +213,8 @@ class AutoReloadSystem {
         const indicator = document.getElementById('autoReloadIndicator');
         if (indicator && this.shouldEnableAutoReload()) {
             indicator.classList.add('show');
-            indicator.innerHTML = `
-                <span style="display: inline-flex; align-items: center; gap: 6px;">
-                    <span style="animation: pulse 2s infinite;">🔄</span>
-                    <span>Auto-reload active</span>
-                </span>
-            `;
             
-            setTimeout(() => indicator.classList.remove('show'), 4000);
+            setTimeout(() => indicator.classList.remove('show'), 3000);
         }
     }
 
@@ -263,7 +259,7 @@ function initAutoReload() {
             console.error('❌ Failed to initialize auto-reload:', error);
             autoReloadSystem = null;
         }
-    }, 3000);
+    }, 2000);
 }
 
 function shouldEnableAutoReload() {
@@ -280,8 +276,12 @@ function restoreStateAfterReload() {
     try {
         const savedPage = sessionStorage.getItem('armHelper_preReload_page');
         const savedLanguage = sessionStorage.getItem('armHelper_preReload_language');
+        const timestamp = sessionStorage.getItem('armHelper_preReload_timestamp');
         
-        if (savedPage || savedLanguage) {
+        // Only restore if reload was recent (within 10 seconds)
+        const isRecentReload = timestamp && (Date.now() - parseInt(timestamp)) < 10000;
+        
+        if ((savedPage || savedLanguage) && isRecentReload) {
             console.log('🔄 Restoring state after reload:', { savedPage, savedLanguage });
             
             const restoreState = () => {
@@ -290,58 +290,31 @@ function restoreStateAfterReload() {
                 }
                 
                 if (savedPage && typeof window.switchPage === 'function') {
-                    window.switchPage(savedPage);
+                    setTimeout(() => window.switchPage(savedPage), 100);
                 }
                 
+                // Clean up
                 sessionStorage.removeItem('armHelper_preReload_page');
                 sessionStorage.removeItem('armHelper_preReload_language');
+                sessionStorage.removeItem('armHelper_preReload_timestamp');
             };
             
+            // Try multiple times to ensure state is restored
+            setTimeout(restoreState, 500);
             setTimeout(restoreState, 1000);
             setTimeout(restoreState, 2000);
-            setTimeout(restoreState, 3000);
         }
     } catch (error) {
         console.warn('⚠️ Could not restore state after reload:', error);
     }
 }
 
-function stopAutoReload() {
-    if (autoReloadSystem) {
-        autoReloadSystem.stop();
-    }
-}
-
-function startAutoReload() {
-    if (autoReloadSystem) {
-        autoReloadSystem.start();
-    } else {
-        initAutoReload();
-    }
-}
-
-function getAutoReloadStatus() {
-    if (!autoReloadSystem) {
-        return { 
-            initialized: false, 
-            available: shouldEnableAutoReload(),
-            reason: shouldEnableAutoReload() ? 'Not initialized' : 'Production mode'
-        };
-    }
-    
-    return {
-        initialized: true,
-        available: true,
-        ...autoReloadSystem.getStatus()
-    };
-}
-
 // Export functions globally
 Object.assign(window, {
     initAutoReload,
-    stopAutoReload,
-    startAutoReload,
-    getAutoReloadStatus,
+    stopAutoReload: () => autoReloadSystem?.stop(),
+    startAutoReload: () => autoReloadSystem?.start() || initAutoReload(),
+    getAutoReloadStatus: () => autoReloadSystem?.getStatus() || { initialized: false, available: shouldEnableAutoReload() },
     restoreStateAfterReload
 });
 
@@ -349,9 +322,9 @@ Object.assign(window, {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         restoreStateAfterReload();
-        setTimeout(initAutoReload, 2000);
+        setTimeout(initAutoReload, 1000);
     });
 } else {
     restoreStateAfterReload();
-    setTimeout(initAutoReload, 2000);
+    setTimeout(initAutoReload, 1000);
 }
