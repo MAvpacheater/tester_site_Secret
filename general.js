@@ -1,27 +1,32 @@
-// General JavaScript functions - Cleaned version
-import { Analytics } from "@vercel/analytics/next"
+// Fixed General JavaScript functions - Memory-based storage
 // Global language state
 let currentAppLanguage = 'en';
 let menuTranslations = null;
 
+// Memory-based storage (instead of localStorage)
+const appStorage = {
+    currentPage: 'calculator',
+    language: 'en',
+    settings: {}
+};
+
 // Page state management
 function saveCurrentPage(page) {
-    localStorage.setItem('armHelper_currentPage', page);
+    appStorage.currentPage = page;
     console.log(`Current page saved: ${page}`);
 }
 
 function getCurrentPage() {
-    return localStorage.getItem('armHelper_currentPage') || 'calculator';
+    return appStorage.currentPage;
 }
 
 // Language management functions
 function getCurrentAppLanguage() {
-    const saved = localStorage.getItem('armHelper_language');
-    return saved || 'en';
+    return appStorage.language;
 }
 
 function saveAppLanguage(lang) {
-    localStorage.setItem('armHelper_language', lang);
+    appStorage.language = lang;
     console.log(`App language saved: ${lang}`);
 }
 
@@ -68,6 +73,60 @@ async function loadMenuTranslations() {
                 auth: {
                     login: "Login (Soon...)"
                 }
+            },
+            uk: {
+                menu: "Меню",
+                calculator: "Калькулятор", 
+                info: "Інфо",
+                others: "Інше",
+                pages: {
+                    calculator: "🐾 Калькулятор Тварин",
+                    arm: "💪 Калькулятор Рук",
+                    grind: "🏋️‍♂️ Калькулятор Грінду",
+                    boosts: "🚀 Бусти",
+                    shiny: "✨ Блискучі",
+                    secret: "🔮 Секретні Тварини",
+                    codes: "🎁 Коди",
+                    aura: "🌟 Аура",
+                    trainer: "🏆 Тренер",
+                    charms: "🔮 Чари",
+                    potions: "🧪 Зілля та Їжа",
+                    worlds: "🌍 Світи",
+                    settings: "⚙️ Налаштування",
+                    updates: "📝 Оновлення",
+                    help: "🆘 Допомога",
+                    peoples: "🙏 Люди"
+                },
+                auth: {
+                    login: "Увійти (Скоро...)"
+                }
+            },
+            ru: {
+                menu: "Меню",
+                calculator: "Калькулятор", 
+                info: "Инфо",
+                others: "Другое",
+                pages: {
+                    calculator: "🐾 Калькулятор Питомцев",
+                    arm: "💪 Калькулятор Рук",
+                    grind: "🏋️‍♂️ Калькулятор Гринда",
+                    boosts: "🚀 Бусты",
+                    shiny: "✨ Блестящие",
+                    secret: "🔮 Секретные Питомцы",
+                    codes: "🎁 Коды",
+                    aura: "🌟 Аура",
+                    trainer: "🏆 Тренер",
+                    charms: "🔮 Чары",
+                    potions: "🧪 Зелья и Еда",
+                    worlds: "🌍 Миры",
+                    settings: "⚙️ Настройки",
+                    updates: "📝 Обновления",
+                    help: "🆘 Помощь",
+                    peoples: "🙏 Люди"
+                },
+                auth: {
+                    login: "Войти (Скоро...)"
+                }
             }
         };
         return menuTranslations;
@@ -76,6 +135,8 @@ async function loadMenuTranslations() {
 
 // Switch app language
 async function switchAppLanguage(lang) {
+    console.log(`🌍 Switching language to: ${lang}`);
+    
     if (!menuTranslations) {
         await loadMenuTranslations();
     }
@@ -113,38 +174,6 @@ async function switchAppLanguage(lang) {
     });
     document.dispatchEvent(languageChangeEvent);
     
-    // Directly notify specific modules if their functions exist
-    const moduleNotifications = [
-        { name: 'worlds', func: 'updateWorldsLanguage' },
-        { name: 'potions', func: 'updatePotionsLanguage' },
-        { name: 'secret', func: 'updateSecretLanguage' },
-        { name: 'peoples', func: 'updatePeoplesLanguage' },
-        { name: 'help', func: 'updateHelpLanguage' },
-        { name: 'updates', func: 'updateUpdatesLanguage' },
-        { name: 'settings', func: 'updateSettingsLanguage' }
-    ];
-    
-    moduleNotifications.forEach(({ name, func }) => {
-        if (typeof window[func] === 'function') {
-            try {
-                window[func](lang);
-                console.log(`✅ ${name} language updated via ${func}`);
-            } catch (error) {
-                console.error(`❌ Error updating ${name} language:`, error);
-            }
-        }
-    });
-    
-    // Legacy support for older function names
-    if (typeof window.switchWorldsLanguage === 'function') {
-        try {
-            window.switchWorldsLanguage(lang);
-            console.log('✅ Worlds language updated via legacy function');
-        } catch (error) {
-            console.error('❌ Error in legacy worlds language update:', error);
-        }
-    }
-    
     console.log(`🌍 App language switched to: ${lang}`);
 }
 
@@ -154,6 +183,8 @@ function updateMenuTranslations() {
     
     const translations = menuTranslations[currentAppLanguage];
     if (!translations) return;
+    
+    console.log(`📝 Updating menu translations for: ${currentAppLanguage}`);
     
     // Update sidebar header
     const sidebarHeader = document.querySelector('.sidebar-header h3');
@@ -185,7 +216,7 @@ function updateMenuTranslations() {
     
     // Update auth button
     const authButton = document.getElementById('authButton');
-    if (authButton && translations.auth.login) {
+    if (authButton && translations.auth && translations.auth.login) {
         authButton.textContent = translations.auth.login;
     }
     
@@ -198,6 +229,8 @@ function updatePageTitles() {
     
     const translations = menuTranslations[currentAppLanguage];
     if (!translations || !translations.pages) return;
+    
+    console.log(`📝 Updating page titles for: ${currentAppLanguage}`);
     
     // Page title mappings
     const pageTitleMappings = {
@@ -223,17 +256,23 @@ function updatePageTitles() {
     Object.entries(pageTitleMappings).forEach(([pageId, translationKey]) => {
         const page = document.getElementById(pageId);
         if (page && translations.pages[translationKey]) {
-            const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title, .updates-title, .settings-title');
-            if (titleElement) {
-                titleElement.textContent = translations.pages[translationKey];
-                console.log(`✅ Updated title for ${pageId}: ${translations.pages[translationKey]}`);
-            }
+            const titleSelectors = [
+                'h1', 
+                '.title', 
+                '.peoples-title', 
+                '.help-title', 
+                '.updates-title', 
+                '.settings-title',
+                '.header-controls h1'
+            ];
             
-            // Special handling for header-controls h1 elements
-            const headerControlsTitle = page.querySelector('.header-controls h1');
-            if (headerControlsTitle) {
-                headerControlsTitle.textContent = translations.pages[translationKey];
-                console.log(`✅ Updated header title for ${pageId}: ${translations.pages[translationKey]}`);
+            for (const selector of titleSelectors) {
+                const titleElement = page.querySelector(selector);
+                if (titleElement) {
+                    titleElement.textContent = translations.pages[translationKey];
+                    console.log(`✅ Updated title for ${pageId}: ${translations.pages[translationKey]}`);
+                    break; // Use first found selector
+                }
             }
         }
     });
@@ -243,22 +282,26 @@ function updatePageTitles() {
 
 // Page switching functionality with persistence
 function switchPage(page) {
-    console.log(`Switching to page: ${page}`);
+    console.log(`🔄 Switching to page: ${page}`);
     
-    // Save current page to localStorage
+    // Save current page
     saveCurrentPage(page);
     
     // Remove active class from all pages and nav buttons
-    document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(el => {
+        el.classList.remove('active');
+        el.style.display = 'none';
+    });
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
     
     // Add active class to selected page
     const targetPage = document.getElementById(page + 'Page');
     if (targetPage) {
         targetPage.classList.add('active');
-        console.log(`Page ${page}Page activated`);
+        targetPage.style.display = 'block';
+        console.log(`✅ Page ${page}Page activated`);
     } else {
-        console.error(`Page ${page}Page not found`);
+        console.error(`❌ Page ${page}Page not found`);
     }
     
     // Update active nav button
@@ -284,7 +327,7 @@ function switchPage(page) {
     const targetButton = document.querySelector(`[data-page="${pageMap[page]}"]`);
     if (targetButton) {
         targetButton.classList.add('active');
-        console.log(`Nav button activated for ${page}`);
+        console.log(`✅ Nav button activated for ${page}`);
     }
     
     // Close sidebar after selection
@@ -307,131 +350,52 @@ function initializePageContent(page) {
         return;
     }
     
-    switch(page) {
-        case 'calculator':
-            if (typeof initializeCalculator === 'function') {
-                initializeCalculator();
-            }
-            break;
-        case 'arm':
-            if (typeof initializeArm === 'function') {
-                initializeArm();
-            }
-            break;
-        case 'grind':
-            if (typeof initializeGrind === 'function') {
-                if (typeof window !== 'undefined' && window.grindInitialized !== undefined) {
-                    window.grindInitialized = false;
+    // Initialize based on page type
+    const initFunctions = {
+        'calculator': 'initializeCalculator',
+        'arm': 'initializeArm',
+        'grind': 'initializeGrind',
+        'shiny': 'initializeShiny',
+        'boosts': 'initializeBoosts',
+        'trainer': 'initializeTrainer',
+        'aura': 'initializeAura',
+        'codes': 'initializeCodes',
+        'charms': 'initializeCharms',
+        'secret': 'initializeSecret',
+        'potions': 'initializePotions',
+        'worlds': 'initializeWorlds',
+        'settings': 'initializeSettings',
+        'updates': 'initializeUpdates',
+        'help': 'initializeHelp',
+        'peoples': 'initializePeoples'
+    };
+    
+    const initFunction = initFunctions[page];
+    if (initFunction && typeof window[initFunction] === 'function') {
+        try {
+            // Reset initialization flags for modules that use them
+            const resetFlags = ['secret', 'potions', 'grind', 'peoples', 'help', 'updates', 'settings'];
+            if (resetFlags.includes(page)) {
+                const flagName = `${page}Initialized`;
+                if (typeof window[flagName] !== 'undefined') {
+                    window[flagName] = false;
                 }
-                initializeGrind();
             }
-            break;
-        case 'shiny':
-            if (typeof initializeShiny === 'function') {
-                initializeShiny();
-            }
-            break;
-        case 'boosts':
-            if (typeof initializeBoosts === 'function') {
-                initializeBoosts();
-            }
-            break;
-        case 'trainer':
-            if (typeof initializeTrainer === 'function') {
-                initializeTrainer();
-            }
-            break;
-        case 'aura':
-            if (typeof initializeAura === 'function') {
-                initializeAura();
-            }
-            break;
-        case 'codes':
-            if (typeof initializeCodes === 'function') {
-                initializeCodes();
-            }
-            break;
-        case 'charms':
-            if (typeof initializeCharms === 'function') {
-                initializeCharms();
-            }
-            break;
-        case 'secret':
-            console.log('🔮 Initializing Secret Pets page...');
-            if (typeof initializeSecret === 'function') {
-                if (typeof window !== 'undefined' && window.secretInitialized !== undefined) {
-                    window.secretInitialized = false;
-                }
-                initializeSecret();
-            } else {
-                console.error('❌ initializeSecret function not found');
-            }
-            break;
-        case 'potions':
-            console.log('🧪 Initializing Potions & Food page...');
-            if (typeof initializePotions === 'function') {
-                if (typeof window !== 'undefined' && window.potionsInitialized !== undefined) {
-                    window.potionsInitialized = false;
-                }
-                initializePotions();
-            } else {
-                console.error('❌ initializePotions function not found');
-            }
-            break;
-        case 'worlds':
-            console.log('🌍 Initializing Worlds page...');
-            if (typeof initializeWorlds === 'function') {
-                initializeWorlds();
-            } else {
-                console.error('❌ initializeWorlds function not found');
-            }
-            break;
-        case 'settings':
-            console.log('⚙️ Initializing Settings page...');
-            if (typeof initializeSettings === 'function') {
-                initializeSettings();
-            } else {
-                console.error('❌ initializeSettings function not found');
-            }
-            break;
-        case 'updates':
-            console.log('📝 Initializing Updates page...');
-            if (typeof initializeUpdates === 'function') {
-                if (typeof window !== 'undefined' && window.updatesInitialized !== undefined) {
-                    window.updatesInitialized = false;
-                }
-                initializeUpdates();
-            } else {
-                console.error('❌ initializeUpdates function not found');
-            }
-            break;
-        case 'help':
-            console.log('🆘 Initializing Help page...');
-            if (typeof initializeHelp === 'function') {
-                if (typeof window !== 'undefined' && window.helpInitialized !== undefined) {
-                    window.helpInitialized = false;
-                }
-                initializeHelp();
-            } else {
-                console.error('❌ initializeHelp function not found');
-            }
-            break;
-        case 'peoples':
-            console.log('🙏 Initializing Peoples page...');
-            if (typeof initializePeoples === 'function') {
-                if (typeof window !== 'undefined' && window.peoplesInitialized !== undefined) {
-                    window.peoplesInitialized = false;
-                }
-                initializePeoples();
-            } else {
-                console.error('❌ initializePeoples function not found');
-            }
-            break;
+            
+            window[initFunction]();
+            console.log(`✅ ${initFunction} executed successfully`);
+        } catch (error) {
+            console.error(`❌ Error executing ${initFunction}:`, error);
+        }
+    } else {
+        console.warn(`⚠️ Initialization function ${initFunction} not found for page: ${page}`);
     }
 }
 
 // Category toggle functionality
 function toggleCategory(categoryId) {
+    console.log(`🔄 Toggling category: ${categoryId}`);
+    
     const categoryButtons = document.getElementById(categoryId);
     const toggleIcon = document.querySelector(`[data-category="${categoryId}"] .category-toggle`);
     
@@ -450,56 +414,94 @@ function toggleCategory(categoryId) {
         if (!isExpanded) {
             categoryButtons.classList.add('expanded');
             toggleIcon.classList.add('expanded');
+            console.log(`✅ Category ${categoryId} expanded`);
+        } else {
+            console.log(`✅ Category ${categoryId} collapsed`);
         }
+    } else {
+        console.error(`❌ Category elements not found for: ${categoryId}`);
     }
 }
 
 // Initialize categories on app start
 function initializeCategories() {
+    console.log('📂 Initializing categories...');
+    // All categories start closed by default
+    document.querySelectorAll('.category-buttons').forEach(el => {
+        el.classList.remove('expanded');
+    });
+    document.querySelectorAll('.category-toggle').forEach(el => {
+        el.classList.remove('expanded');
+    });
     console.log('✅ Categories initialized - all closed by default');
 }
 
 // Sidebar functionality
 function toggleMobileMenu() {
+    console.log('📱 Toggling mobile menu');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     
     if (sidebar && overlay) {
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('show');
+        const isOpen = sidebar.classList.contains('open');
+        
+        if (isOpen) {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+        } else {
+            sidebar.classList.add('open');
+            overlay.classList.add('show');
+        }
+        
+        console.log(`📱 Sidebar ${isOpen ? 'closed' : 'opened'}`);
+    } else {
+        console.error('❌ Sidebar or overlay not found');
     }
 }
 
 function closeSidebar() {
+    console.log('📱 Closing sidebar');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     
     if (sidebar && overlay) {
         sidebar.classList.remove('open');
         overlay.classList.remove('show');
+        console.log('✅ Sidebar closed');
     }
 }
 
 // Disabled auth action
 function handleAuthAction() {
-    console.log('Login feature coming soon...');
+    console.log('🔒 Auth action triggered - feature coming soon');
+    
+    const authBtn = document.getElementById('authButton');
+    if (authBtn) {
+        const originalText = authBtn.textContent;
+        authBtn.textContent = '🔒 Coming Soon!';
+        authBtn.style.transform = 'scale(0.95)';
+        authBtn.style.transition = 'all 0.2s ease';
+        
+        setTimeout(() => {
+            authBtn.textContent = originalText;
+            authBtn.style.transform = 'scale(1)';
+        }, 1500);
+    }
 }
 
-// Settings persistence helpers
+// Settings persistence helpers (memory-based)
 function saveSettingsToStorage(key, settings) {
-    localStorage.setItem(`armHelper_${key}_settings`, JSON.stringify(settings));
-    console.log(`Settings saved to localStorage for ${key}`);
+    if (!appStorage.settings) {
+        appStorage.settings = {};
+    }
+    appStorage.settings[key] = settings;
+    console.log(`💾 Settings saved to memory for ${key}`);
 }
 
 function loadSettingsFromStorage(key) {
-    const localSettings = localStorage.getItem(`armHelper_${key}_settings`);
-    if (localSettings) {
-        try {
-            return JSON.parse(localSettings);
-        } catch (e) {
-            console.warn('Invalid local settings data');
-            return null;
-        }
+    if (appStorage.settings && appStorage.settings[key]) {
+        console.log(`📂 Settings loaded from memory for ${key}`);
+        return appStorage.settings[key];
     }
     return null;
 }
@@ -519,12 +521,14 @@ async function initializeApp() {
     // Check if content is loaded
     const appContent = document.getElementById('app-content');
     if (!appContent || !appContent.innerHTML.trim()) {
-        console.error('❌ Content not loaded');
+        console.error('❌ Content not loaded, retrying in 500ms...');
+        setTimeout(initializeApp, 500);
         return;
     }
     
     // Load current language
     currentAppLanguage = getCurrentAppLanguage();
+    console.log(`🌍 Current language: ${currentAppLanguage}`);
     
     // Load menu translations
     await loadMenuTranslations();
@@ -544,8 +548,11 @@ async function initializeApp() {
     // Initialize categories
     initializeCategories();
     
+    // Initialize event listeners
+    setupEventListeners();
+    
     // Initialize all modules first
-    initializeAllModules();
+    await initializeAllModules();
     
     // Restore last page or default to calculator
     const lastPage = getCurrentPage();
@@ -554,9 +561,17 @@ async function initializeApp() {
     setTimeout(() => {
         switchPage(lastPage);
         console.log(`✅ Page restored to: ${lastPage}`);
-    }, 200);
+    }, 300);
     
-    // Enhanced click outside settings panel handler
+    appInitialized = true;
+    console.log('✅ App initialization completed successfully');
+}
+
+// Setup event listeners
+function setupEventListeners() {
+    console.log('🎯 Setting up event listeners...');
+    
+    // Click outside settings panel handler
     document.addEventListener('click', e => {
         const settingsPanels = [
             { panel: document.getElementById('settingsPanel'), btn: document.querySelector('#calculatorPage .settings-btn') },
@@ -568,31 +583,26 @@ async function initializeApp() {
             if (panel && btn) {
                 const isClickInsidePanel = panel.contains(e.target);
                 const isClickOnSettingsBtn = btn.contains(e.target);
-                const isClickOnCategoryButton = e.target.closest('.category-button');
-                const isClickOnBackButton = e.target.closest('.back-btn');
-                const isClickOnCategorySwitch = e.target.closest('.category-switch');
-                const isClickOnSimpleModifier = e.target.closest('.simple-modifier');
-                const isClickOnCategoryHeader = e.target.closest('.category-header');
-                const isClickOnGrindCategoryHeader = e.target.closest('.category-header-modifier');
-                const isClickOnLanguageFlag = e.target.closest('.lang-flag-btn');
+                const isClickOnUI = e.target.closest('.category-button, .back-btn, .category-switch, .simple-modifier, .category-header, .category-header-modifier, .lang-flag-btn');
                 
-                if (!isClickInsidePanel && !isClickOnSettingsBtn && 
-                    !isClickOnCategoryButton && !isClickOnBackButton && 
-                    !isClickOnCategorySwitch && !isClickOnSimpleModifier &&
-                    !isClickOnCategoryHeader && !isClickOnGrindCategoryHeader &&
-                    !isClickOnLanguageFlag) {
+                if (!isClickInsidePanel && !isClickOnSettingsBtn && !isClickOnUI) {
                     panel.classList.remove('show');
                 }
             }
         });
     });
-
-    appInitialized = true;
-    console.log('✅ App initialization completed - Page state persistence enabled');
+    
+    // Sidebar overlay click
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', closeSidebar);
+    }
+    
+    console.log('✅ Event listeners set up');
 }
 
-// Initialize all modules with proper DOM readiness checks
-function initializeAllModules() {
+// Initialize all modules
+async function initializeAllModules() {
     console.log('🔧 Initializing all modules...');
     
     const modules = [
@@ -614,37 +624,23 @@ function initializeAllModules() {
         'initializePeoples'
     ];
 
-    modules.forEach(moduleName => {
+    for (const moduleName of modules) {
         try {
             if (typeof window[moduleName] === 'function') {
                 // Add delay for DOM-dependent modules
-                if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || 
-                    moduleName === 'initializeGrind' || moduleName === 'initializePeoples' ||
-                    moduleName === 'initializeWorlds' || moduleName === 'initializeHelp' ||
-                    moduleName === 'initializeUpdates' || moduleName === 'initializeSettings') {
+                const delayedModules = [
+                    'initializeSecret', 'initializePotions', 'initializeGrind', 
+                    'initializePeoples', 'initializeWorlds', 'initializeHelp',
+                    'initializeUpdates', 'initializeSettings'
+                ];
+                
+                if (delayedModules.includes(moduleName)) {
                     setTimeout(() => {
                         try {
-                            // Force reinitialization by resetting flags
-                            if (moduleName === 'initializeSecret' && window.secretInitialized) {
-                                window.secretInitialized = false;
-                            }
-                            if (moduleName === 'initializePotions' && window.potionsInitialized) {
-                                window.potionsInitialized = false;
-                            }
-                            if (moduleName === 'initializeGrind' && window.grindInitialized) {
-                                window.grindInitialized = false;
-                            }
-                            if (moduleName === 'initializePeoples' && window.peoplesInitialized) {
-                                window.peoplesInitialized = false;
-                            }
-                            if (moduleName === 'initializeHelp' && window.helpInitialized) {
-                                window.helpInitialized = false;
-                            }
-                            if (moduleName === 'initializeUpdates' && window.updatesInitialized) {
-                                window.updatesInitialized = false;
-                            }
-                            if (moduleName === 'initializeSettings' && window.settingsInitialized) {
-                                window.settingsInitialized = false;
+                            // Reset initialization flags
+                            const flagName = moduleName.replace('initialize', '').toLowerCase() + 'Initialized';
+                            if (window[flagName] !== undefined) {
+                                window[flagName] = false;
                             }
                             
                             window[moduleName]();
@@ -652,7 +648,7 @@ function initializeAllModules() {
                         } catch (error) {
                             console.error(`❌ Error initializing ${moduleName}:`, error);
                         }
-                    }, 300);
+                    }, 500);
                 } else {
                     window[moduleName]();
                     console.log(`✅ ${moduleName} initialized`);
@@ -663,7 +659,12 @@ function initializeAllModules() {
         } catch (error) {
             console.error(`❌ Error initializing ${moduleName}:`, error);
         }
-    });
+        
+        // Small delay between modules
+        await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    
+    console.log('✅ All modules initialization completed');
 }
 
 // Debug function to check page states
@@ -681,34 +682,30 @@ function forceReinitializeModule(moduleName) {
     console.log(`🔄 Force reinitializing ${moduleName}...`);
     
     // Reset initialization flags
-    if (moduleName === 'secret' && typeof window !== 'undefined') {
-        window.secretInitialized = false;
-    }
-    if (moduleName === 'potions' && typeof window !== 'undefined') {
-        window.potionsInitialized = false;
-    }
-    if (moduleName === 'grind' && typeof window !== 'undefined') {
-        window.grindInitialized = false;
-    }
-    if (moduleName === 'peoples' && typeof window !== 'undefined') {
-        window.peoplesInitialized = false;
-    }
-    if (moduleName === 'help' && typeof window !== 'undefined') {
-        window.helpInitialized = false;
-    }
-    if (moduleName === 'updates' && typeof window !== 'undefined') {
-        window.updatesInitialized = false;
-    }
-    if (moduleName === 'settings' && typeof window !== 'undefined') {
-        window.settingsInitialized = false;
+    const flagMap = {
+        'secret': 'secretInitialized',
+        'potions': 'potionsInitialized',
+        'grind': 'grindInitialized',
+        'peoples': 'peoplesInitialized',
+        'help': 'helpInitialized',
+        'updates': 'updatesInitialized',
+        'settings': 'settingsInitialized'
+    };
+    
+    if (flagMap[moduleName] && typeof window[flagMap[moduleName]] !== 'undefined') {
+        window[flagMap[moduleName]] = false;
     }
     
     // Call initialization
     const initFunctionName = `initialize${moduleName.charAt(0).toUpperCase() + moduleName.slice(1)}`;
     if (typeof window[initFunctionName] === 'function') {
         setTimeout(() => {
-            window[initFunctionName]();
-            console.log(`✅ ${initFunctionName} force reinitialized`);
+            try {
+                window[initFunctionName]();
+                console.log(`✅ ${initFunctionName} force reinitialized`);
+            } catch (error) {
+                console.error(`❌ Error force reinitializing ${initFunctionName}:`, error);
+            }
         }, 100);
     }
 }
@@ -732,3 +729,14 @@ window.updateMenuTranslations = updateMenuTranslations;
 window.updatePageTitles = updatePageTitles;
 window.saveCurrentPage = saveCurrentPage;
 window.getCurrentPage = getCurrentPage;
+
+// Auto-initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(initializeApp, 100);
+    });
+} else {
+    setTimeout(initializeApp, 100);
+}
+
+console.log('📁 General.js loaded and ready');
