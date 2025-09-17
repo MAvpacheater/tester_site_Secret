@@ -7,11 +7,10 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: 
-        linear-gradient(135deg, 
-            rgba(41, 39, 35, 0.4) 0%, 
-            rgba(28, 26, 23, 0.6) 50%, 
-            rgba(20, 19, 17, 0.8) 100%),
+    background: linear-gradient(135deg, 
+        rgba(41, 39, 35, 0.4) 0%, 
+        rgba(28, 26, 23, 0.6) 50%, 
+        rgba(20, 19, 17, 0.8) 100%),
         url('https://i.postimg.cc/43yVBkY8/Generated-image-1.png') center center / cover no-repeat;
     min-height: 100vh;
     display: flex;
@@ -36,20 +35,6 @@ body::before {
     background-size: 200px 200px, 150px 150px;
     pointer-events: none;
     z-index: -1;
-}
-
-/* Desktop background */
-@media (min-width: 769px) {
-    body {
-        background-attachment: fixed;
-    }
-}
-
-/* Mobile background */
-@media (max-width: 768px) {
-    body {
-        background-attachment: scroll;
-    }
 }
 
 .container {
@@ -119,34 +104,7 @@ body::before {
     backdrop-filter: blur(10px);
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    .container {
-        padding: 30px;
-        margin: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .container {
-        padding: 25px;
-        margin: 10px;
-    }
-    
-    .container::before {
-        font-size: 1.5em;
-        top: 10px;
-        right: 15px;
-    }
-    
-    .container::after {
-        font-size: 1.2em;
-        bottom: 10px;
-        left: 15px;
-    }
-}
-
-/* Loading Screen Styles */
+/* Loading Screen */
 #loading-screen {
     position: fixed;
     top: 0;
@@ -204,4 +162,53 @@ body::before {
 
 .auto-reload-indicator.show {
     opacity: 1;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+    
+    .container {
+        padding: 30px;
+        margin: 0;
+    }
+    
+    .signature {
+        bottom: 10px;
+        right: 10px;
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 25px;
+        border-radius: 20px;
+    }
+    
+    .container::before {
+        font-size: 1.5em;
+        top: 10px;
+        right: 15px;
+    }
+    
+    .container::after {
+        font-size: 1.2em;
+        bottom: 10px;
+        left: 15px;
+    }
+    
+    .auto-reload-indicator {
+        bottom: 15px;
+        left: 15px;
+        font-size: 11px;
+        padding: 4px 8px;
+    }
 }
