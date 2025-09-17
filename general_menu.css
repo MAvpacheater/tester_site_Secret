@@ -34,11 +34,9 @@
     box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
 }
 
-/* Settings Gear Button - Dynamic Positioning with improved bottom menu handling */
+/* Settings Gear Button - Always visible with improved positioning */
 .settings-gear-btn {
     position: fixed;
-    bottom: 20px;
-    left: 20px;
     width: 50px;
     height: 50px;
     background: none;
@@ -48,12 +46,14 @@
     color: #FFD700;
     z-index: 1000;
     transition: all 0.3s ease;
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     padding: 0;
     margin: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .settings-gear-btn:hover {
@@ -84,19 +84,19 @@ body.menu-right .settings-gear-btn {
     top: auto;
 }
 
-/* Top menu - move settings to top left (before menu) */
+/* Top menu - move settings to top right */
 body.menu-up .settings-gear-btn {
-    top: 10px;
-    left: 20px;
+    top: 8px;
+    right: 20px;
     bottom: auto;
-    right: auto;
+    left: auto;
 }
 
-/* Bottom menu - move settings ABOVE the menu bar */
+/* Bottom menu - move settings to bottom right */
 body.menu-down .settings-gear-btn {
-    bottom: 80px; /* Increased to clear the 60px menu + padding */
-    left: 20px;
-    right: auto;
+    bottom: 8px;
+    right: 20px;
+    left: auto;
     top: auto;
 }
 
@@ -503,7 +503,7 @@ body.menu-right .sidebar.open {
     visibility: visible;
 }
 
-/* Top and Bottom Menu Styles with improved button sizing */
+/* Top and Bottom Menu Styles with improved responsive design */
 .static-menu {
     position: fixed;
     left: 0;
@@ -517,8 +517,8 @@ body.menu-right .sidebar.open {
     z-index: 1002;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    padding: 0 15px;
+    justify-content: center;
+    padding: 0 80px 0 20px; /* Space for settings button on right */
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
     overflow-x: auto;
     overflow-y: hidden;
@@ -529,7 +529,6 @@ body.menu-right .sidebar.open {
     border-bottom: 3px solid #8B4513;
     border-top: none;
     height: 55px;
-    padding-left: 85px; /* Space for settings button */
 }
 
 .static-menu.menu-bottom {
@@ -542,22 +541,22 @@ body.menu-right .sidebar.open {
 .static-menu .nav-buttons {
     display: flex;
     flex-direction: row;
-    gap: 4px;
+    gap: 6px;
     padding: 0;
     overflow: visible;
-    max-width: none;
-    width: auto;
-    flex: 1;
+    width: 100%;
     align-items: center;
+    justify-content: center;
     min-width: max-content;
 }
 
+/* Responsive button sizing for desktop */
 .static-menu .nav-btn {
-    flex-shrink: 0;
-    padding: 4px 6px;
-    font-size: 1.3em;
-    min-width: 36px;
-    height: 32px;
+    flex: 0 0 auto;
+    padding: 6px 8px;
+    font-size: 1.4em;
+    min-width: 38px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -591,7 +590,7 @@ body.menu-right .sidebar.open {
     transform: translateY(-1px);
 }
 
-/* Hide mobile toggle and sidebar for top/bottom menus */
+/* Hide mobile toggle and sidebar for top/bottom menus but KEEP settings button */
 body.menu-up .mobile-menu-toggle,
 body.menu-down .mobile-menu-toggle,
 body.menu-up .sidebar,
@@ -629,6 +628,53 @@ body.menu-down {
     background: rgba(255, 215, 0, 0.8);
 }
 
+/* Laptop/Desktop - All buttons fit without scrolling */
+@media (min-width: 1025px) {
+    .static-menu .nav-buttons {
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: nowrap;
+    }
+    
+    .static-menu .nav-btn {
+        min-width: 42px;
+        height: 38px;
+        padding: 8px 10px;
+        font-size: 1.5em;
+    }
+    
+    .static-menu {
+        padding: 0 100px 0 20px; /* More space for settings button */
+    }
+}
+
+/* Large tablets - Fit buttons with smaller size */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .static-menu .nav-buttons {
+        gap: 6px;
+        justify-content: center;
+        flex-wrap: nowrap;
+    }
+    
+    .static-menu .nav-btn {
+        min-width: 36px;
+        height: 34px;
+        padding: 6px 8px;
+        font-size: 1.3em;
+    }
+    
+    .static-menu {
+        padding: 0 80px 0 15px;
+    }
+    
+    body.menu-up .settings-gear-btn,
+    body.menu-down .settings-gear-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+    }
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .settings-gear-btn {
@@ -641,19 +687,21 @@ body.menu-down {
     
     /* Adjusted positioning for mobile */
     body.menu-up .settings-gear-btn {
-        top: 8px;
-        left: 15px;
+        top: 6px;
+        right: 12px;
+        left: auto;
         width: 35px;
         height: 35px;
         font-size: 18px;
     }
     
     body.menu-down .settings-gear-btn {
-        bottom: 65px; /* Mobile bottom menu height + padding */
-        left: 15px;
-        width: 40px;
-        height: 40px;
-        font-size: 22px;
+        bottom: 6px;
+        right: 12px;
+        left: auto;
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
     }
     
     body.menu-right .settings-gear-btn {
@@ -692,19 +740,24 @@ body.menu-down {
     
     .static-menu {
         height: 50px;
-        padding: 0 10px;
+        padding: 0 60px 0 10px;
+        justify-content: flex-start; /* Allow scrolling */
+        overflow-x: auto;
     }
     
-    .static-menu.menu-top {
-        padding-left: 65px; /* Space for smaller settings button */
+    .static-menu .nav-buttons {
+        gap: 4px;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        min-width: max-content;
     }
     
     .static-menu .nav-btn {
-        padding: 3px 5px;
+        padding: 4px 6px;
         font-size: 1.2em;
         min-width: 32px;
-        height: 28px;
-        gap: 3px;
+        height: 30px;
+        flex-shrink: 0; /* Prevent shrinking */
     }
     
     body.menu-up {
@@ -747,19 +800,19 @@ body.menu-down {
     
     .static-menu {
         height: 45px;
-        padding: 0 8px;
-    }
-    
-    .static-menu.menu-top {
-        padding-left: 55px; /* Space for smaller settings button */
+        padding: 0 50px 0 8px;
     }
     
     .static-menu .nav-btn {
-        padding: 2px 4px;
+        padding: 3px 5px;
         font-size: 1.1em;
         min-width: 28px;
-        height: 26px;
+        height: 28px;
         gap: 2px;
+    }
+    
+    .static-menu .nav-buttons {
+        gap: 3px;
     }
     
     body.menu-up {
@@ -771,8 +824,8 @@ body.menu-down {
     }
     
     body.menu-down .settings-gear-btn {
-        bottom: 55px;
-        left: 10px;
+        bottom: 5px;
+        right: 10px;
         width: 30px;
         height: 30px;
         font-size: 16px;
@@ -780,7 +833,7 @@ body.menu-down {
     
     body.menu-up .settings-gear-btn {
         top: 5px;
-        left: 8px;
+        right: 10px;
         width: 30px;
         height: 30px;
         font-size: 16px;
@@ -790,19 +843,15 @@ body.menu-down {
 /* Extra small screens - ensure all buttons fit without scrolling */
 @media (max-width: 360px) {
     .static-menu {
-        padding: 0 5px;
-    }
-    
-    .static-menu.menu-top {
-        padding-left: 50px; /* Space for very small settings button */
+        padding: 0 45px 0 5px;
+        height: 42px;
     }
     
     .static-menu .nav-btn {
-        padding: 2px 3px;
+        padding: 2px 4px;
         font-size: 1.0em;
         min-width: 26px;
-        height: 24px;
-        gap: 2px;
+        height: 26px;
     }
     
     .static-menu .nav-buttons {
@@ -813,14 +862,39 @@ body.menu-down {
         width: 28px;
         height: 28px;
         font-size: 14px;
-        top: 3px;
-        left: 6px;
+        top: 4px;
+        right: 8px;
     }
     
     body.menu-down .settings-gear-btn {
-        bottom: 50px;
+        bottom: 4px;
         width: 28px;
         height: 28px;
         font-size: 14px;
+        right: 8px;
+    }
+    
+    body.menu-up {
+        padding-top: 55px;
+    }
+    
+    body.menu-down {
+        padding-bottom: 55px;
+    }
+}
+
+/* Scrollbar styling for mobile */
+@media (max-width: 768px) {
+    .static-menu::-webkit-scrollbar {
+        height: 3px;
+    }
+    
+    .static-menu::-webkit-scrollbar-track {
+        background: rgba(139, 69, 19, 0.1);
+    }
+    
+    .static-menu::-webkit-scrollbar-thumb {
+        background: rgba(255, 215, 0, 0.4);
+        border-radius: 2px;
     }
 }
