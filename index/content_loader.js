@@ -1,4 +1,4 @@
-// Content loader script - Updated with Settings Gear Button
+// Content loader script - Updated with Fixed Settings Gear Button
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -31,7 +31,7 @@ async function loadContent() {
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
 
-                <!-- Settings Gear Button - Bottom Left -->
+                <!-- Settings Gear Button - Always Visible -->
                 <button class="settings-gear-btn" onclick="switchPage('settings')" title="Settings">⚙️</button>
 
                 <!-- Sidebar Navigation -->
@@ -140,47 +140,6 @@ async function loadContent() {
                             <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="Українська">🇺🇦</button>
                             <button class="lang-flag-btn" data-lang="ru" onclick="switchAppLanguage('ru')" title="Русский">🇷🇺</button>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Top/Bottom Static Menu (will be shown/hidden based on settings) -->
-                <div class="static-menu menu-top" id="topMenu" style="display: none;">
-                    <div class="nav-buttons">
-                        <button class="nav-btn" data-page="calculator" onclick="switchPage('calculator')">🐾</button>
-                        <button class="nav-btn" data-page="arm" onclick="switchPage('arm')">💪</button>
-                        <button class="nav-btn" data-page="grind" onclick="switchPage('grind')">🏋️‍♂️</button>
-                        <button class="nav-btn" data-page="boosts" onclick="switchPage('boosts')">🚀</button>
-                        <button class="nav-btn" data-page="shiny" onclick="switchPage('shiny')">✨</button>
-                        <button class="nav-btn" data-page="secret" onclick="switchPage('secret')">🔮</button>
-                        <button class="nav-btn" data-page="codes" onclick="switchPage('codes')">🎁</button>
-                        <button class="nav-btn" data-page="aura" onclick="switchPage('aura')">🌟</button>
-                        <button class="nav-btn" data-page="trainer" onclick="switchPage('trainer')">🏆</button>
-                        <button class="nav-btn" data-page="charms" onclick="switchPage('charms')">🔮</button>
-                        <button class="nav-btn" data-page="potions" onclick="switchPage('potions')">🧪</button>
-                        <button class="nav-btn" data-page="worlds" onclick="switchPage('worlds')">🌍</button>
-                        <button class="nav-btn" data-page="updates" onclick="switchPage('updates')">📝</button>
-                        <button class="nav-btn" data-page="help" onclick="switchPage('help')">🆘</button>
-                        <button class="nav-btn" data-page="peoples" onclick="switchPage('peoples')">🙏</button>
-                    </div>
-                </div>
-
-                <div class="static-menu menu-bottom" id="bottomMenu" style="display: none;">
-                    <div class="nav-buttons">
-                        <button class="nav-btn" data-page="calculator" onclick="switchPage('calculator')">🐾</button>
-                        <button class="nav-btn" data-page="arm" onclick="switchPage('arm')">💪</button>
-                        <button class="nav-btn" data-page="grind" onclick="switchPage('grind')">🏋️‍♂️</button>
-                        <button class="nav-btn" data-page="boosts" onclick="switchPage('boosts')">🚀</button>
-                        <button class="nav-btn" data-page="shiny" onclick="switchPage('shiny')">✨</button>
-                        <button class="nav-btn" data-page="secret" onclick="switchPage('secret')">🔮</button>
-                        <button class="nav-btn" data-page="codes" onclick="switchPage('codes')">🎁</button>
-                        <button class="nav-btn" data-page="aura" onclick="switchPage('aura')">🌟</button>
-                        <button class="nav-btn" data-page="trainer" onclick="switchPage('trainer')">🏆</button>
-                        <button class="nav-btn" data-page="charms" onclick="switchPage('charms')">🔮</button>
-                        <button class="nav-btn" data-page="potions" onclick="switchPage('potions')">🧪</button>
-                        <button class="nav-btn" data-page="worlds" onclick="switchPage('worlds')">🌍</button>
-                        <button class="nav-btn" data-page="updates" onclick="switchPage('updates')">📝</button>
-                        <button class="nav-btn" data-page="help" onclick="switchPage('help')">🆘</button>
-                        <button class="nav-btn" data-page="peoples" onclick="switchPage('peoples')">🙏</button>
                     </div>
                 </div>
 
