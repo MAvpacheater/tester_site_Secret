@@ -69,14 +69,14 @@ const menuItems = [
     { page: 'peoples', icon: '🙏', title: 'Peoples' }
 ];
 
-// Перемикання видимості категорії
-function toggleCategory(categoryName) {
+// Перемикання видимості категорії в настройках (не конфліктує з головним меню)
+function toggleSettingsCategory(categoryName) {
     if (!categoriesState.hasOwnProperty(categoryName)) return;
     
     categoriesState[categoryName] = !categoriesState[categoryName];
     
-    const header = document.querySelector(`[data-category="${categoryName}"] .category-header`);
-    const options = document.querySelector(`.${categoryName}-options`);
+    const header = document.querySelector(`#settingsPage [data-category="${categoryName}"] .category-header`);
+    const options = document.querySelector(`#settingsPage .${categoryName}-options`);
     
     if (!header || !options) return;
     
@@ -92,7 +92,7 @@ function toggleCategory(categoryName) {
     
     // Зберегти стан
     localStorage.setItem('armHelper_categoriesState', JSON.stringify(categoriesState));
-    console.log(`Категорію ${categoryName} ${categoriesState[categoryName] ? 'розгорнуто' : 'згорнуто'}`);
+    console.log(`Категорію настройок ${categoryName} ${categoriesState[categoryName] ? 'розгорнуто' : 'згорнуто'}`);
 }
 
 // Завантажити стан категорій
@@ -110,8 +110,8 @@ function loadCategoriesState() {
 // Застосувати стан категорій до UI
 function applyCategoriesState() {
     Object.keys(categoriesState).forEach(category => {
-        const header = document.querySelector(`[data-category="${category}"] .category-header`);
-        const options = document.querySelector(`.${category}-options`);
+        const header = document.querySelector(`#settingsPage [data-category="${category}"] .category-header`);
+        const options = document.querySelector(`#settingsPage .${category}-options`);
         
         if (!header || !options) return;
         
@@ -178,7 +178,7 @@ function updateBackgroundUI() {
     const currentBg = getCurrentBackground();
     
     // Оновити активні стани
-    document.querySelectorAll('.background-option').forEach(option => {
+    document.querySelectorAll('#settingsPage .background-option').forEach(option => {
         option.classList.remove('active');
         if (option.dataset.background === currentBg) {
             option.classList.add('active');
@@ -248,8 +248,9 @@ function createStaticMenu(position) {
         btn.textContent = item.icon; // Показувати тільки іконку
         
         btn.onclick = () => {
-            if (typeof switchPage === 'function') {
-                switchPage(item.page);
+            // Використовувати глобальну функцію switchPage замість перевизначення
+            if (typeof window.switchPage === 'function') {
+                window.switchPage(item.page);
             }
             updateStaticMenuActiveState(item.page);
         };
@@ -261,7 +262,7 @@ function createStaticMenu(position) {
     document.body.appendChild(staticMenu);
     
     // Оновити активний стан для поточної сторінки
-    const currentPage = typeof getCurrentPage === 'function' ? getCurrentPage() : 'calculator';
+    const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
     updateStaticMenuActiveState(currentPage);
     
     console.log(`Статичне ${position} меню створено з ${menuItems.length} елементами`);
@@ -315,7 +316,7 @@ function updateMenuPositionUI() {
     const currentPos = getCurrentMenuPosition();
     
     // Оновити активні стани
-    document.querySelectorAll('.menu-option').forEach(option => {
+    document.querySelectorAll('#settingsPage .menu-option').forEach(option => {
         option.classList.remove('active');
         if (option.dataset.position === currentPos) {
             option.classList.add('active');
@@ -412,20 +413,20 @@ async function updateSettingsLanguage(lang = null) {
     }
     
     // Оновити заголовок секції фону
-    const backgroundSectionTitle = document.querySelector('[data-category="background"] .category-title span:last-child');
+    const backgroundSectionTitle = document.querySelector('#settingsPage [data-category="background"] .category-title span:last-child');
     if (backgroundSectionTitle) {
         backgroundSectionTitle.textContent = translations.background;
     }
     
     // Оновити заголовок секції меню
-    const menuSectionTitle = document.querySelector('[data-category="menu"] .category-title span:last-child');
+    const menuSectionTitle = document.querySelector('#settingsPage [data-category="menu"] .category-title span:last-child');
     if (menuSectionTitle) {
         menuSectionTitle.textContent = translations.menu;
     }
     
     // Оновити назви опцій фону
     Object.keys(backgroundOptions).forEach(bg => {
-        const option = document.querySelector(`[data-background="${bg}"] .option-name`);
+        const option = document.querySelector(`#settingsPage [data-background="${bg}"] .option-name`);
         if (option && translations[bg]) {
             option.textContent = translations[bg];
         }
@@ -433,14 +434,14 @@ async function updateSettingsLanguage(lang = null) {
     
     // Оновити назви опцій позиції меню
     Object.keys(menuPositions).forEach(pos => {
-        const option = document.querySelector(`[data-position="${pos}"] .menu-option-name`);
+        const option = document.querySelector(`#settingsPage [data-position="${pos}"] .menu-option-name`);
         if (option && translations[pos]) {
             option.textContent = translations[pos];
         }
     });
     
     // Оновити кнопку скидання
-    const resetBtn = document.querySelector('.reset-btn');
+    const resetBtn = document.querySelector('#settingsPage .reset-btn');
     if (resetBtn && translations.reset) {
         resetBtn.textContent = translations.reset;
     }
@@ -455,7 +456,7 @@ function createSettingsHTML() {
             <h1 class="settings-title"></h1>
             
             <div class="settings-section" data-category="background">
-                <div class="category-header collapsed" onclick="toggleCategory('background')">
+                <div class="category-header collapsed" onclick="toggleSettingsCategory('background')">
                     <div class="category-title">
                         <span class="section-icon">🎨</span>
                         <span></span>
@@ -497,7 +498,7 @@ function createSettingsHTML() {
             </div>
             
             <div class="settings-section" data-category="menu">
-                <div class="category-header collapsed" onclick="toggleCategory('menu')">
+                <div class="category-header collapsed" onclick="toggleSettingsCategory('menu')">
                     <div class="category-title">
                         <span class="section-icon">📱</span>
                         <span></span>
@@ -598,14 +599,9 @@ document.addEventListener('languageChanged', (event) => {
 });
 
 // Слухати зміни сторінок для оновлення активного стану статичного меню
-document.addEventListener('DOMContentLoaded', () => {
-    // Перевизначити switchPage для оновлення статичного меню
-    const originalSwitchPage = window.switchPage;
-    if (originalSwitchPage) {
-        window.switchPage = function(page) {
-            originalSwitchPage(page);
-            updateStaticMenuActiveState(page);
-        };
+document.addEventListener('pageChanged', (event) => {
+    if (event.detail && event.detail.page) {
+        updateStaticMenuActiveState(event.detail.page);
     }
 });
 
@@ -626,6 +622,6 @@ window.initializeSettings = initializeSettings;
 window.changeBackground = changeBackground;
 window.changeMenuPosition = changeMenuPosition;
 window.resetSettings = resetSettings;
-window.toggleCategory = toggleCategory;
+window.toggleSettingsCategory = toggleSettingsCategory;
 window.updateSettingsLanguage = updateSettingsLanguage;
 window.updateStaticMenuActiveState = updateStaticMenuActiveState;
