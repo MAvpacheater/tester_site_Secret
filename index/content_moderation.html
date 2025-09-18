@@ -3,17 +3,13 @@
     <div class="settings-container">
         <h1 class="settings-title">⚙️ Settings</h1>
         
-        <!-- Background Section -->
-        <div class="settings-section" data-category="background">
-            <div class="category-header collapsed" onclick="toggleCategory('background')">
-                <div class="category-title">
-                    <span class="section-icon">🎨</span>
-                    <span>Background</span>
-                </div>
-                <span class="category-toggle">▼</span>
+        <div class="settings-section">
+            <div class="section-title">
+                <span class="section-icon">🎨</span>
+                <span>Background</span>
             </div>
             
-            <div class="background-options collapsed">
+            <div class="background-options">
                 <div class="background-option" data-background="penguin" onclick="changeBackground('penguin')">
                     <div class="option-icon">🐧</div>
                     <div class="option-name">Penguin</div>
@@ -31,53 +27,9 @@
                     <div class="option-name">Code</div>
                     <div class="background-preview" style="background-image: url('https://i.postimg.cc/9FXzrptm/code-background.jpg')"></div>
                 </div>
-                <div class="background-option" data-background="dodep" onclick="changeBackground('dodep')">
-                    <div class="option-icon">💻</div>
-                    <div class="option-name">Dodep</div>
-                    <div class="background-preview" style="background-image: url('https://i.postimg.cc/nV4dxr1X/2025-09-16-22-26-42.png')"></div>
-                </div>
-                <div class="background-option" data-background="prison" onclick="changeBackground('prison')">
-                    <div class="option-icon">💻</div>
-                    <div class="option-name">Prison</div>
-                    <div class="background-preview" style="background-image: url('https://i.postimg.cc/ZR75v48p/2025-09-16-22-26-34.png')"></div>
-                </div>
             </div>
         </div>
         
-        <!-- Menu Position Section -->
-        <div class="settings-section" data-category="menu">
-            <div class="category-header collapsed" onclick="toggleCategory('menu')">
-                <div class="category-title">
-                    <span class="section-icon">📱</span>
-                    <span>Menu Position</span>
-                </div>
-                <span class="category-toggle">▼</span>
-            </div>
-            
-            <div class="menu-options collapsed">
-                <div class="menu-option" data-position="up" onclick="changeMenuPosition('up')">
-                    <div class="menu-option-icon">⬆️</div>
-                    <div class="menu-option-name">Top</div>
-                </div>
-                
-                <div class="menu-option" data-position="left" onclick="changeMenuPosition('left')">
-                    <div class="menu-option-icon">⬅️</div>
-                    <div class="menu-option-name">Left</div>
-                </div>
-                
-                <div class="menu-option" data-position="right" onclick="changeMenuPosition('right')">
-                    <div class="menu-option-icon">➡️</div>
-                    <div class="menu-option-name">Right</div>
-                </div>
-                
-                <div class="menu-option" data-position="down" onclick="changeMenuPosition('down')">
-                    <div class="menu-option-icon">⬇️</div>
-                    <div class="menu-option-name">Bottom</div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Reset Section -->
         <div class="reset-section">
             <button class="reset-btn" onclick="resetSettings()">Reset Settings</button>
         </div>
