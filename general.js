@@ -1,4 +1,4 @@
-// Optimized General JavaScript - Fixed Categories
+// Fixed General JavaScript - Working Menu & Page Loading
 let currentAppLanguage = 'en';
 let menuTranslations = null;
 let appInitialized = false;
@@ -30,7 +30,7 @@ function loadFromStorage(key, defaultValue = null) {
     return appStorage[key] || defaultValue;
 }
 
-// Simplified helper functions
+// Helper functions
 function saveCurrentPage(page) { saveToStorage('currentPage', page); }
 function getCurrentPage() { return loadFromStorage('currentPage', 'calculator'); }
 function saveAppLanguage(lang) { saveToStorage('language', lang); }
@@ -206,7 +206,7 @@ function restoreCategoryStates() {
     });
 }
 
-// Page switching
+// Page switching - FIXED
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
     saveCurrentPage(page);
@@ -223,6 +223,9 @@ function switchPage(page) {
     if (targetPage) {
         targetPage.classList.add('active');
         targetPage.style.display = 'block';
+        console.log(`✅ Page ${page}Page activated`);
+    } else {
+        console.error(`❌ Page ${page}Page not found`);
     }
     
     // Update active nav button
@@ -242,38 +245,79 @@ function switchPage(page) {
     
     closeSidebar();
     
-    // Initialize page content
+    // Initialize page content with delay
     setTimeout(() => {
-        const initFunctions = {
-            calculator: 'initializeCalculator', grind: 'initializeGrind',
-            shiny: 'initializeShiny', boosts: 'initializeBoosts',
-            trainer: 'initializeTrainer', aura: 'initializeAura',
-            codes: 'initializeCodes', charms: 'initializeCharms',
-            secret: 'initializeSecret', potions: 'initializePotions',
-            worlds: 'initializeWorlds', settings: 'initializeSettings',
-            updates: 'initializeUpdates', help: 'initializeHelp',
-            peoples: 'initializePeoples'
-        };
-        
-        const initFunc = initFunctions[page];
-        if (initFunc && typeof window[initFunc] === 'function') {
-            try {
-                window[initFunc]();
-            } catch (error) {
-                console.error(`Error initializing ${page}:`, error);
-            }
-        }
-    }, 100);
+        initializePageContent(page);
+    }, 150);
 }
 
-// Sidebar functions
+// Initialize page content - ENHANCED
+function initializePageContent(page) {
+    console.log(`🔄 Initializing content for page: ${page}`);
+    
+    const initFunctions = {
+        calculator: 'initializeCalculator',
+        grind: 'initializeGrind',
+        shiny: 'initializeShiny',
+        boosts: 'initializeBoosts',
+        trainer: 'initializeTrainer',
+        aura: 'initializeAura',
+        codes: 'initializeCodes',
+        charms: 'initializeCharms',
+        secret: 'initializeSecret',
+        potions: 'initializePotions',
+        worlds: 'initializeWorlds',
+        settings: 'initializeSettings',
+        updates: 'initializeUpdates',
+        help: 'initializeHelp',
+        peoples: 'initializePeoples'
+    };
+    
+    const initFunc = initFunctions[page];
+    if (initFunc && typeof window[initFunc] === 'function') {
+        try {
+            // Reset initialization flags for certain modules
+            const moduleFlags = {
+                secret: 'secretInitialized',
+                potions: 'potionsInitialized',
+                grind: 'grindInitialized',
+                peoples: 'peoplesInitialized',
+                help: 'helpInitialized',
+                updates: 'updatesInitialized',
+                settings: 'settingsInitialized'
+            };
+            
+            const flagName = moduleFlags[page];
+            if (flagName && typeof window[flagName] !== 'undefined') {
+                window[flagName] = false;
+            }
+            
+            window[initFunc]();
+            console.log(`✅ ${initFunc} executed successfully`);
+        } catch (error) {
+            console.error(`❌ Error initializing ${page}:`, error);
+        }
+    } else {
+        console.warn(`⚠️ No initialization function found for ${page}`);
+    }
+}
+
+// Sidebar functions - FIXED
 function toggleMobileMenu() {
+    console.log('📱 Toggle mobile menu called');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     
-    if (sidebar?.classList.contains('open')) {
+    if (!sidebar || !overlay) {
+        console.error('❌ Sidebar elements not found');
+        return;
+    }
+    
+    if (sidebar.classList.contains('open')) {
+        console.log('🔒 Closing sidebar');
         closeSidebar();
     } else {
+        console.log('🔓 Opening sidebar');
         openSidebar();
     }
 }
@@ -286,6 +330,7 @@ function openSidebar() {
         sidebar.classList.add('open');
         overlay.classList.add('show');
         document.body.style.overflow = 'hidden';
+        console.log('✅ Sidebar opened');
     }
 }
 
@@ -297,6 +342,7 @@ function closeSidebar() {
         sidebar.classList.remove('open');
         overlay.classList.remove('show');
         document.body.style.overflow = '';
+        console.log('✅ Sidebar closed');
     }
 }
 
@@ -314,46 +360,76 @@ function handleAuthAction() {
     }, 1500);
 }
 
-// App initialization
-async function initializeApp() {
-    if (appInitialized) return;
-    
-    console.log('Initializing app...');
-    
-    try {
-        currentAppLanguage = getCurrentAppLanguage();
-        await loadMenuTranslations();
-        
-        setupEventListeners();
-        updateMenuTranslations();
-        restoreCategoryStates();
-        
-        await initializeAllModules();
-        
-        const lastPage = getCurrentPage();
-        setTimeout(() => switchPage(lastPage), 200);
-        
-        appInitialized = true;
-        console.log('App initialized successfully');
-        
-        document.dispatchEvent(new CustomEvent('appInitialized'));
-        
-    } catch (error) {
-        console.error('App initialization failed:', error);
-    }
-}
-
+// FIXED Event Listeners Setup
 function setupEventListeners() {
-    // Category headers - FIXED
+    console.log('⚙️ Setting up event listeners...');
+    
+    // Remove existing listeners first (prevent duplicates)
+    const existingListeners = document.querySelectorAll('[data-listener-added]');
+    existingListeners.forEach(el => el.removeAttribute('data-listener-added'));
+    
+    // Mobile menu toggle - FIXED
+    const mobileToggle = document.querySelector('.mobile-menu-toggle');
+    if (mobileToggle && !mobileToggle.dataset.listenerAdded) {
+        mobileToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🔄 Mobile toggle clicked');
+            toggleMobileMenu();
+        });
+        mobileToggle.dataset.listenerAdded = 'true';
+        console.log('✅ Mobile toggle listener added');
+    }
+    
+    // Settings gear button - FIXED
+    const settingsGear = document.querySelector('.settings-gear-btn');
+    if (settingsGear && !settingsGear.dataset.listenerAdded) {
+        settingsGear.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('⚙️ Settings gear clicked');
+            switchPage('settings');
+        });
+        settingsGear.dataset.listenerAdded = 'true';
+        console.log('✅ Settings gear listener added');
+    }
+    
+    // Sidebar overlay - FIXED
+    const overlay = document.getElementById('sidebarOverlay');
+    if (overlay && !overlay.dataset.listenerAdded) {
+        overlay.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeSidebar();
+        });
+        overlay.dataset.listenerAdded = 'true';
+        console.log('✅ Overlay listener added');
+    }
+    
+    // Close sidebar button - FIXED
+    const closeSidebarBtn = document.querySelector('.close-sidebar');
+    if (closeSidebarBtn && !closeSidebarBtn.dataset.listenerAdded) {
+        closeSidebarBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeSidebar();
+        });
+        closeSidebarBtn.dataset.listenerAdded = 'true';
+        console.log('✅ Close sidebar listener added');
+    }
+    
+    // Global click handler for dynamic elements - ENHANCED
     document.addEventListener('click', (e) => {
+        // Category headers
         const categoryHeader = e.target.closest('.category-header');
         if (categoryHeader) {
             e.preventDefault();
             e.stopPropagation();
             const categoryId = categoryHeader.getAttribute('data-category');
             if (categoryId) {
+                console.log(`🔄 Category header clicked: ${categoryId}`);
                 toggleCategory(categoryId);
             }
+            return;
         }
         
         // Navigation buttons
@@ -363,8 +439,10 @@ function setupEventListeners() {
             e.stopPropagation();
             const page = navBtn.getAttribute('data-page');
             if (page) {
+                console.log(`🔄 Nav button clicked: ${page}`);
                 switchPage(page);
             }
+            return;
         }
         
         // Language buttons
@@ -374,40 +452,21 @@ function setupEventListeners() {
             e.stopPropagation();
             const lang = langBtn.getAttribute('data-lang');
             if (lang) {
+                console.log(`🔄 Language button clicked: ${lang}`);
                 switchAppLanguage(lang);
             }
+            return;
+        }
+        
+        // Auth button
+        const authBtn = e.target.closest('#authButton');
+        if (authBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            handleAuthAction();
+            return;
         }
     });
-    
-    // Mobile menu toggle
-    const mobileToggle = document.querySelector('.mobile-menu-toggle');
-    if (mobileToggle) {
-        mobileToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleMobileMenu();
-        });
-    }
-    
-    // Sidebar overlay
-    const overlay = document.getElementById('sidebarOverlay');
-    if (overlay) {
-        overlay.addEventListener('click', closeSidebar);
-    }
-    
-    // Settings gear
-    const settingsGear = document.querySelector('.settings-gear-btn');
-    if (settingsGear) {
-        settingsGear.addEventListener('click', (e) => {
-            e.preventDefault();
-            switchPage('settings');
-        });
-    }
-    
-    // Close sidebar button
-    const closeSidebarBtn = document.querySelector('.close-sidebar');
-    if (closeSidebarBtn) {
-        closeSidebarBtn.addEventListener('click', closeSidebar);
-    }
     
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
@@ -418,9 +477,54 @@ function setupEventListeners() {
             }
         }
     });
+    
+    console.log('✅ All event listeners set up successfully');
 }
 
+// App initialization - ENHANCED
+async function initializeApp() {
+    if (appInitialized) {
+        console.log('⚠️ App already initialized');
+        return;
+    }
+    
+    console.log('🚀 Starting app initialization...');
+    
+    try {
+        // Load language and translations
+        currentAppLanguage = getCurrentAppLanguage();
+        await loadMenuTranslations();
+        
+        // Setup event listeners FIRST
+        setupEventListeners();
+        
+        // Update UI
+        updateMenuTranslations();
+        restoreCategoryStates();
+        
+        // Initialize modules with delays
+        await initializeAllModules();
+        
+        // Switch to last page or default
+        const lastPage = getCurrentPage();
+        console.log(`🔄 Switching to page: ${lastPage}`);
+        setTimeout(() => switchPage(lastPage), 300);
+        
+        appInitialized = true;
+        console.log('✅ App initialization completed successfully');
+        
+        document.dispatchEvent(new CustomEvent('appInitialized'));
+        
+    } catch (error) {
+        console.error('❌ App initialization failed:', error);
+        appInitialized = false;
+    }
+}
+
+// Initialize modules - ENHANCED
 async function initializeAllModules() {
+    console.log('🔧 Initializing all modules...');
+    
     const modules = [
         'initializeCalculator', 'initializeGrind', 'initializeBoosts',
         'initializeShiny', 'initializeSecret', 'initializePotions',
@@ -429,15 +533,34 @@ async function initializeAllModules() {
         'initializeUpdates', 'initializeHelp', 'initializePeoples'
     ];
     
+    let initialized = 0;
+    
     for (const moduleName of modules) {
         if (typeof window[moduleName] === 'function') {
             try {
+                await new Promise(resolve => setTimeout(resolve, 50)); // Small delay
                 window[moduleName]();
+                initialized++;
+                console.log(`✅ ${moduleName} initialized`);
             } catch (error) {
-                console.error(`Error initializing ${moduleName}:`, error);
+                console.error(`❌ Error initializing ${moduleName}:`, error);
             }
+        } else {
+            console.warn(`⚠️ Function ${moduleName} not found`);
         }
-        await new Promise(resolve => setTimeout(resolve, 10));
+    }
+    
+    console.log(`🔧 Module initialization complete: ${initialized}/${modules.length}`);
+}
+
+// Ensure DOM is ready before any operations
+function waitForDOM(callback, maxAttempts = 50) {
+    if (document.getElementById('app-content') && document.querySelector('.container')) {
+        callback();
+    } else if (maxAttempts > 0) {
+        setTimeout(() => waitForDOM(callback, maxAttempts - 1), 100);
+    } else {
+        console.error('❌ DOM elements not found after waiting');
     }
 }
 
@@ -446,18 +569,40 @@ Object.assign(window, {
     switchPage, toggleMobileMenu, openSidebar, closeSidebar,
     handleAuthAction, initializeApp, toggleCategory,
     switchAppLanguage, getCurrentAppLanguage, saveCurrentPage,
-    getCurrentPage, updateMenuTranslations
+    getCurrentPage, updateMenuTranslations, initializePageContent,
+    setupEventListeners, waitForDOM
 });
 
-// Auto-start
+// Enhanced auto-start
 function startApp() {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(initializeApp, 100);
+    console.log('🎯 Starting app...');
+    
+    const initialize = () => {
+        waitForDOM(() => {
+            console.log('✅ DOM ready, initializing app...');
+            setTimeout(initializeApp, 200);
         });
+    };
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initialize);
     } else {
-        setTimeout(initializeApp, 100);
+        initialize();
     }
 }
 
+// Listen for content loaded event
+document.addEventListener('contentLoaded', () => {
+    console.log('📄 Content loaded event received');
+    setTimeout(() => {
+        if (!appInitialized) {
+            console.log('🔄 Content loaded, reinitializing...');
+            initializeApp();
+        }
+    }, 100);
+});
+
+// Start the app
 startApp();
+
+console.log('📝 General.js v2.1 loaded with enhanced menu and page loading');
