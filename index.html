@@ -7,12 +7,10 @@
     
     <!-- Preload critical resources -->
     <link rel="preload" href="general.css" as="style">
-    <link rel="preload" href="general_menu.css" as="style">
     <link rel="preload" href="general.js" as="script">
     
     <!-- Critical CSS - load immediately -->
     <link rel="stylesheet" href="general.css">
-    <link rel="stylesheet" href="general_menu.css">
     
     <!-- Non-critical CSS - load deferred -->
     <link rel="stylesheet" href="calc/calculator.css" media="print" onload="this.media='all'">
@@ -56,142 +54,6 @@
     <!-- Critical JavaScript - load immediately -->
     <script src="general.js"></script>
     <script src="reload.js"></script>
-    
-    <!-- Debug menu functionality -->
-    <script>
-        // Debug and fix menu functionality
-        console.log('🔧 Debug: Checking menu functions...');
-        
-        // Ensure all menu functions are available
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            // Debug function availability
-            const requiredFunctions = [
-                'switchPage',
-                'toggleMobileMenu', 
-                'closeSidebar',
-                'toggleCategory',
-                'switchAppLanguage',
-                'handleAuthAction'
-            ];
-            
-            setTimeout(() => {
-                console.log('🔍 Checking function availability:');
-                requiredFunctions.forEach(funcName => {
-                    if (typeof window[funcName] === 'function') {
-                        console.log(`✅ ${funcName} - Available`);
-                    } else {
-                        console.error(`❌ ${funcName} - Missing!`);
-                        
-                        // Provide fallback functions
-                        switch(funcName) {
-                            case 'switchPage':
-                                window.switchPage = function(page) {
-                                    console.log('Fallback switchPage:', page);
-                                    // Basic page switching logic
-                                    document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-                                    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-                                    
-                                    const targetPage = document.getElementById(page + 'Page');
-                                    if (targetPage) {
-                                        targetPage.classList.add('active');
-                                    }
-                                    
-                                    const targetButton = document.querySelector(`[data-page="${page}"]`);
-                                    if (targetButton) {
-                                        targetButton.classList.add('active');
-                                    }
-                                    
-                                    if (typeof window.closeSidebar === 'function') {
-                                        window.closeSidebar();
-                                    }
-                                };
-                                break;
-                            case 'toggleMobileMenu':
-                                window.toggleMobileMenu = function() {
-                                    console.log('Fallback toggleMobileMenu');
-                                    const sidebar = document.getElementById('sidebar');
-                                    const overlay = document.getElementById('sidebarOverlay');
-                                    
-                                    if (sidebar && overlay) {
-                                        sidebar.classList.toggle('open');
-                                        overlay.classList.toggle('show');
-                                    }
-                                };
-                                break;
-                            case 'closeSidebar':
-                                window.closeSidebar = function() {
-                                    console.log('Fallback closeSidebar');
-                                    const sidebar = document.getElementById('sidebar');
-                                    const overlay = document.getElementById('sidebarOverlay');
-                                    
-                                    if (sidebar && overlay) {
-                                        sidebar.classList.remove('open');
-                                        overlay.classList.remove('show');
-                                    }
-                                };
-                                break;
-                            case 'toggleCategory':
-                                window.toggleCategory = function(categoryId) {
-                                    console.log('Fallback toggleCategory:', categoryId);
-                                    const categoryButtons = document.getElementById(categoryId);
-                                    const toggleIcon = document.querySelector(`[data-category="${categoryId}"] .category-toggle`);
-                                    
-                                    if (categoryButtons && toggleIcon) {
-                                        const isExpanded = categoryButtons.classList.contains('expanded');
-                                        
-                                        // Close all categories first
-                                        document.querySelectorAll('.category-buttons').forEach(el => {
-                                            el.classList.remove('expanded');
-                                        });
-                                        document.querySelectorAll('.category-toggle').forEach(el => {
-                                            el.classList.remove('expanded');
-                                        });
-                                        
-                                        // If this category wasn't expanded, expand it
-                                        if (!isExpanded) {
-                                            categoryButtons.classList.add('expanded');
-                                            toggleIcon.classList.add('expanded');
-                                        }
-                                    }
-                                };
-                                break;
-                            case 'switchAppLanguage':
-                                window.switchAppLanguage = function(lang) {
-                                    console.log('Fallback switchAppLanguage:', lang);
-                                    // Update flag buttons
-                                    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
-                                        btn.classList.remove('active');
-                                        if (btn.dataset.lang === lang) {
-                                            btn.classList.add('active');
-                                        }
-                                    });
-                                };
-                                break;
-                            case 'handleAuthAction':
-                                window.handleAuthAction = function() {
-                                    console.log('Fallback handleAuthAction');
-                                    const authBtn = document.getElementById('authButton');
-                                    if (authBtn) {
-                                        const originalText = authBtn.textContent;
-                                        authBtn.textContent = '🔒 Coming Soon!';
-                                        authBtn.style.transform = 'scale(0.95)';
-                                        
-                                        setTimeout(() => {
-                                            authBtn.textContent = originalText;
-                                            authBtn.style.transform = 'scale(1)';
-                                        }, 1000);
-                                    }
-                                };
-                                break;
-                        }
-                        console.log(`🔧 Fallback function created for ${funcName}`);
-                    }
-                });
-                
-            }, 1000);
-        });
-    </script>
     
     <!-- Non-critical JavaScript - load deferred -->
     <script>
