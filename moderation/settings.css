@@ -333,7 +333,7 @@
 }
 
 /* Menu Position Styles */
-/* Top Menu - Icon Only */
+/* Top Menu - Icon Only with Fixed Width */
 .menu-top {
     position: fixed;
     top: 0;
@@ -364,14 +364,14 @@
     overflow: visible;
     max-width: none;
     width: auto;
-    flex: 1;
+    flex: none; /* Changed from flex: 1 to prevent stretching */
 }
 
 .menu-top .nav-btn {
     flex-shrink: 0;
     padding: 8px 10px;
     font-size: 1.8em;
-    min-width: 50px;
+    width: 50px; /* Fixed width at 50px */
     height: 44px;
     display: flex;
     align-items: center;
@@ -405,7 +405,7 @@
     transform: translateY(-1px);
 }
 
-/* Bottom Menu - Icon Only */
+/* Bottom Menu - Icon Only with Fixed Width */
 .menu-bottom {
     position: fixed;
     bottom: 0;
@@ -436,14 +436,14 @@
     overflow: visible;
     max-width: none;
     width: auto;
-    flex: 1;
+    flex: none; /* Changed from flex: 1 to prevent stretching */
 }
 
 .menu-bottom .nav-btn {
     flex-shrink: 0;
     padding: 8px 10px;
     font-size: 1.8em;
-    min-width: 50px;
+    width: 50px; /* Fixed width at 50px */
     height: 44px;
     display: flex;
     align-items: center;
@@ -671,7 +671,7 @@ body.menu-right .mobile-menu-toggle {
     .menu-bottom .nav-btn {
         padding: 6px 8px;
         font-size: 1.6em;
-        min-width: 44px;
+        width: 44px; /* Smaller width for mobile */
         height: 40px;
     }
     
@@ -783,7 +783,7 @@ body.menu-right .mobile-menu-toggle {
     .menu-bottom .nav-btn {
         padding: 5px 7px;
         font-size: 1.4em;
-        min-width: 40px;
+        width: 40px; /* Smaller width for small mobile */
         height: 36px;
     }
     
