@@ -1,4 +1,4 @@
-// Complete Updates Page JavaScript - Clean version, all text from JSON
+// Complete Updates Page JavaScript - Fixed version
 let updatesInitialized = false;
 let updatesTranslations = null;
 let currentUpdateType = 'game';
@@ -19,6 +19,12 @@ function initializeUpdates() {
             // Set initial state
             currentUpdateType = 'game';
             
+            // Add page initialized class
+            const updatesPage = document.getElementById('updatesPage');
+            if (updatesPage) {
+                updatesPage.classList.add('initialized');
+            }
+            
             // Ensure proper initial display
             setTimeout(() => {
                 switchUpdateType('game');
@@ -28,6 +34,13 @@ function initializeUpdates() {
             console.log('✅ Updates page initialized successfully');
         }).catch(error => {
             console.error('❌ Error loading translations:', error);
+            
+            // Fallback initialization without translations
+            const updatesPage = document.getElementById('updatesPage');
+            if (updatesPage) {
+                updatesPage.classList.add('initialized');
+            }
+            switchUpdateType('game');
             updatesInitialized = true;
         });
         
@@ -40,6 +53,13 @@ function initializeUpdates() {
         
     } catch (error) {
         console.error('❌ Error initializing Updates page:', error);
+        
+        // Ensure basic functionality even with errors
+        const updatesPage = document.getElementById('updatesPage');
+        if (updatesPage) {
+            updatesPage.classList.add('initialized');
+        }
+        switchUpdateType('game');
         updatesInitialized = true;
     }
 }
@@ -61,11 +81,119 @@ async function loadUpdatesTranslations() {
     } catch (error) {
         console.error('❌ Error loading updates translations:', error);
         
-        // Minimal fallback - no text content, will be handled by JSON
+        // Fallback with default English content
         updatesTranslations = {
-            en: {},
-            uk: {},
-            ru: {}
+            en: {
+                title: "📝 Updates & Changelog",
+                subtitle: "Stay updated with the latest changes!",
+                gameUpdates: "🎮 Game Updates",
+                siteUpdates: "🌐 Site Updates",
+                gameContent: {
+                    version: "Game Update Soon..",
+                    date: "Soon..",
+                    newFeatures: "🎮 Soon..",
+                    improvements: "⚡ Soon..",
+                    bugFixes: "🐛 Soon..",
+                    features: ["Soon.."],
+                    improvementsList: ["Soon.."],
+                    bugFixesList: ["Soon.."]
+                },
+                siteContent: {
+                    version: "Site Update v2.2.0",
+                    date: "September 13, 2025",
+                    newFeatures: "🌟 New Features",
+                    improvements: "🔧 Improvements",
+                    bugFixes: "🐛 Bug Fixes",
+                    features: [
+                        "Added 3 new pages",
+                        "Added 1 new category",
+                        "Implemented language switcher",
+                        "Introduced new site theme"
+                    ],
+                    improvementsList: [
+                        "Improved overall site code",
+                        "Enhanced structure and design"
+                    ],
+                    bugFixesList: [
+                        "Fixed lag issues",
+                        "Fixed image loading problems"
+                    ]
+                }
+            },
+            uk: {
+                title: "📝 Оновлення та Зміни",
+                subtitle: "Залишайтеся в курсі останніх змін!",
+                gameUpdates: "🎮 Оновлення Гри",
+                siteUpdates: "🌐 Оновлення Сайту",
+                gameContent: {
+                    version: "Оновлення Гри Скоро..",
+                    date: "Скоро..",
+                    newFeatures: "🎮 Скоро..",
+                    improvements: "⚡ Скоро..",
+                    bugFixes: "🐛 Скоро..",
+                    features: ["Скоро.."],
+                    improvementsList: ["Скоро.."],
+                    bugFixesList: ["Скоро.."]
+                },
+                siteContent: {
+                    version: "Оновлення Сайту v2.2.0",
+                    date: "13 вересня 2025",
+                    newFeatures: "🌟 Нові Функції",
+                    improvements: "🔧 Покращення",
+                    bugFixes: "🐛 Виправлення Помилок",
+                    features: [
+                        "Додано 3 нові сторінки",
+                        "Додано 1 нову категорію",
+                        "Додано зміну мови",
+                        "Нова тематика сайту"
+                    ],
+                    improvementsList: [
+                        "Виправлено деякий код",
+                        "Оновлено структуру та дизайн"
+                    ],
+                    bugFixesList: [
+                        "Виправлено проблеми з лагами",
+                        "Виправлено проблеми із завантаженням зображень"
+                    ]
+                }
+            },
+            ru: {
+                title: "📝 Обновления и Изменения",
+                subtitle: "Оставайтесь в курсе последних изменений!",
+                gameUpdates: "🎮 Обновления Игры",
+                siteUpdates: "🌐 Обновления Сайта",
+                gameContent: {
+                    version: "Обновление Игры Скоро..",
+                    date: "Скоро..",
+                    newFeatures: "🎮 Скоро..",
+                    improvements: "⚡ Скоро..",
+                    bugFixes: "🐛 Скоро..",
+                    features: ["Скоро.."],
+                    improvementsList: ["Скоро.."],
+                    bugFixesList: ["Скоро.."]
+                },
+                siteContent: {
+                    version: "Обновление Сайта v2.2.0",
+                    date: "13 сентября 2025",
+                    newFeatures: "🌟 Новые Функции",
+                    improvements: "🔧 Улучшения",
+                    bugFixes: "🐛 Исправления Ошибок",
+                    features: [
+                        "Добавлены 3 новые страницы",
+                        "Добавлена 1 новая категория",
+                        "Реализована смена языка",
+                        "Новая тематика сайта"
+                    ],
+                    improvementsList: [
+                        "Исправлен некоторый код",
+                        "Обновлена структура и дизайн"
+                    ],
+                    bugFixesList: [
+                        "Исправлены лаги",
+                        "Исправлены проблемы с загрузкой изображений"
+                    ]
+                }
+            }
         };
         return updatesTranslations;
     }
@@ -73,29 +201,38 @@ async function loadUpdatesTranslations() {
 
 // Switch update type (game/site)
 function switchUpdateType(type) {
-    if (!type || type === currentUpdateType) return;
+    if (!type) return;
     
     console.log(`🔄 Switching to ${type} updates`);
+    
+    // Don't return early if same type - allow reinitialization
     currentUpdateType = type;
     
     try {
         // Update toggle buttons
-        document.querySelectorAll('.toggle-btn').forEach(btn => {
+        const toggleButtons = document.querySelectorAll('.toggle-btn');
+        toggleButtons.forEach(btn => {
             if (btn && btn.dataset && btn.dataset.type) {
                 btn.classList.toggle('active', btn.dataset.type === type);
             }
         });
         
-        // Show/hide update sections
-        document.querySelectorAll('.update-section').forEach(section => {
+        // Show/hide update sections with animation
+        const sections = document.querySelectorAll('.update-section');
+        sections.forEach(section => {
             if (section) {
                 section.classList.remove('active');
+                // Force reflow
+                section.offsetHeight;
             }
         });
         
+        // Show target section
         const targetSection = document.getElementById(type + 'Updates');
         if (targetSection) {
-            targetSection.classList.add('active');
+            setTimeout(() => {
+                targetSection.classList.add('active');
+            }, 50);
             console.log(`✅ Switched to ${type} updates section`);
         } else {
             console.error(`❌ Target section ${type}Updates not found`);
@@ -114,8 +251,12 @@ function updateUpdatesLanguage(language) {
     
     console.log(`🌍 Updating updates language to: ${language}`);
     
+    // Wait for translations to load if not available
     if (!updatesTranslations) {
-        console.warn('⚠️ Updates translations not loaded yet');
+        console.log('⏳ Waiting for translations to load...');
+        loadUpdatesTranslations().then(() => {
+            updateUpdatesLanguage(language);
+        });
         return;
     }
     
@@ -132,8 +273,8 @@ function updateUpdatesLanguage(language) {
     
     try {
         // Update page title and subtitle
-        const title = document.querySelector('.updates-title');
-        const subtitle = document.querySelector('.updates-subtitle');
+        const title = document.querySelector('#updatesPage .updates-title');
+        const subtitle = document.querySelector('#updatesPage .updates-subtitle');
         
         if (title && t.title) {
             title.textContent = t.title;
@@ -143,8 +284,8 @@ function updateUpdatesLanguage(language) {
         }
         
         // Update toggle buttons
-        const gameBtn = document.querySelector('.toggle-btn[data-type="game"]');
-        const siteBtn = document.querySelector('.toggle-btn[data-type="site"]');
+        const gameBtn = document.querySelector('#updatesPage .toggle-btn[data-type="game"]');
+        const siteBtn = document.querySelector('#updatesPage .toggle-btn[data-type="site"]');
         
         if (gameBtn && t.gameUpdates) {
             gameBtn.textContent = t.gameUpdates;
@@ -276,7 +417,7 @@ function updateSiteContent(content) {
     }
 }
 
-// Update list content
+// Update list content with proper error handling and animation
 function updateListContent(listElement, items) {
     if (!listElement) {
         console.warn('⚠️ List element not provided');
@@ -285,27 +426,54 @@ function updateListContent(listElement, items) {
     
     if (!Array.isArray(items)) {
         console.warn('⚠️ Items is not an array:', items);
-        return;
+        items = [items || 'No items available'];
     }
     
     try {
-        // Clear existing content
-        listElement.innerHTML = '';
+        // Clear existing content with fade out
+        listElement.style.opacity = '0.5';
         
-        // Add new items
-        items.forEach((item, index) => {
-            if (item && typeof item === 'string') {
-                const li = document.createElement('li');
-                li.textContent = item;
-                li.style.animationDelay = `${index * 0.1}s`;
-                listElement.appendChild(li);
-            }
-        });
+        setTimeout(() => {
+            listElement.innerHTML = '';
+            
+            // Add new items with animation
+            items.forEach((item, index) => {
+                if (item && typeof item === 'string') {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    li.style.opacity = '0';
+                    li.style.transform = 'translateY(10px)';
+                    li.style.animationDelay = `${index * 0.1}s`;
+                    listElement.appendChild(li);
+                    
+                    // Animate in
+                    setTimeout(() => {
+                        li.style.transition = 'all 0.3s ease';
+                        li.style.opacity = '1';
+                        li.style.transform = 'translateY(0)';
+                    }, index * 50);
+                }
+            });
+            
+            listElement.style.opacity = '1';
+        }, 150);
         
         console.log(`✅ Updated list with ${items.length} items`);
     } catch (error) {
         console.error('❌ Error updating list content:', error);
+        
+        // Fallback
+        listElement.innerHTML = '<li>Error loading content</li>';
+        listElement.style.opacity = '1';
     }
+}
+
+// Reset initialization flag for development
+function resetUpdatesInitialization() {
+    updatesInitialized = false;
+    updatesTranslations = null;
+    currentUpdateType = 'game';
+    console.log('🔄 Updates initialization reset');
 }
 
 // Export functions to global scope
@@ -313,10 +481,8 @@ Object.assign(window, {
     initializeUpdates,
     updateUpdatesLanguage,
     switchUpdateType,
-    loadUpdatesTranslations
+    loadUpdatesTranslations,
+    resetUpdatesInitialization
 });
 
-// Also make the function available for external calls
-window.updateUpdatesLanguage = updateUpdatesLanguage;
-
-console.log('✅ Complete clean Updates page JavaScript loaded (no hardcoded text)');
+console.log('✅ Fixed Updates page JavaScript loaded');
