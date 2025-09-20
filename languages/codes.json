@@ -278,16 +278,24 @@
     },
     "codes": [
       {
-        "code": "pyramids",
+        "code": "welovemining",
         "hours": 72,
-        "extras": "НОВИЙ",
+        "extras": "Новий",
         "isNew": true
       },
       {
-        "code": "egyptian",
-        "hours": 72,
-        "extras": "НОВИЙ", 
+        "code": "sorryfordelay",
+        "hours": 0,
+        "extras": "1 МІЛЬЯРД ЗІ СИЛИ Біцепсів!",
         "isNew": true
+      },
+      {
+        "code": "pyramids",
+        "hours": 72
+      },
+      {
+        "code": "egyptian",
+        "hours": 72
       },
       {
         "code": "21iscoming",
@@ -536,16 +544,24 @@
     },
     "codes": [
       {
-        "code": "pyramids",
+        "code": "welovemining",
         "hours": 72,
-        "extras": "НОВЫЙ",
+        "extras": "Новый",
         "isNew": true
       },
       {
-        "code": "egyptian",
-        "hours": 72,
-        "extras": "НОВЫЙ",
+        "code": "sorryfordelay",
+        "hours": 0,
+        "extras": "1 МИЛЛИАРДЫ Майнинга Силы Бицепса!",
         "isNew": true
+      },
+      {
+        "code": "pyramids",
+        "hours": 72
+      },
+      {
+        "code": "egyptian",
+        "hours": 72
       },
       {
         "code": "21iscoming",
