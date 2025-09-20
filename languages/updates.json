@@ -7,12 +7,12 @@
     "gameContent": {
       "version": "Game Update Soon..",
       "date": "Soon..",
-      "newFeatures": "🎮 Soon..",
-      "improvements": "⚡ Soon..",
-      "bugFixes": "🐛 Soon..",
-      "features": ["Soon.."],
-      "improvementsList": ["Soon.."],
-      "bugFixesList": ["Soon.."]
+      "newFeatures": "🎮 New Features",
+      "improvements": "⚡ Improvements",
+      "bugFixes": "🐛 Bug Fixes",
+      "features": ["Coming soon.."],
+      "improvementsList": ["Coming soon.."],
+      "bugFixesList": ["Coming soon.."]
     },
     "siteContent": {
       "version": "Site Update v2.2.0",
@@ -44,9 +44,9 @@
     "gameContent": {
       "version": "Оновлення Гри Скоро..",
       "date": "Скоро..",
-      "newFeatures": "🎮 Скоро..",
-      "improvements": "⚡ Скоро..",
-      "bugFixes": "🐛 Скоро..",
+      "newFeatures": "🎮 Нові Функції",
+      "improvements": "⚡ Покращення",
+      "bugFixes": "🐛 Виправлення Помилок",
       "features": ["Скоро.."],
       "improvementsList": ["Скоро.."],
       "bugFixesList": ["Скоро.."]
@@ -81,9 +81,9 @@
     "gameContent": {
       "version": "Обновление Игры Скоро..",
       "date": "Скоро..",
-      "newFeatures": "🎮 Скоро..",
-      "improvements": "⚡ Скоро..",
-      "bugFixes": "🐛 Скоро..",
+      "newFeatures": "🎮 Новые Функции",
+      "improvements": "⚡ Улучшения",
+      "bugFixes": "🐛 Исправления Ошибок",
       "features": ["Скоро.."],
       "improvementsList": ["Скоро.."],
       "bugFixesList": ["Скоро.."]
