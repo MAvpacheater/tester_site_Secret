@@ -1,4 +1,4 @@
-// Content loader script - Fixed to work with language system
+// Content loader script - Fixed to work with language system and single menu
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -31,7 +31,7 @@ async function loadContent() {
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
 
-                <!-- Settings Gear Button - Bottom Left -->
+                <!-- Settings Gear Button - Bottom Left (only for left/right menu positions) -->
                 <button class="settings-gear-btn" onclick="switchPage('settings')" title="Settings">⚙️</button>
 
                 <!-- Sidebar Navigation -->
@@ -79,7 +79,7 @@ async function loadContent() {
                             </div>
                         </div>
 
-                        <!-- Others Category -->
+                        <!-- Others Category (включає налаштування для сайдбару) -->
                         <div class="nav-category">
                             <div class="category-header" data-category="othersButtons" onclick="toggleCategory('othersButtons')">
                                 <div class="category-title">
@@ -89,6 +89,7 @@ async function loadContent() {
                                 <span class="category-toggle">▼</span>
                             </div>
                             <div class="category-buttons" id="othersButtons">
+                                <button class="nav-btn" data-page="settings" onclick="switchPage('settings')"></button>
                                 <button class="nav-btn" data-page="updates" onclick="switchPage('updates')"></button>
                                 <button class="nav-btn" data-page="help" onclick="switchPage('help')"></button>
                                 <button class="nav-btn" data-page="peoples" onclick="switchPage('peoples')"></button>
@@ -101,7 +102,7 @@ async function loadContent() {
                         <button class="auth-btn-sidebar disabled" id="authButton" title="Coming Soon!" onclick="handleAuthAction()"></button>
                     </div>
                     
-                    <!-- Language Flags and Settings Button -->
+                    <!-- Language Flags -->
                     <div class="sidebar-controls">
                         <div class="control-buttons">
                             <div class="language-flags">
