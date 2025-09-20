@@ -216,11 +216,21 @@ function applyMenuPosition(position) {
     // Додати новий клас позиції меню
     body.classList.add(`menu-${position}`);
     
+    // Видалити будь-яке існуюче статичне меню перед створенням нового
+    removeStaticMenu();
+    
     // Обробити статичне відображення меню
     if (position === 'up' || position === 'down') {
         createStaticMenu(position);
-    } else {
-        removeStaticMenu();
+        // Переконатися, що сайдбар прихований
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+            sidebar.classList.remove('open');
+        }
+        const overlay = document.getElementById('sidebarOverlay');
+        if (overlay) {
+            overlay.classList.remove('show');
+        }
     }
     
     console.log(`Позицію меню застосовано: ${position}`);
