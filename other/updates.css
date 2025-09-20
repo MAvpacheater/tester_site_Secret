@@ -1,4 +1,4 @@
-/* Complete Updates Page Styles - Mining Theme */
+/* Complete Updates Page Styles - Mining Theme - Fixed */
 .updates-page {
     padding: 20px;
     min-height: 100vh;
@@ -147,6 +147,15 @@
     opacity: 1;
     transform: translateY(0);
     animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Ensure proper display state for initialized pages */
+.updates-page.initialized .update-section {
+    display: none;
+}
+
+.updates-page.initialized .update-section.active {
+    display: block;
 }
 
 /* Update Cards */
@@ -442,11 +451,28 @@
     -webkit-backface-visibility: hidden;
 }
 
-/* Ensure proper initialization styling */
-.updates-page:not(.initialized) .update-section {
-    display: none;
+/* Loading state handling */
+.updates-page:not(.initialized) {
+    opacity: 0.8;
 }
 
+.updates-page:not(.initialized) .update-section {
+    display: none !important;
+}
+
+.updates-page.initialized {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+/* Force show game updates by default */
 .updates-page.initialized #gameUpdates {
     display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Hide site updates by default */
+.updates-page.initialized #siteUpdates {
+    display: none;
 }
