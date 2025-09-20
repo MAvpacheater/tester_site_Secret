@@ -487,6 +487,12 @@ body.menu-bottom .sidebar-overlay {
     display: none !important;
 }
 
+/* Hide default settings button for top/bottom menus */
+body.menu-top .settings-gear-btn,
+body.menu-bottom .settings-gear-btn {
+    display: none !important;
+}
+
 /* Adjust body padding for top/bottom menus */
 body.menu-top {
     padding-top: 80px;
