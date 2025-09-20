@@ -238,6 +238,8 @@ function applyMenuPosition(position) {
 
 // Створити статичне меню для верхніх/нижніх позицій тільки з іконками
 function createStaticMenu(position) {
+    console.log(`🔨 Створення статичного меню для позиції: ${position}`);
+    
     // Видалити існуюче статичне меню
     removeStaticMenu();
     
@@ -245,6 +247,9 @@ function createStaticMenu(position) {
     const staticMenu = document.createElement('div');
     staticMenu.className = `static-menu ${menuClass}`;
     staticMenu.id = 'staticMenu';
+    
+    // Встановити початковий display
+    staticMenu.style.display = 'flex';
     
     // Створити контейнер навігаційних кнопок
     const navButtons = document.createElement('div');
@@ -276,7 +281,8 @@ function createStaticMenu(position) {
     const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
     updateStaticMenuActiveState(currentPage);
     
-    console.log(`Статичне ${position} меню створено з ${menuItems.length} елементами (включаючи налаштування)`);
+    console.log(`✅ Статичне ${position} меню створено з ${menuItems.length} елементами (включаючи налаштування)`);
+    console.log('🔍 Статичне меню додано до DOM:', document.getElementById('staticMenu'));
 }
 
 // Видалити статичне меню
@@ -598,6 +604,14 @@ function initializeSettingsOnStart() {
     console.log(`Початковий фон застосовано: ${currentBg}`);
     
     const currentMenuPos = getCurrentMenuPosition();
+    
+    // Додати клас для поточної позиції меню до body
+    const body = document.body;
+    Object.keys(menuPositions).forEach(pos => {
+        body.classList.remove(`menu-${pos}`);
+    });
+    body.classList.add(`menu-${currentMenuPos}`);
+    
     applyMenuPosition(currentMenuPos);
     console.log(`Початкову позицію меню застосовано: ${currentMenuPos}`);
 }
