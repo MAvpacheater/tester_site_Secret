@@ -12,6 +12,12 @@
     },
     "codes": [
       {
+        "code": "desertmines",
+        "hours": 72,
+        "extras": "NEW",
+        "isNew": true
+      },
+      {
         "code": "welovemining",
         "hours": 72,
         "extras": "NEW",
@@ -278,6 +284,12 @@
     },
     "codes": [
       {
+        "code": "desertmines",
+        "hours": 72,
+        "extras": "Новий",
+        "isNew": true
+      },
+      {
         "code": "welovemining",
         "hours": 72,
         "extras": "Новий",
@@ -543,6 +555,12 @@
       "progress": "Прогресс"
     },
     "codes": [
+      {
+        "code": "desertmines",
+        "hours": 72,
+        "extras": "Новый",
+        "isNew": true
+      },
       {
         "code": "welovemining",
         "hours": 72,
