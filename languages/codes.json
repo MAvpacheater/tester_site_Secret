@@ -12,16 +12,24 @@
     },
     "codes": [
       {
-        "code": "pyramids",
+        "code": "welovemining",
         "hours": 72,
         "extras": "NEW",
         "isNew": true
       },
       {
-        "code": "egyptian", 
-        "hours": 72,
-        "extras": "NEW",
+        "code": "sorryfordelay",
+        "hours": 0,
+        "extras": "1 BILLION Mining Bicep Strength!",
         "isNew": true
+      },
+      {
+        "code": "pyramids",
+        "hours": 72
+      },
+      {
+        "code": "egyptian", 
+        "hours": 72
       },
       {
         "code": "21iscoming",
