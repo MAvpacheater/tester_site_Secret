@@ -477,6 +477,11 @@
     transform: translateY(-1px);
 }
 
+/* Default state - hide static menu unless specifically shown */
+.static-menu {
+    display: none;
+}
+
 /* Hide mobile toggle and sidebar for top/bottom menus - and show static menu */
 body.menu-top .mobile-menu-toggle,
 body.menu-bottom .mobile-menu-toggle,
@@ -491,9 +496,14 @@ body.menu-bottom .settings-gear-btn {
 
 /* For left/right menus - hide static menu */
 body.menu-left .static-menu,
-body.menu-right .static-menu,
-body:not(.menu-top):not(.menu-bottom) .static-menu {
+body.menu-right .static-menu {
     display: none !important;
+}
+
+/* Ensure static menu is visible for top/bottom positions */
+body.menu-top .static-menu,
+body.menu-bottom .static-menu {
+    display: flex !important;
 }
 
 /* Adjust body padding for top/bottom menus */
