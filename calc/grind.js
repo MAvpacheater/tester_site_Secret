@@ -101,7 +101,7 @@ const grindModifiers = {
     member: 2.0,            // 2x
     premium: 1.20,          // 1.20x
     strength_star: 1.50,    // 50% boost
-    sandstorm_event: 2.0    // 2x boost
+    sandstorm_event: 1.3    // 1.3x boost
 };
 
 let grindMultiplier = 1;
