@@ -1,4 +1,4 @@
-// Налаштування - Керування фоном і позицією меню з правильним приховуванням
+// Налаштування - Керування фоном і позицією меню з згортаними категоріями
 let settingsInitialized = false;
 let settingsTranslations = null;
 let categoriesState = {
@@ -67,7 +67,7 @@ const menuItems = [
     { page: 'updates', icon: '📝', title: 'Updates' },
     { page: 'help', icon: '🆘', title: 'Help' },
     { page: 'peoples', icon: '🙏', title: 'Peoples' },
-    { page: 'settings', icon: '⚙️', title: 'Settings' }
+    { page: 'settings', icon: '⚙️', title: 'Settings' } // Додана кнопка налаштувань
 ];
 
 // Перемикання видимості категорії в настройках (не конфліктує з головним меню)
@@ -199,14 +199,6 @@ function saveMenuPosition(position) {
     console.log(`Позицію меню збережено: ${position}`);
 }
 
-// Видалити всі статичні меню
-function removeStaticMenu() {
-    const existingMenus = document.querySelectorAll('.static-menu, #staticMenu');
-    existingMenus.forEach(menu => {
-        menu.remove();
-    });
-}
-
 // Застосувати позицію меню
 function applyMenuPosition(position) {
     if (!menuPositions[position]) {
@@ -221,18 +213,15 @@ function applyMenuPosition(position) {
         body.classList.remove(`menu-${pos}`);
     });
     
-    // Видалити будь-яке існуюче статичне меню перед створенням нового
-    removeStaticMenu();
-    
     // Додати новий клас позиції меню
     body.classList.add(`menu-${position}`);
     
+    // Видалити будь-яке існуюче статичне меню перед створенням нового
+    removeStaticMenu();
+    
     // Обробити статичне відображення меню
     if (position === 'up' || position === 'down') {
-        setTimeout(() => {
-            createStaticMenu(position);
-        }, 100);
-        
+        createStaticMenu(position);
         // Переконатися, що сайдбар прихований
         const sidebar = document.getElementById('sidebar');
         if (sidebar) {
@@ -258,6 +247,9 @@ function createStaticMenu(position) {
     const staticMenu = document.createElement('div');
     staticMenu.className = `static-menu ${menuClass}`;
     staticMenu.id = 'staticMenu';
+    
+    // Встановити початковий display
+    staticMenu.style.display = 'flex';
     
     // Створити контейнер навігаційних кнопок
     const navButtons = document.createElement('div');
@@ -290,6 +282,16 @@ function createStaticMenu(position) {
     updateStaticMenuActiveState(currentPage);
     
     console.log(`✅ Статичне ${position} меню створено з ${menuItems.length} елементами (включаючи налаштування)`);
+    console.log('🔍 Статичне меню додано до DOM:', document.getElementById('staticMenu'));
+}
+
+// Видалити статичне меню
+function removeStaticMenu() {
+    const existingMenu = document.getElementById('staticMenu');
+    if (existingMenu) {
+        existingMenu.remove();
+        console.log('Статичне меню видалено');
+    }
 }
 
 // Оновити активний стан статичного меню
