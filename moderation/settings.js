@@ -1,4 +1,4 @@
-// Налаштування - Керування фоном і позицією меню з згортаними категоріями
+// Налаштування - Керування фоном і позицією меню з правильним приховуванням
 let settingsInitialized = false;
 let settingsTranslations = null;
 let categoriesState = {
@@ -67,7 +67,7 @@ const menuItems = [
     { page: 'updates', icon: '📝', title: 'Updates' },
     { page: 'help', icon: '🆘', title: 'Help' },
     { page: 'peoples', icon: '🙏', title: 'Peoples' },
-    { page: 'settings', icon: '⚙️', title: 'Settings' } // Додана кнопка налаштувань
+    { page: 'settings', icon: '⚙️', title: 'Settings' }
 ];
 
 // Перемикання видимості категорії в настройках (не конфліктує з головним меню)
@@ -199,7 +199,16 @@ function saveMenuPosition(position) {
     console.log(`Позицію меню збережено: ${position}`);
 }
 
-// Застосувати позицію меню
+// Повністю видалити всі статичні меню
+function removeAllStaticMenus() {
+    const existingMenus = document.querySelectorAll('.static-menu, .menu-top, .menu-bottom');
+    existingMenus.forEach(menu => {
+        menu.remove();
+        console.log('Статичне меню видалено:', menu.className);
+    });
+}
+
+// Застосувати позицію меню з правильним приховуванням/показом елементів
 function applyMenuPosition(position) {
     if (!menuPositions[position]) {
         console.error(`Позицію меню ${position} не знайдено`);
@@ -208,54 +217,53 @@ function applyMenuPosition(position) {
     
     const body = document.body;
     
+    console.log(`🔄 Застосування позиції меню: ${position}`);
+    
     // Видалити всі класи позицій меню
     Object.keys(menuPositions).forEach(pos => {
         body.classList.remove(`menu-${pos}`);
     });
     
+    // Видалити всі існуючі статичні меню
+    removeAllStaticMenus();
+    
     // Додати новий клас позиції меню
     body.classList.add(`menu-${position}`);
     
-    // Видалити будь-яке існуюче статичне меню перед створенням нового
-    removeStaticMenu();
+    // Принудово закрити сайдбар
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('show');
     
-    // Обробити статичне відображення меню
+    // Створити статичне меню для верхніх/нижніх позицій
     if (position === 'up' || position === 'down') {
-        createStaticMenu(position);
-        // Переконатися, що сайдбар прихований
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar) {
-            sidebar.classList.remove('open');
-        }
-        const overlay = document.getElementById('sidebarOverlay');
-        if (overlay) {
-            overlay.classList.remove('show');
-        }
+        // Затримка для забезпечення правильного застосування CSS
+        setTimeout(() => {
+            createStaticMenu(position);
+        }, 100);
     }
     
-    console.log(`Позицію меню застосовано: ${position}`);
+    console.log(`✅ Позицію меню застосовано: ${position}`);
 }
 
 // Створити статичне меню для верхніх/нижніх позицій тільки з іконками
 function createStaticMenu(position) {
     console.log(`🔨 Створення статичного меню для позиції: ${position}`);
     
-    // Видалити існуюче статичне меню
-    removeStaticMenu();
+    // Переконатися, що всі старі меню видалені
+    removeAllStaticMenus();
     
     const menuClass = position === 'up' ? 'menu-top' : 'menu-bottom';
     const staticMenu = document.createElement('div');
     staticMenu.className = `static-menu ${menuClass}`;
     staticMenu.id = 'staticMenu';
     
-    // Встановити початковий display
-    staticMenu.style.display = 'flex';
-    
     // Створити контейнер навігаційних кнопок
     const navButtons = document.createElement('div');
     navButtons.className = 'nav-buttons';
     
-    // Створити кнопки для всіх елементів меню тільки з іконками (включаючи налаштування)
+    // Створити кнопки для всіх елементів меню тільки з іконками
     menuItems.forEach(item => {
         const btn = document.createElement('button');
         btn.className = 'nav-btn';
@@ -264,7 +272,7 @@ function createStaticMenu(position) {
         btn.textContent = item.icon; // Показувати тільки іконку
         
         btn.onclick = () => {
-            // Використовувати глобальну функцію switchPage замість перевизначення
+            // Використовувати глобальну функцію switchPage
             if (typeof window.switchPage === 'function') {
                 window.switchPage(item.page);
             }
@@ -281,17 +289,12 @@ function createStaticMenu(position) {
     const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
     updateStaticMenuActiveState(currentPage);
     
-    console.log(`✅ Статичне ${position} меню створено з ${menuItems.length} елементами (включаючи налаштування)`);
-    console.log('🔍 Статичне меню додано до DOM:', document.getElementById('staticMenu'));
+    console.log(`✅ Статичне ${position} меню створено з ${menuItems.length} елементами`);
 }
 
 // Видалити статичне меню
 function removeStaticMenu() {
-    const existingMenu = document.getElementById('staticMenu');
-    if (existingMenu) {
-        existingMenu.remove();
-        console.log('Статичне меню видалено');
-    }
+    removeAllStaticMenus();
 }
 
 // Оновити активний стан статичного меню
@@ -316,6 +319,8 @@ function changeMenuPosition(position) {
         return;
     }
     
+    console.log(`🔄 Зміна позиції меню на: ${position}`);
+    
     // Зберегти налаштування
     saveMenuPosition(position);
     
@@ -325,7 +330,7 @@ function changeMenuPosition(position) {
     // Оновити UI
     updateMenuPositionUI();
     
-    console.log(`Позицію меню змінено на: ${position}`);
+    console.log(`✅ Позицію меню змінено на: ${position}`);
 }
 
 // Оновити UI позиції меню
