@@ -332,30 +332,16 @@
     box-shadow: 0 8px 20px rgba(220, 20, 60, 0.4);
 }
 
-/* Menu Position Styles */
-/* КРИТИЧНО ВАЖЛИВІ ПРАВИЛА ПРИХОВУВАННЯ МЕНЮ */
+/* КРИТИЧНО ВАЖЛИВІ ПРАВИЛА ДЛЯ ПРАВИЛЬНОГО ПРИХОВУВАННЯ МЕНЮ */
 
-/* За замовчуванням показуємо тільки sidebar та його елементи */
-.mobile-menu-toggle,
-.sidebar,
-.sidebar-overlay,
-.settings-gear-btn {
-    display: flex !important;
-    visibility: visible !important;
-}
-
-/* Статичні меню за замовчуванням приховані */
-.menu-top,
-.menu-bottom,
-.static-menu {
+/* Для позицій up та down - приховуємо sidebar елементи */
+body.menu-up .mobile-menu-toggle,
+body.menu-up .sidebar,
+body.menu-up .sidebar-overlay {
     display: none !important;
     visibility: hidden !important;
 }
 
-/* Для позицій up та down - приховуємо sidebar елементи та показуємо статичні меню */
-body.menu-up .mobile-menu-toggle,
-body.menu-up .sidebar,
-body.menu-up .sidebar-overlay,
 body.menu-down .mobile-menu-toggle,
 body.menu-down .sidebar,
 body.menu-down .sidebar-overlay {
@@ -363,12 +349,20 @@ body.menu-down .sidebar-overlay {
     visibility: hidden !important;
 }
 
-body.menu-up .menu-top,
-body.menu-up .static-menu.menu-top,
-body.menu-down .menu-bottom,
+/* Статичні меню показуємо тільки для відповідних позицій */
+body.menu-up .static-menu.menu-top {
+    display: flex !important;
+    visibility: visible !important;
+}
+
 body.menu-down .static-menu.menu-bottom {
     display: flex !important;
     visibility: visible !important;
+}
+
+/* За замовчуванням приховуємо статичні меню */
+.static-menu {
+    display: none !important;
 }
 
 /* Top Menu - Icon Only with Fixed Width */
@@ -385,6 +379,7 @@ body.menu-down .static-menu.menu-bottom {
     backdrop-filter: blur(15px);
     border-bottom: 3px solid #8B4513;
     z-index: 1002;
+    display: flex;
     align-items: center;
     justify-content: flex-start;
     padding: 0 20px;
@@ -456,6 +451,7 @@ body.menu-down .static-menu.menu-bottom {
     backdrop-filter: blur(15px);
     border-top: 3px solid #8B4513;
     z-index: 1002;
+    display: flex;
     align-items: center;
     justify-content: flex-start;
     padding: 0 20px;
@@ -523,14 +519,6 @@ body.menu-down {
 }
 
 /* Settings button positioning for different menu positions */
-.settings-gear-btn {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
 /* Top menu - move settings to top right */
 body.menu-up .settings-gear-btn {
     top: 10px;
