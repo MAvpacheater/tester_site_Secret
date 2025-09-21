@@ -177,20 +177,36 @@ let currentCategoryView = null;
 
 // Показ/приховування налаштувань
 function toggleSettings() {
+    console.log('🔧 toggleSettings called');
+    
     const panel = document.getElementById('settingsPanel');
-    if (panel) {
-        const isCurrentlyShown = panel.classList.contains('show');
-        
-        if (!isCurrentlyShown) {
-            // При відкритті налаштувань повертаємося до основного вигляду
-            isInCategoryView = false;
-            currentCategoryView = null;
-            createSettingsHTML();
-        }
-        
-        panel.classList.toggle('show');
-        console.log(`Settings panel ${panel.classList.contains('show') ? 'opened' : 'closed'}`);
+    if (!panel) {
+        console.error('❌ Settings panel not found');
+        return;
     }
+    
+    const isCurrentlyShown = panel.classList.contains('show');
+    console.log('Current panel state:', isCurrentlyShown ? 'shown' : 'hidden');
+    
+    if (!isCurrentlyShown) {
+        // При відкритті налаштувань повертаємося до основного вигляду
+        isInCategoryView = false;
+        currentCategoryView = null;
+        
+        // Створюємо HTML перед показом
+        createSettingsHTML();
+        
+        // Показуємо панель
+        panel.classList.add('show');
+        console.log('✅ Settings panel opened');
+    } else {
+        // Закриваємо панель
+        panel.classList.remove('show');
+        console.log('✅ Settings panel closed');
+    }
+    
+    // Force reflow to ensure CSS changes are applied
+    panel.offsetHeight;
 }
 
 // Показ підменю категорії
@@ -515,6 +531,33 @@ document.addEventListener('languageChanged', async (event) => {
     await updateCalculatorLanguage(newLanguage);
 });
 
+// Debug функція для тестування панелі настройок
+function debugSettingsPanel() {
+    console.log('🐛 Debug Settings Panel...');
+    
+    const panel = document.getElementById('settingsPanel');
+    if (!panel) {
+        console.error('❌ Panel not found');
+        return;
+    }
+    
+    console.log('Panel element:', panel);
+    console.log('Panel classes:', panel.className);
+    console.log('Panel style display:', getComputedStyle(panel).display);
+    console.log('Panel style visibility:', getComputedStyle(panel).visibility);
+    console.log('Panel innerHTML:', panel.innerHTML.substring(0, 100) + '...');
+    
+    // Додаємо debug клас
+    panel.classList.add('debug');
+    console.log('✅ Added debug class');
+    
+    // Через 3 секунди видаляємо debug клас
+    setTimeout(() => {
+        panel.classList.remove('debug');
+        console.log('✅ Removed debug class');
+    }, 3000);
+}
+
 // Make functions globally available
 window.updateCalculatorLanguage = updateCalculatorLanguage;
 window.loadCalcTranslations = loadCalcTranslations;
@@ -525,3 +568,4 @@ window.handleCategoryToggle = handleCategoryToggle;
 window.toggleSimpleModifier = toggleSimpleModifier;
 window.calculateStats = calculateStats;
 window.initializeCalculator = initializeCalculator;
+window.debugSettingsPanel = debugSettingsPanel; // Додали debug функцію
