@@ -194,11 +194,23 @@ function toggleSettings() {
         currentCategoryView = null;
         
         // Створюємо HTML перед показом
+        console.log('Creating settings HTML...');
         createSettingsHTML();
         
         // Показуємо панель
         panel.classList.add('show');
         console.log('✅ Settings panel opened');
+        console.log('Panel classes after opening:', panel.className);
+        console.log('Panel display style:', getComputedStyle(panel).display);
+        console.log('Panel visibility:', getComputedStyle(panel).visibility);
+        console.log('Panel innerHTML length:', panel.innerHTML.length);
+        
+        // Встановлюємо флаг що панель відкрита для запобігання закриттю від general.js
+        panel.dataset.justOpened = 'true';
+        setTimeout(() => {
+            delete panel.dataset.justOpened;
+        }, 100);
+        
     } else {
         // Закриваємо панель
         panel.classList.remove('show');
@@ -390,11 +402,16 @@ function createSettingsHTML() {
     const settingsText = (translations && translations.common.settings) || 'Settings';
     const backText = (translations && translations.common.back) || '← Back';
     
+    console.log('Using settings text:', settingsText);
+    console.log('Using back text:', backText);
+    
     // Якщо ми в режимі перегляду категорії
     if (isInCategoryView && currentCategoryView) {
+        console.log('Creating category view for:', currentCategoryView);
         const category = modifierCategories[currentCategoryView];
         if (category) {
             const categoryTitle = getTranslatedCategoryTitle(currentCategoryView);
+            console.log('Category title:', categoryTitle);
             html += `
                 <div class="settings-header">
                     <div class="settings-title">${categoryTitle}</div>
@@ -422,6 +439,7 @@ function createSettingsHTML() {
             }
         }
     } else {
+        console.log('Creating main settings view');
         // Основний вигляд налаштувань
         html += `<div class="settings-title">${settingsText}</div>`;
         
@@ -429,6 +447,7 @@ function createSettingsHTML() {
         for (const [categoryKey, category] of Object.entries(modifierCategories)) {
             const selectedName = getSelectedOptionName(categoryKey);
             const categoryTitle = getTranslatedCategoryTitle(categoryKey);
+            console.log(`Creating category button: ${categoryKey} - ${categoryTitle} (${selectedName})`);
             html += `
                 <button type="button" class="category-button" onclick="showCategoryPanel('${categoryKey}', event)">
                     <div class="category-button-content">
@@ -443,6 +462,7 @@ function createSettingsHTML() {
         // Прості модифікатори
         for (const [key, modifier] of Object.entries(simpleModifiers)) {
             const modifierName = getTranslatedModifierName(key);
+            console.log(`Creating simple modifier: ${key} - ${modifierName}`);
             html += `
                 <div class="simple-modifier">
                     <div class="simple-modifier-label">
@@ -459,8 +479,12 @@ function createSettingsHTML() {
         }
     }
     
+    console.log('Generated HTML length:', html.length);
+    console.log('Generated HTML preview:', html.substring(0, 200) + '...');
+    
     panel.innerHTML = html;
     console.log('✅ Settings HTML created successfully');
+    console.log('Panel innerHTML after setting:', panel.innerHTML.length);
 }
 
 // Ініціалізація калькулятора при завантаженні сторінки
