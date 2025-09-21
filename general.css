@@ -100,9 +100,9 @@ body::before {
     display: block !important;
 }
 
-/* КРИТИЧНО ВАЖЛИВІ ПРАВИЛА ПРИХОВУВАННЯ МЕНЮ */
+/* КРИТИЧНО ВАЖЛИВІ ПРАВИЛА ПРИХОВУВАННЯ МЕНЮ - ВИПРАВЛЕНА ВЕРСІЯ */
 
-/* За замовчуванням показуємо тільки sidebar та його елементи */
+/* За замовчуванням показуємо тільки sidebar та його елементи для left/right меню */
 .mobile-menu-toggle,
 .sidebar,
 .sidebar-overlay,
@@ -122,7 +122,11 @@ body::before {
 /* Для позицій up та down - приховуємо sidebar елементи та показуємо статичні меню */
 body.menu-up .mobile-menu-toggle,
 body.menu-up .sidebar,
-body.menu-up .sidebar-overlay,
+body.menu-up .sidebar-overlay {
+    display: none !important;
+    visibility: hidden !important;
+}
+
 body.menu-down .mobile-menu-toggle,
 body.menu-down .sidebar,
 body.menu-down .sidebar-overlay {
@@ -130,9 +134,11 @@ body.menu-down .sidebar-overlay {
     visibility: hidden !important;
 }
 
-body.menu-up .menu-top,
-body.menu-up .static-menu.menu-top,
-body.menu-down .menu-bottom,
+body.menu-up .static-menu.menu-top {
+    display: flex !important;
+    visibility: visible !important;
+}
+
 body.menu-down .static-menu.menu-bottom {
     display: flex !important;
     visibility: visible !important;
