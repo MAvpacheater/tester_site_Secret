@@ -1,4 +1,4 @@
-/* Optimized General Styles - Mining Theme */
+/* Optimized General Styles - Mining Theme з правильним керуванням меню */
 * { 
     margin: 0; 
     padding: 0; 
@@ -100,7 +100,45 @@ body::before {
     display: block !important;
 }
 
-/* Settings Gear Button - Bottom Left Corner */
+/* КРИТИЧНО ВАЖЛИВІ ПРАВИЛА ПРИХОВУВАННЯ МЕНЮ */
+
+/* За замовчуванням показуємо тільки sidebar та його елементи */
+.mobile-menu-toggle,
+.sidebar,
+.sidebar-overlay,
+.settings-gear-btn {
+    display: flex !important;
+    visibility: visible !important;
+}
+
+/* Статичні меню за замовчуванням приховані */
+.menu-top,
+.menu-bottom,
+.static-menu {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Для позицій up та down - приховуємо sidebar елементи та показуємо статичні меню */
+body.menu-up .mobile-menu-toggle,
+body.menu-up .sidebar,
+body.menu-up .sidebar-overlay,
+body.menu-down .mobile-menu-toggle,
+body.menu-down .sidebar,
+body.menu-down .sidebar-overlay {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+body.menu-up .menu-top,
+body.menu-up .static-menu.menu-top,
+body.menu-down .menu-bottom,
+body.menu-down .static-menu.menu-bottom {
+    display: flex !important;
+    visibility: visible !important;
+}
+
+/* Settings Gear Button - Bottom Left Corner (default) */
 .settings-gear-btn {
     position: fixed;
     bottom: 20px;
@@ -114,7 +152,6 @@ body::before {
     color: #FFD700;
     z-index: 1000;
     transition: all 0.3s ease;
-    display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
@@ -140,6 +177,32 @@ body::before {
 @keyframes gearSpin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+
+/* Settings button positioning for different menu positions */
+/* Top menu - move settings to top right */
+body.menu-up .settings-gear-btn {
+    top: 10px;
+    bottom: auto;
+    right: 20px;
+    left: auto;
+    display: flex !important;
+    visibility: visible !important;
+}
+
+/* Bottom menu - move settings to bottom right */
+body.menu-down .settings-gear-btn {
+    bottom: 70px;
+    right: 20px;
+    left: auto;
+    display: flex !important;
+    visibility: visible !important;
+}
+
+/* Right menu - move settings to bottom right */
+body.menu-right .settings-gear-btn {
+    right: 20px;
+    left: auto;
 }
 
 /* Hide settings button from Others category */
@@ -187,6 +250,12 @@ body::before {
         inset 0 2px 10px rgba(255, 255, 255, 0.2);
 }
 
+/* Right menu positioning for mobile toggle */
+body.menu-right .mobile-menu-toggle {
+    left: auto;
+    right: 20px;
+}
+
 /* Sidebar */
 .sidebar {
     position: fixed;
@@ -206,12 +275,26 @@ body::before {
         2px 0 40px rgba(0, 0, 0, 0.6),
         inset -2px 0 10px rgba(255, 215, 0, 0.1);
     border-radius: 0 15px 15px 0;
-    display: flex;
     flex-direction: column;
 }
 
 .sidebar.open {
     left: 0;
+}
+
+/* Right sidebar positioning */
+body.menu-right .sidebar {
+    left: auto;
+    right: -320px;
+    border-left: 3px solid #8B4513;
+    border-right: none;
+    border-radius: 15px 0 0 15px;
+    box-shadow: -2px 0 40px rgba(0, 0, 0, 0.6);
+}
+
+body.menu-right .sidebar.open {
+    right: 0;
+    left: auto;
 }
 
 .sidebar-header {
@@ -443,7 +526,7 @@ body::before {
     box-shadow: none !important;
 }
 
-/* Language Flags - Updated without settings button */
+/* Language Flags */
 .sidebar-controls {
     display: flex;
     align-items: center;
@@ -533,6 +616,15 @@ body::before {
     backdrop-filter: blur(10px);
 }
 
+/* Body padding adjustments for static menus */
+body.menu-up {
+    padding-top: 80px;
+}
+
+body.menu-down {
+    padding-bottom: 80px;
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .settings-gear-btn {
@@ -543,9 +635,37 @@ body::before {
         font-size: 22px;
     }
     
+    body.menu-up .settings-gear-btn {
+        top: 8px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+    }
+    
+    body.menu-down .settings-gear-btn {
+        bottom: 65px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+    }
+    
+    body.menu-up {
+        padding-top: 70px;
+    }
+    
+    body.menu-down {
+        padding-bottom: 70px;
+    }
+    
     .sidebar {
         width: 300px;
         left: -300px;
+    }
+    
+    body.menu-right .sidebar {
+        right: -300px;
     }
     
     .nav-buttons {
@@ -578,9 +698,43 @@ body::before {
 }
 
 @media (max-width: 480px) {
+    .settings-gear-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+    
+    body.menu-up .settings-gear-btn {
+        top: 5px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+    
+    body.menu-down .settings-gear-btn {
+        bottom: 60px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+    
+    body.menu-up {
+        padding-top: 65px;
+    }
+    
+    body.menu-down {
+        padding-bottom: 65px;
+    }
+    
     .sidebar {
         width: 280px;
         left: -280px;
+    }
+    
+    body.menu-right .sidebar {
+        right: -280px;
     }
     
     .sidebar-user {
@@ -593,17 +747,6 @@ body::before {
     
     .sidebar-controls {
         padding: 12px 10px;
-    }
-    
-    .control-buttons {
-        gap: 8px;
-    }
-    
-    .settings-btn-sidebar {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1em;
-        padding: 6px;
     }
     
     .language-flags {
