@@ -50,9 +50,9 @@
     box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
 }
 
-/* Settings Panel - ВИПРАВЛЕНО: видалено display: none !important */
+/* Settings Panel - ГОЛОВНЕ ВИПРАВЛЕННЯ */
 .calculator-page .settings-panel {
-    display: none; /* Видалено !important */
+    display: none !important; /* Приховано за замовчуванням з !important */
     background: linear-gradient(135deg, rgba(139, 69, 19, 0.9), rgba(101, 67, 33, 0.95), rgba(62, 39, 35, 1));
     border: 3px solid #8B4513;
     border-radius: 15px;
@@ -62,9 +62,9 @@
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 2px 10px rgba(255, 215, 0, 0.1);
     position: relative;
     overflow: hidden;
-    max-height: 500px; /* Додано для обмеження висоти */
-    overflow-y: auto; /* Додано прокрутку якщо потрібно */
-    z-index: 100; /* Додано z-index для видимості */
+    max-height: 500px;
+    overflow-y: auto;
+    z-index: 100;
 }
 
 .calculator-page .settings-panel::before {
@@ -84,15 +84,18 @@
     z-index: 1;
 }
 
-.calculator-page .settings-panel.show {
-    display: block !important; /* Тепер використовуємо !important тут для перезапису */
+/* ГОЛОВНЕ ВИПРАВЛЕННЯ - класи для показу панелі з максимальною специфічністю */
+.calculator-page .settings-panel.show,
+.calculator-page .settings-panel.show.show {
+    display: block !important; /* Подвоєнний клас для максимальної специфічності */
     animation: slideDown 0.3s ease-out;
-    opacity: 1; /* Додано для впевненості */
-    visibility: visible; /* Додано для впевненості */
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
-/* Debug стилі для тестування */
-.calculator-page .settings-panel.debug {
+/* Debug стилі для тестування - з максимальною специфічністю */
+.calculator-page .settings-panel.debug,
+.calculator-page .settings-panel.debug.debug {
     display: block !important;
     background: rgba(255, 0, 0, 0.5) !important;
     border: 5px solid red !important;
