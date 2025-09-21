@@ -1,4 +1,4 @@
-// General JavaScript functions - Cleaned version
+// General JavaScript functions - ВИПРАВЛЕНА ВЕРСІЯ
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -556,16 +556,24 @@ async function initializeApp() {
         console.log(`✅ Page restored to: ${lastPage}`);
     }, 200);
     
-    // Enhanced click outside settings panel handler
+    // ВИПРАВЛЕНИЙ Enhanced click outside settings panel handler
     document.addEventListener('click', e => {
+        console.log('🖱️ Click detected, target:', e.target);
+        
         const settingsPanels = [
-            { panel: document.getElementById('settingsPanel'), btn: document.querySelector('#calculatorPage .settings-btn') },
-            { panel: document.getElementById('settingsPanelArm'), btn: document.querySelector('#armPage .settings-btn') },
-            { panel: document.getElementById('settingsPanelGrind'), btn: document.querySelector('#grindPage .settings-btn') }
+            { panel: document.getElementById('settingsPanel'), btn: document.querySelector('#calculatorPage .settings-btn'), name: 'calculator' },
+            { panel: document.getElementById('settingsPanelArm'), btn: document.querySelector('#armPage .settings-btn'), name: 'arm' },
+            { panel: document.getElementById('settingsPanelGrind'), btn: document.querySelector('#grindPage .settings-btn'), name: 'grind' }
         ];
         
-        settingsPanels.forEach(({ panel, btn }) => {
+        settingsPanels.forEach(({ panel, btn, name }) => {
             if (panel && btn) {
+                // Перевіряємо чи панель щойно відкрилась
+                if (panel.dataset.justOpened === 'true') {
+                    console.log(`⏸️ Skipping close for ${name} panel - just opened`);
+                    return;
+                }
+                
                 const isClickInsidePanel = panel.contains(e.target);
                 const isClickOnSettingsBtn = btn.contains(e.target);
                 const isClickOnCategoryButton = e.target.closest('.category-button');
@@ -576,12 +584,17 @@ async function initializeApp() {
                 const isClickOnGrindCategoryHeader = e.target.closest('.category-header-modifier');
                 const isClickOnLanguageFlag = e.target.closest('.lang-flag-btn');
                 
-                if (!isClickInsidePanel && !isClickOnSettingsBtn && 
-                    !isClickOnCategoryButton && !isClickOnBackButton && 
-                    !isClickOnCategorySwitch && !isClickOnSimpleModifier &&
-                    !isClickOnCategoryHeader && !isClickOnGrindCategoryHeader &&
-                    !isClickOnLanguageFlag) {
+                const shouldKeepOpen = isClickInsidePanel || isClickOnSettingsBtn || 
+                    isClickOnCategoryButton || isClickOnBackButton || 
+                    isClickOnCategorySwitch || isClickOnSimpleModifier ||
+                    isClickOnCategoryHeader || isClickOnGrindCategoryHeader ||
+                    isClickOnLanguageFlag;
+                
+                if (!shouldKeepOpen && panel.classList.contains('show')) {
+                    console.log(`🔒 Closing ${name} settings panel`);
                     panel.classList.remove('show');
+                } else if (shouldKeepOpen) {
+                    console.log(`✋ Keeping ${name} settings panel open`);
                 }
             }
         });
