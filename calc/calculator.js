@@ -28,6 +28,14 @@ async function loadCalcTranslations() {
                     inputPlaceholder: "Enter your pet's base stats...",
                     resultLabel: "Final Pet Stats:",
                     errorInvalidNumber: "Please enter a valid number"
+                },
+                modifiers: {
+                    slimes: { title: "Slimes" },
+                    mutation: { title: "Mutation" },
+                    evolution: { title: "Evolution and Size" },
+                    type: { title: "Type" },
+                    shiny: { name: "Shiny" },
+                    maxlvl: { name: "Max lvl" }
                 }
             }
         };
@@ -51,12 +59,17 @@ async function updateCalculatorLanguage(lang) {
     const translations = calcTranslations[currentCalcLanguage];
     if (!translations) return;
     
+    // Update calculator page title
+    const pageTitle = document.querySelector('#calculatorPage h1');
+    if (pageTitle && translations.calculator.title) {
+        pageTitle.textContent = translations.calculator.title;
+    }
+    
     // Update calculator input elements
     const inputLabel = document.querySelector('#calculatorPage .input-label');
     const inputField = document.getElementById('numberInput');
     const calculateBtn = document.querySelector('#calculatorPage .calculate-btn');
     const resultLabel = document.querySelector('#calculatorPage .stats-label');
-    const settingsTitle = document.querySelector('#settingsPanel .settings-title');
     
     if (inputLabel && translations.calculator.inputLabel) {
         inputLabel.textContent = translations.calculator.inputLabel;
@@ -74,8 +87,9 @@ async function updateCalculatorLanguage(lang) {
         resultLabel.textContent = translations.calculator.resultLabel;
     }
     
-    if (settingsTitle && translations.common.settings) {
-        settingsTitle.textContent = translations.common.settings;
+    // Recreate settings HTML with new translations
+    if (document.getElementById('settingsPanel')) {
+        createSettingsHTML();
     }
     
     console.log(`✅ Calculator language updated to: ${currentCalcLanguage}`);
@@ -165,14 +179,17 @@ let currentCategoryView = null;
 function toggleSettings() {
     const panel = document.getElementById('settingsPanel');
     if (panel) {
-        panel.classList.toggle('show');
+        const isCurrentlyShown = panel.classList.contains('show');
         
-        // При відкритті налаштувань повертаємося до основного вигляду
-        if (panel.classList.contains('show')) {
+        if (!isCurrentlyShown) {
+            // При відкритті налаштувань повертаємося до основного вигляду
             isInCategoryView = false;
             currentCategoryView = null;
             createSettingsHTML();
         }
+        
+        panel.classList.toggle('show');
+        console.log(`Settings panel ${panel.classList.contains('show') ? 'opened' : 'closed'}`);
     }
 }
 
@@ -288,7 +305,7 @@ function calculateStats() {
     resultSection.classList.add('show');
 }
 
-// Отримання назви обраного варіанту в категорії
+// Отримання назви обраного варіанту в категорії з підтримкою перекладів
 function getSelectedOptionName(categoryKey) {
     const selectedId = currentSelections[categoryKey];
     if (!selectedId) {
@@ -309,10 +326,46 @@ function getSelectedOptionName(categoryKey) {
     return option ? option.name : 'None';
 }
 
+// Отримання перекладеної назви категорії
+function getTranslatedCategoryTitle(categoryKey) {
+    if (!calcTranslations || !currentCalcLanguage) {
+        return modifierCategories[categoryKey]?.title || categoryKey;
+    }
+    
+    const translations = calcTranslations[currentCalcLanguage];
+    if (translations && translations.calculator && translations.calculator.categories && translations.calculator.categories[categoryKey]) {
+        return translations.calculator.categories[categoryKey];
+    }
+    
+    return modifierCategories[categoryKey]?.title || categoryKey;
+}
+
+// Отримання перекладеної назви простого модифікатора
+function getTranslatedModifierName(modifierKey) {
+    if (!calcTranslations || !currentCalcLanguage) {
+        return simpleModifiers[modifierKey]?.name || modifierKey;
+    }
+    
+    const translations = calcTranslations[currentCalcLanguage];
+    if (translations && translations.calculator && translations.calculator.modifiers && translations.calculator.modifiers[modifierKey]) {
+        return translations.calculator.modifiers[modifierKey];
+    }
+    
+    return simpleModifiers[modifierKey]?.name || modifierKey;
+}
+
 // Створення HTML для налаштувань
 function createSettingsHTML() {
     const panel = document.getElementById('settingsPanel');
-    if (!panel) return;
+    if (!panel) {
+        console.error('❌ Settings panel not found');
+        return;
+    }
+
+    console.log('🔧 Creating settings HTML...');
+    console.log('Current selections:', currentSelections);
+    console.log('Current language:', currentCalcLanguage);
+    console.log('Available translations:', calcTranslations);
 
     let html = '';
     
@@ -325,9 +378,10 @@ function createSettingsHTML() {
     if (isInCategoryView && currentCategoryView) {
         const category = modifierCategories[currentCategoryView];
         if (category) {
+            const categoryTitle = getTranslatedCategoryTitle(currentCategoryView);
             html += `
                 <div class="settings-header">
-                    <div class="settings-title">${category.title}</div>
+                    <div class="settings-title">${categoryTitle}</div>
                     <button type="button" class="back-btn" onclick="backToMainSettings(event)">${backText}</button>
                 </div>
             `;
@@ -358,10 +412,11 @@ function createSettingsHTML() {
         // Кнопки категорій
         for (const [categoryKey, category] of Object.entries(modifierCategories)) {
             const selectedName = getSelectedOptionName(categoryKey);
+            const categoryTitle = getTranslatedCategoryTitle(categoryKey);
             html += `
                 <button type="button" class="category-button" onclick="showCategoryPanel('${categoryKey}', event)">
                     <div class="category-button-content">
-                        <div class="category-name">${category.title}</div>
+                        <div class="category-name">${categoryTitle}</div>
                         <div class="category-selected">${selectedName}</div>
                     </div>
                     <span class="category-arrow">→</span>
@@ -371,10 +426,11 @@ function createSettingsHTML() {
         
         // Прості модифікатори
         for (const [key, modifier] of Object.entries(simpleModifiers)) {
+            const modifierName = getTranslatedModifierName(key);
             html += `
                 <div class="simple-modifier">
                     <div class="simple-modifier-label">
-                        <span>${modifier.name}</span>
+                        <span>${modifierName}</span>
                         <span class="modifier-multiplier">(x${modifier.multiplier})</span>
                     </div>
                     <label class="switch">
@@ -388,11 +444,19 @@ function createSettingsHTML() {
     }
     
     panel.innerHTML = html;
+    console.log('✅ Settings HTML created successfully');
 }
 
 // Ініціалізація калькулятора при завантаженні сторінки
 async function initializeCalculator() {
     console.log('🚀 Ініціалізація калькулятора...');
+    
+    // Check if calculator page exists
+    const calculatorPage = document.getElementById('calculatorPage');
+    if (!calculatorPage) {
+        console.error('❌ Calculator page not found');
+        return;
+    }
     
     // Load translations
     await loadCalcTranslations();
@@ -420,19 +484,28 @@ async function initializeCalculator() {
     // Додаємо обробники подій
     const numberInput = document.getElementById('numberInput');
     if (numberInput) {
-        numberInput.addEventListener('keypress', e => {
-            if (e.key === 'Enter') {
-                calculateStats();
-            }
-        });
-
-        numberInput.addEventListener('input', () => {
-            const errorMessage = document.getElementById('errorMessage');
-            if (errorMessage) errorMessage.textContent = '';
-        });
+        // Remove existing event listeners to prevent duplication
+        numberInput.removeEventListener('keypress', handleEnterKey);
+        numberInput.removeEventListener('input', clearErrorMessage);
+        
+        // Add new event listeners
+        numberInput.addEventListener('keypress', handleEnterKey);
+        numberInput.addEventListener('input', clearErrorMessage);
     }
     
     console.log('✅ Калькулятор ініціалізовано з підтримкою мов');
+}
+
+// Event handlers
+function handleEnterKey(e) {
+    if (e.key === 'Enter') {
+        calculateStats();
+    }
+}
+
+function clearErrorMessage() {
+    const errorMessage = document.getElementById('errorMessage');
+    if (errorMessage) errorMessage.textContent = '';
 }
 
 // Listen for language change events
@@ -445,3 +518,10 @@ document.addEventListener('languageChanged', async (event) => {
 // Make functions globally available
 window.updateCalculatorLanguage = updateCalculatorLanguage;
 window.loadCalcTranslations = loadCalcTranslations;
+window.toggleSettings = toggleSettings;
+window.showCategoryPanel = showCategoryPanel;
+window.backToMainSettings = backToMainSettings;
+window.handleCategoryToggle = handleCategoryToggle;
+window.toggleSimpleModifier = toggleSimpleModifier;
+window.calculateStats = calculateStats;
+window.initializeCalculator = initializeCalculator;
