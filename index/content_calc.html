@@ -1,191 +1,66 @@
-<!-- Calculator Pages Content - FIXED -->
+<!-- Calculator Pages Content - UPDATED TO MATCH PHOTO STYLE -->
 
-<!-- Pet Stats Calculator Page - SIMPLE LIKE ARM CALCULATOR -->
+<!-- Pet Stats Calculator Page - SIMPLE STYLE LIKE PHOTO -->
 <div class="page calculator-page active" id="calculatorPage">
     <div class="header-controls">
-        <h1>🐾 Pet Stats Calculator</h1>
+        <h1>🐾 Pet Calculator</h1>
         <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
     </div>
 
-    <!-- Settings Panel - SIMPLE LIKE ARM CALCULATOR -->
+    <!-- Settings Panel - SIMPLE STYLE LIKE PHOTO -->
     <div class="settings-panel" id="settingsPanel">
         <div class="settings-title">Settings</div>
         
-        <!-- Slimes (Only one active) -->
-        <div class="modifier-item">
-            <span class="modifier-label">Shock Slime (3.15x)</span>
-            <label class="switch">
-                <input type="checkbox" id="slime_shock" checked onchange="handleSlimeSelection('slime_shock')">
-                <span class="slider"></span>
-            </label>
+        <!-- Category buttons like in photo -->
+        <div class="category-button" onclick="openSlimeSettings()">
+            <div class="category-info">
+                <div class="category-label">Slimes</div>
+                <div class="category-selected">Shock</div>
+            </div>
+            <div class="category-arrow">→</div>
         </div>
 
-        <div class="modifier-item">
-            <span class="modifier-label">Neowave Slime (3.0x)</span>
-            <label class="switch">
-                <input type="checkbox" id="slime_neowave" onchange="handleSlimeSelection('slime_neowave')">
-                <span class="slider"></span>
-            </label>
+        <div class="category-button" onclick="openMutationSettings()">
+            <div class="category-info">
+                <div class="category-label">Mutation</div>
+                <div class="category-selected">Cosmic</div>
+            </div>
+            <div class="category-arrow">→</div>
         </div>
 
-        <div class="modifier-item">
-            <span class="modifier-label">Christmas Slime (2.85x)</span>
-            <label class="switch">
-                <input type="checkbox" id="slime_christmas" onchange="handleSlimeSelection('slime_christmas')">
-                <span class="slider"></span>
-            </label>
+        <div class="category-button" onclick="openEvolutionSettings()">
+            <div class="category-info">
+                <div class="category-label">Evolution and Size</div>
+                <div class="category-selected">Goliath</div>
+            </div>
+            <div class="category-arrow">→</div>
         </div>
 
-        <div class="modifier-item">
-            <span class="modifier-label">Orange Slime (2.7x)</span>
-            <label class="switch">
-                <input type="checkbox" id="slime_orange" onchange="handleSlimeSelection('slime_orange')">
-                <span class="slider"></span>
-            </label>
+        <div class="category-button" onclick="openTypeSettings()">
+            <div class="category-info">
+                <div class="category-label">Type</div>
+                <div class="category-selected">Pristine</div>
+            </div>
+            <div class="category-arrow">→</div>
         </div>
 
-        <div class="modifier-item">
-            <span class="modifier-label">Green Slime (2.55x)</span>
-            <label class="switch">
-                <input type="checkbox" id="slime_green" onchange="handleSlimeSelection('slime_green')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Black Slime (2.4x)</span>
-            <label class="switch">
-                <input type="checkbox" id="slime_black" onchange="handleSlimeSelection('slime_black')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Red Slime (2.25x)</span>
-            <label class="switch">
-                <input type="checkbox" id="slime_red" onchange="handleSlimeSelection('slime_red')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Purple Slime (1.65x)</span>
-            <label class="switch">
-                <input type="checkbox" id="slime_purple" onchange="handleSlimeSelection('slime_purple')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Blue Slime (1.4x)</span>
-            <label class="switch">
-                <input type="checkbox" id="slime_blue" onchange="handleSlimeSelection('slime_blue')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Yellow Slime (1.2x)</span>
-            <label class="switch">
-                <input type="checkbox" id="slime_yellow" onchange="handleSlimeSelection('slime_yellow')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <!-- Mutations (Only one active) -->
-        <div class="modifier-item">
-            <span class="modifier-label">Cosmic Mutation (2.5x)</span>
-            <label class="switch">
-                <input type="checkbox" id="mutation_cosmic" checked onchange="handleMutationSelection('mutation_cosmic')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Ghost Mutation (2.0x)</span>
-            <label class="switch">
-                <input type="checkbox" id="mutation_ghost" onchange="handleMutationSelection('mutation_ghost')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Rainbow Mutation (1.35x)</span>
-            <label class="switch">
-                <input type="checkbox" id="mutation_rainbow" onchange="handleMutationSelection('mutation_rainbow')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Glowing Mutation (1.2x)</span>
-            <label class="switch">
-                <input type="checkbox" id="mutation_glowing" onchange="handleMutationSelection('mutation_glowing')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <!-- Evolution/Size (Only one active) -->
-        <div class="modifier-item">
-            <span class="modifier-label">Goliath Evolution (2.5x)</span>
-            <label class="switch">
-                <input type="checkbox" id="evolution_goliath" checked onchange="handleEvolutionSelection('evolution_goliath')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Huge Evolution (2.0x)</span>
-            <label class="switch">
-                <input type="checkbox" id="evolution_huge" onchange="handleEvolutionSelection('evolution_huge')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Big Evolution (1.5x)</span>
-            <label class="switch">
-                <input type="checkbox" id="evolution_big" onchange="handleEvolutionSelection('evolution_big')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <!-- Type (Only one active) -->
-        <div class="modifier-item">
-            <span class="modifier-label">Pristine Type (2.17x)</span>
-            <label class="switch">
-                <input type="checkbox" id="type_pristine" checked onchange="handleTypeSelection('type_pristine')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Void Type (2.0x)</span>
-            <label class="switch">
-                <input type="checkbox" id="type_void" onchange="handleTypeSelection('type_void')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="modifier-item">
-            <span class="modifier-label">Golden Type (1.5x)</span>
-            <label class="switch">
-                <input type="checkbox" id="type_golden" onchange="handleTypeSelection('type_golden')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <!-- Simple modifiers (independent) -->
-        <div class="modifier-item">
-            <span class="modifier-label">Shiny (1.15x)</span>
+        <!-- Simple toggles like in photo -->
+        <div class="simple-toggle">
+            <div class="toggle-info">
+                <div class="toggle-label">Shiny</div>
+                <div class="toggle-multiplier">(x1.15)</div>
+            </div>
             <label class="switch">
                 <input type="checkbox" id="shiny" checked onchange="updatePetMultiplier()">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <div class="modifier-item">
-            <span class="modifier-label">Max Level (2.24x)</span>
+        <div class="simple-toggle">
+            <div class="toggle-info">
+                <div class="toggle-label">Max lvl</div>
+                <div class="toggle-multiplier">(x2.2388)</div>
+            </div>
             <label class="switch">
                 <input type="checkbox" id="maxlvl" checked onchange="updatePetMultiplier()">
                 <span class="slider"></span>
