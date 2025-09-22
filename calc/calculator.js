@@ -1,6 +1,6 @@
-// Pet Stats Calculator functionality with multilingual support
+// Pet Stats Calculator functionality - SIMPLIFIED VERSION
 
-// Global variables
+// Global variables for translations
 let calcTranslations = null;
 let currentCalcLanguage = 'en';
 
@@ -22,20 +22,12 @@ async function loadCalcTranslations() {
         // Fallback to English
         calcTranslations = {
             en: {
-                common: { calculate: "Calculate", settings: "Settings", back: "← Back" },
+                common: { calculate: "Calculate", settings: "Settings" },
                 calculator: {
                     inputLabel: "Enter Pet Stats:",
                     inputPlaceholder: "Enter your pet's base stats...",
                     resultLabel: "Final Pet Stats:",
                     errorInvalidNumber: "Please enter a valid number"
-                },
-                modifiers: {
-                    slimes: { title: "Slimes" },
-                    mutation: { title: "Mutation" },
-                    evolution: { title: "Evolution and Size" },
-                    type: { title: "Type" },
-                    shiny: { name: "Shiny" },
-                    maxlvl: { name: "Max lvl" }
                 }
             }
         };
@@ -59,17 +51,12 @@ async function updateCalculatorLanguage(lang) {
     const translations = calcTranslations[currentCalcLanguage];
     if (!translations) return;
     
-    // Update calculator page title
-    const pageTitle = document.querySelector('#calculatorPage h1');
-    if (pageTitle && translations.calculator.title) {
-        pageTitle.textContent = translations.calculator.title;
-    }
-    
     // Update calculator input elements
     const inputLabel = document.querySelector('#calculatorPage .input-label');
     const inputField = document.getElementById('numberInput');
     const calculateBtn = document.querySelector('#calculatorPage .calculate-btn');
     const resultLabel = document.querySelector('#calculatorPage .stats-label');
+    const settingsTitle = document.querySelector('#settingsPanel .settings-title');
     
     if (inputLabel && translations.calculator.inputLabel) {
         inputLabel.textContent = translations.calculator.inputLabel;
@@ -87,214 +74,118 @@ async function updateCalculatorLanguage(lang) {
         resultLabel.textContent = translations.calculator.resultLabel;
     }
     
-    // Recreate settings HTML with new translations
-    if (document.getElementById('settingsPanel')) {
-        createSettingsHTML();
+    if (settingsTitle && translations.common.settings) {
+        settingsTitle.textContent = translations.common.settings;
     }
     
     console.log(`✅ Calculator language updated to: ${currentCalcLanguage}`);
 }
 
-// Категорії модифікаторів
-const modifierCategories = {
-    slimes: {
-        title: "Slimes",
-        options: [
-            { id: "slime_normal", name: "Normal", multiplier: 1 },
-            { id: "slime_yellow", name: "Yellow", multiplier: 1.2 },
-            { id: "slime_blue", name: "Blue", multiplier: 1.4 },
-            { id: "slime_purple", name: "Purple", multiplier: 1.65 },
-            { id: "slime_red", name: "Red", multiplier: 2.25 },
-            { id: "slime_black", name: "Black", multiplier: 2.4 },
-            { id: "slime_green", name: "Green", multiplier: 2.55 },
-            { id: "slime_orange", name: "Orange", multiplier: 2.7 },
-            { id: "slime_christmas", name: "Christmas (Xmas)", multiplier: 2.85 },
-            { id: "slime_neowave", name: "Neowave", multiplier: 3 },
-            { id: "slime_shock", name: "Shock", multiplier: 3.15 }
-        ],
-        default: "slime_shock"
-    },
-    mutation: {
-        title: "Mutation",
-        options: [
-            { id: "mutation_normal", name: "Normal", multiplier: 1 },
-            { id: "mutation_glowing", name: "Glowing", multiplier: 1.2 },
-            { id: "mutation_rainbow", name: "Rainbow", multiplier: 1.35 },
-            { id: "mutation_ghost", name: "Ghost", multiplier: 2 },
-            { id: "mutation_cosmic", name: "Cosmic", multiplier: 2.5 }
-        ],
-        default: "mutation_cosmic"
-    },
-    evolution: {
-        title: "Evolution and Size",
-        options: [
-            { id: "evolution_baby", name: "Baby", multiplier: 1 },
-            { id: "evolution_big", name: "Big", multiplier: 1.5 },
-            { id: "evolution_huge", name: "Huge", multiplier: 2 },
-            { id: "evolution_goliath", name: "Goliath", multiplier: 2.5 }
-        ],
-        default: "evolution_goliath"
-    },
-    type: {
-        title: "Type",
-        options: [
-            { id: "type_normal", name: "Normal", multiplier: 1 },
-            { id: "type_golden", name: "Golden", multiplier: 1.5 },
-            { id: "type_void", name: "Void", multiplier: 2 },
-            { id: "type_pristine", name: "Pristine", multiplier: 2.17 }
-        ],
-        default: "type_pristine"
-    }
+// Множники для pet stats - спрощено
+const petModifiers = {
+    // Slimes
+    slime_shock: 3.15,
+    slime_neowave: 3.0,
+    slime_christmas: 2.85,
+    slime_orange: 2.7,
+    slime_green: 2.55,
+    slime_black: 2.4,
+    slime_red: 2.25,
+    slime_purple: 1.65,
+    slime_blue: 1.4,
+    slime_yellow: 1.2,
+    
+    // Mutations
+    mutation_cosmic: 2.5,
+    mutation_ghost: 2.0,
+    mutation_rainbow: 1.35,
+    mutation_glowing: 1.2,
+    
+    // Evolution/Size
+    evolution_goliath: 2.5,
+    evolution_huge: 2.0,
+    evolution_big: 1.5,
+    
+    // Type
+    type_pristine: 2.17,
+    type_void: 2.0,
+    type_golden: 1.5,
+    
+    // Simple modifiers
+    shiny: 1.15,
+    maxlvl: 2.2388
 };
 
-// Прості модифікатори
-const simpleModifiers = {
-    shiny: { name: "Shiny", multiplier: 1.15 },
-    maxlvl: { name: "Max lvl", multiplier: 2.2388 }
-};
-
-let currentSelections = {};
-
-// Ініціалізація за замовчуванням
-function initializeDefaults() {
-    console.log('🔧 Ініціалізація дефолтних значень...');
-    
-    // Встановлюємо найкращі варіанти для кожної категорії
-    for (const [categoryKey, category] of Object.entries(modifierCategories)) {
-        currentSelections[categoryKey] = category.default;
-        console.log(`✅ ${categoryKey}: ${category.default}`);
-    }
-    
-    // Включаємо прості модифікатори за замовчуванням
-    currentSelections.shiny = true;
-    currentSelections.maxlvl = true;
-    
-    console.log('📊 Поточні вибори:', currentSelections);
-}
-
-let isInCategoryView = false;
-let currentCategoryView = null;
+let petMultiplier = 1;
 
 // Показ/приховування налаштувань
 function toggleSettings() {
-    console.log('🔧 toggleSettings called');
-    
     const panel = document.getElementById('settingsPanel');
-    if (!panel) {
-        console.error('❌ Settings panel not found');
-        return;
-    }
-    
-    const isCurrentlyShown = panel.classList.contains('show');
-    console.log('Current panel state:', isCurrentlyShown ? 'shown' : 'hidden');
-    
-    if (!isCurrentlyShown) {
-        // При відкритті налаштувань повертаємося до основного вигляду
-        isInCategoryView = false;
-        currentCategoryView = null;
+    if (panel) {
+        panel.classList.toggle('show');
         
-        // Створюємо HTML перед показом
-        console.log('Creating settings HTML...');
-        createSettingsHTML();
-        
-        // Показуємо панель
-        panel.classList.add('show');
-        console.log('✅ Settings panel opened');
-        console.log('Panel classes after opening:', panel.className);
-        console.log('Panel display style:', getComputedStyle(panel).display);
-        console.log('Panel visibility:', getComputedStyle(panel).visibility);
-        console.log('Panel innerHTML length:', panel.innerHTML.length);
-        
-        // Встановлюємо флаг що панель відкрита для запобігання закриттю від general.js
-        panel.dataset.justOpened = 'true';
-        setTimeout(() => {
-            delete panel.dataset.justOpened;
-        }, 100);
-        
-    } else {
-        // Закриваємо панель
-        panel.classList.remove('show');
-        console.log('✅ Settings panel closed');
-    }
-    
-    // Force reflow to ensure CSS changes are applied
-    panel.offsetHeight;
-}
-
-// Показ підменю категорії
-function showCategoryPanel(categoryKey, event) {
-    if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
-    isInCategoryView = true;
-    currentCategoryView = categoryKey;
-    createSettingsHTML();
-}
-
-// Повернення до основних налаштувань
-function backToMainSettings(event) {
-    if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
-    isInCategoryView = false;
-    currentCategoryView = null;
-    createSettingsHTML();
-}
-
-// Обробка переключення в категорії (нова функція)
-function handleCategoryToggle(categoryKey, optionId, checkbox) {
-    // Якщо checkbox зняли, не робимо нічого (не дозволяємо зняти вибір)
-    if (!checkbox.checked) {
-        checkbox.checked = true;
-        return;
-    }
-    
-    // Знімаємо всі інші чекбокси в цій категорії
-    const categoryInputs = document.querySelectorAll(`input[name="${categoryKey}"]`);
-    categoryInputs.forEach(input => {
-        if (input.id !== optionId) {
-            input.checked = false;
+        // Prevent closing from general.js for a short time
+        if (panel.classList.contains('show')) {
+            panel.dataset.justOpened = 'true';
+            setTimeout(() => {
+                delete panel.dataset.justOpened;
+            }, 100);
         }
-    });
-    
-    // Встановлюємо новий вибір
-    currentSelections[categoryKey] = optionId;
-    
-    // Перераховуємо статистики
-    calculateStats();
+    }
 }
 
-// Обробка toggle для простих модифікаторів
-function toggleSimpleModifier(modifierKey) {
-    currentSelections[modifierKey] = !currentSelections[modifierKey];
-    calculateStats();
-}
-
-// Розрахунок загального множника
-function calculateTotalMultiplier() {
-    let multiplier = 1;
+// Обробка вибору в групі (тільки один активний)
+function handleGroupSelection(group, selectedId) {
+    const groupMap = {
+        slimes: ['slime_shock', 'slime_neowave', 'slime_christmas', 'slime_orange', 'slime_green', 'slime_black', 'slime_red', 'slime_purple', 'slime_blue', 'slime_yellow'],
+        mutations: ['mutation_cosmic', 'mutation_ghost', 'mutation_rainbow', 'mutation_glowing'],
+        evolutions: ['evolution_goliath', 'evolution_huge', 'evolution_big'],
+        types: ['type_pristine', 'type_void', 'type_golden']
+    };
     
-    // Множники з категорій
-    for (const [categoryKey, category] of Object.entries(modifierCategories)) {
-        const selectedId = currentSelections[categoryKey];
-        if (selectedId) {
-            const option = category.options.find(opt => opt.id === selectedId);
-            if (option) {
-                multiplier *= option.multiplier;
+    const selectedCheckbox = document.getElementById(selectedId);
+    
+    // Якщо чекбокс вимикається, не робимо нічого
+    if (!selectedCheckbox || !selectedCheckbox.checked) {
+        updatePetMultiplier();
+        return;
+    }
+    
+    // Вимикаємо всі інші в групі
+    const groupIds = groupMap[group];
+    if (groupIds) {
+        groupIds.forEach(id => {
+            if (id !== selectedId) {
+                const checkbox = document.getElementById(id);
+                if (checkbox) {
+                    checkbox.checked = false;
+                }
             }
+        });
+    }
+    
+    updatePetMultiplier();
+}
+
+// Обробка простих модифікаторів
+function toggleSimpleModifier(modifierKey) {
+    updatePetMultiplier();
+}
+
+// Оновлення множника
+function updatePetMultiplier() {
+    petMultiplier = 1;
+    
+    // Перевіряємо всі модифікатори
+    for (const id in petModifiers) {
+        const checkbox = document.getElementById(id);
+        if (checkbox && checkbox.checked) {
+            petMultiplier *= petModifiers[id];
         }
     }
     
-    // Прості множники
-    for (const [key, modifier] of Object.entries(simpleModifiers)) {
-        if (currentSelections[key]) {
-            multiplier *= modifier.multiplier;
-        }
-    }
-    
-    return multiplier;
+    console.log('Pet multiplier updated to:', petMultiplier);
+    calculateStats();
 }
 
 // Розрахунок результату
@@ -322,8 +213,9 @@ function calculateStats() {
         return;
     }
 
-    const multiplier = calculateTotalMultiplier();
-    const finalValue = baseValue * multiplier;
+    const finalValue = baseValue * petMultiplier;
+    
+    console.log(`Calculating: ${baseValue} * ${petMultiplier} = ${finalValue}`);
 
     resultValue.textContent = finalValue.toLocaleString('uk-UA', {
         minimumFractionDigits: finalValue % 1 === 0 ? 0 : 2,
@@ -333,163 +225,9 @@ function calculateStats() {
     resultSection.classList.add('show');
 }
 
-// Отримання назви обраного варіанту в категорії з підтримкою перекладів
-function getSelectedOptionName(categoryKey) {
-    const selectedId = currentSelections[categoryKey];
-    if (!selectedId) {
-        // Якщо нічого не вибрано, повертаємо дефолтний варіант
-        const category = modifierCategories[categoryKey];
-        if (category && category.default) {
-            currentSelections[categoryKey] = category.default;
-            const option = category.options.find(opt => opt.id === category.default);
-            return option ? option.name : 'None';
-        }
-        return 'None';
-    }
-    
-    const category = modifierCategories[categoryKey];
-    if (!category) return 'None';
-    
-    const option = category.options.find(opt => opt.id === selectedId);
-    return option ? option.name : 'None';
-}
-
-// Отримання перекладеної назви категорії
-function getTranslatedCategoryTitle(categoryKey) {
-    if (!calcTranslations || !currentCalcLanguage) {
-        return modifierCategories[categoryKey]?.title || categoryKey;
-    }
-    
-    const translations = calcTranslations[currentCalcLanguage];
-    if (translations && translations.calculator && translations.calculator.categories && translations.calculator.categories[categoryKey]) {
-        return translations.calculator.categories[categoryKey];
-    }
-    
-    return modifierCategories[categoryKey]?.title || categoryKey;
-}
-
-// Отримання перекладеної назви простого модифікатора
-function getTranslatedModifierName(modifierKey) {
-    if (!calcTranslations || !currentCalcLanguage) {
-        return simpleModifiers[modifierKey]?.name || modifierKey;
-    }
-    
-    const translations = calcTranslations[currentCalcLanguage];
-    if (translations && translations.calculator && translations.calculator.modifiers && translations.calculator.modifiers[modifierKey]) {
-        return translations.calculator.modifiers[modifierKey];
-    }
-    
-    return simpleModifiers[modifierKey]?.name || modifierKey;
-}
-
-// Створення HTML для налаштувань
-function createSettingsHTML() {
-    const panel = document.getElementById('settingsPanel');
-    if (!panel) {
-        console.error('❌ Settings panel not found');
-        return;
-    }
-
-    console.log('🔧 Creating settings HTML...');
-    console.log('Current selections:', currentSelections);
-    console.log('Current language:', currentCalcLanguage);
-    console.log('Available translations:', calcTranslations);
-
-    let html = '';
-    
-    // Get current translations
-    const translations = calcTranslations && calcTranslations[currentCalcLanguage];
-    const settingsText = (translations && translations.common.settings) || 'Settings';
-    const backText = (translations && translations.common.back) || '← Back';
-    
-    console.log('Using settings text:', settingsText);
-    console.log('Using back text:', backText);
-    
-    // Якщо ми в режимі перегляду категорії
-    if (isInCategoryView && currentCategoryView) {
-        console.log('Creating category view for:', currentCategoryView);
-        const category = modifierCategories[currentCategoryView];
-        if (category) {
-            const categoryTitle = getTranslatedCategoryTitle(currentCategoryView);
-            console.log('Category title:', categoryTitle);
-            html += `
-                <div class="settings-header">
-                    <div class="settings-title">${categoryTitle}</div>
-                    <button type="button" class="back-btn" onclick="backToMainSettings(event)">${backText}</button>
-                </div>
-            `;
-            
-            // Варіанти категорії
-            for (const option of category.options) {
-                const isSelected = currentSelections[currentCategoryView] === option.id;
-                html += `
-                    <div class="modifier-item">
-                        <div class="modifier-label">
-                            <span>${option.name}</span>
-                            <span class="modifier-multiplier">(${option.multiplier}x)</span>
-                        </div>
-                        <label class="category-switch">
-                            <input type="checkbox" id="${option.id}" name="${currentCategoryView}" 
-                                   ${isSelected ? 'checked' : ''}
-                                   onchange="handleCategoryToggle('${currentCategoryView}', '${option.id}', this)">
-                            <span class="category-slider"></span>
-                        </label>
-                    </div>
-                `;
-            }
-        }
-    } else {
-        console.log('Creating main settings view');
-        // Основний вигляд налаштувань
-        html += `<div class="settings-title">${settingsText}</div>`;
-        
-        // Кнопки категорій
-        for (const [categoryKey, category] of Object.entries(modifierCategories)) {
-            const selectedName = getSelectedOptionName(categoryKey);
-            const categoryTitle = getTranslatedCategoryTitle(categoryKey);
-            console.log(`Creating category button: ${categoryKey} - ${categoryTitle} (${selectedName})`);
-            html += `
-                <button type="button" class="category-button" onclick="showCategoryPanel('${categoryKey}', event)">
-                    <div class="category-button-content">
-                        <div class="category-name">${categoryTitle}</div>
-                        <div class="category-selected">${selectedName}</div>
-                    </div>
-                    <span class="category-arrow">→</span>
-                </button>
-            `;
-        }
-        
-        // Прості модифікатори
-        for (const [key, modifier] of Object.entries(simpleModifiers)) {
-            const modifierName = getTranslatedModifierName(key);
-            console.log(`Creating simple modifier: ${key} - ${modifierName}`);
-            html += `
-                <div class="simple-modifier">
-                    <div class="simple-modifier-label">
-                        <span>${modifierName}</span>
-                        <span class="modifier-multiplier">(x${modifier.multiplier})</span>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="${key}" ${currentSelections[key] ? 'checked' : ''} 
-                               onchange="toggleSimpleModifier('${key}')">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-            `;
-        }
-    }
-    
-    console.log('Generated HTML length:', html.length);
-    console.log('Generated HTML preview:', html.substring(0, 200) + '...');
-    
-    panel.innerHTML = html;
-    console.log('✅ Settings HTML created successfully');
-    console.log('Panel innerHTML after setting:', panel.innerHTML.length);
-}
-
-// Ініціалізація калькулятора при завантаженні сторінки
+// Ініціалізація калькулятора
 async function initializeCalculator() {
-    console.log('🚀 Ініціалізація калькулятора...');
+    console.log('🚀 Initializing pet calculator...');
     
     // Check if calculator page exists
     const calculatorPage = document.getElementById('calculatorPage');
@@ -509,43 +247,42 @@ async function initializeCalculator() {
     // Update calculator language
     await updateCalculatorLanguage(currentAppLanguage);
     
-    // Скидаємо поточні вибори
-    currentSelections = {};
+    // Встановлюємо найкращі варіанти за замовчуванням
+    const defaults = {
+        slime_shock: true,
+        mutation_cosmic: true,
+        evolution_goliath: true,
+        type_pristine: true,
+        shiny: true,
+        maxlvl: true
+    };
     
-    // Ініціалізуємо дефолтні значення
-    initializeDefaults();
+    // Встановлюємо дефолтні значення
+    for (const [id, checked] of Object.entries(defaults)) {
+        const checkbox = document.getElementById(id);
+        if (checkbox) {
+            checkbox.checked = checked;
+        }
+    }
     
-    // Створюємо HTML для налаштувань
-    createSettingsHTML();
-    
-    // Розраховуємо початкові статистики
-    calculateStats();
+    updatePetMultiplier();
 
     // Додаємо обробники подій
     const numberInput = document.getElementById('numberInput');
     if (numberInput) {
-        // Remove existing event listeners to prevent duplication
-        numberInput.removeEventListener('keypress', handleEnterKey);
-        numberInput.removeEventListener('input', clearErrorMessage);
-        
-        // Add new event listeners
-        numberInput.addEventListener('keypress', handleEnterKey);
-        numberInput.addEventListener('input', clearErrorMessage);
+        numberInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                calculateStats();
+            }
+        });
+
+        numberInput.addEventListener('input', () => {
+            const errorMessage = document.getElementById('errorMessage');
+            if (errorMessage) errorMessage.textContent = '';
+        });
     }
     
-    console.log('✅ Калькулятор ініціалізовано з підтримкою мов');
-}
-
-// Event handlers
-function handleEnterKey(e) {
-    if (e.key === 'Enter') {
-        calculateStats();
-    }
-}
-
-function clearErrorMessage() {
-    const errorMessage = document.getElementById('errorMessage');
-    if (errorMessage) errorMessage.textContent = '';
+    console.log('✅ Pet calculator initialized');
 }
 
 // Listen for language change events
@@ -555,41 +292,12 @@ document.addEventListener('languageChanged', async (event) => {
     await updateCalculatorLanguage(newLanguage);
 });
 
-// Debug функція для тестування панелі настройок
-function debugSettingsPanel() {
-    console.log('🐛 Debug Settings Panel...');
-    
-    const panel = document.getElementById('settingsPanel');
-    if (!panel) {
-        console.error('❌ Panel not found');
-        return;
-    }
-    
-    console.log('Panel element:', panel);
-    console.log('Panel classes:', panel.className);
-    console.log('Panel style display:', getComputedStyle(panel).display);
-    console.log('Panel style visibility:', getComputedStyle(panel).visibility);
-    console.log('Panel innerHTML:', panel.innerHTML.substring(0, 100) + '...');
-    
-    // Додаємо debug клас
-    panel.classList.add('debug');
-    console.log('✅ Added debug class');
-    
-    // Через 3 секунди видаляємо debug клас
-    setTimeout(() => {
-        panel.classList.remove('debug');
-        console.log('✅ Removed debug class');
-    }, 3000);
-}
-
 // Make functions globally available
 window.updateCalculatorLanguage = updateCalculatorLanguage;
 window.loadCalcTranslations = loadCalcTranslations;
 window.toggleSettings = toggleSettings;
-window.showCategoryPanel = showCategoryPanel;
-window.backToMainSettings = backToMainSettings;
-window.handleCategoryToggle = handleCategoryToggle;
+window.handleGroupSelection = handleGroupSelection;
 window.toggleSimpleModifier = toggleSimpleModifier;
+window.updatePetMultiplier = updatePetMultiplier;
 window.calculateStats = calculateStats;
 window.initializeCalculator = initializeCalculator;
-window.debugSettingsPanel = debugSettingsPanel; // Додали debug функцію
