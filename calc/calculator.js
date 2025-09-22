@@ -81,7 +81,7 @@ async function updateCalculatorLanguage(lang) {
     console.log(`✅ Calculator language updated to: ${currentCalcLanguage}`);
 }
 
-// Pet modifiers - як в arm.js
+// Pet modifiers - як в arm.js (чисті значення)
 const petModifiers = {
     // Slimes (тільки один активний)
     slime_shock: 3.15,
@@ -116,22 +116,13 @@ const petModifiers = {
     maxlvl: 2.2388
 };
 
-let petMultiplier = 1;
+let petMultiplier = 1; // Як в arm.js
 
-// ПРОСТА функція показу/приховування налаштувань - ТОЧНО як в arm.js
+// Показ/приховування налаштувань для калькулятора петів - ТОЧНО як в arm.js
 function toggleSettings() {
     const panel = document.getElementById('settingsPanel');
     if (panel) {
         panel.classList.toggle('show');
-        console.log('🔧 Settings panel toggled:', panel.classList.contains('show'));
-        
-        // Prevent closing from general.js for a short time
-        if (panel.classList.contains('show')) {
-            panel.dataset.justOpened = 'true';
-            setTimeout(() => {
-                delete panel.dataset.justOpened;
-            }, 100);
-        }
     }
 }
 
@@ -203,9 +194,9 @@ function handleTypeSelection(selectedId) {
     updatePetMultiplier();
 }
 
-// Оновлення множника - ТОЧНО як в arm.js
+// Оновлення множника для калькулятора петів - ТОЧНО як в arm.js
 function updatePetMultiplier() {
-    petMultiplier = 1;
+    petMultiplier = 1; // Базове значення
     
     // Перевіряємо всі модифікатори
     for (const id in petModifiers) {
@@ -215,13 +206,13 @@ function updatePetMultiplier() {
         }
     }
     
-    console.log('Pet multiplier updated to:', petMultiplier);
+    console.log('Pet multiplier updated to:', petMultiplier); // Для відладки
     
     // Автоматично перерахувати результат після оновлення множника
     calculateStats();
 }
 
-// Розрахунок результату - ТОЧНО як в arm.js
+// Розрахунок результату для петів - ТОЧНО як в arm.js
 function calculateStats() {
     const input = document.getElementById('numberInput');
     const resultSection = document.getElementById('resultSection');
@@ -246,10 +237,10 @@ function calculateStats() {
         return;
     }
 
-    // Просто множимо введене значення на поточний petMultiplier - як в arm.js
+    // Просто множимо введене значення на поточний petMultiplier
     const finalValue = baseValue * petMultiplier;
     
-    console.log(`Calculating: ${baseValue} * ${petMultiplier} = ${finalValue}`);
+    console.log(`Calculating: ${baseValue} * ${petMultiplier} = ${finalValue}`); // Для відладки
 
     resultValue.textContent = finalValue.toLocaleString('uk-UA', {
         minimumFractionDigits: finalValue % 1 === 0 ? 0 : 2,
@@ -259,16 +250,9 @@ function calculateStats() {
     resultSection.classList.add('show');
 }
 
-// Ініціалізація калькулятора - ТОЧНО як в arm.js
+// Ініціалізація калькулятора петів при завантаженні сторінки - ТОЧНО як в arm.js
 async function initializeCalculator() {
     console.log('🚀 Initializing pet calculator with multilingual support...');
-    
-    // Check if calculator page exists
-    const calculatorPage = document.getElementById('calculatorPage');
-    if (!calculatorPage) {
-        console.error('❌ Calculator page not found');
-        return;
-    }
     
     // Load translations
     await loadCalcTranslations();
@@ -285,7 +269,7 @@ async function initializeCalculator() {
     const shockCheckbox = document.getElementById('slime_shock');
     if (shockCheckbox) {
         shockCheckbox.checked = true;
-        console.log('Shock slime checkbox set to checked');
+        console.log('Shock slime checkbox set to checked'); // Для відладки
     }
     
     const cosmicCheckbox = document.getElementById('mutation_cosmic');
@@ -319,8 +303,7 @@ async function initializeCalculator() {
     }
     
     updatePetMultiplier();
-
-    // Додаємо обробники подій - як в arm.js
+    
     const numberInput = document.getElementById('numberInput');
     if (numberInput) {
         numberInput.addEventListener('keypress', e => {
