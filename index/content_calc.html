@@ -1,17 +1,17 @@
-<!-- Calculator Pages Content - UPDATED TO MATCH PHOTO STYLE -->
+<!-- Calculator Pages Content - UPDATED WITH MODAL SUPPORT -->
 
-<!-- Pet Stats Calculator Page - SIMPLE STYLE LIKE PHOTO -->
+<!-- Pet Stats Calculator Page - WITH WORKING MODAL SELECTION -->
 <div class="page calculator-page active" id="calculatorPage">
     <div class="header-controls">
         <h1>🐾 Pet Calculator</h1>
         <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
     </div>
 
-    <!-- Settings Panel - SIMPLE STYLE LIKE PHOTO -->
+    <!-- Settings Panel - MODAL STYLE -->
     <div class="settings-panel" id="settingsPanel">
         <div class="settings-title">Settings</div>
         
-        <!-- Category buttons like in photo -->
+        <!-- Category buttons with modal opening -->
         <div class="category-button" onclick="openSlimeSettings()">
             <div class="category-info">
                 <div class="category-label">Slimes</div>
@@ -86,47 +86,62 @@
 <!-- Arm Calculator Page -->
 <div class="page arm-page" id="armPage">
     <div class="header-controls">
-        <h1>Arm Stats Calculator</h1>
+        <h1>💪 Arm Stats Calculator</h1>
         <button class="settings-btn" onclick="toggleArmSettings()">⚙️</button>
     </div>
 
     <div class="settings-panel" id="settingsPanelArm">
         <div class="settings-title">Settings</div>
         
-        <div class="modifier-item">
-            <span class="modifier-label">1/5 golden</span>
+        <div class="simple-toggle">
+            <div class="toggle-info">
+                <div class="toggle-label">1/5 golden</div>
+                <div class="toggle-multiplier">(x1.5)</div>
+            </div>
             <label class="switch">
                 <input type="checkbox" id="golden1" onchange="handleGoldenSelection('golden1')">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <div class="modifier-item">
-            <span class="modifier-label">2/5 golden</span>
+        <div class="simple-toggle">
+            <div class="toggle-info">
+                <div class="toggle-label">2/5 golden</div>
+                <div class="toggle-multiplier">(x2.0)</div>
+            </div>
             <label class="switch">
                 <input type="checkbox" id="golden2" onchange="handleGoldenSelection('golden2')">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <div class="modifier-item">
-            <span class="modifier-label">3/5 golden</span>
+        <div class="simple-toggle">
+            <div class="toggle-info">
+                <div class="toggle-label">3/5 golden</div>
+                <div class="toggle-multiplier">(x2.5)</div>
+            </div>
             <label class="switch">
                 <input type="checkbox" id="golden3" onchange="handleGoldenSelection('golden3')">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <div class="modifier-item">
-            <span class="modifier-label">4/5 golden</span>
+        <div class="simple-toggle">
+            <div class="toggle-info">
+                <div class="toggle-label">4/5 golden</div>
+                <div class="toggle-multiplier">(x3.0)</div>
+            </div>
             <label class="switch">
                 <input type="checkbox" id="golden4" onchange="handleGoldenSelection('golden4')">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <div class="modifier-item">
-            <span class="modifier-label">5/5 golden</span>
+        <div class="simple-toggle">
+            <div class="toggle-info">
+                <div class="toggle-label">5/5 golden</div>
+                <div class="toggle-multiplier">(x4.0)</div>
+            </div>
             <label class="switch">
                 <input type="checkbox" id="golden5" checked onchange="handleGoldenSelection('golden5')">
                 <span class="slider"></span>
@@ -147,7 +162,7 @@
     </div>
 </div>
 
-<!-- Grind Calculator Page - ОНОВЛЕНИЙ З КАТЕГОРІЯМИ -->
+<!-- Grind Calculator Page -->
 <div class="page grind-page" id="grindPage">
     <div class="header-controls">
         <h1>💪 Grind Calculator</h1>
@@ -167,22 +182,31 @@
                 <span class="category-toggle-modifier">▼</span>
             </div>
             <div class="category-content" id="tpContent">
-                <div class="modifier-item">
-                    <span class="modifier-label">TP1 (+30%)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">TP1</div>
+                        <div class="toggle-multiplier">(+30%)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="tp1" onchange="handleTpSelection('tp1')">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div class="modifier-item">
-                    <span class="modifier-label">TP2 (+60%)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">TP2</div>
+                        <div class="toggle-multiplier">(+60%)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="tp2" onchange="handleTpSelection('tp2')">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div class="modifier-item">
-                    <span class="modifier-label">TP3 (+90%)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">TP3</div>
+                        <div class="toggle-multiplier">(+90%)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="tp3" onchange="handleTpSelection('tp3')">
                         <span class="slider"></span>
@@ -200,43 +224,61 @@
                 <span class="category-toggle-modifier">▼</span>
             </div>
             <div class="category-content" id="foodContent">
-                <div class="modifier-item">
-                    <span class="modifier-label">Pink Donut L1 (+5%)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">Pink Donut L1</div>
+                        <div class="toggle-multiplier">(+5%)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="chocolate_donut_1" onchange="handleFoodSelection('chocolate_donut_1', 'donut')">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div class="modifier-item">
-                    <span class="modifier-label">Vanila Donut L2 (+10%)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">Vanila Donut L2</div>
+                        <div class="toggle-multiplier">(+10%)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="chocolate_donut_2" onchange="handleFoodSelection('chocolate_donut_2', 'donut')">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div class="modifier-item">
-                    <span class="modifier-label">Chocolate Donut L3 (+15%)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">Chocolate Donut L3</div>
+                        <div class="toggle-multiplier">(+15%)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="chocolate_donut_3" onchange="handleFoodSelection('chocolate_donut_3', 'donut')">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div class="modifier-item">
-                    <span class="modifier-label">Cookie (+3%)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">Cookie</div>
+                        <div class="toggle-multiplier">(+3%)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="ench_cookie_1" onchange="handleFoodSelection('ench_cookie_1', 'cookie')">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div class="modifier-item">
-                    <span class="modifier-label">Tasty Cookie (+5%)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">Tasty Cookie</div>
+                        <div class="toggle-multiplier">(+5%)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="ench_cookie_2" onchange="handleFoodSelection('ench_cookie_2', 'cookie')">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div class="modifier-item">
-                    <span class="modifier-label">Enchanted Cookie (+7%)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">Enchanted Cookie</div>
+                        <div class="toggle-multiplier">(+7%)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="ench_cookie_3" onchange="handleFoodSelection('ench_cookie_3', 'cookie')">
                         <span class="slider"></span>
@@ -254,43 +296,61 @@
                 <span class="category-toggle-modifier">▼</span>
             </div>
             <div class="category-content" id="otherContent">
-                <div class="modifier-item">
-                    <span class="modifier-label">Time Boost (+170%)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">Time Boost</div>
+                        <div class="toggle-multiplier">(+170%)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="time" onchange="updateGrindMultiplier()">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div class="modifier-item">
-                    <span class="modifier-label">Member (2x)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">Member</div>
+                        <div class="toggle-multiplier">(2x)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="member" onchange="updateGrindMultiplier()">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div class="modifier-item">
-                    <span class="modifier-label">Premium (+20%)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">Premium</div>
+                        <div class="toggle-multiplier">(+20%)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="premium" onchange="updateGrindMultiplier()">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div class="modifier-item">
-                    <span class="modifier-label">Strength Star (+50%)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">Strength Star</div>
+                        <div class="toggle-multiplier">(+50%)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="strength_star" onchange="updateGrindMultiplier()">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div class="modifier-item">
-                    <span class="modifier-label">Sandstorm Event (2x)</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">Sandstorm Event</div>
+                        <div class="toggle-multiplier">(2x)</div>
+                    </div>
                     <label class="switch">
                         <input type="checkbox" id="sandstorm_event" onchange="updateGrindMultiplier()">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div class="modifier-item">
-                    <span class="modifier-label">Friend Boost</span>
+                <div class="simple-toggle">
+                    <div class="toggle-info">
+                        <div class="toggle-label">Friend Boost</div>
+                        <div class="toggle-multiplier">(120%)</div>
+                    </div>
                     <div class="friend-counter">
                         <button class="friend-btn" id="friendDownBtn" onclick="decreaseFriendBoost()">-</button>
                         <div class="friend-display" id="friendDisplay">120%</div>
@@ -304,7 +364,7 @@
     <!-- Input Section -->
     <div class="input-section">
         <label class="input-label" for="numberInputGrind">Enter Base Value:</label>
-        <input type="number" class="number-input" id="numberInputGrind" placeholder="Enter your base grind value...">
+        <input type="number" class="number-input" id="numberInputGrind" placeholder="Enter your base grind value..." step="any" oninput="calculateGrindStats()">
         <button class="calculate-btn" onclick="calculateGrindStats()">Calculate</button>
     </div>
 
