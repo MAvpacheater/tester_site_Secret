@@ -1,4 +1,4 @@
-// Pet Stats Calculator functionality - SIMPLE VERSION with Category Selection
+// Pet Stats Calculator functionality - FIXED VERSION with Modal Selection
 
 // Global variables for translations
 let calcTranslations = null;
@@ -122,7 +122,7 @@ const petModifiers = {
     maxlvl: 2.2388
 };
 
-// Slime options with display names
+// Options with display names
 const slimeOptions = {
     slime_shock: { name: "Shock", multiplier: "3.15x" },
     slime_neowave: { name: "Neowave", multiplier: "3.0x" },
@@ -165,31 +165,91 @@ function toggleSettings() {
     }
 }
 
-// Open category selection modals (placeholder functions)
-function openSlimeSettings() {
-    // Create a simple selection interface
-    const options = Object.entries(slimeOptions).map(([id, data]) => 
-        `<div class="option-item" onclick="selectSlime('${id}')">${data.name} (${data.multiplier})</div>`
-    ).join('');
+// Modal functions
+function createModal(title, options, currentSelected, onSelect) {
+    // Remove existing modal if any
+    const existingModal = document.getElementById('categoryModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    // Create modal
+    const modalOverlay = document.createElement('div');
+    modalOverlay.id = 'categoryModal';
+    modalOverlay.className = 'modal-overlay';
     
-    // For now, just show an alert with options - you can replace this with a modal
-    console.log('Opening slime settings...');
-    // You can implement a modal here or use a different approach
+    modalOverlay.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">${title}</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                ${Object.entries(options).map(([id, data]) => `
+                    <div class="option-item ${currentSelected === id ? 'selected' : ''}" 
+                         onclick="selectOption('${id}', '${data.name}', onSelectCallback)">
+                        <span class="option-name">${data.name}</span>
+                        <span class="option-multiplier">${data.multiplier}</span>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    // Store callback function on the element
+    modalOverlay.onSelectCallback = onSelect;
+    
+    // Add to page
+    const calculatorPage = document.getElementById('calculatorPage');
+    calculatorPage.appendChild(modalOverlay);
+    
+    // Show modal
+    setTimeout(() => modalOverlay.classList.add('show'), 10);
+    
+    // Close on overlay click
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+            closeModal();
+        }
+    });
+}
+
+function closeModal() {
+    const modal = document.getElementById('categoryModal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => modal.remove(), 300);
+    }
+}
+
+function selectOption(optionId, optionName, callback) {
+    callback(optionId, optionName);
+    closeModal();
+}
+
+// Category opening functions with modals
+function openSlimeSettings() {
+    createModal('Select Slime Type', slimeOptions, selectedSlime, (slimeId, slimeName) => {
+        selectSlime(slimeId);
+    });
 }
 
 function openMutationSettings() {
-    console.log('Opening mutation settings...');
-    // Similar implementation for mutations
+    createModal('Select Mutation', mutationOptions, selectedMutation, (mutationId, mutationName) => {
+        selectMutation(mutationId);
+    });
 }
 
 function openEvolutionSettings() {
-    console.log('Opening evolution settings...');
-    // Similar implementation for evolution
+    createModal('Select Evolution/Size', evolutionOptions, selectedEvolution, (evolutionId, evolutionName) => {
+        selectEvolution(evolutionId);
+    });
 }
 
 function openTypeSettings() {
-    console.log('Opening type settings...');
-    // Similar implementation for types
+    createModal('Select Type', typeOptions, selectedType, (typeId, typeName) => {
+        selectType(typeId);
+    });
 }
 
 // Selection functions
@@ -306,7 +366,7 @@ function calculateStats() {
 
 // Initialize calculator
 async function initializeCalculator() {
-    console.log('🚀 Initializing pet calculator with simple settings...');
+    console.log('🚀 Initializing pet calculator with modal selection...');
     
     // Load translations
     await loadCalcTranslations();
@@ -359,7 +419,7 @@ async function initializeCalculator() {
         });
     }
     
-    console.log('✅ Pet calculator initialized');
+    console.log('✅ Pet calculator initialized with modal selection');
 }
 
 // Listen for language change events
@@ -367,6 +427,16 @@ document.addEventListener('languageChanged', async (event) => {
     const newLanguage = event.detail.language;
     console.log('🌍 Calculator received language change:', newLanguage);
     await updateCalculatorLanguage(newLanguage);
+});
+
+// Keyboard support for modals
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('categoryModal');
+        if (modal && modal.classList.contains('show')) {
+            closeModal();
+        }
+    }
 });
 
 // Make functions globally available
@@ -384,3 +454,5 @@ window.selectType = selectType;
 window.updatePetMultiplier = updatePetMultiplier;
 window.calculateStats = calculateStats;
 window.initializeCalculator = initializeCalculator;
+window.closeModal = closeModal;
+window.selectOption = selectOption;
