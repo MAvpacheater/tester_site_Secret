@@ -1,8 +1,14 @@
-// Pet Stats Calculator functionality - SIMPLE VERSION (like arm.js)
+// Pet Stats Calculator functionality - SIMPLE VERSION with Category Selection
 
 // Global variables for translations
 let calcTranslations = null;
 let currentCalcLanguage = 'en';
+
+// Current selected options
+let selectedSlime = 'slime_shock';
+let selectedMutation = 'mutation_cosmic';
+let selectedEvolution = 'evolution_goliath';
+let selectedType = 'type_pristine';
 
 // Load calculator translations
 async function loadCalcTranslations() {
@@ -81,9 +87,9 @@ async function updateCalculatorLanguage(lang) {
     console.log(`✅ Calculator language updated to: ${currentCalcLanguage}`);
 }
 
-// Pet modifiers - як в arm.js (чисті значення)
+// Pet modifiers
 const petModifiers = {
-    // Slimes (тільки один активний)
+    // Slimes
     slime_shock: 3.15,
     slime_neowave: 3.0,
     slime_christmas: 2.85,
@@ -95,30 +101,63 @@ const petModifiers = {
     slime_blue: 1.4,
     slime_yellow: 1.2,
     
-    // Mutations (тільки один активний)
+    // Mutations
     mutation_cosmic: 2.5,
     mutation_ghost: 2.0,
     mutation_rainbow: 1.35,
     mutation_glowing: 1.2,
     
-    // Evolution/Size (тільки один активний)
+    // Evolution/Size
     evolution_goliath: 2.5,
     evolution_huge: 2.0,
     evolution_big: 1.5,
     
-    // Type (тільки один активний)
+    // Type
     type_pristine: 2.17,
     type_void: 2.0,
     type_golden: 1.5,
     
-    // Simple modifiers (незалежні)
+    // Simple modifiers
     shiny: 1.15,
     maxlvl: 2.2388
 };
 
-let petMultiplier = 1; // Як в arm.js
+// Slime options with display names
+const slimeOptions = {
+    slime_shock: { name: "Shock", multiplier: "3.15x" },
+    slime_neowave: { name: "Neowave", multiplier: "3.0x" },
+    slime_christmas: { name: "Christmas", multiplier: "2.85x" },
+    slime_orange: { name: "Orange", multiplier: "2.7x" },
+    slime_green: { name: "Green", multiplier: "2.55x" },
+    slime_black: { name: "Black", multiplier: "2.4x" },
+    slime_red: { name: "Red", multiplier: "2.25x" },
+    slime_purple: { name: "Purple", multiplier: "1.65x" },
+    slime_blue: { name: "Blue", multiplier: "1.4x" },
+    slime_yellow: { name: "Yellow", multiplier: "1.2x" }
+};
 
-// Показ/приховування налаштувань для калькулятора петів - ТОЧНО як в arm.js
+const mutationOptions = {
+    mutation_cosmic: { name: "Cosmic", multiplier: "2.5x" },
+    mutation_ghost: { name: "Ghost", multiplier: "2.0x" },
+    mutation_rainbow: { name: "Rainbow", multiplier: "1.35x" },
+    mutation_glowing: { name: "Glowing", multiplier: "1.2x" }
+};
+
+const evolutionOptions = {
+    evolution_goliath: { name: "Goliath", multiplier: "2.5x" },
+    evolution_huge: { name: "Huge", multiplier: "2.0x" },
+    evolution_big: { name: "Big", multiplier: "1.5x" }
+};
+
+const typeOptions = {
+    type_pristine: { name: "Pristine", multiplier: "2.17x" },
+    type_void: { name: "Void", multiplier: "2.0x" },
+    type_golden: { name: "Golden", multiplier: "1.5x" }
+};
+
+let petMultiplier = 1;
+
+// Show/hide settings
 function toggleSettings() {
     const panel = document.getElementById('settingsPanel');
     if (panel) {
@@ -126,93 +165,110 @@ function toggleSettings() {
     }
 }
 
-// Обробка вибору Slimes (тільки один активний) - як в arm.js handleGoldenSelection
-function handleSlimeSelection(selectedId) {
-    const slimeIds = ['slime_shock', 'slime_neowave', 'slime_christmas', 'slime_orange', 'slime_green', 'slime_black', 'slime_red', 'slime_purple', 'slime_blue', 'slime_yellow'];
+// Open category selection modals (placeholder functions)
+function openSlimeSettings() {
+    // Create a simple selection interface
+    const options = Object.entries(slimeOptions).map(([id, data]) => 
+        `<div class="option-item" onclick="selectSlime('${id}')">${data.name} (${data.multiplier})</div>`
+    ).join('');
     
-    // Вимикаємо всі інші slimes
-    slimeIds.forEach(id => {
-        if (id !== selectedId) {
-            const checkbox = document.getElementById(id);
-            if (checkbox) {
-                checkbox.checked = false;
-            }
-        }
-    });
-    
+    // For now, just show an alert with options - you can replace this with a modal
+    console.log('Opening slime settings...');
+    // You can implement a modal here or use a different approach
+}
+
+function openMutationSettings() {
+    console.log('Opening mutation settings...');
+    // Similar implementation for mutations
+}
+
+function openEvolutionSettings() {
+    console.log('Opening evolution settings...');
+    // Similar implementation for evolution
+}
+
+function openTypeSettings() {
+    console.log('Opening type settings...');
+    // Similar implementation for types
+}
+
+// Selection functions
+function selectSlime(slimeId) {
+    selectedSlime = slimeId;
+    updateCategoryDisplay('slime', slimeOptions[slimeId].name);
     updatePetMultiplier();
 }
 
-// Обробка вибору Mutations (тільки один активний)
-function handleMutationSelection(selectedId) {
-    const mutationIds = ['mutation_cosmic', 'mutation_ghost', 'mutation_rainbow', 'mutation_glowing'];
-    
-    // Вимикаємо всі інші mutations
-    mutationIds.forEach(id => {
-        if (id !== selectedId) {
-            const checkbox = document.getElementById(id);
-            if (checkbox) {
-                checkbox.checked = false;
-            }
-        }
-    });
-    
+function selectMutation(mutationId) {
+    selectedMutation = mutationId;
+    updateCategoryDisplay('mutation', mutationOptions[mutationId].name);
     updatePetMultiplier();
 }
 
-// Обробка вибору Evolution/Size (тільки один активний)
-function handleEvolutionSelection(selectedId) {
-    const evolutionIds = ['evolution_goliath', 'evolution_huge', 'evolution_big'];
-    
-    // Вимикаємо всі інші evolutions
-    evolutionIds.forEach(id => {
-        if (id !== selectedId) {
-            const checkbox = document.getElementById(id);
-            if (checkbox) {
-                checkbox.checked = false;
-            }
-        }
-    });
-    
+function selectEvolution(evolutionId) {
+    selectedEvolution = evolutionId;
+    updateCategoryDisplay('evolution', evolutionOptions[evolutionId].name);
     updatePetMultiplier();
 }
 
-// Обробка вибору Type (тільки один активний)
-function handleTypeSelection(selectedId) {
-    const typeIds = ['type_pristine', 'type_void', 'type_golden'];
-    
-    // Вимикаємо всі інші types
-    typeIds.forEach(id => {
-        if (id !== selectedId) {
-            const checkbox = document.getElementById(id);
-            if (checkbox) {
-                checkbox.checked = false;
-            }
-        }
-    });
-    
+function selectType(typeId) {
+    selectedType = typeId;
+    updateCategoryDisplay('type', typeOptions[typeId].name);
     updatePetMultiplier();
 }
 
-// Оновлення множника для калькулятора петів - ТОЧНО як в arm.js
+// Update category display
+function updateCategoryDisplay(category, selectedName) {
+    const categoryButtons = document.querySelectorAll('.category-button');
+    categoryButtons.forEach(button => {
+        const label = button.querySelector('.category-label').textContent.toLowerCase();
+        if (label.includes(category.toLowerCase()) || 
+            (category === 'evolution' && label.includes('evolution')) ||
+            (category === 'slime' && label.includes('slimes'))) {
+            const selectedElement = button.querySelector('.category-selected');
+            if (selectedElement) {
+                selectedElement.textContent = selectedName;
+            }
+        }
+    });
+}
+
+// Update pet multiplier
 function updatePetMultiplier() {
-    petMultiplier = 1; // Базове значення
+    petMultiplier = 1;
     
-    // Перевіряємо всі модифікатори
-    for (const id in petModifiers) {
-        const checkbox = document.getElementById(id);
-        if (checkbox && checkbox.checked) {
-            petMultiplier *= petModifiers[id];
-        }
+    // Add selected category modifiers
+    if (selectedSlime && petModifiers[selectedSlime]) {
+        petMultiplier *= petModifiers[selectedSlime];
+    }
+    if (selectedMutation && petModifiers[selectedMutation]) {
+        petMultiplier *= petModifiers[selectedMutation];
+    }
+    if (selectedEvolution && petModifiers[selectedEvolution]) {
+        petMultiplier *= petModifiers[selectedEvolution];
+    }
+    if (selectedType && petModifiers[selectedType]) {
+        petMultiplier *= petModifiers[selectedType];
     }
     
-    console.log('Pet multiplier updated to:', petMultiplier); // Для відладки
+    // Add simple toggle modifiers
+    const shinyCheckbox = document.getElementById('shiny');
+    if (shinyCheckbox && shinyCheckbox.checked) {
+        petMultiplier *= petModifiers.shiny;
+    }
     
-    // Автоматично перерахувати результат після оновлення множника
+    const maxlvlCheckbox = document.getElementById('maxlvl');
+    if (maxlvlCheckbox && maxlvlCheckbox.checked) {
+        petMultiplier *= petModifiers.maxlvl;
+    }
+    
+    console.log('Pet multiplier updated to:', petMultiplier);
+    
+    // Auto-calculate if input has value
     calculateStats();
 }
 
-// Розрахунок результату для петів - ТОЧНО як в arm.js
+// Calculate stats
 function calculateStats() {
     const input = document.getElementById('numberInput');
     const resultSection = document.getElementById('resultSection');
@@ -227,7 +283,6 @@ function calculateStats() {
 
     if (isNaN(baseValue) || input.value.trim() === '') {
         if (input.value.trim() !== '') {
-            // Use translated error message
             const translations = calcTranslations && calcTranslations[currentCalcLanguage];
             const errorText = (translations && translations.calculator && translations.calculator.errorInvalidNumber) 
                 || 'Please enter a valid number';
@@ -237,10 +292,9 @@ function calculateStats() {
         return;
     }
 
-    // Просто множимо введене значення на поточний petMultiplier
     const finalValue = baseValue * petMultiplier;
     
-    console.log(`Calculating: ${baseValue} * ${petMultiplier} = ${finalValue}`); // Для відладки
+    console.log(`Calculating: ${baseValue} * ${petMultiplier} = ${finalValue}`);
 
     resultValue.textContent = finalValue.toLocaleString('uk-UA', {
         minimumFractionDigits: finalValue % 1 === 0 ? 0 : 2,
@@ -250,9 +304,9 @@ function calculateStats() {
     resultSection.classList.add('show');
 }
 
-// Ініціалізація калькулятора петів при завантаженні сторінки - ТОЧНО як в arm.js
+// Initialize calculator
 async function initializeCalculator() {
-    console.log('🚀 Initializing pet calculator with multilingual support...');
+    console.log('🚀 Initializing pet calculator with simple settings...');
     
     // Load translations
     await loadCalcTranslations();
@@ -265,45 +319,32 @@ async function initializeCalculator() {
     // Update calculator language
     await updateCalculatorLanguage(currentAppLanguage);
     
-    // Встановлюємо найкращі варіанти за замовчуванням - як в arm.js з golden5
-    const shockCheckbox = document.getElementById('slime_shock');
-    if (shockCheckbox) {
-        shockCheckbox.checked = true;
-        console.log('Shock slime checkbox set to checked'); // Для відладки
-    }
+    // Set default values
+    selectedSlime = 'slime_shock';
+    selectedMutation = 'mutation_cosmic';
+    selectedEvolution = 'evolution_goliath';
+    selectedType = 'type_pristine';
     
-    const cosmicCheckbox = document.getElementById('mutation_cosmic');
-    if (cosmicCheckbox) {
-        cosmicCheckbox.checked = true;
-        console.log('Cosmic mutation checkbox set to checked');
-    }
-    
-    const goliathCheckbox = document.getElementById('evolution_goliath');
-    if (goliathCheckbox) {
-        goliathCheckbox.checked = true;
-        console.log('Goliath evolution checkbox set to checked');
-    }
-    
-    const pristineCheckbox = document.getElementById('type_pristine');
-    if (pristineCheckbox) {
-        pristineCheckbox.checked = true;
-        console.log('Pristine type checkbox set to checked');
-    }
-    
+    // Set default checkboxes
     const shinyCheckbox = document.getElementById('shiny');
     if (shinyCheckbox) {
         shinyCheckbox.checked = true;
-        console.log('Shiny checkbox set to checked');
     }
     
     const maxlvlCheckbox = document.getElementById('maxlvl');
     if (maxlvlCheckbox) {
         maxlvlCheckbox.checked = true;
-        console.log('Maxlvl checkbox set to checked');
     }
+    
+    // Update display
+    updateCategoryDisplay('slime', slimeOptions[selectedSlime].name);
+    updateCategoryDisplay('mutation', mutationOptions[selectedMutation].name);
+    updateCategoryDisplay('evolution', evolutionOptions[selectedEvolution].name);
+    updateCategoryDisplay('type', typeOptions[selectedType].name);
     
     updatePetMultiplier();
     
+    // Add event listeners
     const numberInput = document.getElementById('numberInput');
     if (numberInput) {
         numberInput.addEventListener('keypress', e => {
@@ -318,7 +359,7 @@ async function initializeCalculator() {
         });
     }
     
-    console.log('✅ Pet calculator initialized with multilingual support');
+    console.log('✅ Pet calculator initialized');
 }
 
 // Listen for language change events
@@ -328,14 +369,18 @@ document.addEventListener('languageChanged', async (event) => {
     await updateCalculatorLanguage(newLanguage);
 });
 
-// Make functions globally available - як в arm.js
+// Make functions globally available
 window.updateCalculatorLanguage = updateCalculatorLanguage;
 window.loadCalcTranslations = loadCalcTranslations;
 window.toggleSettings = toggleSettings;
-window.handleSlimeSelection = handleSlimeSelection;
-window.handleMutationSelection = handleMutationSelection;
-window.handleEvolutionSelection = handleEvolutionSelection;
-window.handleTypeSelection = handleTypeSelection;
+window.openSlimeSettings = openSlimeSettings;
+window.openMutationSettings = openMutationSettings;
+window.openEvolutionSettings = openEvolutionSettings;
+window.openTypeSettings = openTypeSettings;
+window.selectSlime = selectSlime;
+window.selectMutation = selectMutation;
+window.selectEvolution = selectEvolution;
+window.selectType = selectType;
 window.updatePetMultiplier = updatePetMultiplier;
 window.calculateStats = calculateStats;
 window.initializeCalculator = initializeCalculator;
