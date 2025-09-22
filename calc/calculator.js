@@ -1,4 +1,4 @@
-// Pet Stats Calculator functionality - SIMPLIFIED VERSION
+// Pet Stats Calculator functionality - SIMPLIFIED VERSION (like arm.js and grind.js)
 
 // Global variables for translations
 let calcTranslations = null;
@@ -81,9 +81,9 @@ async function updateCalculatorLanguage(lang) {
     console.log(`✅ Calculator language updated to: ${currentCalcLanguage}`);
 }
 
-// Множники для pet stats - спрощено
+// Множники для pet stats - як в arm.js та grind.js
 const petModifiers = {
-    // Slimes
+    // Slimes (тільки один активний)
     slime_shock: 3.15,
     slime_neowave: 3.0,
     slime_christmas: 2.85,
@@ -95,23 +95,23 @@ const petModifiers = {
     slime_blue: 1.4,
     slime_yellow: 1.2,
     
-    // Mutations
+    // Mutations (тільки один активний)
     mutation_cosmic: 2.5,
     mutation_ghost: 2.0,
     mutation_rainbow: 1.35,
     mutation_glowing: 1.2,
     
-    // Evolution/Size
+    // Evolution/Size (тільки один активний)
     evolution_goliath: 2.5,
     evolution_huge: 2.0,
     evolution_big: 1.5,
     
-    // Type
+    // Type (тільки один активний)
     type_pristine: 2.17,
     type_void: 2.0,
     type_golden: 1.5,
     
-    // Simple modifiers
+    // Simple modifiers (незалежні)
     shiny: 1.15,
     maxlvl: 2.2388
 };
@@ -134,45 +134,75 @@ function toggleSettings() {
     }
 }
 
-// Обробка вибору в групі (тільки один активний)
-function handleGroupSelection(group, selectedId) {
-    const groupMap = {
-        slimes: ['slime_shock', 'slime_neowave', 'slime_christmas', 'slime_orange', 'slime_green', 'slime_black', 'slime_red', 'slime_purple', 'slime_blue', 'slime_yellow'],
-        mutations: ['mutation_cosmic', 'mutation_ghost', 'mutation_rainbow', 'mutation_glowing'],
-        evolutions: ['evolution_goliath', 'evolution_huge', 'evolution_big'],
-        types: ['type_pristine', 'type_void', 'type_golden']
-    };
+// Обробка вибору Slimes (тільки один активний) - як в arm.js handleGoldenSelection
+function handleSlimeSelection(selectedId) {
+    const slimeIds = ['slime_shock', 'slime_neowave', 'slime_christmas', 'slime_orange', 'slime_green', 'slime_black', 'slime_red', 'slime_purple', 'slime_blue', 'slime_yellow'];
     
-    const selectedCheckbox = document.getElementById(selectedId);
-    
-    // Якщо чекбокс вимикається, не робимо нічого
-    if (!selectedCheckbox || !selectedCheckbox.checked) {
-        updatePetMultiplier();
-        return;
-    }
-    
-    // Вимикаємо всі інші в групі
-    const groupIds = groupMap[group];
-    if (groupIds) {
-        groupIds.forEach(id => {
-            if (id !== selectedId) {
-                const checkbox = document.getElementById(id);
-                if (checkbox) {
-                    checkbox.checked = false;
-                }
+    // Вимикаємо всі інші slimes
+    slimeIds.forEach(id => {
+        if (id !== selectedId) {
+            const checkbox = document.getElementById(id);
+            if (checkbox) {
+                checkbox.checked = false;
             }
-        });
-    }
+        }
+    });
     
     updatePetMultiplier();
 }
 
-// Обробка простих модифікаторів
-function toggleSimpleModifier(modifierKey) {
+// Обробка вибору Mutations (тільки один активний)
+function handleMutationSelection(selectedId) {
+    const mutationIds = ['mutation_cosmic', 'mutation_ghost', 'mutation_rainbow', 'mutation_glowing'];
+    
+    // Вимикаємо всі інші mutations
+    mutationIds.forEach(id => {
+        if (id !== selectedId) {
+            const checkbox = document.getElementById(id);
+            if (checkbox) {
+                checkbox.checked = false;
+            }
+        }
+    });
+    
     updatePetMultiplier();
 }
 
-// Оновлення множника
+// Обробка вибору Evolution/Size (тільки один активний)
+function handleEvolutionSelection(selectedId) {
+    const evolutionIds = ['evolution_goliath', 'evolution_huge', 'evolution_big'];
+    
+    // Вимикаємо всі інші evolutions
+    evolutionIds.forEach(id => {
+        if (id !== selectedId) {
+            const checkbox = document.getElementById(id);
+            if (checkbox) {
+                checkbox.checked = false;
+            }
+        }
+    });
+    
+    updatePetMultiplier();
+}
+
+// Обробка вибору Type (тільки один активний)
+function handleTypeSelection(selectedId) {
+    const typeIds = ['type_pristine', 'type_void', 'type_golden'];
+    
+    // Вимикаємо всі інші types
+    typeIds.forEach(id => {
+        if (id !== selectedId) {
+            const checkbox = document.getElementById(id);
+            if (checkbox) {
+                checkbox.checked = false;
+            }
+        }
+    });
+    
+    updatePetMultiplier();
+}
+
+// Оновлення множника - як в arm.js та grind.js
 function updatePetMultiplier() {
     petMultiplier = 1;
     
@@ -185,10 +215,12 @@ function updatePetMultiplier() {
     }
     
     console.log('Pet multiplier updated to:', petMultiplier);
+    
+    // Автоматично перерахувати результат після оновлення множника
     calculateStats();
 }
 
-// Розрахунок результату
+// Розрахунок результату - як в arm.js та grind.js
 function calculateStats() {
     const input = document.getElementById('numberInput');
     const resultSection = document.getElementById('resultSection');
@@ -213,6 +245,7 @@ function calculateStats() {
         return;
     }
 
+    // Просто множимо введене значення на поточний petMultiplier - як в arm.js
     const finalValue = baseValue * petMultiplier;
     
     console.log(`Calculating: ${baseValue} * ${petMultiplier} = ${finalValue}`);
@@ -225,9 +258,9 @@ function calculateStats() {
     resultSection.classList.add('show');
 }
 
-// Ініціалізація калькулятора
+// Ініціалізація калькулятора - як в arm.js та grind.js
 async function initializeCalculator() {
-    console.log('🚀 Initializing pet calculator...');
+    console.log('🚀 Initializing pet calculator with multilingual support...');
     
     // Check if calculator page exists
     const calculatorPage = document.getElementById('calculatorPage');
@@ -247,27 +280,40 @@ async function initializeCalculator() {
     // Update calculator language
     await updateCalculatorLanguage(currentAppLanguage);
     
-    // Встановлюємо найкращі варіанти за замовчуванням
-    const defaults = {
-        slime_shock: true,
-        mutation_cosmic: true,
-        evolution_goliath: true,
-        type_pristine: true,
-        shiny: true,
-        maxlvl: true
-    };
+    // Встановлюємо найкращі варіанти за замовчуванням - як в arm.js з golden5
+    const shockCheckbox = document.getElementById('slime_shock');
+    if (shockCheckbox) {
+        shockCheckbox.checked = true;
+    }
     
-    // Встановлюємо дефолтні значення
-    for (const [id, checked] of Object.entries(defaults)) {
-        const checkbox = document.getElementById(id);
-        if (checkbox) {
-            checkbox.checked = checked;
-        }
+    const cosmicCheckbox = document.getElementById('mutation_cosmic');
+    if (cosmicCheckbox) {
+        cosmicCheckbox.checked = true;
+    }
+    
+    const goliathCheckbox = document.getElementById('evolution_goliath');
+    if (goliathCheckbox) {
+        goliathCheckbox.checked = true;
+    }
+    
+    const pristineCheckbox = document.getElementById('type_pristine');
+    if (pristineCheckbox) {
+        pristineCheckbox.checked = true;
+    }
+    
+    const shinyCheckbox = document.getElementById('shiny');
+    if (shinyCheckbox) {
+        shinyCheckbox.checked = true;
+    }
+    
+    const maxlvlCheckbox = document.getElementById('maxlvl');
+    if (maxlvlCheckbox) {
+        maxlvlCheckbox.checked = true;
     }
     
     updatePetMultiplier();
 
-    // Додаємо обробники подій
+    // Додаємо обробники подій - як в arm.js та grind.js
     const numberInput = document.getElementById('numberInput');
     if (numberInput) {
         numberInput.addEventListener('keypress', e => {
@@ -282,7 +328,7 @@ async function initializeCalculator() {
         });
     }
     
-    console.log('✅ Pet calculator initialized');
+    console.log('✅ Pet calculator initialized with multilingual support');
 }
 
 // Listen for language change events
@@ -292,12 +338,14 @@ document.addEventListener('languageChanged', async (event) => {
     await updateCalculatorLanguage(newLanguage);
 });
 
-// Make functions globally available
+// Make functions globally available - як в arm.js та grind.js
 window.updateCalculatorLanguage = updateCalculatorLanguage;
 window.loadCalcTranslations = loadCalcTranslations;
 window.toggleSettings = toggleSettings;
-window.handleGroupSelection = handleGroupSelection;
-window.toggleSimpleModifier = toggleSimpleModifier;
+window.handleSlimeSelection = handleSlimeSelection;
+window.handleMutationSelection = handleMutationSelection;
+window.handleEvolutionSelection = handleEvolutionSelection;
+window.handleTypeSelection = handleTypeSelection;
 window.updatePetMultiplier = updatePetMultiplier;
 window.calculateStats = calculateStats;
 window.initializeCalculator = initializeCalculator;
