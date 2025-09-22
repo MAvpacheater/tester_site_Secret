@@ -33,7 +33,7 @@
 .calculator-page .settings-btn,
 .calculator-page .back-btn,
 .calculator-page .calculate-btn {
-    border-radius: 12px;
+    border-radius: 25px; /* Made more rounded */
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s ease;
@@ -235,6 +235,117 @@
     box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
 }
 
+/* Modal Styles */
+.calculator-page .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.calculator-page .modal-overlay.show {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.calculator-page .modal-content {
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.95), rgba(101, 67, 33, 0.98), rgba(62, 39, 35, 1));
+    border: 3px solid #8B4513;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 400px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.calculator-page .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.calculator-page .modal-title {
+    color: #FFD700;
+    font-size: 1.4em;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.calculator-page .modal-close {
+    background: none;
+    border: none;
+    color: #FFD700;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.calculator-page .modal-close:hover {
+    background: rgba(255, 215, 0, 0.2);
+    transform: scale(1.1);
+}
+
+.calculator-page .option-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, rgba(139, 69, 19, 0.4), rgba(101, 67, 33, 0.5));
+    border: 2px solid rgba(139, 69, 19, 0.6);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.calculator-page .option-item:hover {
+    background: linear-gradient(135deg, #A0522D, #8B4513);
+    border-color: #FFD700;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+}
+
+.calculator-page .option-item.selected {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #2F1B14;
+    border-color: #FFD700;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
+}
+
+.calculator-page .option-name {
+    color: #FFD700;
+    font-weight: 600;
+    font-size: 1em;
+}
+
+.calculator-page .option-item.selected .option-name {
+    color: #2F1B14;
+}
+
+.calculator-page .option-multiplier {
+    color: rgba(245, 222, 179, 0.8);
+    font-size: 0.9em;
+}
+
+.calculator-page .option-item.selected .option-multiplier {
+    color: rgba(47, 27, 20, 0.8);
+}
+
 /* Input Section */
 .calculator-page .input-label {
     display: block;
@@ -250,7 +361,7 @@
     padding: 15px 20px;
     font-size: 1.2em;
     border: 3px solid #8B4513;
-    border-radius: 12px;
+    border-radius: 15px; /* Made more rounded */
     outline: none;
     transition: all 0.3s ease;
     background: linear-gradient(135deg, rgba(139, 69, 19, 0.2), rgba(62, 39, 35, 0.3));
@@ -283,6 +394,7 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
+    border-radius: 25px; /* Made fully rounded */
 }
 
 .calculator-page .calculate-btn::before {
@@ -379,6 +491,11 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 @keyframes shine {
     0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
     100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
@@ -405,4 +522,5 @@
     .calculator-page .toggle-label { font-size: 1em; }
     .calculator-page .number-input { font-size: 1.1em; padding: 12px 15px; }
     .calculator-page .calculate-btn { padding: 12px 25px; font-size: 1.1em; }
+    .calculator-page .modal-content { padding: 20px; }
 }
