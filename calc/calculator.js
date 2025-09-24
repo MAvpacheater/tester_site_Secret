@@ -125,37 +125,37 @@ const petModifiers = {
     maxlvl: 2.2388
 };
 
-// Options with display names
+// Options with display names - sorted from worst to best multipliers
 const slimeOptions = {
-    slime_shock: { name: "Shock", multiplier: "3.15x" },
-    slime_neowave: { name: "Neowave", multiplier: "3.0x" },
-    slime_christmas: { name: "Christmas", multiplier: "2.85x" },
-    slime_orange: { name: "Orange", multiplier: "2.7x" },
-    slime_green: { name: "Green", multiplier: "2.55x" },
-    slime_black: { name: "Black", multiplier: "2.4x" },
-    slime_red: { name: "Red", multiplier: "2.25x" },
-    slime_purple: { name: "Purple", multiplier: "1.65x" },
+    slime_yellow: { name: "Yellow", multiplier: "1.2x" },
     slime_blue: { name: "Blue", multiplier: "1.4x" },
-    slime_yellow: { name: "Yellow", multiplier: "1.2x" }
+    slime_purple: { name: "Purple", multiplier: "1.65x" },
+    slime_red: { name: "Red", multiplier: "2.25x" },
+    slime_black: { name: "Black", multiplier: "2.4x" },
+    slime_green: { name: "Green", multiplier: "2.55x" },
+    slime_orange: { name: "Orange", multiplier: "2.7x" },
+    slime_christmas: { name: "Christmas", multiplier: "2.85x" },
+    slime_neowave: { name: "Neowave", multiplier: "3.0x" },
+    slime_shock: { name: "Shock", multiplier: "3.15x" }
 };
 
 const mutationOptions = {
-    mutation_cosmic: { name: "Cosmic", multiplier: "2.5x" },
-    mutation_ghost: { name: "Ghost", multiplier: "2.0x" },
+    mutation_glowing: { name: "Glowing", multiplier: "1.2x" },
     mutation_rainbow: { name: "Rainbow", multiplier: "1.35x" },
-    mutation_glowing: { name: "Glowing", multiplier: "1.2x" }
+    mutation_ghost: { name: "Ghost", multiplier: "2.0x" },
+    mutation_cosmic: { name: "Cosmic", multiplier: "2.5x" }
 };
 
 const evolutionOptions = {
-    evolution_goliath: { name: "Goliath", multiplier: "2.5x" },
+    evolution_big: { name: "Big", multiplier: "1.5x" },
     evolution_huge: { name: "Huge", multiplier: "2.0x" },
-    evolution_big: { name: "Big", multiplier: "1.5x" }
+    evolution_goliath: { name: "Goliath", multiplier: "2.5x" }
 };
 
 const typeOptions = {
-    type_pristine: { name: "Pristine", multiplier: "2.17x" },
+    type_golden: { name: "Golden", multiplier: "1.5x" },
     type_void: { name: "Void", multiplier: "2.0x" },
-    type_golden: { name: "Golden", multiplier: "1.5x" }
+    type_pristine: { name: "Pristine", multiplier: "2.17x" }
 };
 
 let petMultiplier = 1;
