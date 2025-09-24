@@ -81,16 +81,16 @@ async function updateArmLanguage(lang) {
     console.log(`✅ Arm calculator language updated to: ${currentArmLanguage}`);
 }
 
-// Множники для golden рівнів (чисті значення)
+// FIXED: Множники для golden рівнів (правильні значення як в HTML)
 const goldenModifiers = {
-    golden1: 1.5,      // 1/5 golden
-    golden2: 1.65,     // 2/5 golden 
-    golden3: 1.8,      // 3/5 golden 
-    golden4: 1.95,     // 4/5 golden 
-    golden5: 2.1       // 5/5 golden
+    golden1: 1.5,      // 1/5 golden (x1.5)
+    golden2: 1.65,      // 2/5 golden (x1.65) 
+    golden3: 1.8,      // 3/5 golden (x1.8)
+    golden4: 1.95,      // 4/5 golden (x1.95)
+    golden5: 2.1       // 5/5 golden (x2.1)
 };
 
-let armMultiplier = 2.1; // За замовчуванням 5/5 golden
+let armMultiplier = 2.1; // За замовчуванням 5/5 golden (x2.1)
 
 // Показ/приховування налаштувань для калькулятора рук
 function toggleArmSettings() {
@@ -225,3 +225,8 @@ document.addEventListener('languageChanged', async (event) => {
 // Make functions globally available
 window.updateArmLanguage = updateArmLanguage;
 window.loadArmTranslations = loadArmTranslations;
+window.handleGoldenSelection = handleGoldenSelection;
+window.updateArmMultiplier = updateArmMultiplier;
+window.toggleArmSettings = toggleArmSettings;
+window.calculateArmStats = calculateArmStats;
+window.initializeArm = initializeArm;
