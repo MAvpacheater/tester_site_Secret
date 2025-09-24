@@ -1,4 +1,4 @@
-// Pet Stats Calculator functionality - FIXED VERSION with Modal Selection
+// Pet Stats Calculator functionality - FIXED VERSION with Working Modal Selection
 
 // Global variables for translations
 let calcTranslations = null;
@@ -9,6 +9,9 @@ let selectedSlime = 'slime_shock';
 let selectedMutation = 'mutation_cosmic';
 let selectedEvolution = 'evolution_goliath';
 let selectedType = 'type_pristine';
+
+// Global callback reference
+let currentModalCallback = null;
 
 // Load calculator translations
 async function loadCalcTranslations() {
@@ -165,13 +168,16 @@ function toggleSettings() {
     }
 }
 
-// Modal functions
+// Fixed Modal functions
 function createModal(title, options, currentSelected, onSelect) {
     // Remove existing modal if any
     const existingModal = document.getElementById('categoryModal');
     if (existingModal) {
         existingModal.remove();
     }
+
+    // Store callback globally
+    currentModalCallback = onSelect;
 
     // Create modal
     const modalOverlay = document.createElement('div');
@@ -187,7 +193,7 @@ function createModal(title, options, currentSelected, onSelect) {
             <div class="modal-body">
                 ${Object.entries(options).map(([id, data]) => `
                     <div class="option-item ${currentSelected === id ? 'selected' : ''}" 
-                         onclick="selectOption('${id}', '${data.name}', onSelectCallback)">
+                         onclick="selectOption('${id}', '${data.name}')">
                         <span class="option-name">${data.name}</span>
                         <span class="option-multiplier">${data.multiplier}</span>
                     </div>
@@ -195,9 +201,6 @@ function createModal(title, options, currentSelected, onSelect) {
             </div>
         </div>
     `;
-
-    // Store callback function on the element
-    modalOverlay.onSelectCallback = onSelect;
     
     // Add to page
     const calculatorPage = document.getElementById('calculatorPage');
@@ -220,10 +223,14 @@ function closeModal() {
         modal.classList.remove('show');
         setTimeout(() => modal.remove(), 300);
     }
+    currentModalCallback = null;
 }
 
-function selectOption(optionId, optionName, callback) {
-    callback(optionId, optionName);
+// Fixed selectOption function
+function selectOption(optionId, optionName) {
+    if (currentModalCallback) {
+        currentModalCallback(optionId, optionName);
+    }
     closeModal();
 }
 
@@ -257,37 +264,55 @@ function selectSlime(slimeId) {
     selectedSlime = slimeId;
     updateCategoryDisplay('slime', slimeOptions[slimeId].name);
     updatePetMultiplier();
+    console.log('Selected slime:', slimeId, slimeOptions[slimeId].name);
 }
 
 function selectMutation(mutationId) {
     selectedMutation = mutationId;
     updateCategoryDisplay('mutation', mutationOptions[mutationId].name);
     updatePetMultiplier();
+    console.log('Selected mutation:', mutationId, mutationOptions[mutationId].name);
 }
 
 function selectEvolution(evolutionId) {
     selectedEvolution = evolutionId;
     updateCategoryDisplay('evolution', evolutionOptions[evolutionId].name);
     updatePetMultiplier();
+    console.log('Selected evolution:', evolutionId, evolutionOptions[evolutionId].name);
 }
 
 function selectType(typeId) {
     selectedType = typeId;
     updateCategoryDisplay('type', typeOptions[typeId].name);
     updatePetMultiplier();
+    console.log('Selected type:', typeId, typeOptions[typeId].name);
 }
 
 // Update category display
 function updateCategoryDisplay(category, selectedName) {
     const categoryButtons = document.querySelectorAll('.category-button');
     categoryButtons.forEach(button => {
-        const label = button.querySelector('.category-label').textContent.toLowerCase();
-        if (label.includes(category.toLowerCase()) || 
-            (category === 'evolution' && label.includes('evolution')) ||
-            (category === 'slime' && label.includes('slimes'))) {
+        const label = button.querySelector('.category-label');
+        if (!label) return;
+        
+        const labelText = label.textContent.toLowerCase();
+        
+        let shouldUpdate = false;
+        if (category === 'slime' && labelText.includes('slime')) {
+            shouldUpdate = true;
+        } else if (category === 'mutation' && labelText.includes('mutation')) {
+            shouldUpdate = true;
+        } else if (category === 'evolution' && labelText.includes('evolution')) {
+            shouldUpdate = true;
+        } else if (category === 'type' && labelText.includes('type')) {
+            shouldUpdate = true;
+        }
+        
+        if (shouldUpdate) {
             const selectedElement = button.querySelector('.category-selected');
             if (selectedElement) {
                 selectedElement.textContent = selectedName;
+                console.log(`Updated ${category} display to: ${selectedName}`);
             }
         }
     });
@@ -366,7 +391,7 @@ function calculateStats() {
 
 // Initialize calculator
 async function initializeCalculator() {
-    console.log('🚀 Initializing pet calculator with modal selection...');
+    console.log('🚀 Initializing pet calculator with working modal selection...');
     
     // Load translations
     await loadCalcTranslations();
@@ -419,7 +444,7 @@ async function initializeCalculator() {
         });
     }
     
-    console.log('✅ Pet calculator initialized with modal selection');
+    console.log('✅ Pet calculator initialized with working modal selection');
 }
 
 // Listen for language change events
