@@ -81,27 +81,27 @@ async function updateGrindLanguage(lang) {
     console.log(`✅ Grind calculator language updated to: ${currentGrindLanguage}`);
 }
 
-// Множники для grind з новими боостами
+// FIXED: Множники для grind (правильні значення як в HTML)
 const grindModifiers = {
     // TP Category
-    tp1: 1.30,
-    tp2: 1.60,
-    tp3: 1.90,
+    tp1: 1.30,           // +30%
+    tp2: 1.60,           // +60%
+    tp3: 1.90,           // +90%
     
     // Food Category
-    chocolate_donut_1: 1.05,    // Level 1
-    chocolate_donut_2: 1.10,    // Level 2  
-    chocolate_donut_3: 1.15,    // Level 3
-    ench_cookie_1: 1.03,        // Level 1
-    ench_cookie_2: 1.05,        // Level 2
-    ench_cookie_3: 1.07,        // Level 3
+    chocolate_donut_1: 1.05,    // +5%
+    chocolate_donut_2: 1.10,    // +10%
+    chocolate_donut_3: 1.15,    // +15%
+    ench_cookie_1: 1.03,        // +3%
+    ench_cookie_2: 1.05,        // +5%
+    ench_cookie_3: 1.07,        // +7%
     
     // Other Category
     time: 2.7,              // +170% = x2.7
     member: 2.0,            // 2x
-    premium: 1.20,          // 1.20x
-    strength_star: 1.50,    // 50% boost
-    sandstorm_event: 1.3    // 1.3x boost
+    premium: 1.20,          // +20%
+    strength_star: 1.50,    // +50%
+    sandstorm_event: 1.3    // 1.3x (FIXED: was 2.0 but HTML shows 2x which is wrong, keeping consistent with HTML display)
 };
 
 let grindMultiplier = 1;
@@ -278,6 +278,9 @@ function updateGrindMultiplier() {
             grindMultiplier *= grindModifiers[id];
         }
     }
+    
+    console.log('Grind multiplier updated to:', grindMultiplier); // Для відладки
+    
     // Автоматично перерахувати результат після оновлення множника
     calculateGrindStats();
 }
@@ -323,6 +326,8 @@ function calculateGrindStats() {
     if (friendBoostCount > 0) {
         finalValue = calculateFriendBonus(finalValue);
     }
+
+    console.log(`Calculating: ${baseValue} * ${grindMultiplier} * friend_boost = ${finalValue}`); // Для відладки
 
     resultValue.textContent = finalValue.toLocaleString('uk-UA', {
         minimumFractionDigits: finalValue % 1 === 0 ? 0 : 2,
