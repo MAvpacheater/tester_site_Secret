@@ -120,7 +120,8 @@
     font-family: 'Orbitron', Arial, sans-serif;
 }
 
-.arm-page .modifier-item {
+/* FIXED: Simple toggle styles for consistent layout with pet calc */
+.arm-page .simple-toggle {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -128,14 +129,27 @@
     border-bottom: 2px solid rgba(139, 69, 19, 0.5);
 }
 
-.arm-page .modifier-item:last-child { 
+.arm-page .simple-toggle:last-child { 
     border-bottom: none; 
 }
 
-.arm-page .modifier-label {
+.arm-page .toggle-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.arm-page .toggle-label {
     color: #F5DEB3;
     font-size: 1.1em;
     font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.arm-page .toggle-multiplier {
+    color: rgba(255, 215, 0, 0.8);
+    font-size: 0.9em;
+    font-weight: 500;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
@@ -402,7 +416,7 @@
         padding: 15px;
     }
     
-    .arm-page .modifier-item {
+    .arm-page .simple-toggle {
         padding: 12px 0;
     }
     
