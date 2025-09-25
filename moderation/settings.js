@@ -50,7 +50,7 @@ const menuPositions = {
     }
 };
 
-// Конфігурація елементів меню з іконками (включаючи налаштування)
+// Конфігурація елементів меню з іконками (БЕЗ налаштувань - вони тепер в сайдбарі)
 const menuItems = [
     { page: 'calculator', icon: '🐾', title: 'Pet Calculator' },
     { page: 'arm', icon: '💪', title: 'Arm Calculator' },
@@ -66,8 +66,8 @@ const menuItems = [
     { page: 'worlds', icon: '🌍', title: 'Worlds' },
     { page: 'updates', icon: '📝', title: 'Updates' },
     { page: 'help', icon: '🆘', title: 'Help' },
-    { page: 'peoples', icon: '🙏', title: 'Peoples' },
-    { page: 'settings', icon: '⚙️', title: 'Settings' } // Додана кнопка налаштувань
+    { page: 'peoples', icon: '🙏', title: 'Peoples' }
+    // Налаштування видалено з топ/боттом меню, оскільки вони тепер в сайдбарі
 ];
 
 // Перемикання видимості категорії в настройках (не конфліктує з головним меню)
@@ -255,7 +255,7 @@ function createStaticMenu(position) {
     const navButtons = document.createElement('div');
     navButtons.className = 'nav-buttons';
     
-    // Створити кнопки для всіх елементів меню тільки з іконками (включаючи налаштування)
+    // Створити кнопки для всіх елементів меню тільки з іконками (БЕЗ налаштувань)
     menuItems.forEach(item => {
         const btn = document.createElement('button');
         btn.className = 'nav-btn';
@@ -281,7 +281,7 @@ function createStaticMenu(position) {
     const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
     updateStaticMenuActiveState(currentPage);
     
-    console.log(`✅ Статичне ${position} меню створено з ${menuItems.length} елементами (включаючи налаштування)`);
+    console.log(`✅ Статичне ${position} меню створено з ${menuItems.length} елементами (БЕЗ налаштувань - вони в сайдбарі)`);
     console.log('🔍 Статичне меню додано до DOM:', document.getElementById('staticMenu'));
 }
 
