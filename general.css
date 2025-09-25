@@ -100,58 +100,6 @@ body::before {
     display: block !important;
 }
 
-/* Settings Gear Button - Bottom Left Corner */
-.settings-gear-btn {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    width: 50px;
-    height: 50px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 28px;
-    color: #FFD700;
-    z-index: 1000;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    margin: 0;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.settings-gear-btn:hover {
-    color: #FFA500;
-    transform: rotate(90deg) scale(1.2);
-    text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-}
-
-.settings-gear-btn:active {
-    transform: rotate(90deg) scale(1.1);
-}
-
-/* Animation for gear rotation */
-.settings-gear-btn.rotating {
-    animation: gearSpin 1s linear infinite;
-}
-
-@keyframes gearSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Hide settings button from Others category */
-[data-page="settings"].nav-btn {
-    display: none !important;
-}
-
-/* Hide settings button from sidebar controls */
-.settings-btn-sidebar {
-    display: none !important;
-}
-
 /* Mobile Menu Toggle */
 .mobile-menu-toggle {
     position: fixed;
@@ -443,7 +391,7 @@ body::before {
     box-shadow: none !important;
 }
 
-/* Language Flags - Updated without settings button */
+/* Settings and Language Controls */
 .sidebar-controls {
     display: flex;
     align-items: center;
@@ -453,6 +401,44 @@ body::before {
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.2) 0%, 
         rgba(62, 39, 35, 0.3) 100%);
+}
+
+.control-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Settings Button in Sidebar */
+.settings-btn-sidebar {
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.3) 0%, 
+        rgba(62, 39, 35, 0.4) 100%);
+    border: 2px solid #8B4513;
+    color: #F5DEB3;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5em;
+    transition: all 0.3s ease;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    flex-shrink: 0;
+}
+
+.settings-btn-sidebar:hover {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-color: #FFD700;
+    color: #2F1B14;
+    transform: translateY(-3px) scale(1.1) rotate(90deg);
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .language-flags {
@@ -535,14 +521,6 @@ body::before {
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-    .settings-gear-btn {
-        bottom: 15px;
-        left: 15px;
-        width: 40px;
-        height: 40px;
-        font-size: 22px;
-    }
-    
     .sidebar {
         width: 300px;
         left: -300px;
@@ -558,6 +536,17 @@ body::before {
     
     .sidebar-controls {
         padding: 15px;
+    }
+    
+    .control-buttons {
+        gap: 12px;
+    }
+    
+    .settings-btn-sidebar {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
+        padding: 8px;
     }
     
     .language-flags {
