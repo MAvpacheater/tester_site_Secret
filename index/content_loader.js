@@ -90,7 +90,6 @@ async function loadContent() {
                             </div>
                             <div class="category-buttons" id="othersButtons">
                                 <button class="nav-btn" data-page="settings" onclick="switchPage('settings')"></button>
-                                <button class="nav-btn" data-page="updates" onclick="switchPage('updates')"></button>
                                 <button class="nav-btn" data-page="help" onclick="switchPage('help')"></button>
                                 <button class="nav-btn" data-page="peoples" onclick="switchPage('peoples')"></button>
                             </div>
