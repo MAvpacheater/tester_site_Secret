@@ -31,9 +31,6 @@ async function loadContent() {
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
 
-                <!-- Settings Gear Button - Bottom Left (only for left/right menu positions) -->
-                <button class="settings-gear-btn" onclick="switchPage('settings')" title="Settings">⚙️</button>
-
                 <!-- Sidebar Navigation -->
                 <div class="sidebar" id="sidebar">
                     <div class="sidebar-header">
@@ -79,7 +76,7 @@ async function loadContent() {
                             </div>
                         </div>
 
-                        <!-- Others Category (включає налаштування для сайдбару) -->
+                        <!-- Others Category -->
                         <div class="nav-category">
                             <div class="category-header" data-category="othersButtons" onclick="toggleCategory('othersButtons')">
                                 <div class="category-title">
@@ -89,7 +86,6 @@ async function loadContent() {
                                 <span class="category-toggle">▼</span>
                             </div>
                             <div class="category-buttons" id="othersButtons">
-                                <button class="nav-btn" data-page="settings" onclick="switchPage('settings')"></button>
                                 <button class="nav-btn" data-page="help" onclick="switchPage('help')"></button>
                                 <button class="nav-btn" data-page="peoples" onclick="switchPage('peoples')"></button>
                             </div>
@@ -101,9 +97,13 @@ async function loadContent() {
                         <button class="auth-btn-sidebar disabled" id="authButton" title="Coming Soon!" onclick="handleAuthAction()"></button>
                     </div>
                     
-                    <!-- Language Flags -->
+                    <!-- Settings and Language Controls -->
                     <div class="sidebar-controls">
                         <div class="control-buttons">
+                            <!-- Settings Button -->
+                            <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">⚙️</button>
+                            
+                            <!-- Language Flags -->
                             <div class="language-flags">
                                 <button class="lang-flag-btn active" data-lang="en" onclick="switchAppLanguage('en')" title="English">🇺🇸</button>
                                 <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="Українська">🇺🇦</button>
