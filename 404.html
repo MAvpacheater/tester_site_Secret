@@ -113,33 +113,35 @@
             
             console.log('🔄 404 Redirect triggered for:', currentPath);
             
-            // Determine the repository base path
-            var pathSegments = currentPath.split('/').filter(s => s.length > 0);
+            // Detect GitHub Pages repository structure
+            var host = window.location.host;
             var basePath = '/';
             
-            // For GitHub Pages with custom domain or repository path
-            if (pathSegments.length > 0) {
-                // Check if first segment might be repository name
-                var possibleRepo = pathSegments[0];
-                if (possibleRepo && !possibleRepo.includes('.')) {
-                    basePath = '/' + possibleRepo + '/';
+            if (host.includes('.github.io')) {
+                var pathSegments = currentPath.split('/').filter(s => s.length > 0);
+                if (pathSegments.length > 0) {
+                    // First segment is likely the repository name
+                    basePath = '/' + pathSegments[0] + '/';
+                    console.log('🎯 GitHub Pages repository detected:', basePath);
                 }
             }
             
             console.log('🎯 Base path detected:', basePath);
-            console.log('🎯 Target URL:', window.location.protocol + '//' + window.location.host + basePath);
             
-            // Create the redirect URL to index.html with the full path stored
-            var targetURL = window.location.protocol + '//' + window.location.host + basePath;
+            // Store the original path for restoration
             var fullOriginalURL = currentPath + search + hash;
-            
-            // Store the full original URL path for processing by index.html
             sessionStorage.setItem('pathToRestore', fullOriginalURL);
             
             console.log('💾 Stored path for restoration:', fullOriginalURL);
             
             // Redirect to the base path (index.html)
-            window.location.replace(targetURL);
+            var targetURL = window.location.protocol + '//' + window.location.host + basePath;
+            console.log('🔄 Redirecting to:', targetURL);
+            
+            // Use replace to avoid infinite loops
+            setTimeout(function() {
+                window.location.replace(targetURL);
+            }, 1500); // Delay to show the loading screen
         })();
     </script>
 </body>
