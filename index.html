@@ -7,26 +7,36 @@
     
     <!-- SPA Redirect Handler for GitHub Pages -->
     <script>
-        // Handle redirected URLs from 404.html
+        // Handle paths redirected from 404.html
         (function() {
-            var redirect = sessionStorage.redirect;
-            delete sessionStorage.redirect;
+            var pathToRestore = sessionStorage.getItem('pathToRestore');
             
-            if (redirect && redirect !== location.href) {
-                console.log('🔄 SPA: Restoring original URL from redirect:', redirect);
-                history.replaceState(null, null, redirect);
+            if (pathToRestore) {
+                console.log('🔄 SPA: Found path to restore:', pathToRestore);
                 
-                // Set a flag that we have a redirected URL to process
-                sessionStorage.setItem('spa_redirected_url', redirect);
+                // Clean up
+                sessionStorage.removeItem('pathToRestore');
+                
+                // Only restore if it's different from current path
+                if (pathToRestore !== window.location.pathname) {
+                    console.log('🔄 SPA: Restoring path from:', window.location.pathname, 'to:', pathToRestore);
+                    history.replaceState(null, null, pathToRestore);
+                    
+                    // Flag for later processing
+                    sessionStorage.setItem('spa_needs_routing', 'true');
+                }
             }
             
-            // Handle URL parameters if any
+            // Also handle legacy redirect parameter for backward compatibility
             var urlParams = new URLSearchParams(window.location.search);
             var redirectParam = urlParams.get('redirect');
             if (redirectParam) {
-                console.log('🔄 SPA: Processing redirect parameter:', redirectParam);
+                console.log('🔄 SPA: Processing legacy redirect parameter:', redirectParam);
+                
+                // Clean URL from parameters
+                var cleanURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
                 history.replaceState(null, null, redirectParam);
-                sessionStorage.setItem('spa_redirected_url', redirectParam);
+                sessionStorage.setItem('spa_needs_routing', 'true');
             }
         })();
     </script>
@@ -150,22 +160,22 @@
                                     console.warn('⚠️ GitHub auto-reload system not available');
                                 }
                                 
-                                // Check if we need to handle a redirected URL
-                                const redirectedUrl = sessionStorage.getItem('spa_redirected_url');
-                                if (redirectedUrl) {
-                                    console.log('🎯 Processing redirected URL:', redirectedUrl);
-                                    sessionStorage.removeItem('spa_redirected_url');
+                                // Check if we need to handle SPA routing
+                                const needsRouting = sessionStorage.getItem('spa_needs_routing');
+                                if (needsRouting) {
+                                    console.log('🎯 Processing SPA routing for current URL:', window.location.pathname);
+                                    sessionStorage.removeItem('spa_needs_routing');
                                     
                                     // Give URL routing system time to initialize
                                     setTimeout(() => {
                                         if (window.urlRoutingSystem) {
                                             const page = window.urlRoutingSystem.getPageFromCurrentURL();
-                                            if (page && typeof switchPage === 'function') {
-                                                console.log('🔄 Switching to page from redirected URL:', page);
+                                            if (page && page !== 'calculator' && typeof switchPage === 'function') {
+                                                console.log('🔄 Switching to page from URL:', page);
                                                 switchPage(page);
                                             }
                                         }
-                                    }, 1000);
+                                    }, 1500);
                                 }
                             }, 3000);
                         };
@@ -197,18 +207,18 @@
                                     initGitHubAutoReload(githubConfig);
                                 }
                                 
-                                // Handle redirected URL even if some scripts failed
-                                const redirectedUrl = sessionStorage.getItem('spa_redirected_url');
-                                if (redirectedUrl) {
-                                    sessionStorage.removeItem('spa_redirected_url');
+                                // Handle SPA routing even if some scripts failed
+                                const needsRouting = sessionStorage.getItem('spa_needs_routing');
+                                if (needsRouting) {
+                                    sessionStorage.removeItem('spa_needs_routing');
                                     setTimeout(() => {
                                         if (window.urlRoutingSystem) {
                                             const page = window.urlRoutingSystem.getPageFromCurrentURL();
-                                            if (page && typeof switchPage === 'function') {
+                                            if (page && page !== 'calculator' && typeof switchPage === 'function') {
                                                 switchPage(page);
                                             }
                                         }
-                                    }, 1000);
+                                    }, 1500);
                                 }
                             }, 3000);
                         };
