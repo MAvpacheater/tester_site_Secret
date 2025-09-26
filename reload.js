@@ -388,8 +388,8 @@ function initGitHubAutoReload(options = {}) {
 
     // ⚠️ ВАЖЛИВО: Налаштуйте ваші дані GitHub тут!
     const defaultOptions = {
-        githubUser: 'YOUR_GITHUB_USERNAME',    // 👈 Замініть на ваш GitHub username
-        githubRepo: 'YOUR_REPOSITORY_NAME',    // 👈 Замініть на назву вашого репозиторію
+        githubUser: 'MAvpacheater',    // 👈 Замініть на ваш GitHub username
+        githubRepo: 'tester_site_Secret',    // 👈 Замініть на назву вашого репозиторію
         branch: 'main',                        // 👈 Або 'master', якщо ваша основна гілка називається master
         checkInterval: 30000                   // 30 секунд (не робіть менше через ліміти GitHub API)
     };
