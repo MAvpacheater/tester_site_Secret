@@ -41,7 +41,7 @@
 
     <!-- Auto-reload indicator -->
     <div class="auto-reload-indicator" id="autoReloadIndicator">
-        🔄 Auto-reload active
+        🔄 GitHub Auto-reload active
     </div>
 
     <!-- App content container -->
@@ -98,12 +98,25 @@
                         contentScript.src = 'index/content_loader.js';
                         contentScript.onload = () => {
                             updateLoadingText('Ready!');
-                            // Initialize auto-reload after everything is loaded
+                            
+                            // ⭐ Initialize GitHub auto-reload after everything is loaded
                             setTimeout(() => {
-                                if (typeof initAutoReload === 'function') {
-                                    initAutoReload();
+                                console.log('🚀 Initializing GitHub auto-reload system...');
+                                
+                                // ВАЖЛИВО: Налаштуйте ваші дані GitHub тут! 👇
+                                const githubConfig = {
+                                    githubUser: 'YOUR_GITHUB_USERNAME',      // 👈 Замініть на ваш GitHub username
+                                    githubRepo: 'YOUR_REPOSITORY_NAME',      // 👈 Замініть на назву репозиторію
+                                    branch: 'main',                          // 👈 Або 'master'
+                                    checkInterval: 30000                     // 30 секунд
+                                };
+                                
+                                if (typeof initGitHubAutoReload === 'function') {
+                                    initGitHubAutoReload(githubConfig);
+                                } else {
+                                    console.warn('⚠️ GitHub auto-reload system not available');
                                 }
-                            }, 2000);
+                            }, 3000);
                         };
                         document.head.appendChild(contentScript);
                     }
@@ -114,7 +127,22 @@
                     if (loadedCount === totalScripts) {
                         const contentScript = document.createElement('script');
                         contentScript.src = 'index/content_loader.js';
-                        contentScript.onload = () => updateLoadingText('Ready!');
+                        contentScript.onload = () => {
+                            updateLoadingText('Ready!');
+                            
+                            // Initialize GitHub auto-reload even if some scripts failed
+                            setTimeout(() => {
+                                if (typeof initGitHubAutoReload === 'function') {
+                                    const githubConfig = {
+                                        githubUser: 'YOUR_GITHUB_USERNAME',
+                                        githubRepo: 'YOUR_REPOSITORY_NAME', 
+                                        branch: 'main',
+                                        checkInterval: 30000
+                                    };
+                                    initGitHubAutoReload(githubConfig);
+                                }
+                            }, 3000);
+                        };
                         document.head.appendChild(contentScript);
                     }
                 };
