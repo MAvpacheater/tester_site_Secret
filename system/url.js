@@ -22,16 +22,24 @@ class URLRoutingSystem {
         const host = window.location.host;
         const pathname = window.location.pathname;
         
-        // Для GitHub Pages та інших хостингів
-        if (pathname.includes('/')) {
-            // Якщо це підкаталог (як GitHub Pages), взяти базовий шлях
+        console.log('🔍 Detecting base URL from:', { protocol, host, pathname });
+        
+        // Для GitHub Pages репозиторію типу username.github.io/repository-name
+        if (host.includes('.github.io')) {
             const pathParts = pathname.split('/').filter(part => part.length > 0);
             if (pathParts.length > 0) {
-                return `${protocol}//${host}/${pathParts[0]}/`;
+                // Перша частина шляху це назва репозиторію
+                const repoName = pathParts[0];
+                const baseURL = `${protocol}//${host}/${repoName}/`;
+                console.log(`✅ GitHub Pages detected, base URL: ${baseURL}`);
+                return baseURL;
             }
         }
         
-        return `${protocol}//${host}/`;
+        // Для кастомних доменів або username.github.io (основний сайт)
+        const baseURL = `${protocol}//${host}/`;
+        console.log(`✅ Standard domain detected, base URL: ${baseURL}`);
+        return baseURL;
     }
 
     // Налаштувати всі маршрути
@@ -101,16 +109,16 @@ class URLRoutingSystem {
         // Перевірити поточний URL і встановити відповідну сторінку
         const initialPage = this.getPageFromCurrentURL();
         
+        console.log(`🎯 Initial page from URL: ${initialPage} (URL: ${window.location.pathname})`);
+        
         if (initialPage && initialPage !== 'calculator') {
-            console.log(`🎯 Initial page from URL: ${initialPage}`);
-            
             // Затримка для того щоб додаток встиг завантажитися
             setTimeout(() => {
                 if (typeof switchPage === 'function') {
                     switchPage(initialPage);
                     console.log(`✅ Switched to page from URL: ${initialPage}`);
                 }
-            }, 500);
+            }, 1000);
         } else {
             // Встановити URL для головної сторінки
             this.updateURL('calculator', false); // false = не додавати в історію
@@ -123,23 +131,37 @@ class URLRoutingSystem {
     // Визначити сторінку з поточного URL
     getPageFromCurrentURL() {
         const currentPath = window.location.pathname;
-        const relativePath = currentPath.replace(this.baseURL.replace(window.location.origin, ''), '');
+        
+        // Отримати відносний шлях від базового URL
+        const basePath = new URL(this.baseURL).pathname;
+        let relativePath = currentPath.replace(basePath.slice(0, -1), ''); // Прибираємо базовий шлях
         
         // Додати слеш на початок якщо немає
-        const normalizedPath = relativePath.startsWith('/') ? relativePath : '/' + relativePath;
+        if (!relativePath.startsWith('/')) {
+            relativePath = '/' + relativePath;
+        }
         
-        console.log(`🔍 Analyzing URL path: "${normalizedPath}"`);
+        // Якщо закінчується слешем і це не коренева папка, прибрати його
+        if (relativePath.endsWith('/') && relativePath.length > 1) {
+            relativePath = relativePath.slice(0, -1);
+        }
+        
+        console.log(`🔍 Analyzing URL path: "${currentPath}" -> relative: "${relativePath}"`);
         
         // Знайти відповідну сторінку
         for (const [path, page] of this.routes.entries()) {
-            if (typeof path === 'string' && path.startsWith('/') && path === normalizedPath) {
-                console.log(`✅ Found page for path "${normalizedPath}": ${page}`);
-                return page;
+            if (typeof path === 'string' && path.startsWith('/')) {
+                // Порівнювати з урахуванням слешів
+                const normalizedRoutePath = path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
+                if (normalizedRoutePath === relativePath) {
+                    console.log(`✅ Found page for path "${relativePath}": ${page}`);
+                    return page;
+                }
             }
         }
         
         // Якщо шлях не знайдено, повернути головну сторінку
-        console.log(`❓ No page found for path "${normalizedPath}", using calculator`);
+        console.log(`❓ No page found for path "${relativePath}", using calculator`);
         return 'calculator';
     }
 
@@ -422,7 +444,7 @@ function getCurrentRoute() {
     return urlRoutingSystem ? urlRoutingSystem.getCurrentRoute() : '/';
 }
 
-function getCurrentPage() {
+function getCurrentPageFromURL() {
     if (urlRoutingSystem) {
         const route = urlRoutingSystem.getCurrentRoute();
         return urlRoutingSystem.routes.get(route) || 'calculator';
@@ -448,13 +470,13 @@ if (document.readyState === 'loading') {
         setTimeout(() => {
             initURLRouting();
             setTimeout(enhanceSwitchPage, 500);
-        }, 1500);
+        }, 1000);
     });
 } else {
     setTimeout(() => {
         initURLRouting();
         setTimeout(enhanceSwitchPage, 500);
-    }, 1500);
+    }, 1000);
 }
 
 // Експорт для глобального доступу
@@ -462,6 +484,7 @@ if (typeof window !== 'undefined') {
     window.initURLRouting = initURLRouting;
     window.navigateToPage = navigateToPage;
     window.getCurrentRoute = getCurrentRoute;
+    window.getCurrentPageFromURL = getCurrentPageFromURL;
     window.getURLForPage = getURLForPage;
     window.getAllRoutes = getAllRoutes;
     window.getURLRoutingStatus = getURLRoutingStatus;
@@ -470,20 +493,3 @@ if (typeof window !== 'undefined') {
 }
 
 console.log('🌐 URL Routing System loaded and ready');
-
-// Debug інформація
-console.log(`
-🔧 URL Routing Commands:
-
-Basic usage:
-- getURLRoutingStatus() - check system status
-- getAllRoutes() - see all available routes
-- navigateToPage('shiny') - go to specific page
-- getURLForPage('secret') - get URL for page
-
-Example URLs that will be generated:
-- Calculator: ${window.location.origin}/
-- Shiny List: ${window.location.origin}/shiny_list/
-- Secret Pets: ${window.location.origin}/secret_pets/
-- Settings: ${window.location.origin}/app_settings/
-`);
