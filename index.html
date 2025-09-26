@@ -174,8 +174,48 @@
                                                 console.log('🔄 Switching to page from URL:', page);
                                                 switchPage(page);
                                             }
+                                        } else {
+                                            console.warn('⚠️ URL routing system not available, trying direct page detection');
+                                            // Fallback - try to detect page from URL manually
+                                            const pathname = window.location.pathname;
+                                            const pageFromPath = detectPageFromPath(pathname);
+                                            if (pageFromPath && pageFromPath !== 'calculator' && typeof switchPage === 'function') {
+                                                console.log('🔄 Fallback switching to page:', pageFromPath);
+                                                switchPage(pageFromPath);
+                                            }
                                         }
-                                    }, 1500);
+                                    }, 2000);
+                                }
+                                
+                                // Fallback detection function
+                                function detectPageFromPath(pathname) {
+                                    const pathMappings = {
+                                        '/app_settings/': 'settings',
+                                        '/secret_pets/': 'secret',
+                                        '/potions_food/': 'potions',
+                                        '/worlds_info/': 'worlds',
+                                        '/help_guide/': 'help',
+                                        '/peoples_thanks/': 'peoples',
+                                        '/arm_calculator/': 'arm',
+                                        '/grind_calculator/': 'grind',
+                                        '/boosts_info/': 'boosts',
+                                        '/shiny_list/': 'shiny',
+                                        '/codes_list/': 'codes',
+                                        '/aura_info/': 'aura',
+                                        '/trainer_info/': 'trainer',
+                                        '/charms_info/': 'charms'
+                                    };
+                                    
+                                    // Remove repository name from path if present
+                                    let cleanPath = pathname;
+                                    if (window.location.host.includes('.github.io')) {
+                                        const segments = pathname.split('/').filter(s => s.length > 0);
+                                        if (segments.length > 1) {
+                                            cleanPath = '/' + segments.slice(1).join('/') + '/';
+                                        }
+                                    }
+                                    
+                                    return pathMappings[cleanPath] || 'calculator';
                                 }
                             }, 3000);
                         };
