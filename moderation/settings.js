@@ -6,27 +6,60 @@ let categoriesState = {
     menu: false
 };
 
-// Конфігурації фонів
+// GitHub конфігурація для зображень
+const GITHUB_CONFIG = {
+    user: 'MAvpacheater',
+    repo: 'tester_site_Secret',
+    branch: 'main',
+    imagePath: 'images/bg/'
+};
+
+// Функція для створення GitHub URL зображення
+function getGitHubImageURL(filename) {
+    return `https://raw.githubusercontent.com/${GITHUB_CONFIG.user}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${GITHUB_CONFIG.imagePath}${filename}`;
+}
+
+// Конфігурації фонів з GitHub зображеннями
 const backgroundOptions = {
     penguin: {
         icon: '🐧',
-        url: 'https://i.postimg.cc/rmW86W6S/Gemini-Generated-Image-fh66csfh66csfh66.png'
+        filename: 'penguin.png',
+        get url() { return getGitHubImageURL(this.filename); }
     },
     game: {
         icon: '🎮', 
-        url: 'https://i.postimg.cc/43yVBkY8/Generated-image-1.png'
+        filename: 'game.png',
+        get url() { return getGitHubImageURL(this.filename); }
     },
     code: {
         icon: '💻',
-        url: 'https://i.postimg.cc/nrvZbvKw/image.png'
+        filename: 'code.png',
+        get url() { return getGitHubImageURL(this.filename); }
     },
     dodep: {
         icon: '🎮', 
-        url: 'https://i.postimg.cc/nV4dxr1X/2025-09-16-22-26-42.png'
+        filename: 'dodep.png',
+        get url() { return getGitHubImageURL(this.filename); }
     },
     prison: {
         icon: '🎮', 
-        url: 'https://i.postimg.cc/ZR75v48p/2025-09-16-22-26-34.png'
+        filename: 'prison.png',
+        get url() { return getGitHubImageURL(this.filename); }
+    },
+    mining: {
+        icon: '⛏️',
+        filename: 'mining.jpg',
+        get url() { return getGitHubImageURL(this.filename); }
+    },
+    space: {
+        icon: '🚀',
+        filename: 'space.jpg',
+        get url() { return getGitHubImageURL(this.filename); }
+    },
+    forest: {
+        icon: '🌲',
+        filename: 'forest.jpg',
+        get url() { return getGitHubImageURL(this.filename); }
     }
 };
 
@@ -69,6 +102,50 @@ const menuItems = [
     { page: 'peoples', icon: '🙏', title: 'Peoples' }
     // Налаштування видалено з топ/боттом меню, оскільки вони тепер в сайдбарі
 ];
+
+// Перевірити доступність зображення
+async function checkImageAvailability(url) {
+    try {
+        const response = await fetch(url, { method: 'HEAD' });
+        return response.ok;
+    } catch (error) {
+        console.warn(`❌ Зображення недоступне: ${url}`);
+        return false;
+    }
+}
+
+// Завантажити зображення з резервним варіантом
+async function loadBackgroundImage(background) {
+    const config = backgroundOptions[background];
+    if (!config) {
+        console.error(`Фон ${background} не знайдено`);
+        return null;
+    }
+    
+    const primaryUrl = config.url;
+    console.log(`🔍 Перевіряємо доступність зображення: ${primaryUrl}`);
+    
+    const isAvailable = await checkImageAvailability(primaryUrl);
+    
+    if (isAvailable) {
+        console.log(`✅ Зображення доступне: ${primaryUrl}`);
+        return primaryUrl;
+    } else {
+        // Резервний варіант - повернутися до старого URL (якщо потрібно)
+        console.warn(`⚠️ Зображення недоступне, використовуємо резервний варіант`);
+        
+        // Можна додати резервні URL тут
+        const fallbackUrls = {
+            penguin: 'https://i.postimg.cc/rmW86W6S/Gemini-Generated-Image-fh66csfh66csfh66.png',
+            game: 'https://i.postimg.cc/43yVBkY8/Generated-image-1.png',
+            code: 'https://i.postimg.cc/nrvZbvKw/image.png',
+            dodep: 'https://i.postimg.cc/nV4dxr1X/2025-09-16-22-26-42.png',
+            prison: 'https://i.postimg.cc/ZR75v48p/2025-09-16-22-26-34.png'
+        };
+        
+        return fallbackUrls[background] || primaryUrl;
+    }
+}
 
 // Перемикання видимості категорії в настройках (не конфліктує з головним меню)
 function toggleSettingsCategory(categoryName) {
@@ -139,39 +216,66 @@ function saveBackground(background) {
 }
 
 // Застосувати фон до body
-function applyBackground(background) {
+async function applyBackground(background) {
     const config = backgroundOptions[background];
     if (!config) {
         console.error(`Фон ${background} не знайдено`);
         return;
     }
     
+    console.log(`🎨 Застосування фону: ${background}`);
+    
+    // Показати індикатор завантаження (опціонально)
     const body = document.body;
-    const backgroundStyle = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${config.url}') center center / cover no-repeat`;
+    body.classList.add('loading-background');
     
-    body.style.background = backgroundStyle;
-    body.style.backgroundAttachment = window.innerWidth > 768 ? 'fixed' : 'scroll';
-    
-    console.log(`Фон застосовано: ${background}`);
+    try {
+        const imageUrl = await loadBackgroundImage(background);
+        
+        const backgroundStyle = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${imageUrl}') center center / cover no-repeat`;
+        
+        body.style.background = backgroundStyle;
+        body.style.backgroundAttachment = window.innerWidth > 768 ? 'fixed' : 'scroll';
+        
+        console.log(`✅ Фон застосовано: ${background} (${imageUrl})`);
+    } catch (error) {
+        console.error(`❌ Помилка застосування фону ${background}:`, error);
+    } finally {
+        body.classList.remove('loading-background');
+    }
 }
 
 // Змінити фон
-function changeBackground(background) {
+async function changeBackground(background) {
     if (!backgroundOptions[background]) {
         console.error(`Недійсний фон: ${background}`);
         return;
     }
     
-    // Зберегти налаштування
-    saveBackground(background);
+    // Показати індикатор завантаження на кнопці
+    const button = document.querySelector(`[data-background="${background}"]`);
+    if (button) {
+        button.classList.add('loading');
+    }
     
-    // Застосувати фон
-    applyBackground(background);
-    
-    // Оновити UI
-    updateBackgroundUI();
-    
-    console.log(`Фон змінено на: ${background}`);
+    try {
+        // Зберегти налаштування
+        saveBackground(background);
+        
+        // Застосувати фон
+        await applyBackground(background);
+        
+        // Оновити UI
+        updateBackgroundUI();
+        
+        console.log(`Фон змінено на: ${background}`);
+    } catch (error) {
+        console.error(`❌ Помилка зміни фону:`, error);
+    } finally {
+        if (button) {
+            button.classList.remove('loading');
+        }
+    }
 }
 
 // Оновити UI фону
@@ -385,6 +489,9 @@ async function loadSettingsTranslations() {
                 code: "Code",
                 dodep: "Dodep",
                 prison: "Prison",
+                mining: "Mining",
+                space: "Space",
+                forest: "Forest",
                 up: "Top",
                 down: "Bottom",
                 left: "Left", 
@@ -468,6 +575,19 @@ async function updateSettingsLanguage(lang = null) {
 
 // Створити HTML налаштувань без тексту (буде заповнено системою мови)
 function createSettingsHTML() {
+    // Створити опції фону динамічно
+    const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => {
+        const config = backgroundOptions[bg];
+        return `
+            <div class="background-option" data-background="${bg}" onclick="changeBackground('${bg}')">
+                <div class="option-icon">${config.icon}</div>
+                <div class="option-name"></div>
+                <div class="background-preview" style="background-image: url('${config.url}')"></div>
+                <div class="loading-indicator" style="display: none;">⏳</div>
+            </div>
+        `;
+    }).join('');
+
     return `
         <div class="settings-container">
             <h1 class="settings-title"></h1>
@@ -482,35 +602,7 @@ function createSettingsHTML() {
                 </div>
                 
                 <div class="background-options collapsed">
-                    <div class="background-option" data-background="penguin" onclick="changeBackground('penguin')">
-                        <div class="option-icon">🐧</div>
-                        <div class="option-name"></div>
-                        <div class="background-preview" style="background-image: url('${backgroundOptions.penguin.url}')"></div>
-                    </div>
-                    
-                    <div class="background-option" data-background="game" onclick="changeBackground('game')">
-                        <div class="option-icon">🎮</div>
-                        <div class="option-name"></div>
-                        <div class="background-preview" style="background-image: url('${backgroundOptions.game.url}')"></div>
-                    </div>
-                    
-                    <div class="background-option" data-background="code" onclick="changeBackground('code')">
-                        <div class="option-icon">💻</div>
-                        <div class="option-name"></div>
-                        <div class="background-preview" style="background-image: url('${backgroundOptions.code.url}')"></div>
-                    </div>
-                    
-                    <div class="background-option" data-background="dodep" onclick="changeBackground('dodep')">
-                        <div class="option-icon">🎮</div>
-                        <div class="option-name"></div>
-                        <div class="background-preview" style="background-image: url('${backgroundOptions.dodep.url}')"></div>
-                    </div>
-                    
-                    <div class="background-option" data-background="prison" onclick="changeBackground('prison')">
-                        <div class="option-icon">🎮</div>
-                        <div class="option-name"></div>
-                        <div class="background-preview" style="background-image: url('${backgroundOptions.prison.url}')"></div>
-                    </div>
+                    ${backgroundOptionsHTML}
                 </div>
             </div>
             
@@ -549,6 +641,11 @@ function createSettingsHTML() {
             <div class="reset-section">
                 <button class="reset-btn" onclick="resetSettings()"></button>
             </div>
+            
+            <div class="github-info">
+                <p>🖼️ Зображення завантажуються з GitHub: <br>
+                <code>${GITHUB_CONFIG.user}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.imagePath}</code></p>
+            </div>
         </div>
     `;
 }
@@ -579,7 +676,7 @@ async function initializeSettings() {
     
     // Застосувати поточний фон
     const currentBg = getCurrentBackground();
-    applyBackground(currentBg);
+    await applyBackground(currentBg);
     updateBackgroundUI();
     
     // Застосувати поточну позицію меню
@@ -598,9 +695,9 @@ async function initializeSettings() {
 }
 
 // Застосувати фон і позицію меню при запуску додатка
-function initializeSettingsOnStart() {
+async function initializeSettingsOnStart() {
     const currentBg = getCurrentBackground();
-    applyBackground(currentBg);
+    await applyBackground(currentBg);
     console.log(`Початковий фон застосовано: ${currentBg}`);
     
     const currentMenuPos = getCurrentMenuPosition();
@@ -650,3 +747,4 @@ window.resetSettings = resetSettings;
 window.toggleSettingsCategory = toggleSettingsCategory;
 window.updateSettingsLanguage = updateSettingsLanguage;
 window.updateStaticMenuActiveState = updateStaticMenuActiveState;
+window.getGitHubImageURL = getGitHubImageURL;
