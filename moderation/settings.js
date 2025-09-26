@@ -37,28 +37,13 @@ const backgroundOptions = {
         get url() { return getGitHubImageURL(this.filename); }
     },
     dodep: {
-        icon: '🎮', 
+        icon: '🎰', 
         filename: 'dodep.png',
         get url() { return getGitHubImageURL(this.filename); }
     },
     prison: {
-        icon: '🎮', 
+        icon: '👮‍♂️', 
         filename: 'prison.png',
-        get url() { return getGitHubImageURL(this.filename); }
-    },
-    mining: {
-        icon: '⛏️',
-        filename: 'mining.jpg',
-        get url() { return getGitHubImageURL(this.filename); }
-    },
-    space: {
-        icon: '🚀',
-        filename: 'space.jpg',
-        get url() { return getGitHubImageURL(this.filename); }
-    },
-    forest: {
-        icon: '🌲',
-        filename: 'forest.jpg',
         get url() { return getGitHubImageURL(this.filename); }
     }
 };
