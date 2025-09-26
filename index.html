@@ -52,7 +52,8 @@
     
     <!-- Critical JavaScript - load immediately -->
     <script src="general.js"></script>
-    <script src="reload.js"></script>
+    <script src="system/reload.js"></script>
+    <script src="system/url.js"></script>
     
     <!-- Non-critical JavaScript - load deferred -->
     <script>
@@ -99,20 +100,26 @@
                         contentScript.onload = () => {
                             updateLoadingText('Ready!');
                             
-                            // ⭐ Initialize GitHub auto-reload after everything is loaded
+                            // ⭐ Initialize systems after everything is loaded
                             setTimeout(() => {
-                                console.log('🚀 Initializing GitHub auto-reload system...');
+                                console.log('🚀 Initializing systems...');
                                 
-                                // ВАЖЛИВО: Налаштуйте ваші дані GitHub тут! 👇
-                                const githubConfig = {
-                                    githubUser: 'MAvpacheater',      // 👈 Замініть на ваш GitHub username
-                                    githubRepo: 'tester_site_Secret',      // 👈 Замініть на назву репозиторію
-                                    branch: 'main',                          // 👈 Або 'master'
-                                    checkInterval: 30000                     // 30 секунд
-                                };
+                                // Initialize URL routing first
+                                if (typeof initURLRouting === 'function') {
+                                    initURLRouting();
+                                    console.log('✅ URL routing initialized');
+                                }
                                 
+                                // Then initialize GitHub auto-reload
                                 if (typeof initGitHubAutoReload === 'function') {
+                                    const githubConfig = {
+                                        githubUser: 'MAvpacheater',
+                                        githubRepo: 'tester_site_Secret',
+                                        branch: 'main',
+                                        checkInterval: 30000
+                                    };
                                     initGitHubAutoReload(githubConfig);
+                                    console.log('✅ GitHub auto-reload initialized');
                                 } else {
                                     console.warn('⚠️ GitHub auto-reload system not available');
                                 }
@@ -130,12 +137,16 @@
                         contentScript.onload = () => {
                             updateLoadingText('Ready!');
                             
-                            // Initialize GitHub auto-reload even if some scripts failed
+                            // Initialize systems even if some scripts failed
                             setTimeout(() => {
+                                if (typeof initURLRouting === 'function') {
+                                    initURLRouting();
+                                }
+                                
                                 if (typeof initGitHubAutoReload === 'function') {
                                     const githubConfig = {
-                                        githubUser: 'YOUR_GITHUB_USERNAME',
-                                        githubRepo: 'YOUR_REPOSITORY_NAME', 
+                                        githubUser: 'MAvpacheater',
+                                        githubRepo: 'tester_site_Secret',
                                         branch: 'main',
                                         checkInterval: 30000
                                     };
