@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting... - Arm Helper</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        
+        .redirect-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .loading-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .redirect-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .redirect-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            width: 0%;
+            animation: fillProgress 2s ease-out forwards;
+        }
+        
+        @keyframes fillProgress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+        
+        .tech-info {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-container">
+        <div class="loading-icon">🚀</div>
+        <div class="redirect-title">Redirecting to Arm Helper</div>
+        <div class="redirect-subtitle">
+            Loading your requested page...<br>
+            <span id="currentPath"></span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        <div class="tech-info">
+            GitHub Pages SPA Routing
+        </div>
+    </div>
+
+    <script>
+        // Display current path
+        document.getElementById('currentPath').textContent = window.location.pathname;
+        
+        // GitHub Pages SPA redirect script
+        (function() {
+            var redirect = sessionStorage.redirect;
+            delete sessionStorage.redirect;
+            
+            if (redirect && redirect !== location.href) {
+                console.log('🔄 SPA Redirect: Restoring from', redirect);
+                history.replaceState(null, null, redirect);
+            } else {
+                // Get repository base path for GitHub Pages
+                var pathSegments = location.pathname.split('/').filter(s => s.length > 0);
+                var basePath = pathSegments.length > 0 ? '/' + pathSegments[0] + '/' : '/';
+                
+                // Redirect to base path with original URL stored
+                sessionStorage.redirect = location.href;
+                location.replace(location.protocol + '//' + location.host + basePath);
+            }
+        })();
+        
+        // Fallback redirect after 3 seconds
+        setTimeout(function() {
+            console.log('🔄 Fallback redirect triggered');
+            var pathSegments = location.pathname.split('/').filter(s => s.length > 0);
+            var basePath = pathSegments.length > 0 ? '/' + pathSegments[0] + '/' : '/';
+            window.location.href = location.protocol + '//' + location.host + basePath;
+        }, 3000);
+    </script>
+</body>
+</html>
