@@ -107,30 +107,40 @@
         
         // GitHub Pages SPA redirect script
         (function() {
-            var redirect = sessionStorage.redirect;
-            delete sessionStorage.redirect;
+            var currentPath = window.location.pathname;
+            var search = window.location.search;
+            var hash = window.location.hash;
             
-            if (redirect && redirect !== location.href) {
-                console.log('🔄 SPA Redirect: Restoring from', redirect);
-                history.replaceState(null, null, redirect);
-            } else {
-                // Get repository base path for GitHub Pages
-                var pathSegments = location.pathname.split('/').filter(s => s.length > 0);
-                var basePath = pathSegments.length > 0 ? '/' + pathSegments[0] + '/' : '/';
-                
-                // Redirect to base path with original URL stored
-                sessionStorage.redirect = location.href;
-                location.replace(location.protocol + '//' + location.host + basePath);
+            console.log('🔄 404 Redirect triggered for:', currentPath);
+            
+            // Determine the repository base path
+            var pathSegments = currentPath.split('/').filter(s => s.length > 0);
+            var basePath = '/';
+            
+            // For GitHub Pages with custom domain or repository path
+            if (pathSegments.length > 0) {
+                // Check if first segment might be repository name
+                var possibleRepo = pathSegments[0];
+                if (possibleRepo && !possibleRepo.includes('.')) {
+                    basePath = '/' + possibleRepo + '/';
+                }
             }
+            
+            console.log('🎯 Base path detected:', basePath);
+            console.log('🎯 Target URL:', window.location.protocol + '//' + window.location.host + basePath);
+            
+            // Create the redirect URL to index.html with the full path stored
+            var targetURL = window.location.protocol + '//' + window.location.host + basePath;
+            var fullOriginalURL = currentPath + search + hash;
+            
+            // Store the full original URL path for processing by index.html
+            sessionStorage.setItem('pathToRestore', fullOriginalURL);
+            
+            console.log('💾 Stored path for restoration:', fullOriginalURL);
+            
+            // Redirect to the base path (index.html)
+            window.location.replace(targetURL);
         })();
-        
-        // Fallback redirect after 3 seconds
-        setTimeout(function() {
-            console.log('🔄 Fallback redirect triggered');
-            var pathSegments = location.pathname.split('/').filter(s => s.length > 0);
-            var basePath = pathSegments.length > 0 ? '/' + pathSegments[0] + '/' : '/';
-            window.location.href = location.protocol + '//' + location.host + basePath;
-        }, 3000);
     </script>
 </body>
 </html>
