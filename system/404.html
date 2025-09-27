@@ -113,21 +113,6 @@
             
             console.log('🔄 404 Redirect triggered for:', currentPath);
             
-            // Detect GitHub Pages repository structure
-            var host = window.location.host;
-            var basePath = '/';
-            
-            if (host.includes('.github.io')) {
-                var pathSegments = currentPath.split('/').filter(s => s.length > 0);
-                if (pathSegments.length > 0) {
-                    // First segment is likely the repository name
-                    basePath = '/' + pathSegments[0] + '/';
-                    console.log('🎯 GitHub Pages repository detected:', basePath);
-                }
-            }
-            
-            console.log('🎯 Base path detected:', basePath);
-            
             // Store the original path for restoration
             var fullOriginalURL = currentPath + search + hash;
             sessionStorage.setItem('pathToRestore', fullOriginalURL);
@@ -135,7 +120,7 @@
             console.log('💾 Stored path for restoration:', fullOriginalURL);
             
             // Redirect to the base path (index.html)
-            var targetURL = window.location.protocol + '//' + window.location.host + basePath;
+            var targetURL = window.location.protocol + '//' + window.location.host + '/';
             console.log('🔄 Redirecting to:', targetURL);
             
             // Use replace to avoid infinite loops
