@@ -106,28 +106,26 @@
         document.getElementById('currentPath').textContent = window.location.pathname;
         
         // GitHub Pages SPA redirect script
-        (function() {
-            var currentPath = window.location.pathname;
-            var search = window.location.search;
-            var hash = window.location.hash;
-            
-            console.log('🔄 404 Redirect triggered for:', currentPath);
-            
-            // Store the original path for restoration
-            var fullOriginalURL = currentPath + search + hash;
-            sessionStorage.setItem('pathToRestore', fullOriginalURL);
-            
-            console.log('💾 Stored path for restoration:', fullOriginalURL);
-            
-            // Redirect to the base path (index.html)
-            var targetURL = window.location.protocol + '//' + window.location.host + '/';
-            console.log('🔄 Redirecting to:', targetURL);
-            
-            // Use replace to avoid infinite loops
-            setTimeout(function() {
-                window.location.replace(targetURL);
-            }, 1500); // Delay to show the loading screen
-        })();
+        var currentPath = window.location.pathname;
+        var search = window.location.search;
+        var hash = window.location.hash;
+        
+        console.log('🔄 404 Redirect triggered for:', currentPath);
+        
+        // Store the original path for restoration
+        var fullOriginalURL = currentPath + search + hash;
+        sessionStorage.setItem('pathToRestore', fullOriginalURL);
+        
+        console.log('💾 Stored path for restoration:', fullOriginalURL);
+        
+        // Redirect to the base path (index.html)
+        var targetURL = window.location.protocol + '//' + window.location.host + '/';
+        console.log('🔄 Redirecting to:', targetURL);
+        
+        // Use replace to avoid infinite loops
+        setTimeout(function() {
+            window.location.replace(targetURL);
+        }, 1500);
     </script>
 </body>
 </html>
