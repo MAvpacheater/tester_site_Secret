@@ -1,9 +1,10 @@
-/* Optimized Boosts Page - Mining Theme - Wider Layout */
+/* Optimized Boosts Page - Mining Theme - Scaled 2x */
 
 .boosts-page {
     display: none;
-    width: 200%;
-    max-width: none;
+    transform: scale(2);
+    transform-origin: top left;
+    width: 50%;
 }
 
 .boosts-page.active {
@@ -27,7 +28,6 @@
     max-height: 450px;
     overflow-y: auto;
     padding-right: 10px;
-    width: 100%;
 }
 
 .boosts-container::-webkit-scrollbar { 
@@ -54,7 +54,6 @@
     padding: 20px;
     border: 2px solid rgba(139, 69, 19, 0.3);
     backdrop-filter: blur(5px);
-    width: 100%;
 }
 
 .section-title {
@@ -72,21 +71,19 @@
 
 .boost-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 20px;
-    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
 }
 
 .boost-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 30px;
+    padding: 10px 15px;
     background: rgba(139, 69, 19, 0.1);
     border-radius: 8px;
     border: 1px solid rgba(139, 69, 19, 0.3);
     transition: all 0.2s ease;
-    min-width: 380px;
 }
 
 .boost-item:hover {
@@ -99,16 +96,16 @@
 .boost-name {
     font-weight: 600;
     color: #F5DEB3;
-    font-size: 1.2em;
+    font-size: 1em;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .boost-multiplier {
     font-weight: 700;
     color: #FFD700;
-    font-size: 1.3em;
+    font-size: 1.1em;
     background: rgba(139, 69, 19, 0.2);
-    padding: 6px 16px;
+    padding: 3px 8px;
     border-radius: 12px;
     border: 1px solid #8B4513;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
@@ -117,17 +114,12 @@
 /* Mobile Styles */
 @media (max-width: 768px) {
     .boosts-page {
+        transform: scale(1);
         width: 100%;
     }
     
     .boost-grid {
         grid-template-columns: 1fr;
-        gap: 10px;
-    }
-    
-    .boost-item {
-        min-width: auto;
-        padding: 10px 15px;
     }
     
     .boosts-page .title {
@@ -140,15 +132,6 @@
     
     .boost-section {
         padding: 15px;
-    }
-    
-    .boost-name {
-        font-size: 1em;
-    }
-    
-    .boost-multiplier {
-        font-size: 1.1em;
-        padding: 3px 8px;
     }
 }
 
