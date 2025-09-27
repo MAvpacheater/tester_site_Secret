@@ -1,4 +1,4 @@
-// Help page functionality with multilingual support
+// Help page functionality with multilingual support and dynamic content generation
 let helpInitialized = false;
 let helpTranslations = null;
 let currentHelpLanguage = 'en';
@@ -23,6 +23,132 @@ async function loadHelpTranslations() {
     }
 }
 
+// Generate help page HTML content
+function generateHelpHTML(translations) {
+    if (!translations) {
+        return '<div style="padding: 40px; text-align: center; color: #666;">Loading help page...</div>';
+    }
+
+    return `
+        <div class="help-header">
+            <h1 class="help-title">${translations.title || '🆘 Help & Support'}</h1>
+            <p class="help-subtitle">${translations.subtitle || 'Need assistance? Contact our team!'}</p>
+        </div>
+
+        <!-- Admin Contact Section -->
+        <div class="admin-contact-section">
+            <div class="admin-card">
+                <div class="admin-info">
+                    <div class="admin-avatar">👨‍💻</div>
+                    <div class="admin-details">
+                        <div class="admin-name">${translations.admin?.name || 'Mr dep Dodep'}</div>
+                        <div class="admin-role">${translations.admin?.role || 'Project Creator & Developer'}</div>
+                        <div class="admin-status">${translations.admin?.status || '🟢 Active'}</div>
+                    </div>
+                </div>
+                <div class="admin-contact">
+                    <button class="contact-btn telegram-btn" onclick="openAdminTelegram()">
+                        ${translations.admin?.telegram || '📱 Contact on Telegram'}
+                    </button>
+                    <button class="contact-btn discord-btn" onclick="openAdminDiscord()">
+                        ${translations.admin?.discord || '🎮 Contact on Discord'}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Information Request Section -->
+        <div class="info-request-section">
+            <div class="info-request-card">
+                <div class="info-request-header">
+                    <h3>${translations.infoRequest?.title || '📋 Information Needed'}</h3>
+                    <p class="info-request-subtitle">${translations.infoRequest?.subtitle || 'Write to me if you have this information:'}</p>
+                </div>
+                <div class="info-request-list">
+                    ${generateInfoRequestItems(translations.infoRequest?.items)}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recruitment Section -->
+        <div class="recruitment-section">
+            <div class="recruitment-card">
+                <div class="recruitment-header">
+                    <h3>${translations.recruitment?.title || '👥 Developer & Tester Recruitment'}</h3>
+                    <div class="recruitment-status open">
+                        <span class="status-indicator">🟢</span>
+                        <span class="status-text">${translations.recruitment?.status?.replace('🔒 ', '🟢 ').replace('Currently Closed', 'Currently Open') || '🟢 Currently Open'}</span>
+                    </div>
+                </div>
+                <div class="recruitment-content">
+                    <p class="recruitment-description">
+                        ${translations.recruitment?.description?.replace('Currently, recruitment is closed', 'Currently, recruitment is open').replace('when new positions become available', 'for new team members') || 'We are actively looking for talented developers and dedicated testers to join our team. Currently, recruitment is open for new team members.'}
+                    </p>
+                    <div class="recruitment-requirements">
+                        <h4>${translations.recruitment?.requirements?.title || 'What we\'re looking for:'}</h4>
+                        <ul class="requirements-list">
+                            ${generateRequirementsList(translations.recruitment?.requirements?.items)}
+                        </ul>
+                    </div>
+                    <div class="recruitment-note">
+                        <p>${translations.recruitment?.note?.replace('for recruitment announcements', 'to apply for positions') || 'Contact admin to apply for available positions!'}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="quick-action-btn" onclick="scrollToAdminContact()">
+                ${translations.quickActions?.feedback || '💭 Send Feedback'}
+            </button>
+            <button class="quick-action-btn" onclick="scrollToAdminContact()">
+                ${translations.quickActions?.bug || '🐛 Report Bug'}
+            </button>
+            <button class="quick-action-btn" onclick="scrollToAdminContact()">
+                ${translations.quickActions?.feature || '⭐ Request Feature'}
+            </button>
+        </div>
+    `;
+}
+
+function generateInfoRequestItems(items) {
+    const defaultItems = [
+        '🚀 New boost information',
+        '🔮 Secret pets data', 
+        '🎁 New codes and promotions',
+        '🧪 Potion effects and recipes',
+        '💎 Game mechanics and formulas'
+    ];
+    
+    const itemsToUse = items || defaultItems;
+    
+    return itemsToUse.map(item => {
+        const parts = item.split(' ');
+        const emoji = parts[0];
+        const text = parts.slice(1).join(' ');
+        
+        return `
+            <div class="info-item">
+                <span class="info-icon">${emoji}</span>
+                <span class="info-text">${text}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+function generateRequirementsList(items) {
+    const defaultItems = [
+        '🔧 CSS developers',
+        '🎮 Game testers and QA specialists',
+        '🎨 UI/UX designers'
+    ];
+    
+    const itemsToUse = items || defaultItems;
+    
+    return itemsToUse.map(item => `<li>${item}</li>`).join('');
+}
+
 // Update help page language
 async function updateHelpLanguage(lang) {
     if (!helpTranslations) {
@@ -41,164 +167,14 @@ async function updateHelpLanguage(lang) {
         currentHelpLanguage = 'en';
     }
     
-    const translations = helpTranslations[currentHelpLanguage];
-    if (!translations) return;
-    
-    // Update ONLY existing elements, don't create new ones or add text where it shouldn't be
-    const pageTitle = document.querySelector('#helpPage .help-title');
-    const pageSubtitle = document.querySelector('#helpPage .help-subtitle');
-    
-    if (pageTitle && translations.title) {
-        pageTitle.textContent = translations.title;
+    // Regenerate content with new language
+    const helpPage = document.getElementById('helpPage');
+    if (helpPage) {
+        const translations = helpTranslations[currentHelpLanguage];
+        helpPage.innerHTML = generateHelpHTML(translations);
     }
-    
-    if (pageSubtitle && translations.subtitle) {
-        pageSubtitle.textContent = translations.subtitle;
-    }
-    
-    // Only update sections that actually exist in the HTML
-    updateAdminSection(translations);
-    updateInfoRequestSection(translations);
-    updateRecruitmentSection(translations);
-    updateQuickActions(translations);
     
     console.log(`✅ Help page language updated to: ${currentHelpLanguage}`);
-}
-
-function updateAdminSection(translations) {
-    if (!translations.admin) return;
-    
-    // Only update elements that exist in the DOM
-    const adminName = document.querySelector('.admin-name');
-    const adminRole = document.querySelector('.admin-role');
-    const adminStatus = document.querySelector('.admin-status');
-    const telegramBtn = document.querySelector('.admin-contact .telegram-btn');
-    const discordBtn = document.querySelector('.admin-contact .discord-btn');
-    
-    if (adminName && translations.admin.name) {
-        adminName.textContent = translations.admin.name;
-    }
-    
-    if (adminRole && translations.admin.role) {
-        adminRole.textContent = translations.admin.role;
-    }
-    
-    if (adminStatus && translations.admin.status) {
-        adminStatus.textContent = translations.admin.status;
-    }
-    
-    if (telegramBtn && translations.admin.telegram) {
-        telegramBtn.textContent = translations.admin.telegram;
-    }
-    
-    if (discordBtn && translations.admin.discord) {
-        discordBtn.textContent = translations.admin.discord;
-    }
-}
-
-function updateInfoRequestSection(translations) {
-    if (!translations.infoRequest) return;
-    
-    // Only update if these elements exist in the current HTML structure
-    const infoTitle = document.querySelector('.info-request-header h3');
-    const infoSubtitle = document.querySelector('.info-request-subtitle');
-    
-    if (infoTitle && translations.infoRequest.title) {
-        infoTitle.textContent = translations.infoRequest.title;
-    }
-    
-    if (infoSubtitle && translations.infoRequest.subtitle) {
-        infoSubtitle.textContent = translations.infoRequest.subtitle;
-    }
-    
-    // Update info items ONLY if they exist in the DOM
-    if (translations.infoRequest.items) {
-        const infoItems = document.querySelectorAll('.info-text');
-        if (infoItems.length > 0) {
-            translations.infoRequest.items.forEach((item, index) => {
-                if (infoItems[index]) {
-                    // Extract emoji and text
-                    const parts = item.split(' ');
-                    const emoji = parts[0];
-                    const text = parts.slice(1).join(' ');
-                    
-                    // Update icon and text separately
-                    const infoItem = infoItems[index].closest('.info-item');
-                    if (infoItem) {
-                        const infoIcon = infoItem.querySelector('.info-icon');
-                        
-                        if (infoIcon) infoIcon.textContent = emoji;
-                        infoItems[index].textContent = text;
-                    }
-                }
-            });
-        }
-    }
-}
-
-function updateRecruitmentSection(translations) {
-    if (!translations.recruitment) return;
-    
-    // Only update elements that actually exist
-    const recruitmentTitle = document.querySelector('.recruitment-header h3');
-    const recruitmentStatus = document.querySelector('.status-text');
-    const recruitmentDescription = document.querySelector('.recruitment-description');
-    const requirementsTitle = document.querySelector('.recruitment-requirements h4');
-    const recruitmentNote = document.querySelector('.recruitment-note p');
-    
-    if (recruitmentTitle && translations.recruitment.title) {
-        recruitmentTitle.textContent = translations.recruitment.title;
-    }
-    
-    if (recruitmentStatus && translations.recruitment.status) {
-        recruitmentStatus.textContent = translations.recruitment.status.replace('🔒 ', '');
-    }
-    
-    if (recruitmentDescription && translations.recruitment.description) {
-        recruitmentDescription.textContent = translations.recruitment.description;
-    }
-    
-    if (requirementsTitle && translations.recruitment.requirements && translations.recruitment.requirements.title) {
-        requirementsTitle.textContent = translations.recruitment.requirements.title;
-    }
-    
-    if (recruitmentNote && translations.recruitment.note) {
-        recruitmentNote.textContent = translations.recruitment.note;
-    }
-    
-    // Update requirements list ONLY if it exists
-    const requirementsList = document.querySelector('.requirements-list');
-    if (requirementsList && translations.recruitment.requirements && translations.recruitment.requirements.items) {
-        requirementsList.innerHTML = '';
-        
-        // Create new items from translations
-        translations.recruitment.requirements.items.forEach((item) => {
-            const listItem = document.createElement('li');
-            listItem.textContent = item;
-            requirementsList.appendChild(listItem);
-        });
-    }
-}
-
-function updateQuickActions(translations) {
-    if (!translations.quickActions) return;
-    
-    // Only update if quick action buttons exist
-    const quickActionBtns = document.querySelectorAll('.quick-action-btn');
-    
-    if (quickActionBtns.length > 0) {
-        if (quickActionBtns[0] && translations.quickActions.feedback) {
-            quickActionBtns[0].textContent = translations.quickActions.feedback;
-        }
-        
-        if (quickActionBtns[1] && translations.quickActions.bug) {
-            quickActionBtns[1].textContent = translations.quickActions.bug;
-        }
-        
-        if (quickActionBtns[2] && translations.quickActions.feature) {
-            quickActionBtns[2].textContent = translations.quickActions.feature;
-        }
-    }
 }
 
 async function initializeHelp() {
@@ -207,7 +183,7 @@ async function initializeHelp() {
         return;
     }
 
-    console.log('🆘 Initializing Help page with multilingual support...');
+    console.log('🆘 Initializing Help page with dynamic content generation...');
 
     const helpPage = document.getElementById('helpPage');
     if (!helpPage) {
@@ -223,9 +199,13 @@ async function initializeHelp() {
         ? getCurrentAppLanguage() 
         : 'en';
     
-    // Update help page language ONLY if translations loaded successfully
+    // Generate and insert content
     if (helpTranslations) {
-        await updateHelpLanguage(currentAppLanguage);
+        const translations = helpTranslations[currentAppLanguage] || helpTranslations['en'];
+        helpPage.innerHTML = generateHelpHTML(translations);
+        currentHelpLanguage = currentAppLanguage;
+    } else {
+        helpPage.innerHTML = generateHelpHTML(null);
     }
 
     helpInitialized = true;
@@ -292,23 +272,6 @@ function scrollToAdminContact() {
     }
 }
 
-// Quick action functions
-function showFeedbackForm() {
-    // Scroll to admin contact instead of showing modal
-    scrollToAdminContact();
-    showHelpNotification('💭 Contact admin via Telegram or Discord', 'info');
-}
-
-function showBugReport() {
-    scrollToAdminContact();
-    showHelpNotification('🐛 Contact admin to report bugs', 'info');
-}
-
-function showFeatureRequest() {
-    scrollToAdminContact();
-    showHelpNotification('⭐ Contact admin to request features', 'info');
-}
-
 function showHelpNotification(message, type = 'info') {
     // Remove existing notifications
     const existingNotifications = document.querySelectorAll('.help-notification');
@@ -341,8 +304,34 @@ function showHelpNotification(message, type = 'info') {
 document.addEventListener('languageChanged', async (event) => {
     const newLanguage = event.detail.language;
     console.log('🌍 Help page received language change:', newLanguage);
-    if (helpTranslations) {
+    if (helpInitialized && helpTranslations) {
         await updateHelpLanguage(newLanguage);
+    }
+});
+
+// Auto-initialize when page loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        // Only initialize if help page is visible
+        const helpPage = document.getElementById('helpPage');
+        if (helpPage && helpPage.classList.contains('active')) {
+            initializeHelp();
+        }
+    });
+} else {
+    // Page already loaded
+    const helpPage = document.getElementById('helpPage');
+    if (helpPage && helpPage.classList.contains('active')) {
+        initializeHelp();
+    }
+}
+
+// Listen for page changes to initialize when help page becomes active
+document.addEventListener('pageChanged', (event) => {
+    if (event.detail && event.detail.page === 'help') {
+        if (!helpInitialized) {
+            initializeHelp();
+        }
     }
 });
 
@@ -353,9 +342,6 @@ window.loadHelpTranslations = loadHelpTranslations;
 window.openAdminTelegram = openAdminTelegram;
 window.openAdminDiscord = openAdminDiscord;
 window.scrollToAdminContact = scrollToAdminContact;
-window.showFeedbackForm = showFeedbackForm;
-window.showBugReport = showBugReport;
-window.showFeatureRequest = showFeatureRequest;
 window.showHelpNotification = showHelpNotification;
 
-console.log('✅ help.js loaded successfully with multilingual support');
+console.log('✅ help.js loaded successfully with dynamic content generation');
