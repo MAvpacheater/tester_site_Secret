@@ -26,16 +26,6 @@ const backgroundOptions = {
         filename: 'penguin.png',
         get url() { return getGitHubImageURL(this.filename); }
     },
-    game: {
-        icon: '🎮', 
-        filename: 'game.png',
-        get url() { return getGitHubImageURL(this.filename); }
-    },
-    code: {
-        icon: '💻',
-        filename: 'code.png',
-        get url() { return getGitHubImageURL(this.filename); }
-    },
     dodep: {
         icon: '🎰', 
         filename: 'dodep.png',
@@ -432,7 +422,8 @@ function updateMenuPositionUI() {
 
 // Скинути налаштування до за замовчуванням
 function resetSettings() {
-    if (confirm(getTranslation('confirmReset', 'Ви впевнені, що хочете скинути всі налаштування?'))) {
+    const confirmText = getTranslation('confirmReset', 'Ви впевнені, що хочете скинути всі налаштування?');
+    if (confirm(confirmText)) {
         localStorage.removeItem('armHelper_background');
         localStorage.removeItem('armHelper_menuPosition');
         localStorage.removeItem('armHelper_categoriesState');
@@ -474,15 +465,44 @@ async function loadSettingsTranslations() {
                 code: "Code",
                 dodep: "Dodep",
                 prison: "Prison",
-                mining: "Mining",
-                space: "Space",
-                forest: "Forest",
                 up: "Top",
                 down: "Bottom",
                 left: "Left", 
                 right: "Right",
                 reset: "Reset Settings",
                 confirmReset: "Are you sure you want to reset all settings?"
+            },
+            uk: {
+                title: "⚙️ Налаштування", 
+                background: "Фон",
+                menu: "Позиція меню",
+                penguin: "Пінгвін",
+                game: "Гра",
+                code: "Код",
+                dodep: "Додеп",
+                prison: "В'язниця",
+                up: "Верх",
+                down: "Низ", 
+                left: "Ліворуч",
+                right: "Праворуч",
+                reset: "Скинути налаштування",
+                confirmReset: "Ви впевнені, що хочете скинути всі налаштування?"
+            },
+            ru: {
+                title: "⚙️ Настройки",
+                background: "Фон",
+                menu: "Позиция меню", 
+                penguin: "Пингвин",
+                game: "Игра",
+                code: "Код",
+                dodep: "Додеп",
+                prison: "Тюрьма",
+                up: "Верх",
+                down: "Низ",
+                left: "Слева", 
+                right: "Справа",
+                reset: "Сбросить настройки",
+                confirmReset: "Вы уверены, что хотите сбросить все настройки?"
             }
         };
         return settingsTranslations;
@@ -558,7 +578,7 @@ async function updateSettingsLanguage(lang = null) {
     console.log(`✅ Мову налаштувань оновлено до ${currentLang}`);
 }
 
-// Створити HTML налаштувань без тексту (буде заповнено системою мови)
+// Створити HTML налаштувань з правильним відображенням тексту
 function createSettingsHTML() {
     // Створити опції фону динамічно
     const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => {
@@ -566,7 +586,7 @@ function createSettingsHTML() {
         return `
             <div class="background-option" data-background="${bg}" onclick="changeBackground('${bg}')">
                 <div class="option-icon">${config.icon}</div>
-                <div class="option-name"></div>
+                <div class="option-name"><!-- Буде заповнено перекладом --></div>
                 <div class="background-preview" style="background-image: url('${config.url}')"></div>
                 <div class="loading-indicator" style="display: none;">⏳</div>
             </div>
@@ -575,13 +595,13 @@ function createSettingsHTML() {
 
     return `
         <div class="settings-container">
-            <h1 class="settings-title"></h1>
+            <h1 class="settings-title"><!-- Буде заповнено перекладом --></h1>
             
             <div class="settings-section" data-category="background">
                 <div class="category-header collapsed" onclick="toggleSettingsCategory('background')">
                     <div class="category-title">
                         <span class="section-icon">🎨</span>
-                        <span></span>
+                        <span><!-- Буде заповнено перекладом --></span>
                     </div>
                     <span class="category-toggle">▼</span>
                 </div>
@@ -595,7 +615,7 @@ function createSettingsHTML() {
                 <div class="category-header collapsed" onclick="toggleSettingsCategory('menu')">
                     <div class="category-title">
                         <span class="section-icon">📱</span>
-                        <span></span>
+                        <span><!-- Буде заповнено перекладом --></span>
                     </div>
                     <span class="category-toggle">▼</span>
                 </div>
@@ -603,28 +623,28 @@ function createSettingsHTML() {
                 <div class="menu-options collapsed">
                     <div class="menu-option" data-position="up" onclick="changeMenuPosition('up')">
                         <div class="menu-option-icon">⬆️</div>
-                        <div class="menu-option-name"></div>
+                        <div class="menu-option-name"><!-- Буде заповнено перекладом --></div>
                     </div>
                     
                     <div class="menu-option" data-position="left" onclick="changeMenuPosition('left')">
                         <div class="menu-option-icon">⬅️</div>
-                        <div class="menu-option-name"></div>
+                        <div class="menu-option-name"><!-- Буде заповнено перекладом --></div>
                     </div>
                     
                     <div class="menu-option" data-position="right" onclick="changeMenuPosition('right')">
                         <div class="menu-option-icon">➡️</div>
-                        <div class="menu-option-name"></div>
+                        <div class="menu-option-name"><!-- Буде заповнено перекладом --></div>
                     </div>
                     
                     <div class="menu-option" data-position="down" onclick="changeMenuPosition('down')">
                         <div class="menu-option-icon">⬇️</div>
-                        <div class="menu-option-name"></div>
+                        <div class="menu-option-name"><!-- Буде заповнено перекладом --></div>
                     </div>
                 </div>
             </div>
             
             <div class="reset-section">
-                <button class="reset-btn" onclick="resetSettings()"></button>
+                <button class="reset-btn" onclick="resetSettings()"><!-- Буде заповнено перекладом --></button>
             </div>
             
             <div class="github-info">
@@ -659,6 +679,9 @@ async function initializeSettings() {
     // Встановити HTML контент
     settingsPage.innerHTML = createSettingsHTML();
     
+    // ВАЖЛИВО: Оновити мову ПІСЛЯ створення HTML, щоб заповнити текст
+    await updateSettingsLanguage();
+    
     // Застосувати поточний фон
     const currentBg = getCurrentBackground();
     await applyBackground(currentBg);
@@ -671,9 +694,6 @@ async function initializeSettings() {
     
     // Застосувати стан категорій
     applyCategoriesState();
-    
-    // Оновити мову
-    await updateSettingsLanguage();
     
     settingsInitialized = true;
     console.log('✅ Налаштування ініціалізовано');
@@ -732,4 +752,14 @@ window.resetSettings = resetSettings;
 window.toggleSettingsCategory = toggleSettingsCategory;
 window.updateSettingsLanguage = updateSettingsLanguage;
 window.updateStaticMenuActiveState = updateStaticMenuActiveState;
-window.getGitHubImageURL = getGitHubImageURL;
+window.getGitHubImageURL = getGitHubImageURL;this.filename); }
+    },
+    game: {
+        icon: '🎮', 
+        filename: 'game.png',
+        get url() { return getGitHubImageURL(this.filename); }
+    },
+    code: {
+        icon: '💻',
+        filename: 'code.png',
+        get url() { return getGitHubImageURL(
