@@ -11,18 +11,36 @@
             var redirect = sessionStorage.pathToRestore;
             delete sessionStorage.pathToRestore;
             
-            if (redirect && redirect !== location.pathname) {
+            if (redirect && redirect !== '/') {
                 console.log('🔄 Restoring path from 404:', redirect);
-                history.replaceState(null, null, redirect);
+                
+                // Build the correct URL with base path
+                var protocol = window.location.protocol;
+                var host = window.location.host;
+                var basePath = '';
+                
+                if (host.includes('.github.io') && host === 'mavpacheater.github.io') {
+                    basePath = '/tester_site_Secret';
+                }
+                
+                var fullPath = basePath + redirect;
+                console.log('🎯 Full restored path:', fullPath);
+                
+                history.replaceState(null, null, fullPath);
             }
         })();
     </script>
     
+    <!-- Favicon - multiple formats for better compatibility -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="bg/peanguin.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="bg/peanguin.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="bg/peanguin.png">
+    <link rel="manifest" href="manifest.json">
+    
     <!-- Preload critical resources -->
     <link rel="preload" href="system/general.css" as="style">
     <link rel="preload" href="system/general.js" as="script">
-    
-    <link rel="icon" type="image/bg/peanguin.png" href="favicon.png">
 
     <!-- Critical CSS -->
     <link rel="stylesheet" href="system/general.css">
