@@ -1,20 +1,11 @@
-// General JavaScript functions - FIXED VERSION без app_settings
+// General JavaScript functions - Fixed and optimized
 
-// Global language state
+// Global state
 let currentAppLanguage = 'en';
 let menuTranslations = null;
+let appInitialized = false;
 
-// Page state management
-function saveCurrentPage(page) {
-    localStorage.setItem('armHelper_currentPage', page);
-    console.log(`Current page saved: ${page}`);
-}
-
-function getCurrentPage() {
-    return localStorage.getItem('armHelper_currentPage') || 'calculator';
-}
-
-// Language management functions
+// Language management
 function getCurrentAppLanguage() {
     const saved = localStorage.getItem('armHelper_language');
     return saved || 'en';
@@ -25,23 +16,28 @@ function saveAppLanguage(lang) {
     console.log(`App language saved: ${lang}`);
 }
 
-// Load menu translations with CORRECT path
+// Page state management
+function saveCurrentPage(page) {
+    localStorage.setItem('armHelper_currentPage', page);
+}
+
+function getCurrentPage() {
+    return localStorage.getItem('armHelper_currentPage') || 'calculator';
+}
+
+// Load menu translations
 async function loadMenuTranslations() {
     if (menuTranslations) return menuTranslations;
     
     try {
-        console.log('📥 Loading menu translations...');
-        // FIXED: Correct path without app_settings
         const response = await fetch('languages/menu.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         menuTranslations = await response.json();
-        console.log('✅ Menu translations loaded successfully');
+        console.log('✅ Menu translations loaded');
         return menuTranslations;
     } catch (error) {
         console.error('❌ Error loading menu translations:', error);
-        // Fallback to English
+        // Fallback
         menuTranslations = {
             en: {
                 menu: "Menu",
@@ -65,9 +61,7 @@ async function loadMenuTranslations() {
                     help: "🆘 Help",
                     peoples: "🙏 Peoples"
                 },
-                auth: {
-                    login: "Login (Soon...)"
-                }
+                auth: { login: "Login (Soon...)" }
             }
         };
         return menuTranslations;
@@ -76,73 +70,29 @@ async function loadMenuTranslations() {
 
 // Switch app language
 async function switchAppLanguage(lang) {
-    if (!menuTranslations) {
-        await loadMenuTranslations();
-    }
+    if (!menuTranslations) await loadMenuTranslations();
     
     if (!menuTranslations[lang]) {
         console.error(`❌ Language ${lang} not found, defaulting to English`);
         lang = 'en';
     }
     
-    const previousLanguage = currentAppLanguage;
     currentAppLanguage = lang;
     saveAppLanguage(lang);
     
-    // Update language flag buttons
+    // Update UI
     document.querySelectorAll('.lang-flag-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.lang === lang) {
-            btn.classList.add('active');
-        }
+        btn.classList.toggle('active', btn.dataset.lang === lang);
     });
     
-    // Update menu text AND page titles
     updateMenuTranslations();
     updatePageTitles();
     
-    // Notify ALL modules about language change
-    console.log(`🌍 Broadcasting language change from ${previousLanguage} to ${lang}`);
-    
-    // Dispatch custom event for language change
+    // Notify modules about language change
     const languageChangeEvent = new CustomEvent('languageChanged', {
-        detail: {
-            language: lang,
-            previousLanguage: previousLanguage
-        }
+        detail: { language: lang }
     });
     document.dispatchEvent(languageChangeEvent);
-    
-    // Directly notify specific modules if their functions exist
-    const moduleNotifications = [
-        { name: 'worlds', func: 'updateWorldsLanguage' },
-        { name: 'potions', func: 'updatePotionsLanguage' },
-        { name: 'secret', func: 'updateSecretLanguage' },
-        { name: 'peoples', func: 'updatePeoplesLanguage' },
-        { name: 'help', func: 'updateHelpLanguage' },
-        { name: 'settings', func: 'updateSettingsLanguage' }
-    ];
-    
-    moduleNotifications.forEach(({ name, func }) => {
-        if (typeof window[func] === 'function') {
-            try {
-                window[func](lang);
-                console.log(`✅ ${name} language updated via ${func}`);
-            } catch (error) {
-                console.error(`❌ Error updating ${name} language:`, error);
-            }
-        }
-    });
-    
-    // Legacy support for older function names
-    if (typeof window.switchWorldsLanguage === 'function') {
-        try {
-            window.switchWorldsLanguage(lang);
-            console.log('✅ Worlds language updated via legacy function');
-        } catch (error) {
-            console.error('❌ Error in legacy worlds language update:', error);
-        }
-    }
     
     console.log(`🌍 App language switched to: ${lang}`);
 }
@@ -156,30 +106,12 @@ function updateMenuTranslations() {
     
     // Update sidebar header
     const sidebarHeader = document.querySelector('.sidebar-header h3');
-    if (sidebarHeader) {
-        sidebarHeader.textContent = translations.menu;
-    }
-    
-    // Update category headers
-    const categoryMappings = {
-        'calculatorButtons': 'calculator',
-        'infoButtons': 'info',
-        'othersButtons': 'others'
-    };
-    
-    Object.entries(categoryMappings).forEach(([categoryId, translationKey]) => {
-        const categoryHeader = document.querySelector(`[data-category="${categoryId}"] .category-title span:last-child`);
-        if (categoryHeader && translations[translationKey]) {
-            categoryHeader.textContent = translations[translationKey];
-        }
-    });
+    if (sidebarHeader) sidebarHeader.textContent = translations.menu;
     
     // Update page buttons
     Object.entries(translations.pages).forEach(([page, translation]) => {
         const pageButton = document.querySelector(`[data-page="${page}"]`);
-        if (pageButton) {
-            pageButton.textContent = translation;
-        }
+        if (pageButton) pageButton.textContent = translation;
     });
     
     // Update auth button
@@ -187,8 +119,6 @@ function updateMenuTranslations() {
     if (authButton && translations.auth.login) {
         authButton.textContent = translations.auth.login;
     }
-    
-    console.log(`✅ Menu translations updated for ${currentAppLanguage}`);
 }
 
 // Update page titles
@@ -198,7 +128,6 @@ function updatePageTitles() {
     const translations = menuTranslations[currentAppLanguage];
     if (!translations || !translations.pages) return;
     
-    // Page title mappings
     const pageTitleMappings = {
         'calculatorPage': 'calculator',
         'armPage': 'arm',
@@ -217,33 +146,21 @@ function updatePageTitles() {
         'peoplesPage': 'peoples'
     };
     
-    // Update each page title
     Object.entries(pageTitleMappings).forEach(([pageId, translationKey]) => {
         const page = document.getElementById(pageId);
         if (page && translations.pages[translationKey]) {
             const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title, .settings-title');
             if (titleElement) {
                 titleElement.textContent = translations.pages[translationKey];
-                console.log(`✅ Updated title for ${pageId}: ${translations.pages[translationKey]}`);
-            }
-            
-            // Special handling for header-controls h1 elements
-            const headerControlsTitle = page.querySelector('.header-controls h1');
-            if (headerControlsTitle) {
-                headerControlsTitle.textContent = translations.pages[translationKey];
-                console.log(`✅ Updated header title for ${pageId}: ${translations.pages[translationKey]}`);
             }
         }
     });
-    
-    console.log(`✅ Page titles updated for ${currentAppLanguage}`);
 }
 
-// Page switching functionality with persistence
+// Page switching
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
     
-    // Save current page to localStorage
     saveCurrentPage(page);
     
     // Remove active class from all pages and nav buttons
@@ -254,165 +171,49 @@ function switchPage(page) {
     const targetPage = document.getElementById(page + 'Page');
     if (targetPage) {
         targetPage.classList.add('active');
-        console.log(`Page ${page}Page activated`);
     } else {
         console.error(`Page ${page}Page not found`);
     }
     
     // Update active nav button
-    const pageMap = {
-        'calculator': 'calculator',
-        'arm': 'arm',
-        'grind': 'grind',
-        'boosts': 'boosts',
-        'shiny': 'shiny',
-        'codes': 'codes',
-        'aura': 'aura',
-        'trainer': 'trainer',
-        'charms': 'charms',
-        'secret': 'secret',
-        'potions': 'potions',
-        'worlds': 'worlds',
-        'settings': 'settings',
-        'help': 'help',
-        'peoples': 'peoples'
-    };
+    const targetButton = document.querySelector(`[data-page="${page}"]`);
+    if (targetButton) targetButton.classList.add('active');
     
-    const targetButton = document.querySelector(`[data-page="${pageMap[page]}"]`);
-    if (targetButton) {
-        targetButton.classList.add('active');
-        console.log(`Nav button activated for ${page}`);
-    }
-    
-    // Close sidebar after selection
     closeSidebar();
     
-    // Force re-initialize specific page content when switching
-    setTimeout(() => {
-        initializePageContent(page);
-    }, 100);
+    // Initialize page content
+    setTimeout(() => initializePageContent(page), 100);
 }
 
-// Initialize specific page content when switching
+// Initialize specific page content
 function initializePageContent(page) {
-    console.log(`🔄 Initializing content for page: ${page}`);
-    
-    // Check if the page container exists first
     const pageContainer = document.getElementById(page + 'Page');
     if (!pageContainer) {
         console.error(`❌ Page container ${page}Page not found`);
         return;
     }
     
-    switch(page) {
-        case 'calculator':
-            if (typeof initializeCalculator === 'function') {
-                initializeCalculator();
-            }
-            break;
-        case 'arm':
-            if (typeof initializeArm === 'function') {
-                initializeArm();
-            }
-            break;
-        case 'grind':
-            if (typeof initializeGrind === 'function') {
-                if (typeof window !== 'undefined' && window.grindInitialized !== undefined) {
-                    window.grindInitialized = false;
-                }
-                initializeGrind();
-            }
-            break;
-        case 'shiny':
-            if (typeof initializeShiny === 'function') {
-                initializeShiny();
-            }
-            break;
-        case 'boosts':
-            if (typeof initializeBoosts === 'function') {
-                initializeBoosts();
-            }
-            break;
-        case 'trainer':
-            if (typeof initializeTrainer === 'function') {
-                initializeTrainer();
-            }
-            break;
-        case 'aura':
-            if (typeof initializeAura === 'function') {
-                initializeAura();
-            }
-            break;
-        case 'codes':
-            if (typeof initializeCodes === 'function') {
-                initializeCodes();
-            }
-            break;
-        case 'charms':
-            if (typeof initializeCharms === 'function') {
-                initializeCharms();
-            }
-            break;
-        case 'secret':
-            console.log('🔮 Initializing Secret Pets page...');
-            if (typeof initializeSecret === 'function') {
-                if (typeof window !== 'undefined' && window.secretInitialized !== undefined) {
-                    window.secretInitialized = false;
-                }
-                initializeSecret();
-            } else {
-                console.error('❌ initializeSecret function not found');
-            }
-            break;
-        case 'potions':
-            console.log('🧪 Initializing Potions & Food page...');
-            if (typeof initializePotions === 'function') {
-                if (typeof window !== 'undefined' && window.potionsInitialized !== undefined) {
-                    window.potionsInitialized = false;
-                }
-                initializePotions();
-            } else {
-                console.error('❌ initializePotions function not found');
-            }
-            break;
-        case 'worlds':
-            console.log('🌍 Initializing Worlds page...');
-            if (typeof initializeWorlds === 'function') {
-                initializeWorlds();
-            } else {
-                console.error('❌ initializeWorlds function not found');
-            }
-            break;
-        case 'settings':
-            console.log('⚙️ Initializing Settings page...');
-            if (typeof initializeSettings === 'function') {
-                initializeSettings();
-            } else {
-                console.error('❌ initializeSettings function not found');
-            }
-            break;
-        case 'help':
-            console.log('🆘 Initializing Help page...');
-            if (typeof initializeHelp === 'function') {
-                if (typeof window !== 'undefined' && window.helpInitialized !== undefined) {
-                    window.helpInitialized = false;
-                }
-                initializeHelp();
-            } else {
-                console.error('❌ initializeHelp function not found');
-            }
-            break;
-        case 'peoples':
-            console.log('🙏 Initializing Peoples page...');
-            if (typeof initializePeoples === 'function') {
-                if (typeof window !== 'undefined' && window.peoplesInitialized !== undefined) {
-                    window.peoplesInitialized = false;
-                }
-                initializePeoples();
-            } else {
-                console.error('❌ initializePeoples function not found');
-            }
-            break;
+    const initFunctions = {
+        'calculator': 'initializeCalculator',
+        'arm': 'initializeArm',
+        'grind': 'initializeGrind',
+        'shiny': 'initializeShiny',
+        'boosts': 'initializeBoosts',
+        'trainer': 'initializeTrainer',
+        'aura': 'initializeAura',
+        'codes': 'initializeCodes',
+        'charms': 'initializeCharms',
+        'secret': 'initializeSecret',
+        'potions': 'initializePotions',
+        'worlds': 'initializeWorlds',
+        'settings': 'initializeSettings',
+        'help': 'initializeHelp',
+        'peoples': 'initializePeoples'
+    };
+    
+    const initFunction = initFunctions[page];
+    if (typeof window[initFunction] === 'function') {
+        window[initFunction]();
     }
 }
 
@@ -440,11 +241,6 @@ function toggleCategory(categoryId) {
     }
 }
 
-// Initialize categories on app start
-function initializeCategories() {
-    console.log('✅ Categories initialized - all closed by default');
-}
-
 // Sidebar functionality
 function toggleMobileMenu() {
     const sidebar = document.getElementById('sidebar');
@@ -466,15 +262,9 @@ function closeSidebar() {
     }
 }
 
-// Disabled auth action
-function handleAuthAction() {
-    console.log('Login feature coming soon...');
-}
-
-// Settings persistence helpers
+// Settings storage helpers
 function saveSettingsToStorage(key, settings) {
     localStorage.setItem(`armHelper_${key}_settings`, JSON.stringify(settings));
-    console.log(`Settings saved to localStorage for ${key}`);
 }
 
 function loadSettingsFromStorage(key) {
@@ -490,10 +280,7 @@ function loadSettingsFromStorage(key) {
     return null;
 }
 
-// Flag to prevent repeated initialization
-let appInitialized = false;
-
-// App initialization with enhanced language support and page state restoration
+// App initialization
 async function initializeApp() {
     if (appInitialized) {
         console.log('⚠️ App already initialized');
@@ -517,208 +304,81 @@ async function initializeApp() {
     
     // Update active state of language flags
     document.querySelectorAll('.lang-flag-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.lang === currentAppLanguage) {
-            btn.classList.add('active');
-        }
+        btn.classList.toggle('active', btn.dataset.lang === currentAppLanguage);
     });
     
-    // Update menu translations AND page titles
+    // Update menu translations and page titles
     updateMenuTranslations();
     updatePageTitles();
     
-    // Initialize categories
-    initializeCategories();
-    
-    // Initialize all modules first
-    initializeAllModules();
+    // Load all modules
+    await loadAllModules();
     
     // Restore last page or default to calculator
     const lastPage = getCurrentPage();
-    console.log(`🔄 Restoring last page: ${lastPage}`);
-    
     setTimeout(() => {
         switchPage(lastPage);
         console.log(`✅ Page restored to: ${lastPage}`);
     }, 200);
     
-    // Enhanced click outside settings panel handler
-    document.addEventListener('click', e => {
-        const settingsPanels = [
-            { panel: document.getElementById('settingsPanel'), btn: document.querySelector('#calculatorPage .settings-btn'), name: 'calculator' },
-            { panel: document.getElementById('settingsPanelArm'), btn: document.querySelector('#armPage .settings-btn'), name: 'arm' },
-            { panel: document.getElementById('settingsPanelGrind'), btn: document.querySelector('#grindPage .settings-btn'), name: 'grind' }
-        ];
-        
-        settingsPanels.forEach(({ panel, btn, name }) => {
-            if (panel && btn) {
-                // Check if panel just opened
-                if (panel.dataset.justOpened === 'true') {
-                    console.log(`⏸️ Skipping close for ${name} panel - just opened`);
-                    return;
-                }
-                
-                const isClickInsidePanel = panel.contains(e.target);
-                const isClickOnSettingsBtn = btn.contains(e.target);
-                const isClickOnCategoryButton = e.target.closest('.category-button');
-                const isClickOnBackButton = e.target.closest('.back-btn');
-                const isClickOnCategorySwitch = e.target.closest('.category-switch');
-                const isClickOnSimpleModifier = e.target.closest('.simple-modifier');
-                const isClickOnCategoryHeader = e.target.closest('.category-header');
-                const isClickOnGrindCategoryHeader = e.target.closest('.category-header-modifier');
-                const isClickOnLanguageFlag = e.target.closest('.lang-flag-btn');
-                
-                const shouldKeepOpen = isClickInsidePanel || isClickOnSettingsBtn || 
-                    isClickOnCategoryButton || isClickOnBackButton || 
-                    isClickOnCategorySwitch || isClickOnSimpleModifier ||
-                    isClickOnCategoryHeader || isClickOnGrindCategoryHeader ||
-                    isClickOnLanguageFlag;
-                
-                if (!shouldKeepOpen && panel.classList.contains('show')) {
-                    console.log(`🔒 Closing ${name} settings panel`);
-                    panel.classList.remove('show');
-                } else if (shouldKeepOpen) {
-                    console.log(`✋ Keeping ${name} settings panel open`);
-                }
-            }
-        });
-    });
-
     appInitialized = true;
-    console.log('✅ App initialization completed - Page state persistence enabled');
+    console.log('✅ App initialization completed');
 }
 
-// Initialize all modules with proper DOM readiness checks
-function initializeAllModules() {
-    console.log('🔧 Initializing all modules...');
-    
+// Load all modules
+async function loadAllModules() {
     const modules = [
-        'initializeCalculator',
-        'initializeArm', 
-        'initializeGrind',
-        'initializeBoosts',
-        'initializeShiny',
-        'initializeSecret',
-        'initializePotions',
-        'initializeAura',
-        'initializeTrainer',
-        'initializeCharms',
-        'initializeCodes',
-        'initializeWorlds',
-        'initializeSettings',
-        'initializeHelp',
-        'initializePeoples'
+        'calc/calculator.js',
+        'calc/arm.js', 
+        'calc/grind.js',
+        'info/boosts.js',
+        'info/shiny.js',
+        'info/secret.js',
+        'info/codes.js',
+        'info/aura.js',
+        'info/trainer.js',
+        'info/charms.js',
+        'info/potions.js',
+        'info/worlds.js',
+        'moderation/settings.js',
+        'other/peoples.js',
+        'other/help.js'
     ];
-
-    modules.forEach(moduleName => {
-        try {
-            if (typeof window[moduleName] === 'function') {
-                // Add delay for DOM-dependent modules
-                if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || 
-                    moduleName === 'initializeGrind' || moduleName === 'initializePeoples' ||
-                    moduleName === 'initializeWorlds' || moduleName === 'initializeHelp' ||
-                    moduleName === 'initializeSettings') {
-                    setTimeout(() => {
-                        try {
-                            // Force reinitialization by resetting flags
-                            if (moduleName === 'initializeSecret' && window.secretInitialized) {
-                                window.secretInitialized = false;
-                            }
-                            if (moduleName === 'initializePotions' && window.potionsInitialized) {
-                                window.potionsInitialized = false;
-                            }
-                            if (moduleName === 'initializeGrind' && window.grindInitialized) {
-                                window.grindInitialized = false;
-                            }
-                            if (moduleName === 'initializePeoples' && window.peoplesInitialized) {
-                                window.peoplesInitialized = false;
-                            }
-                            if (moduleName === 'initializeHelp' && window.helpInitialized) {
-                                window.helpInitialized = false;
-                            }
-                            if (moduleName === 'initializeSettings' && window.settingsInitialized) {
-                                window.settingsInitialized = false;
-                            }
-                            
-                            window[moduleName]();
-                            console.log(`✅ ${moduleName} initialized (delayed)`);
-                        } catch (error) {
-                            console.error(`❌ Error initializing ${moduleName}:`, error);
-                        }
-                    }, 300);
-                } else {
-                    window[moduleName]();
-                    console.log(`✅ ${moduleName} initialized`);
-                }
-            } else {
-                console.warn(`⚠️ Function ${moduleName} not found`);
-            }
-        } catch (error) {
-            console.error(`❌ Error initializing ${moduleName}:`, error);
-        }
-    });
-}
-
-// Debug function to check page states
-function debugPageStates() {
-    console.log('=== DEBUG PAGE STATES ===');
-    document.querySelectorAll('.page').forEach(page => {
-        console.log(`${page.id}: ${page.classList.contains('active') ? 'ACTIVE' : 'INACTIVE'}`);
-    });
-    console.log(`Current saved page: ${getCurrentPage()}`);
-    console.log('========================');
-}
-
-// Force reinitialization for specific modules
-function forceReinitializeModule(moduleName) {
-    console.log(`🔄 Force reinitializing ${moduleName}...`);
     
-    // Reset initialization flags
-    if (moduleName === 'secret' && typeof window !== 'undefined') {
-        window.secretInitialized = false;
-    }
-    if (moduleName === 'potions' && typeof window !== 'undefined') {
-        window.potionsInitialized = false;
-    }
-    if (moduleName === 'grind' && typeof window !== 'undefined') {
-        window.grindInitialized = false;
-    }
-    if (moduleName === 'peoples' && typeof window !== 'undefined') {
-        window.peoplesInitialized = false;
-    }
-    if (moduleName === 'help' && typeof window !== 'undefined') {
-        window.helpInitialized = false;
-    }
-    if (moduleName === 'settings' && typeof window !== 'undefined') {
-        window.settingsInitialized = false;
-    }
+    const loadScript = (src) => {
+        return new Promise((resolve) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = () => {
+                console.log(`✅ Loaded: ${src}`);
+                resolve();
+            };
+            script.onerror = () => {
+                console.warn(`⚠️ Failed to load: ${src}`);
+                resolve();
+            };
+            document.head.appendChild(script);
+        });
+    };
     
-    // Call initialization
-    const initFunctionName = `initialize${moduleName.charAt(0).toUpperCase() + moduleName.slice(1)}`;
-    if (typeof window[initFunctionName] === 'function') {
-        setTimeout(() => {
-            window[initFunctionName]();
-            console.log(`✅ ${initFunctionName} force reinitialized`);
-        }, 100);
+    try {
+        // Load all modules in parallel
+        await Promise.all(modules.map(loadScript));
+        console.log('✅ All modules loaded');
+    } catch (error) {
+        console.error('❌ Error loading modules:', error);
     }
 }
 
-// Make functions globally available
+// Global functions
 window.switchPage = switchPage;
 window.toggleMobileMenu = toggleMobileMenu;
 window.closeSidebar = closeSidebar;
-window.handleAuthAction = handleAuthAction;
 window.initializeApp = initializeApp;
-window.debugPageStates = debugPageStates;
-window.saveSettingsToStorage = saveSettingsToStorage;
-window.loadSettingsFromStorage = loadSettingsFromStorage;
-window.toggleCategory = toggleCategory;
-window.initializeCategories = initializeCategories;
-window.forceReinitializeModule = forceReinitializeModule;
 window.switchAppLanguage = switchAppLanguage;
 window.getCurrentAppLanguage = getCurrentAppLanguage;
-window.saveAppLanguage = saveAppLanguage;
-window.updateMenuTranslations = updateMenuTranslations;
-window.updatePageTitles = updatePageTitles;
 window.saveCurrentPage = saveCurrentPage;
 window.getCurrentPage = getCurrentPage;
+window.toggleCategory = toggleCategory;
+window.saveSettingsToStorage = saveSettingsToStorage;
+window.loadSettingsFromStorage = loadSettingsFromStorage;
