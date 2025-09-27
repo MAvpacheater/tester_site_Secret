@@ -1,4 +1,4 @@
-// General JavaScript functions - Complete version without app_settings
+// General JavaScript functions - Complete version with single menu management
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -238,7 +238,7 @@ function updatePageTitles() {
     console.log(`✅ Page titles updated for ${currentAppLanguage}`);
 }
 
-// Page switching functionality with persistence
+// Page switching functionality with persistence and static menu support
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
     
@@ -258,7 +258,7 @@ function switchPage(page) {
         console.error(`Page ${page}Page not found`);
     }
     
-    // Update active nav button
+    // Update active nav button in sidebar
     const pageMap = {
         'calculator': 'calculator',
         'arm': 'arm',
@@ -283,8 +283,22 @@ function switchPage(page) {
         console.log(`Nav button activated for ${page}`);
     }
     
+    // Update static menu active state if it exists
+    if (typeof window.updateStaticMenuActiveState === 'function') {
+        window.updateStaticMenuActiveState(page);
+    }
+    
     // Close sidebar after selection
     closeSidebar();
+    
+    // Dispatch page change event
+    const pageChangeEvent = new CustomEvent('pageChanged', {
+        detail: {
+            page: page,
+            previousPage: getCurrentPage()
+        }
+    });
+    document.dispatchEvent(pageChangeEvent);
     
     // Force re-initialize specific page content when switching
     setTimeout(() => {
@@ -584,7 +598,7 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed - Page state persistence enabled');
+    console.log('✅ App initialization completed - Single menu management enabled');
 }
 
 // Initialize all modules with proper DOM readiness checks
