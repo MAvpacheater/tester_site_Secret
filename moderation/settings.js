@@ -294,7 +294,7 @@ function saveMenuPosition(position) {
     console.log(`Позицію меню збережено: ${position}`);
 }
 
-// Застосувати позицію меню
+// Застосувати позицію меню з єдиністю меню
 function applyMenuPosition(position) {
     if (!menuPositions[position]) {
         console.error(`Позицію меню ${position} не знайдено`);
@@ -303,16 +303,16 @@ function applyMenuPosition(position) {
     
     const body = document.body;
     
-    // Видалити всі класи позицій меню
+    // ВАЖЛИВО: Видалити всі класи позицій меню і статичні меню
     Object.keys(menuPositions).forEach(pos => {
         body.classList.remove(`menu-${pos}`);
     });
     
-    // Додати новий клас позиції меню
-    body.classList.add(`menu-${position}`);
-    
     // Видалити будь-яке існуюче статичне меню перед створенням нового
     removeStaticMenu();
+    
+    // Додати новий клас позиції меню
+    body.classList.add(`menu-${position}`);
     
     // Обробити статичне відображення меню
     if (position === 'up' || position === 'down') {
@@ -328,10 +328,10 @@ function applyMenuPosition(position) {
         }
     }
     
-    console.log(`Позицію меню застосовано: ${position}`);
+    console.log(`✅ Позицію меню застосовано: ${position}`);
 }
 
-// Створити статичне меню для верхніх/нижніх позицій тільки з іконками
+// Створити статичне меню для верхніх/нижніх позицій з кнопкою налаштувань
 function createStaticMenu(position) {
     console.log(`🔨 Створення статичного меню для позиції: ${position}`);
     
@@ -350,7 +350,7 @@ function createStaticMenu(position) {
     const navButtons = document.createElement('div');
     navButtons.className = 'nav-buttons';
     
-    // Створити кнопки для всіх елементів меню тільки з іконками (БЕЗ налаштувань)
+    // Створити кнопки для всіх елементів меню тільки з іконками
     menuItems.forEach(item => {
         const btn = document.createElement('button');
         btn.className = 'nav-btn';
@@ -369,15 +369,34 @@ function createStaticMenu(position) {
         navButtons.appendChild(btn);
     });
     
+    // Створити кнопку налаштувань
+    const settingsBtn = document.createElement('button');
+    settingsBtn.className = 'nav-btn settings-btn-static';
+    settingsBtn.title = 'Settings';
+    settingsBtn.textContent = '⚙️';
+    settingsBtn.onclick = () => {
+        if (typeof window.switchPage === 'function') {
+            window.switchPage('settings');
+        }
+        updateStaticMenuActiveState('settings');
+    };
+    
+    // Додати кнопки до контейнера
     staticMenu.appendChild(navButtons);
+    
+    // Створити окремий контейнер для кнопки налаштувань (праворуч)
+    const settingsContainer = document.createElement('div');
+    settingsContainer.className = 'settings-container-static';
+    settingsContainer.appendChild(settingsBtn);
+    staticMenu.appendChild(settingsContainer);
+    
     document.body.appendChild(staticMenu);
     
     // Оновити активний стан для поточної сторінки
     const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
     updateStaticMenuActiveState(currentPage);
     
-    console.log(`✅ Статичне ${position} меню створено з ${menuItems.length} елементами (БЕЗ налаштувань - вони в сайдбарі)`);
-    console.log('🔍 Статичне меню додано до DOM:', document.getElementById('staticMenu'));
+    console.log(`✅ Статичне ${position} меню створено з ${menuItems.length} елементами + налаштування`);
 }
 
 // Видалити статичне меню
@@ -385,7 +404,7 @@ function removeStaticMenu() {
     const existingMenu = document.getElementById('staticMenu');
     if (existingMenu) {
         existingMenu.remove();
-        console.log('Статичне меню видалено');
+        console.log('🗑️ Статичне меню видалено');
     }
 }
 
@@ -396,7 +415,8 @@ function updateStaticMenuActiveState(activePage) {
     
     staticMenu.querySelectorAll('.nav-btn').forEach(btn => {
         btn.classList.remove('active');
-        if (btn.dataset.page === activePage) {
+        if (btn.dataset.page === activePage || 
+            (activePage === 'settings' && btn.classList.contains('settings-btn-static'))) {
             btn.classList.add('active');
         }
     });
@@ -566,7 +586,7 @@ async function updateSettingsLanguage(lang = null) {
     console.log(`✅ Мову налаштувань оновлено до ${currentLang}`);
 }
 
-// Створити HTML налаштувань з правильним відображенням тексту (БЕЗ кнопки Reset та GitHub info)
+// Створити HTML налаштувань з правильним відображенням тексту
 function createSettingsHTML() {
     // Створити опції фону динамічно
     const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => {
