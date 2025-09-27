@@ -102,6 +102,18 @@ class URLRouter {
     init() {
         if (this.isInitialized) return;
 
+        // Check for restored path from 404 redirect
+        const restoredPath = sessionStorage.getItem('pathToRestore');
+        if (restoredPath) {
+            console.log(`🔄 Found restored path from 404: ${restoredPath}`);
+            sessionStorage.removeItem('pathToRestore');
+            
+            // Update the URL to the restored path
+            const newURL = this.baseURL + restoredPath.substring(1); // Remove leading slash
+            window.history.replaceState(null, '', newURL);
+            console.log(`🔄 URL restored to: ${newURL}`);
+        }
+
         const initialPage = this.getPageFromURL();
         console.log(`🎯 Initial page from URL: ${initialPage} (URL: ${window.location.pathname})`);
         
@@ -112,7 +124,8 @@ class URLRouter {
                     console.log(`✅ Switched to page from URL: ${initialPage}`);
                 }
             }, 1000);
-        } else {
+        } else if (initialPage === 'calculator') {
+            // Make sure URL is correct for calculator page
             this.updateURL('calculator', false);
         }
 
@@ -123,20 +136,27 @@ class URLRouter {
     getPageFromURL() {
         let currentPath = window.location.pathname;
         
+        console.log(`🔍 Original pathname: "${currentPath}"`);
+        
         // Remove base path from GitHub Pages URLs
         const baseURL = this.baseURL;
         const basePath = new URL(baseURL).pathname;
         
+        console.log(`🏠 Base path from baseURL: "${basePath}"`);
+        
+        // If we have a base path (like /tester_site_Secret/), remove it from current path
         if (basePath !== '/' && currentPath.startsWith(basePath)) {
-            currentPath = currentPath.substring(basePath.length - 1);
+            currentPath = '/' + currentPath.substring(basePath.length);
+            console.log(`✂️ After removing base path: "${currentPath}"`);
         }
         
         // Remove trailing slash for consistency (except root)
         if (currentPath !== '/' && currentPath.endsWith('/')) {
             currentPath = currentPath.slice(0, -1);
+            console.log(`✂️ After removing trailing slash: "${currentPath}"`);
         }
         
-        console.log(`🔍 Analyzing URL path: "${currentPath}" (original: ${window.location.pathname})`);
+        console.log(`🎯 Final path to match: "${currentPath}"`);
         
         // Direct lookup in routes map
         if (this.routes.has(currentPath)) {
@@ -148,14 +168,14 @@ class URLRouter {
         // Check for partial matches (for complex routing scenarios)
         for (const [path, page] of this.routes.entries()) {
             if (typeof path === 'string' && path.startsWith('/') && path !== '/') {
-                if (currentPath.includes(path)) {
-                    console.log(`✅ Found partial match: "${currentPath}" contains "${path}" -> ${page}`);
+                if (currentPath === path) {
+                    console.log(`✅ Found exact match in loop: "${currentPath}" -> ${page}`);
                     return page;
                 }
             }
         }
         
-        console.log(`❓ No match found for "${currentPath}", using calculator`);
+        console.log(`❓ No match found for "${currentPath}", available routes:`, Array.from(this.routes.entries()).filter(([k,v]) => typeof k === 'string'));
         return 'calculator';
     }
 
