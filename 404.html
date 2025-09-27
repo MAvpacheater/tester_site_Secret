@@ -112,8 +112,22 @@
         
         console.log('🔄 404 Redirect triggered for:', currentPath);
         
-        // Store the original path for restoration (keep the full path)
-        var fullOriginalURL = currentPath + search + hash;
+        // Store the original path for restoration (keep the relative path)
+        // For URLs like /tester_site_Secret/shiny_list, we want to store /shiny_list
+        var pathToStore = currentPath;
+        
+        // If this is a repository-based URL, extract the relative path
+        if (host.includes('.github.io') && pathParts.length > 1) {
+            var potentialRepo = pathParts[0];
+            if (potentialRepo === 'tester_site_Secret' || 
+                potentialRepo.includes('_') || 
+                potentialRepo.includes('-')) {
+                // Remove the repository name from the path
+                pathToStore = '/' + pathParts.slice(1).join('/');
+            }
+        }
+        
+        var fullOriginalURL = pathToStore + search + hash;
         sessionStorage.setItem('pathToRestore', fullOriginalURL);
         
         console.log('💾 Stored path for restoration:', fullOriginalURL);
