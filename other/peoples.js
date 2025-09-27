@@ -1,4 +1,4 @@
-// Peoples page functionality with multilingual support
+// Peoples page functionality with multilingual support and dynamic HTML creation
 let peoplesInitialized = false;
 let currentFilter = 'all'; // 'all', 'admin', 'helper'
 let peoplesTranslations = null;
@@ -24,9 +24,38 @@ async function loadPeoplesTranslations() {
             en: {
                 title: "🙏 Peoples & Developer",
                 subtitle: "Special thanks to everyone who contributed!",
-                filters: { admins: "👑 Admins", helpers: "🤝 Helpers" },
+                description: "This project wouldn't exist without the amazing community support and contributions from these wonderful people.",
+                filters: { 
+                    all: "👥 Show All",
+                    admins: "👑 Admins", 
+                    helpers: "🤝 Helpers" 
+                },
                 roles: { admin: "Admin", helper: "Helper" },
-                social: { telegram: "📱 Telegram Profile", discord: "🎮 Discord Profile" }
+                social: { 
+                    telegram: "📱 Telegram Profile", 
+                    discord: "🎮 Discord Profile" 
+                },
+                stats: {
+                    total: "Total Contributors",
+                    admins: "Project Admins",
+                    helpers: "Community Helpers",
+                    withTelegram: "On Telegram",
+                    withDiscord: "On Discord"
+                },
+                filterResults: {
+                    showingAll: "Showing all {count} contributor{s}",
+                    showingAdmins: "Showing {count} admin{s}",
+                    showingHelpers: "Showing {count} helper{s}"
+                },
+                notifications: {
+                    telegramNotAvailable: "❌ Telegram profile not available",
+                    telegramOpening: "📱 Opening Telegram profile...",
+                    telegramFailed: "❌ Failed to open Telegram profile",
+                    discordNotAvailable: "❌ Discord profile not available",
+                    discordOpening: "🎮 Opening Discord... Tag: {tag}",
+                    discordCopied: "📋 Discord tag copied: {tag}",
+                    discordFailed: "❌ Failed to open Discord profile"
+                }
             }
         };
         return peoplesTranslations;
@@ -68,6 +97,9 @@ async function updatePeoplesLanguage(lang) {
     
     // Update filter buttons
     updateFilterButtonsText();
+    
+    // Update stats if they exist
+    updateStatsText();
     
     // Re-render contributors with new language
     if (peoplesInitialized) {
@@ -148,40 +180,137 @@ async function initializePeoples() {
     // Update peoples page language
     await updatePeoplesLanguage(currentAppLanguage);
 
+    // Create the complete HTML structure
+    createPageStructure();
+    
+    // Initialize interactive elements
     createFilterControls();
+    createStatsSection();
     renderContributors();
+    
     peoplesInitialized = true;
     console.log('✅ Peoples page initialized successfully with multilingual support');
 }
 
-function createFilterControls() {
+function createPageStructure() {
     const peoplesPage = document.getElementById('peoplesPage');
-    const peoplesHeader = peoplesPage.querySelector('.peoples-header');
-    
-    // Check if filter controls already exist
-    if (peoplesPage.querySelector('.filter-controls')) {
-        return;
-    }
+    if (!peoplesPage) return;
 
-    const filterControls = document.createElement('div');
-    filterControls.className = 'filter-controls';
+    // Clear existing content
+    peoplesPage.innerHTML = '';
+    
+    // Get translations
+    const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
+    const title = (translations && translations.title) || "🙏 Peoples & Developer";
+    const subtitle = (translations && translations.subtitle) || "Special thanks to everyone who contributed!";
+    const description = (translations && translations.description) || "This project wouldn't exist without the amazing community support and contributions from these wonderful people.";
+
+    // Create complete page structure
+    peoplesPage.innerHTML = `
+        <div class="peoples-header">
+            <h1 class="peoples-title">${title}</h1>
+            <div class="peoples-subtitle">${subtitle}</div>
+            <div class="peoples-description">${description}</div>
+        </div>
+        
+        <div class="peoples-stats" id="peoplesStats">
+            <!-- Stats will be populated by createStatsSection() -->
+        </div>
+        
+        <div class="filter-controls" id="filterControls">
+            <!-- Filter buttons will be populated by createFilterControls() -->
+        </div>
+        
+        <div class="contributors-list" id="contributorsList">
+            <!-- Contributors will be populated by renderContributors() -->
+        </div>
+    `;
+
+    console.log('✅ Peoples page structure created');
+}
+
+function createStatsSection() {
+    const statsContainer = document.getElementById('peoplesStats');
+    if (!statsContainer) return;
+
+    const stats = getContributorStats();
+    const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
+    
+    // Get stat labels
+    const totalLabel = (translations && translations.stats.total) || "Total Contributors";
+    const adminsLabel = (translations && translations.stats.admins) || "Project Admins";
+    const helpersLabel = (translations && translations.stats.helpers) || "Community Helpers";
+    const telegramLabel = (translations && translations.stats.withTelegram) || "On Telegram";
+    const discordLabel = (translations && translations.stats.withDiscord) || "On Discord";
+
+    statsContainer.innerHTML = `
+        <div class="stat-item">
+            <div class="stat-number">${stats.total}</div>
+            <div class="stat-label">${totalLabel}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">${stats.admins}</div>
+            <div class="stat-label">${adminsLabel}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">${stats.helpers}</div>
+            <div class="stat-label">${helpersLabel}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">${stats.withTelegram}</div>
+            <div class="stat-label">${telegramLabel}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">${stats.withDiscord}</div>
+            <div class="stat-label">${discordLabel}</div>
+        </div>
+    `;
+
+    console.log('✅ Stats section created with translations');
+}
+
+function updateStatsText() {
+    const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
+    if (!translations || !translations.stats) return;
+    
+    const statItems = document.querySelectorAll('#peoplesStats .stat-item');
+    const labels = [
+        translations.stats.total,
+        translations.stats.admins,
+        translations.stats.helpers,
+        translations.stats.withTelegram,
+        translations.stats.withDiscord
+    ];
+    
+    statItems.forEach((item, index) => {
+        const label = item.querySelector('.stat-label');
+        if (label && labels[index]) {
+            label.textContent = labels[index];
+        }
+    });
+}
+
+function createFilterControls() {
+    const filterContainer = document.getElementById('filterControls');
+    if (!filterContainer) return;
     
     const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
+    const allText = (translations && translations.filters.all) || '👥 Show All';
     const adminsText = (translations && translations.filters.admins) || '👑 Admins';
     const helpersText = (translations && translations.filters.helpers) || '🤝 Helpers';
     
-    filterControls.innerHTML = `
-        <button class="filter-btn" data-filter="admin" onclick="setFilter('admin')">
+    filterContainer.innerHTML = `
+        <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" data-filter="all" onclick="setFilter('all')">
+            ${allText}
+        </button>
+        <button class="filter-btn ${currentFilter === 'admin' ? 'active' : ''}" data-filter="admin" onclick="setFilter('admin')">
             ${adminsText}
         </button>
-        <button class="filter-btn" data-filter="helper" onclick="setFilter('helper')">
+        <button class="filter-btn ${currentFilter === 'helper' ? 'active' : ''}" data-filter="helper" onclick="setFilter('helper')">
             ${helpersText}
         </button>
     `;
 
-    // Insert filter controls after header
-    peoplesHeader.insertAdjacentElement('afterend', filterControls);
-    
     console.log('✅ Filter controls created with translations');
 }
 
@@ -189,26 +318,23 @@ function updateFilterButtonsText() {
     const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
     if (!translations) return;
     
+    const allBtn = document.querySelector('[data-filter="all"]');
     const adminBtn = document.querySelector('[data-filter="admin"]');
     const helperBtn = document.querySelector('[data-filter="helper"]');
     
+    if (allBtn && translations.filters.all) {
+        allBtn.textContent = translations.filters.all;
+    }
     if (adminBtn && translations.filters.admins) {
         adminBtn.textContent = translations.filters.admins;
     }
-    
     if (helperBtn && translations.filters.helpers) {
         helperBtn.textContent = translations.filters.helpers;
     }
 }
 
 function setFilter(filter) {
-    if (filter === currentFilter && filter !== 'all') {
-        // If clicking the same filter, show all
-        currentFilter = 'all';
-    } else {
-        currentFilter = filter;
-    }
-
+    currentFilter = filter;
     updateFilterButtons();
     filterContributors();
     
@@ -294,7 +420,7 @@ function filterContributors() {
 }
 
 function renderContributors() {
-    const contributorsContainer = document.querySelector('#peoplesPage .contributors-list');
+    const contributorsContainer = document.getElementById('contributorsList');
     if (!contributorsContainer) {
         console.error('❌ Contributors container not found');
         return;
@@ -497,6 +623,7 @@ function escapeHtml(text) {
 function addContributor(contributorData) {
     contributors.push(contributorData);
     if (peoplesInitialized) {
+        createStatsSection(); // Update stats
         renderContributors();
     }
     console.log('✅ Contributor added:', contributorData.name);
@@ -507,6 +634,7 @@ function removeContributor(index) {
     if (index >= 0 && index < contributors.length) {
         const removed = contributors.splice(index, 1)[0];
         if (peoplesInitialized) {
+            createStatsSection(); // Update stats
             renderContributors();
         }
         console.log('✅ Contributor removed:', removed.name);
@@ -525,7 +653,6 @@ function getContributorStats() {
         withDiscord: contributors.filter(c => c.discord).length
     };
 
-    console.log('📊 Contributor Stats:', stats);
     return stats;
 }
 
@@ -547,4 +674,4 @@ window.addContributor = addContributor;
 window.removeContributor = removeContributor;
 window.getContributorStats = getContributorStats;
 
-console.log('✅ peoples.js loaded successfully with multilingual support');
+console.log('✅ peoples.js loaded successfully with dynamic HTML creation and multilingual support');
