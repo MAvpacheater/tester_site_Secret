@@ -13,11 +13,11 @@
 
 .boosts-page .title {
     font-family: 'Orbitron', monospace;
-    font-size: 2.5em;
+    font-size: 1.8em;
     font-weight: 900;
     color: #FFD700;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
     background: linear-gradient(45deg, #FFD700, #FFA500, #8B4513);
     -webkit-background-clip: text;
@@ -25,9 +25,9 @@
 }
 
 .boosts-container {
-    max-height: 450px;
+    max-height: 320px;
     overflow-y: auto;
-    padding-right: 10px;
+    padding-right: 8px;
 }
 
 .boosts-container::-webkit-scrollbar { 
@@ -45,23 +45,23 @@
 }
 
 .boost-section {
-    margin-bottom: 25px;
+    margin-bottom: 18px;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.15) 0%, 
         rgba(101, 67, 33, 0.2) 50%, 
         rgba(62, 39, 35, 0.25) 100%);
-    border-radius: 15px;
-    padding: 20px;
+    border-radius: 12px;
+    padding: 15px;
     border: 2px solid rgba(139, 69, 19, 0.3);
     backdrop-filter: blur(5px);
 }
 
 .section-title {
     font-family: 'Orbitron', monospace;
-    font-size: 1.4em;
+    font-size: 1.1em;
     font-weight: 700;
     color: #FFD700;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     text-align: center;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     background: linear-gradient(45deg, #FFD700, #FFA500);
@@ -71,17 +71,17 @@
 
 .boost-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 8px;
 }
 
 .boost-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 15px;
+    padding: 8px 12px;
     background: rgba(139, 69, 19, 0.1);
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid rgba(139, 69, 19, 0.3);
     transition: all 0.2s ease;
 }
@@ -96,17 +96,17 @@
 .boost-name {
     font-weight: 600;
     color: #F5DEB3;
-    font-size: 1em;
+    font-size: 0.85em;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .boost-multiplier {
     font-weight: 700;
     color: #FFD700;
-    font-size: 1.1em;
+    font-size: 0.9em;
     background: rgba(139, 69, 19, 0.2);
-    padding: 3px 8px;
-    border-radius: 12px;
+    padding: 2px 6px;
+    border-radius: 8px;
     border: 1px solid #8B4513;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
