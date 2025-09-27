@@ -6,7 +6,7 @@ let categoriesState = { background: false, menu: false };
 // GitHub конфігурація для зображень
 const GITHUB_CONFIG = {
     user: 'MAvpacheater',
-    repo: 'armwrestlerinfopost',
+    repo: 'tester_site_Secret',
     branch: 'main',
     imagePath: 'image/bg/'
 };
@@ -18,7 +18,10 @@ const backgroundOptions = {
     code: { icon: '💻', filename: 'code.png' },
     dodep: { icon: '🎰', filename: 'dodep.png' },
     prison: { icon: '👮‍♂️', filename: 'prison.png' },
-    forest: { icon: '🌲', filename: 'forest.jpg' }
+    forest: { icon: '🌲', filename: 'forest.jpg' },
+    space: { icon: '🚀', filename: 'space.png' },
+    ocean: { icon: '🌊', filename: 'ocean.png' },
+    desert: { icon: '🏜️', filename: 'desert.png' }
 };
 
 // Додаємо URL до кожної опції
@@ -260,7 +263,7 @@ function closeSidebar() {
     }
 }
 
-// РОБОТА З ФОНАМИ - СПРОЩЕНО
+// РОБОТА З ФОНАМИ
 async function checkImageAvailability(url) {
     try {
         const response = await fetch(url, { method: 'HEAD' });
@@ -275,21 +278,7 @@ async function loadBackgroundImage(background) {
     if (!config) return null;
     
     const isAvailable = await checkImageAvailability(config.url);
-    
-    if (isAvailable) {
-        return config.url;
-    } else {
-        // Резервні URL
-        const fallbackUrls = {
-            penguin: 'https://i.postimg.cc/rmW86W6S/Gemini-Generated-Image-fh66csfh66csfh66.png',
-            game: 'https://i.postimg.cc/43yVBkY8/Generated-image-1.png',
-            code: 'https://i.postimg.cc/nrvZbvKw/image.png',
-            dodep: 'https://i.postimg.cc/nV4dxr1X/2025-09-16-22-26-42.png',
-            prison: 'https://i.postimg.cc/ZR75v48p/2025-09-16-22-26-34.png',
-            forest: 'https://i.postimg.cc/sample/forest-background.png'
-        };
-        return fallbackUrls[background] || config.url;
-    }
+    return isAvailable ? config.url : null;
 }
 
 async function applyBackground(background) {
@@ -303,12 +292,12 @@ async function applyBackground(background) {
     
     try {
         const imageUrl = await loadBackgroundImage(background);
-        const backgroundStyle = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${imageUrl}') center center / cover no-repeat`;
-        
-        body.style.background = backgroundStyle;
-        body.style.backgroundAttachment = window.innerWidth > 768 ? 'fixed' : 'scroll';
-        
-        console.log(`✅ Фон застосовано: ${background}`);
+        if (imageUrl) {
+            const backgroundStyle = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${imageUrl}') center center / cover no-repeat`;
+            body.style.background = backgroundStyle;
+            body.style.backgroundAttachment = window.innerWidth > 768 ? 'fixed' : 'scroll';
+            console.log(`✅ Фон застосовано: ${background}`);
+        }
     } catch (error) {
         console.error(`❌ Помилка застосування фону:`, error);
     } finally {
@@ -429,7 +418,7 @@ function updateMenuPositionUI() {
     });
 }
 
-// РОБОТА З ПЕРЕКЛАДАМИ - СПРОЩЕНО
+// РОБОТА З ПЕРЕКЛАДАМИ
 async function loadSettingsTranslations() {
     if (settingsTranslations) return settingsTranslations;
     
@@ -440,28 +429,7 @@ async function loadSettingsTranslations() {
         return settingsTranslations;
     } catch (error) {
         console.error('❌ Помилка завантаження перекладів:', error);
-        // Резервні переклади
-        settingsTranslations = {
-            en: {
-                title: "⚙️ Settings", background: "Background", menu: "Menu Position",
-                penguin: "Penguin", game: "Game", code: "Code", dodep: "Dodep", 
-                prison: "Prison", forest: "Forest", up: "Top", down: "Bottom", 
-                left: "Left", right: "Right"
-            },
-            uk: {
-                title: "⚙️ Налаштування", background: "Фон", menu: "Позиція меню",
-                penguin: "Пінгвін", game: "Гра", code: "Код", dodep: "Додеп",
-                prison: "В'язниця", forest: "Ліс", up: "Верх", down: "Низ",
-                left: "Ліворуч", right: "Праворуч"
-            },
-            ru: {
-                title: "⚙️ Настройки", background: "Фон", menu: "Позиция меню",
-                penguin: "Пингвин", game: "Игра", code: "Код", dodep: "Додеп",
-                prison: "Тюрьма", forest: "Лес", up: "Верх", down: "Низ",
-                left: "Слева", right: "Справа"
-            }
-        };
-        return settingsTranslations;
+        return null;
     }
 }
 
@@ -470,7 +438,7 @@ async function updateSettingsLanguage(lang = null) {
     
     await loadSettingsTranslations();
     
-    if (!settingsTranslations[currentLang]) return;
+    if (!settingsTranslations || !settingsTranslations[currentLang]) return;
     
     const translations = settingsTranslations[currentLang];
     
@@ -505,22 +473,14 @@ async function updateSettingsLanguage(lang = null) {
     });
 }
 
-// HTML ГЕНЕРАЦІЯ - СПРОЩЕНО
+// HTML ГЕНЕРАЦІЯ
 function createSettingsHTML() {
-    const baseTranslations = {
-        title: "⚙️ Settings", background: "Background", menu: "Menu Position",
-        penguin: "Penguin", game: "Game", code: "Code", dodep: "Dodep",
-        prison: "Prison", forest: "Forest", up: "Top", down: "Bottom",
-        left: "Left", right: "Right"
-    };
-    
     const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => {
         const config = backgroundOptions[bg];
-        const name = baseTranslations[bg] || bg.charAt(0).toUpperCase() + bg.slice(1);
         return `
             <div class="background-option" data-background="${bg}" onclick="changeBackground('${bg}')">
                 <div class="option-icon">${config.icon}</div>
-                <div class="option-name">${name}</div>
+                <div class="option-name"></div>
                 <div class="background-preview" style="background-image: url('${config.url}')"></div>
             </div>
         `;
@@ -528,24 +488,23 @@ function createSettingsHTML() {
 
     const menuOptionsHTML = Object.keys(menuPositions).map(pos => {
         const config = menuPositions[pos];
-        const name = baseTranslations[pos] || pos.charAt(0).toUpperCase() + pos.slice(1);
         return `
             <div class="menu-option" data-position="${pos}" onclick="changeMenuPosition('${pos}')">
                 <div class="menu-option-icon">${config.icon}</div>
-                <div class="menu-option-name">${name}</div>
+                <div class="menu-option-name"></div>
             </div>
         `;
     }).join('');
 
     return `
         <div class="settings-container">
-            <h1 class="settings-title">${baseTranslations.title}</h1>
+            <h1 class="settings-title"></h1>
             
             <div class="settings-section" data-category="background">
                 <div class="category-header collapsed" onclick="toggleSettingsCategory('background')">
                     <div class="category-title">
                         <span class="section-icon">🎨</span>
-                        <span>${baseTranslations.background}</span>
+                        <span></span>
                     </div>
                     <span class="category-toggle">▼</span>
                 </div>
@@ -556,7 +515,7 @@ function createSettingsHTML() {
                 <div class="category-header collapsed" onclick="toggleSettingsCategory('menu')">
                     <div class="category-title">
                         <span class="section-icon">📱</span>
-                        <span>${baseTranslations.menu}</span>
+                        <span></span>
                     </div>
                     <span class="category-toggle">▼</span>
                 </div>
