@@ -1,4 +1,4 @@
-// URL Routing System - Simplified and fixed
+// URL Routing System - Fixed for proper path recognition
 
 class URLRouter {
     constructor() {
@@ -17,45 +17,52 @@ class URLRouter {
         const host = window.location.host;
         const pathname = window.location.pathname;
         
-        // For GitHub Pages
-        if (host.includes('.github.io')) {
-            const pathParts = pathname.split('/').filter(part => part.length > 0);
-            if (pathParts.length > 0) {
-                const repoName = pathParts[0];
-                return `${protocol}//${host}/${repoName}/`;
-            }
+        // For Vercel, Netlify, GitHub Pages
+        if (host.includes('.vercel.app') || host.includes('.netlify.app') || host.includes('.github.io')) {
+            // For custom domains or root deployments
+            return `${protocol}//${host}/`;
         }
         
         return `${protocol}//${host}/`;
     }
 
     setupRoutes() {
+        // Updated route mapping for better recognition
         const routeMapping = {
             'calculator': '/',
-            'arm': '/arm_calculator/',
-            'grind': '/grind_calculator/',
-            'boosts': '/boosts_info/',
-            'shiny': '/shiny_list/',
-            'secret': '/secret_pets/',
-            'codes': '/codes_list/',
-            'aura': '/aura_info/',
-            'trainer': '/trainer_info/',
-            'charms': '/charms_info/',
-            'potions': '/potions_food/',
-            'worlds': '/worlds_info/',
-            'settings': '/settings/',
-            'help': '/help_guide/',
-            'peoples': '/peoples_thanks/'
+            'arm': '/arm_calculator',
+            'grind': '/grind_calculator',
+            'boosts': '/boosts_info',
+            'shiny': '/shiny_list',
+            'secret': '/secret_pets',
+            'codes': '/codes_list',
+            'aura': '/aura_info',
+            'trainer': '/trainer_info',
+            'charms': '/charms_info',
+            'potions': '/potions_food',
+            'worlds': '/worlds_info',
+            'settings': '/settings', // Fixed: removed trailing slash for consistency
+            'help': '/help_guide',
+            'peoples': '/peoples_thanks'
         };
 
+        // Create bidirectional mapping
         Object.entries(routeMapping).forEach(([page, path]) => {
             this.routes.set(page, path);
             this.routes.set(path, page);
+            // Also map versions with trailing slash
+            if (path !== '/') {
+                this.routes.set(path + '/', page);
+            }
         });
+
+        console.log('🗺️ Routes configured:', routeMapping);
     }
 
     setupListeners() {
         window.addEventListener('popstate', (event) => {
+            console.log('🔙 Browser navigation detected:', event.state);
+            
             if (event.state && event.state.page) {
                 this.handleBrowserNavigation(event.state.page);
             } else {
@@ -69,11 +76,13 @@ class URLRouter {
         if (this.isInitialized) return;
 
         const initialPage = this.getPageFromURL();
+        console.log(`🎯 Initial page from URL: ${initialPage} (URL: ${window.location.pathname})`);
         
         if (initialPage && initialPage !== 'calculator') {
             setTimeout(() => {
                 if (typeof switchPage === 'function') {
                     switchPage(initialPage);
+                    console.log(`✅ Switched to page from URL: ${initialPage}`);
                 }
             }, 1000);
         } else {
@@ -85,33 +94,42 @@ class URLRouter {
     }
 
     getPageFromURL() {
-        const currentPath = window.location.pathname;
-        const basePath = new URL(this.baseURL).pathname;
-        let relativePath = currentPath.replace(basePath.slice(0, -1), '');
+        let currentPath = window.location.pathname;
         
-        if (!relativePath.startsWith('/')) {
-            relativePath = '/' + relativePath;
+        // Remove trailing slash for consistency (except root)
+        if (currentPath !== '/' && currentPath.endsWith('/')) {
+            currentPath = currentPath.slice(0, -1);
         }
         
-        if (relativePath.endsWith('/') && relativePath.length > 1) {
-            relativePath = relativePath.slice(0, -1);
+        console.log(`🔍 Analyzing URL path: "${currentPath}"`);
+        
+        // Direct lookup in routes map
+        if (this.routes.has(currentPath)) {
+            const page = this.routes.get(currentPath);
+            console.log(`✅ Found exact match: "${currentPath}" -> ${page}`);
+            return page;
         }
         
+        // Check for partial matches (for complex routing scenarios)
         for (const [path, page] of this.routes.entries()) {
-            if (typeof path === 'string' && path.startsWith('/')) {
-                const normalizedPath = path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
-                if (normalizedPath === relativePath) {
+            if (typeof path === 'string' && path.startsWith('/') && path !== '/') {
+                if (currentPath.includes(path)) {
+                    console.log(`✅ Found partial match: "${currentPath}" contains "${path}" -> ${page}`);
                     return page;
                 }
             }
         }
         
+        console.log(`❓ No match found for "${currentPath}", using calculator`);
         return 'calculator';
     }
 
     updateURL(page, pushState = true) {
         const path = this.routes.get(page);
-        if (!path) return;
+        if (!path) {
+            console.warn(`⚠️ No route found for page: ${page}`);
+            return;
+        }
 
         const newURL = this.baseURL.slice(0, -1) + path;
         const currentURL = window.location.href;
@@ -121,8 +139,10 @@ class URLRouter {
 
             if (pushState) {
                 window.history.pushState(stateData, '', newURL);
+                console.log(`📍 URL updated (push): ${newURL}`);
             } else {
                 window.history.replaceState(stateData, '', newURL);
+                console.log(`🔄 URL updated (replace): ${newURL}`);
             }
 
             this.updateMetaTags(page);
@@ -130,6 +150,8 @@ class URLRouter {
     }
 
     handleBrowserNavigation(page) {
+        console.log(`🔙 Handling browser navigation to: ${page}`);
+        
         if (typeof switchPage === 'function') {
             switchPage(page);
         }
@@ -176,7 +198,10 @@ let urlRouter = null;
 
 // Initialize function
 function initURLRouting() {
-    if (urlRouter) return urlRouter;
+    if (urlRouter) {
+        console.log('⚠️ URL Router already initialized');
+        return urlRouter;
+    }
 
     urlRouter = new URLRouter();
     
@@ -188,12 +213,18 @@ function initURLRouting() {
     const originalSwitchPage = window.switchPage;
     if (typeof originalSwitchPage === 'function') {
         window.switchPage = function(page) {
+            console.log(`🔀 Enhanced switchPage called for: ${page}`);
+            
             const result = originalSwitchPage.call(this, page);
+            
             if (urlRouter) {
                 urlRouter.updateURL(page, true);
             }
+            
             return result;
         };
+        
+        console.log('✅ switchPage function enhanced with URL routing');
     }
 
     return urlRouter;
@@ -201,5 +232,6 @@ function initURLRouting() {
 
 // Export functions
 window.initURLRouting = initURLRouting;
+window.urlRouter = urlRouter;
 
 console.log('🌐 URL Routing system loaded');
