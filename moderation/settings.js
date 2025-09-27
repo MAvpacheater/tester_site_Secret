@@ -753,13 +753,3 @@ window.toggleSettingsCategory = toggleSettingsCategory;
 window.updateSettingsLanguage = updateSettingsLanguage;
 window.updateStaticMenuActiveState = updateStaticMenuActiveState;
 window.getGitHubImageURL = getGitHubImageURL;this.filename); }
-    },
-    game: {
-        icon: '🎮', 
-        filename: 'game.png',
-        get url() { return getGitHubImageURL(this.filename); }
-    },
-    code: {
-        icon: '💻',
-        filename: 'code.png',
-        get url() { return getGitHubImageURL(
