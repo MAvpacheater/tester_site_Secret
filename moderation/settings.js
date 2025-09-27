@@ -1,4 +1,4 @@
-// Налаштування - Керування фоном і позицією меню з гарантованим одним меню
+// Налаштування - Керування фоном і позицією меню з гарантованим одним меню + анімація кнопки
 let settingsInitialized = false;
 let settingsTranslations = null;
 let categoriesState = {
@@ -92,7 +92,90 @@ const menuItems = [
     { page: 'peoples', icon: '🙏', title: 'Peoples' }
 ];
 
-// НОВА СИСТЕМА УПРАВЛІННЯ МЕНЮ - ГАРАНТУЄ ЛИШЕ ОДНЕ МЕНЮ
+// АНІМАЦІЯ КНОПКИ МЕНЮ - НОВА ФУНКЦІЯ
+function animateMenuButton(isMenuOpen) {
+    const menuToggle = document.querySelector('.mobile-menu-toggle');
+    if (!menuToggle) return;
+    
+    const lines = menuToggle.querySelectorAll('.menu-line');
+    if (lines.length !== 3) {
+        // Якщо лінії ще не створені, створюємо їх
+        createMenuButtonLines(menuToggle);
+        return animateMenuButton(isMenuOpen);
+    }
+    
+    if (isMenuOpen) {
+        // Коли меню відкрито - риски зникають
+        lines[0].style.opacity = '0';
+        lines[0].style.transform = 'translate(-50%, -50%) scale(0) rotate(45deg) translateY(-6px)';
+        
+        lines[1].style.opacity = '0';
+        lines[1].style.transform = 'translate(-50%, -50%) scale(0)';
+        
+        lines[2].style.opacity = '0';
+        lines[2].style.transform = 'translate(-50%, -50%) scale(0) rotate(-45deg) translateY(6px)';
+    } else {
+        // Коли меню закрито - риски з'являються
+        setTimeout(() => {
+            if (lines[0]) {
+                lines[0].style.opacity = '1';
+                lines[0].style.transform = 'translate(-50%, -50%) scale(1) rotate(0deg) translateY(-6px)';
+            }
+        }, 50);
+        
+        setTimeout(() => {
+            if (lines[1]) {
+                lines[1].style.opacity = '1';
+                lines[1].style.transform = 'translate(-50%, -50%) scale(1) rotate(0deg)';
+            }
+        }, 100);
+        
+        setTimeout(() => {
+            if (lines[2]) {
+                lines[2].style.opacity = '1';
+                lines[2].style.transform = 'translate(-50%, -50%) scale(1) rotate(0deg) translateY(6px)';
+            }
+        }, 150);
+    }
+}
+
+// Створити лінії для кнопки меню
+function createMenuButtonLines(menuToggle) {
+    // Очистити існуючий контент
+    menuToggle.innerHTML = '';
+    
+    // Створити три лінії
+    for (let i = 0; i < 3; i++) {
+        const line = document.createElement('div');
+        line.className = 'menu-line';
+        line.style.cssText = `
+            width: 24px;
+            height: 3px;
+            background: #F5DEB3;
+            border-radius: 2px;
+            position: absolute;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 4px rgba(255, 215, 0, 0.6);
+            left: 50%;
+            top: 50%;
+            transform-origin: center;
+        `;
+        
+        // Встановити початкові позиції
+        if (i === 0) {
+            line.style.transform = 'translate(-50%, -50%) translateY(-6px)';
+        } else if (i === 1) {
+            line.style.transform = 'translate(-50%, -50%)';
+        } else {
+            line.style.transform = 'translate(-50%, -50%) translateY(6px)';
+        }
+        
+        menuToggle.appendChild(line);
+    }
+    console.log('✅ Лінії кнопки меню створено');
+}
+
+// НОВА СИСТЕМА УПРАВЛІННЯ МЕНЮ - ГАРАНТУЄ ЛИШЕ ОДНЕ МЕНЮ + АНІМАЦІЯ
 class MenuManager {
     constructor() {
         this.currentMenuType = null;
@@ -123,6 +206,9 @@ class MenuManager {
             overlay.classList.remove('show');
             console.log('🔒 Overlay сховано');
         }
+        
+        // Скинути анімацію кнопки при очищенні
+        animateMenuButton(false);
 
         // Очистити всі класи позицій меню з body
         const body = document.body;
@@ -196,6 +282,11 @@ class MenuManager {
                 mobileToggle.style.left = '20px';
                 mobileToggle.style.right = 'auto';
             }
+            
+            // Ініціалізувати лінії кнопки при показі меню
+            setTimeout(() => {
+                createMenuButtonLines(mobileToggle);
+            }, 100);
         }
     }
 
@@ -301,6 +392,35 @@ class MenuManager {
 
 // Глобальний екземпляр менеджера меню
 const menuManager = new MenuManager();
+
+// Модифіковані функції з анімацією кнопки меню
+function toggleMobileMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    if (sidebar && overlay) {
+        const isOpening = !sidebar.classList.contains('open');
+        
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+        
+        // Анімувати кнопку меню
+        animateMenuButton(isOpening);
+    }
+}
+
+function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    if (sidebar && overlay) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+        
+        // Анімувати кнопку меню (закриття)
+        animateMenuButton(false);
+    }
+}
 
 // Перевірити доступність зображення
 async function checkImageAvailability(url) {
@@ -824,13 +944,6 @@ async function initializeSettingsOnStart() {
     }, 100);
 }
 
-// Примусово очистити всі меню (використовує MenuManager)
-async function forceCleanAllMenus() {
-    console.log('🧹 Примусове очищення всіх меню через MenuManager...');
-    menuManager.clearAllMenus();
-    console.log('✅ Всі меню очищено через MenuManager');
-}
-
 // Слухати зміни мови
 document.addEventListener('languageChanged', (event) => {
     if (settingsInitialized) {
@@ -856,7 +969,7 @@ if (document.readyState === 'loading') {
     initializeSettingsOnStart();
 }
 
-// Глобальні функції
+// Глобальні функції з анімацією кнопки меню
 window.initializeSettings = initializeSettings;
 window.changeBackground = changeBackground;
 window.changeMenuPosition = changeMenuPosition;
@@ -867,3 +980,7 @@ window.getGitHubImageURL = getGitHubImageURL;
 window.forceCleanAllMenus = forceCleanAllMenus;
 window.applyMenuPosition = applyMenuPosition;
 window.menuManager = menuManager;
+window.toggleMobileMenu = toggleMobileMenu;
+window.closeSidebar = closeSidebar;
+window.animateMenuButton = animateMenuButton;
+window.createMenuButtonLines = createMenuButtonLines;
