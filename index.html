@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arm Helper</title>
     
-    <!-- Simple SPA redirect handler -->
+    <!-- Handle redirect from 404.html -->
     <script>
-        // Handle redirect from 404.html
         (function() {
             var redirect = sessionStorage.pathToRestore;
             delete sessionStorage.pathToRestore;
@@ -19,14 +18,14 @@
         })();
     </script>
     
-    <!-- Preload critical resources -->
+    <!-- Preload critical resources with CORRECT paths -->
     <link rel="preload" href="system/general.css" as="style">
     <link rel="preload" href="system/general.js" as="script">
     
-    <!-- Critical CSS - load immediately -->
+    <!-- Critical CSS -->
     <link rel="stylesheet" href="system/general.css">
     
-    <!-- Non-critical CSS - load deferred -->
+    <!-- Non-critical CSS -->
     <link rel="stylesheet" href="calc/calculator.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="calc/arms.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="calc/grind.css" media="print" onload="this.media='all'">
@@ -42,6 +41,17 @@
     <link rel="stylesheet" href="moderation/settings.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="other/peoples.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="other/help.css" media="print" onload="this.media='all'">
+    
+    <!-- Fallback for CSS -->
+    <noscript>
+        <link rel="stylesheet" href="calc/calculator.css">
+        <link rel="stylesheet" href="info/secret.css">
+        <link rel="stylesheet" href="info/potions.css">
+        <link rel="stylesheet" href="info/worlds.css">
+        <link rel="stylesheet" href="moderation/settings.css">
+        <link rel="stylesheet" href="other/peoples.css">
+        <link rel="stylesheet" href="other/help.css">
+    </noscript>
 </head>
 <body>
     <!-- Loading screen -->
@@ -55,7 +65,7 @@
 
     <!-- Auto-reload indicator -->
     <div class="auto-reload-indicator" id="autoReloadIndicator">
-        🔄 GitHub Auto-reload active
+        🔄 Auto-reload active
     </div>
 
     <!-- App content container -->
@@ -64,22 +74,38 @@
     <!-- Signature -->
     <div class="signature">Your ideas on @privatefanat_dep (telegram)</div>
     
-    <!-- Critical JavaScript - load immediately -->
-    <script src="system/general.js"></script>
-    <script src="system/reload.js"></script>
-    <script src="system/url.js"></script>
+    <!-- Critical JavaScript with CORRECT paths -->
+    <script src="system/general.js" defer></script>
+    <script src="system/reload.js" defer></script>
+    <script src="system/url.js" defer></script>
     
-    <!-- Non-critical JavaScript - load deferred -->
+    <!-- Non-critical JavaScript loading -->
     <script>
-        // Deferred script loading function
-        function loadScriptsDeferred() {
+        function createScript(src) {
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.defer = true;
+                script.onload = () => {
+                    console.log(`✅ Script loaded: ${src}`);
+                    resolve(src);
+                };
+                script.onerror = () => {
+                    console.warn(`⚠️ Failed to load script: ${src}`);
+                    resolve(src); // Resolve anyway to not block
+                };
+                document.head.appendChild(script);
+            });
+        }
+
+        async function loadScriptsDeferred() {
             const scripts = [
-                // Calculator modules
+                // Calculator modules with CORRECT paths
                 'calc/calculator.js',
                 'calc/arm.js', 
                 'calc/grind.js',
                 
-                // Info modules
+                // Info modules with CORRECT paths
                 'info/boosts.js',
                 'info/shiny.js',
                 'info/secret.js',
@@ -90,148 +116,109 @@
                 'info/potions.js',
                 'info/worlds.js',
                 
-                // Moderation modules
+                // Moderation modules with CORRECT paths
                 'moderation/settings.js',
                 
-                // Other modules
+                // Other modules with CORRECT paths
                 'other/peoples.js',
                 'other/help.js'
             ];
             
-            let loadedCount = 0;
-            const totalScripts = scripts.length;
+            console.log('🔄 Loading scripts...');
+            updateLoadingText('Loading modules...');
             
-            scripts.forEach(src => {
-                const script = document.createElement('script');
-                script.src = src;
-                script.defer = true;
-                script.onload = () => {
-                    loadedCount++;
-                    console.log(`✅ Script loaded: ${src} (${loadedCount}/${totalScripts})`);
-                    
-                    if (loadedCount === totalScripts) {
-                        // All scripts loaded, now load content
-                        console.log('🎯 All scripts loaded, loading content...');
-                        const contentScript = document.createElement('script');
-                        contentScript.src = 'index/content_loader.js';
-                        contentScript.onload = () => {
-                            console.log('✅ Content loader loaded');
-                            updateLoadingText('Ready!');
-                            
-                            // Initialize systems after everything is loaded
-                            setTimeout(() => {
-                                console.log('🚀 Initializing systems...');
-                                
-                                // Initialize URL routing first
-                                if (typeof initURLRouting === 'function') {
-                                    try {
-                                        initURLRouting();
-                                        console.log('✅ URL routing initialized');
-                                    } catch (e) {
-                                        console.warn('⚠️ URL routing failed:', e);
-                                    }
-                                }
-                                
-                                // Then initialize GitHub auto-reload
-                                if (typeof initGitHubAutoReload === 'function') {
-                                    try {
-                                        const githubConfig = {
-                                            githubUser: 'MAvpacheater',
-                                            githubRepo: 'tester_site_Secret',
-                                            branch: 'main',
-                                            checkInterval: 30000
-                                        };
-                                        initGitHubAutoReload(githubConfig);
-                                        console.log('✅ GitHub auto-reload initialized');
-                                    } catch (e) {
-                                        console.warn('⚠️ GitHub auto-reload failed:', e);
-                                    }
-                                }
-                                
-                                // Handle URL routing for redirected pages
-                                setTimeout(() => {
-                                    const currentPath = window.location.pathname;
-                                    console.log('🔍 Checking current path for routing:', currentPath);
-                                    
-                                    // Simple path-to-page mapping
-                                    const pathMappings = {
-                                        '/app_settings/': 'settings',
-                                        '/secret_pets/': 'secret', 
-                                        '/potions_food/': 'potions',
-                                        '/worlds_info/': 'worlds',
-                                        '/help_guide/': 'help',
-                                        '/peoples_thanks/': 'peoples',
-                                        '/arm_calculator/': 'arm',
-                                        '/grind_calculator/': 'grind',
-                                        '/boosts_info/': 'boosts',
-                                        '/shiny_list/': 'shiny',
-                                        '/codes_list/': 'codes',
-                                        '/aura_info/': 'aura',
-                                        '/trainer_info/': 'trainer',
-                                        '/charms_info/': 'charms'
-                                    };
-                                    
-                                    // Check if current path matches any page
-                                    for (const [path, page] of Object.entries(pathMappings)) {
-                                        if (currentPath.includes(path)) {
-                                            console.log(`🎯 Found page match: ${path} -> ${page}`);
-                                            if (typeof switchPage === 'function') {
-                                                setTimeout(() => {
-                                                    switchPage(page);
-                                                    console.log(`✅ Switched to page: ${page}`);
-                                                }, 1000);
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }, 1000);
-                                
-                            }, 2000);
-                        };
-                        contentScript.onerror = () => {
-                            console.error('❌ Failed to load content_loader.js');
-                            updateLoadingText('Error loading content');
-                        };
-                        document.head.appendChild(contentScript);
-                    }
-                };
-                script.onerror = () => {
-                    console.warn(`⚠️ Failed to load script: ${src}`);
-                    loadedCount++; // Still count as loaded to prevent hanging
-                    
-                    if (loadedCount === totalScripts) {
-                        // Even if some scripts failed, try to load content
-                        const contentScript = document.createElement('script');
-                        contentScript.src = 'index/content_loader.js';
-                        contentScript.onload = () => {
-                            updateLoadingText('Ready!');
-                            
-                            setTimeout(() => {
-                                console.log('🚀 Initializing systems (with some script failures)...');
-                                
-                                // Try to initialize what we can
-                                if (typeof initURLRouting === 'function') {
-                                    try { initURLRouting(); } catch (e) { console.warn('URL routing failed:', e); }
-                                }
-                                
-                                if (typeof initGitHubAutoReload === 'function') {
-                                    try {
-                                        const githubConfig = {
-                                            githubUser: 'MAvpacheater',
-                                            githubRepo: 'tester_site_Secret',
-                                            branch: 'main',
-                                            checkInterval: 30000
-                                        };
-                                        initGitHubAutoReload(githubConfig);
-                                    } catch (e) { console.warn('GitHub auto-reload failed:', e); }
-                                }
-                            }, 2000);
-                        };
-                        document.head.appendChild(contentScript);
-                    }
-                };
-                document.head.appendChild(script);
-            });
+            try {
+                // Load all scripts in parallel
+                await Promise.all(scripts.map(createScript));
+                console.log('✅ All scripts loaded');
+                
+                // Load content loader with CORRECT path
+                await createScript('index/content_loader.js');
+                console.log('✅ Content loader loaded');
+                
+                updateLoadingText('Ready!');
+                
+                // Initialize systems
+                setTimeout(() => {
+                    console.log('🚀 Initializing systems...');
+                    initializeSystems();
+                }, 500);
+                
+            } catch (error) {
+                console.error('❌ Error loading scripts:', error);
+                updateLoadingText('Loading completed with warnings');
+                setTimeout(() => initializeSystems(), 1000);
+            }
+        }
+        
+        function initializeSystems() {
+            try {
+                // Initialize URL routing
+                if (typeof initURLRouting === 'function') {
+                    initURLRouting();
+                    console.log('✅ URL routing initialized');
+                }
+                
+                // Initialize GitHub auto-reload
+                if (typeof initGitHubAutoReload === 'function') {
+                    const githubConfig = {
+                        githubUser: 'MAvpacheater',
+                        githubRepo: 'tester_site_Secret',
+                        branch: 'main',
+                        checkInterval: 30000
+                    };
+                    initGitHubAutoReload(githubConfig);
+                    console.log('✅ GitHub auto-reload initialized');
+                }
+                
+                // Handle URL routing
+                setTimeout(() => {
+                    handleInitialRouting();
+                }, 500);
+                
+            } catch (error) {
+                console.error('❌ Error initializing systems:', error);
+            }
+        }
+        
+        function handleInitialRouting() {
+            const currentPath = window.location.pathname;
+            console.log('🔍 Current path:', currentPath);
+            
+            // Simple path-to-page mapping WITHOUT app_settings
+            const pathMappings = {
+                '/settings/': 'settings',
+                '/secret_pets/': 'secret', 
+                '/potions_food/': 'potions',
+                '/worlds_info/': 'worlds',
+                '/help_guide/': 'help',
+                '/peoples_thanks/': 'peoples',
+                '/arm_calculator/': 'arm',
+                '/grind_calculator/': 'grind',
+                '/boosts_info/': 'boosts',
+                '/shiny_list/': 'shiny',
+                '/codes_list/': 'codes',
+                '/aura_info/': 'aura',
+                '/trainer_info/': 'trainer',
+                '/charms_info/': 'charms'
+            };
+            
+            let targetPage = 'calculator'; // default
+            
+            for (const [path, page] of Object.entries(pathMappings)) {
+                if (currentPath.includes(path)) {
+                    console.log(`🎯 Found page match: ${path} -> ${page}`);
+                    targetPage = page;
+                    break;
+                }
+            }
+            
+            if (typeof switchPage === 'function') {
+                setTimeout(() => {
+                    switchPage(targetPage);
+                    console.log(`✅ Switched to page: ${targetPage}`);
+                }, 300);
+            }
         }
         
         function updateLoadingText(text) {
@@ -254,49 +241,36 @@
         // Initialize loading process
         document.addEventListener('DOMContentLoaded', function() {
             console.log('📄 DOM Content Loaded');
-            updateLoadingText('Loading modules...');
             
-            // Start loading scripts
-            setTimeout(() => {
-                console.log('🔄 Starting script loading...');
-                loadScriptsDeferred();
-            }, 100);
+            // Wait for critical scripts
+            let attempts = 0;
+            const maxAttempts = 50;
             
-            // Hide loading screen after content is ready
-            setTimeout(() => {
-                updateLoadingText('Ready!');
-                setTimeout(hideLoadingScreen, 500);
-            }, 6000); // Increased timeout to ensure everything loads
+            function waitForCriticalScripts() {
+                if (typeof initializeApp === 'function' || attempts >= maxAttempts) {
+                    console.log('🔄 Starting script loading...');
+                    loadScriptsDeferred();
+                    
+                    // Hide loading screen
+                    setTimeout(() => {
+                        updateLoadingText('Ready!');
+                        setTimeout(hideLoadingScreen, 500);
+                    }, 3000);
+                } else {
+                    attempts++;
+                    setTimeout(waitForCriticalScripts, 100);
+                }
+            }
+            
+            waitForCriticalScripts();
         });
 
         // Error handling
         window.addEventListener('error', function(e) {
             console.error('❌ JavaScript Error:', e.error);
-            
-            const loadingScreen = document.getElementById('loading-screen');
-            if (loadingScreen) {
-                loadingScreen.innerHTML = `
-                    <div class="loading-content" style="color: #ff6b6b;">
-                        <div style="font-size: 24px; margin-bottom: 20px;">⚠️</div>
-                        <div>Loading Error</div>
-                        <div style="font-size: 14px; margin-top: 10px;">JavaScript failed to load</div>
-                        <button onclick="location.reload()" style="
-                            margin-top: 15px;
-                            padding: 8px 16px;
-                            background: rgba(255, 255, 255, 0.2);
-                            border: 1px solid rgba(255, 255, 255, 0.3);
-                            color: white;
-                            border-radius: 5px;
-                            cursor: pointer;
-                            font-size: 14px;
-                        ">Refresh Page</button>
-                        <div style="font-size: 10px; margin-top: 10px; opacity: 0.7;">Error: ${e.error ? e.error.message : 'Unknown error'}</div>
-                    </div>
-                `;
-            }
         });
         
-        // Debug function to check what's loaded
+        // Debug function
         window.checkLoadedModules = function() {
             console.log('=== LOADED MODULES CHECK ===');
             console.log('initializeApp:', typeof initializeApp);
