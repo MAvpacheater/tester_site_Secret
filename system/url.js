@@ -1,52 +1,37 @@
-// system/url.js - URL Routing System for SPA (Single Page Application)
+// URL Routing System - Simplified and fixed
 
-class URLRoutingSystem {
+class URLRouter {
     constructor() {
         this.baseURL = this.getBaseURL();
         this.routes = new Map();
-        this.currentRoute = '/';
         this.isInitialized = false;
         
-        console.log(`🌐 URL Routing System initialized with base: ${this.baseURL}`);
-        
-        // Налаштувати маршрути для всіх сторінок
         this.setupRoutes();
+        this.setupListeners();
         
-        // Слухач для подій навігації браузера (назад/вперед)
-        this.setupNavigationListeners();
+        console.log(`🌐 URL Router initialized with base: ${this.baseURL}`);
     }
 
-    // Автоматично визначити базовий URL
     getBaseURL() {
         const protocol = window.location.protocol;
         const host = window.location.host;
         const pathname = window.location.pathname;
         
-        console.log('🔍 Detecting base URL from:', { protocol, host, pathname });
-        
-        // Для GitHub Pages репозиторію типу username.github.io/repository-name
+        // For GitHub Pages
         if (host.includes('.github.io')) {
             const pathParts = pathname.split('/').filter(part => part.length > 0);
             if (pathParts.length > 0) {
-                // Перша частина шляху це назва репозиторію
                 const repoName = pathParts[0];
-                const baseURL = `${protocol}//${host}/${repoName}/`;
-                console.log(`✅ GitHub Pages detected, base URL: ${baseURL}`);
-                return baseURL;
+                return `${protocol}//${host}/${repoName}/`;
             }
         }
         
-        // Для кастомних доменів або username.github.io (основний сайт)
-        const baseURL = `${protocol}//${host}/`;
-        console.log(`✅ Standard domain detected, base URL: ${baseURL}`);
-        return baseURL;
+        return `${protocol}//${host}/`;
     }
 
-    // Налаштувати всі маршрути
     setupRoutes() {
-        // Маппінг сторінок на URL шляхи
         const routeMapping = {
-            'calculator': '/',                    // Головна сторінка
+            'calculator': '/',
             'arm': '/arm_calculator/',
             'grind': '/grind_calculator/',
             'boosts': '/boosts_info/',
@@ -58,171 +43,102 @@ class URLRoutingSystem {
             'charms': '/charms_info/',
             'potions': '/potions_food/',
             'worlds': '/worlds_info/',
-            'settings': '/app_settings/',
+            'settings': '/settings/',
             'help': '/help_guide/',
             'peoples': '/peoples_thanks/'
         };
 
-        // Створити маршрути в обох напрямках
         Object.entries(routeMapping).forEach(([page, path]) => {
             this.routes.set(page, path);
             this.routes.set(path, page);
         });
-
-        console.log('🗺️ Routes configured:', Object.fromEntries(
-            Object.entries(routeMapping)
-        ));
     }
 
-    // Налаштувати слухачі навігації
-    setupNavigationListeners() {
-        // Слухати зміни в історії браузера (кнопки назад/вперед)
+    setupListeners() {
         window.addEventListener('popstate', (event) => {
-            console.log('🔙 Browser navigation detected:', event.state);
-            
             if (event.state && event.state.page) {
                 this.handleBrowserNavigation(event.state.page);
             } else {
-                // Якщо немає стану, спробувати визначити з URL
-                const page = this.getPageFromCurrentURL();
+                const page = this.getPageFromURL();
                 this.handleBrowserNavigation(page);
             }
         });
-
-        // Слухати зміни сторінок в додатку
-        document.addEventListener('pageChanged', (event) => {
-            if (event.detail && event.detail.page) {
-                this.updateURL(event.detail.page, event.detail.pushState !== false);
-            }
-        });
-
-        console.log('👂 Navigation listeners configured');
     }
 
-    // Ініціалізувати систему
     init() {
-        if (this.isInitialized) {
-            console.log('⚠️ URL Routing already initialized');
-            return;
-        }
+        if (this.isInitialized) return;
 
-        // Перевірити поточний URL і встановити відповідну сторінку
-        const initialPage = this.getPageFromCurrentURL();
-        
-        console.log(`🎯 Initial page from URL: ${initialPage} (URL: ${window.location.pathname})`);
+        const initialPage = this.getPageFromURL();
         
         if (initialPage && initialPage !== 'calculator') {
-            // Затримка для того щоб додаток встиг завантажитися
             setTimeout(() => {
                 if (typeof switchPage === 'function') {
                     switchPage(initialPage);
-                    console.log(`✅ Switched to page from URL: ${initialPage}`);
                 }
             }, 1000);
         } else {
-            // Встановити URL для головної сторінки
-            this.updateURL('calculator', false); // false = не додавати в історію
+            this.updateURL('calculator', false);
         }
 
         this.isInitialized = true;
-        console.log('✅ URL Routing System initialized');
+        console.log('✅ URL Router initialized');
     }
 
-    // Визначити сторінку з поточного URL
-    getPageFromCurrentURL() {
+    getPageFromURL() {
         const currentPath = window.location.pathname;
-        
-        // Отримати відносний шлях від базового URL
         const basePath = new URL(this.baseURL).pathname;
-        let relativePath = currentPath.replace(basePath.slice(0, -1), ''); // Прибираємо базовий шлях
+        let relativePath = currentPath.replace(basePath.slice(0, -1), '');
         
-        // Додати слеш на початок якщо немає
         if (!relativePath.startsWith('/')) {
             relativePath = '/' + relativePath;
         }
         
-        // Якщо закінчується слешем і це не коренева папка, прибрати його
         if (relativePath.endsWith('/') && relativePath.length > 1) {
             relativePath = relativePath.slice(0, -1);
         }
         
-        console.log(`🔍 Analyzing URL path: "${currentPath}" -> relative: "${relativePath}"`);
-        
-        // Знайти відповідну сторінку
         for (const [path, page] of this.routes.entries()) {
             if (typeof path === 'string' && path.startsWith('/')) {
-                // Порівнювати з урахуванням слешів
-                const normalizedRoutePath = path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
-                if (normalizedRoutePath === relativePath) {
-                    console.log(`✅ Found page for path "${relativePath}": ${page}`);
+                const normalizedPath = path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
+                if (normalizedPath === relativePath) {
                     return page;
                 }
             }
         }
         
-        // Якщо шлях не знайдено, повернути головну сторінку
-        console.log(`❓ No page found for path "${relativePath}", using calculator`);
         return 'calculator';
     }
 
-    // Оновити URL для сторінки
     updateURL(page, pushState = true) {
         const path = this.routes.get(page);
-        if (!path) {
-            console.warn(`⚠️ No route found for page: ${page}`);
-            return;
-        }
+        if (!path) return;
 
-        const newURL = this.baseURL.slice(0, -1) + path; // Прибрати останній слеш з baseURL
+        const newURL = this.baseURL.slice(0, -1) + path;
         const currentURL = window.location.href;
 
         if (newURL !== currentURL) {
-            const stateData = {
-                page: page,
-                timestamp: Date.now()
-            };
+            const stateData = { page: page, timestamp: Date.now() };
 
             if (pushState) {
-                // Додати новий запис в історію
                 window.history.pushState(stateData, '', newURL);
-                console.log(`📍 URL updated (push): ${newURL}`);
             } else {
-                // Замінити поточний запис в історії
                 window.history.replaceState(stateData, '', newURL);
-                console.log(`🔄 URL updated (replace): ${newURL}`);
             }
 
-            this.currentRoute = path;
-
-            // Оновити мета-теги для SEO
             this.updateMetaTags(page);
         }
     }
 
-    // Обробити навігацію браузера
     handleBrowserNavigation(page) {
-        console.log(`🔙 Handling browser navigation to: ${page}`);
-        
         if (typeof switchPage === 'function') {
-            // Переключити сторінку БЕЗ оновлення URL (щоб уникнути циклу)
             switchPage(page);
-            
-            // Оновити внутрішній стан
-            const path = this.routes.get(page);
-            if (path) {
-                this.currentRoute = path;
-            }
         }
     }
 
-    // Оновити мета-теги для SEO
     updateMetaTags(page) {
         const pageInfo = this.getPageInfo(page);
-        
-        // Оновити title
         document.title = `${pageInfo.title} - Arm Helper`;
         
-        // Оновити meta description
         let metaDescription = document.querySelector('meta[name="description"]');
         if (!metaDescription) {
             metaDescription = document.createElement('meta');
@@ -230,266 +146,60 @@ class URLRoutingSystem {
             document.head.appendChild(metaDescription);
         }
         metaDescription.content = pageInfo.description;
-
-        // Оновити Open Graph теги
-        this.updateOpenGraphTags(pageInfo);
-        
-        console.log(`🏷️ Meta tags updated for: ${page}`);
     }
 
-    // Отримати інформацію про сторінку
     getPageInfo(page) {
         const pageData = {
-            'calculator': {
-                title: '🐾 Pet Calculator',
-                description: 'Calculate pet upgrades and evolution costs in Pet Simulator 99'
-            },
-            'arm': {
-                title: '💪 Arm Calculator', 
-                description: 'Calculate arm strength upgrades and costs'
-            },
-            'grind': {
-                title: '🏋️‍♂️ Grind Calculator',
-                description: 'Calculate grinding efficiency and rewards'
-            },
-            'boosts': {
-                title: '🚀 Boosts Information',
-                description: 'Complete guide to all boosts and their effects'
-            },
-            'shiny': {
-                title: '✨ Shiny Pet Statistics',
-                description: 'Complete list of shiny pets and their stats'
-            },
-            'secret': {
-                title: '🔮 Secret Pets Guide',
-                description: 'Discover all secret pets and how to get them'
-            },
-            'codes': {
-                title: '🎁 Active Codes',
-                description: 'Latest working codes for Pet Simulator 99 rewards'
-            },
-            'aura': {
-                title: '🌟 Aura Information',
-                description: 'Complete guide to auras and their effects'
-            },
-            'trainer': {
-                title: '🏆 Trainer Guide',
-                description: 'Pet training tips and strategies'
-            },
-            'charms': {
-                title: '🔮 Charms Guide',
-                description: 'All charms and their magical effects'
-            },
-            'potions': {
-                title: '🧪 Potions & Food Guide',
-                description: 'Complete guide to potions and food effects'
-            },
-            'worlds': {
-                title: '🌍 Worlds Guide',
-                description: 'Explore all worlds and their unique features'
-            },
-            'settings': {
-                title: '⚙️ Settings',
-                description: 'Customize your Arm Helper experience'
-            },
-            'help': {
-                title: '🆘 Help Guide',
-                description: 'Get help and learn how to use Arm Helper'
-            },
-            'peoples': {
-                title: '🙏 Thanks & Credits',
-                description: 'Special thanks to our community and contributors'
-            }
+            'calculator': { title: '🐾 Pet Calculator', description: 'Calculate pet upgrades and evolution costs' },
+            'arm': { title: '💪 Arm Calculator', description: 'Calculate arm strength upgrades and costs' },
+            'grind': { title: '🏋️‍♂️ Grind Calculator', description: 'Calculate grinding efficiency and rewards' },
+            'boosts': { title: '🚀 Boosts Information', description: 'Complete guide to all boosts and their effects' },
+            'shiny': { title: '✨ Shiny Pet Statistics', description: 'Complete list of shiny pets and their stats' },
+            'secret': { title: '🔮 Secret Pets Guide', description: 'Discover all secret pets and how to get them' },
+            'codes': { title: '🎁 Active Codes', description: 'Latest working codes for rewards' },
+            'aura': { title: '🌟 Aura Information', description: 'Complete guide to auras and their effects' },
+            'trainer': { title: '🏆 Trainer Guide', description: 'Pet training tips and strategies' },
+            'charms': { title: '🔮 Charms Guide', description: 'All charms and their magical effects' },
+            'potions': { title: '🧪 Potions & Food Guide', description: 'Complete guide to potions and food effects' },
+            'worlds': { title: '🌍 Worlds Guide', description: 'Explore all worlds and their unique features' },
+            'settings': { title: '⚙️ Settings', description: 'Customize your Arm Helper experience' },
+            'help': { title: '🆘 Help Guide', description: 'Get help and learn how to use Arm Helper' },
+            'peoples': { title: '🙏 Thanks & Credits', description: 'Special thanks to our community' }
         };
 
-        return pageData[page] || {
-            title: 'Arm Helper',
-            description: 'Ultimate helper tool for Pet Simulator 99'
-        };
-    }
-
-    // Оновити Open Graph теги
-    updateOpenGraphTags(pageInfo) {
-        const ogTags = [
-            { property: 'og:title', content: `${pageInfo.title} - Arm Helper` },
-            { property: 'og:description', content: pageInfo.description },
-            { property: 'og:url', content: window.location.href },
-            { property: 'og:type', content: 'website' }
-        ];
-
-        ogTags.forEach(tag => {
-            let element = document.querySelector(`meta[property="${tag.property}"]`);
-            if (!element) {
-                element = document.createElement('meta');
-                element.setAttribute('property', tag.property);
-                document.head.appendChild(element);
-            }
-            element.content = tag.content;
-        });
-    }
-
-    // Отримати поточний маршрут
-    getCurrentRoute() {
-        return this.currentRoute;
-    }
-
-    // Отримати URL для сторінки
-    getURLForPage(page) {
-        const path = this.routes.get(page);
-        return path ? this.baseURL.slice(0, -1) + path : this.baseURL;
-    }
-
-    // Перейти до сторінки програмно
-    navigateToPage(page, pushState = true) {
-        console.log(`🧭 Programmatic navigation to: ${page}`);
-        
-        if (typeof switchPage === 'function') {
-            switchPage(page);
-        }
-        
-        this.updateURL(page, pushState);
-    }
-
-    // Отримати всі доступні маршрути
-    getAllRoutes() {
-        const routes = {};
-        for (const [key, value] of this.routes.entries()) {
-            if (typeof key === 'string' && !key.startsWith('/')) {
-                routes[key] = this.getURLForPage(key);
-            }
-        }
-        return routes;
-    }
-
-    // Перевірити чи URL валідний
-    isValidRoute(path) {
-        return this.routes.has(path);
-    }
-
-    // Отримати статус системи
-    getStatus() {
-        return {
-            initialized: this.isInitialized,
-            baseURL: this.baseURL,
-            currentRoute: this.currentRoute,
-            currentPage: this.routes.get(this.currentRoute) || 'unknown',
-            totalRoutes: this.routes.size / 2, // Ділимо на 2 бо кожен маршрут зберігається в обох напрямках
-            currentURL: window.location.href
-        };
+        return pageData[page] || { title: 'Arm Helper', description: 'Ultimate helper tool' };
     }
 }
 
-// Глобальний екземпляр системи
-let urlRoutingSystem = null;
+// Global instance
+let urlRouter = null;
 
-// Ініціалізація URL routing системи
+// Initialize function
 function initURLRouting() {
-    if (urlRoutingSystem) {
-        console.log('⚠️ URL Routing System already initialized');
-        return urlRoutingSystem;
-    }
+    if (urlRouter) return urlRouter;
 
-    urlRoutingSystem = new URLRoutingSystem();
+    urlRouter = new URLRouter();
     
-    // Ініціалізувати після завантаження додатку
     setTimeout(() => {
-        urlRoutingSystem.init();
+        urlRouter.init();
     }, 1000);
 
-    return urlRoutingSystem;
-}
-
-// Інтеграція з існуючою системою переключення сторінок
-function enhanceSwitchPage() {
-    // Зберегти оригінальну функцію
+    // Enhance switchPage function
     const originalSwitchPage = window.switchPage;
-    
     if (typeof originalSwitchPage === 'function') {
-        // Розширити функцію switchPage
         window.switchPage = function(page) {
-            console.log(`🔀 Enhanced switchPage called for: ${page}`);
-            
-            // Викликати оригінальну функцію
             const result = originalSwitchPage.call(this, page);
-            
-            // Оновити URL
-            if (urlRoutingSystem) {
-                urlRoutingSystem.updateURL(page, true);
+            if (urlRouter) {
+                urlRouter.updateURL(page, true);
             }
-            
-            // Відправити подію про зміну сторінки
-            document.dispatchEvent(new CustomEvent('pageChanged', {
-                detail: { page: page, timestamp: Date.now() }
-            }));
-            
             return result;
         };
-        
-        console.log('✅ switchPage function enhanced with URL routing');
-    } else {
-        console.warn('⚠️ Original switchPage function not found');
     }
+
+    return urlRouter;
 }
 
-// Функції для зовнішнього використання
-function navigateToPage(page) {
-    if (urlRoutingSystem) {
-        urlRoutingSystem.navigateToPage(page);
-    } else {
-        console.warn('⚠️ URL Routing System not initialized');
-    }
-}
+// Export functions
+window.initURLRouting = initURLRouting;
 
-function getCurrentRoute() {
-    return urlRoutingSystem ? urlRoutingSystem.getCurrentRoute() : '/';
-}
-
-function getCurrentPageFromURL() {
-    if (urlRoutingSystem) {
-        const route = urlRoutingSystem.getCurrentRoute();
-        return urlRoutingSystem.routes.get(route) || 'calculator';
-    }
-    return 'calculator';
-}
-
-function getURLForPage(page) {
-    return urlRoutingSystem ? urlRoutingSystem.getURLForPage(page) : window.location.origin;
-}
-
-function getAllRoutes() {
-    return urlRoutingSystem ? urlRoutingSystem.getAllRoutes() : {};
-}
-
-function getURLRoutingStatus() {
-    return urlRoutingSystem ? urlRoutingSystem.getStatus() : { initialized: false };
-}
-
-// Автоініціалізація
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            initURLRouting();
-            setTimeout(enhanceSwitchPage, 500);
-        }, 1000);
-    });
-} else {
-    setTimeout(() => {
-        initURLRouting();
-        setTimeout(enhanceSwitchPage, 500);
-    }, 1000);
-}
-
-// Експорт для глобального доступу
-if (typeof window !== 'undefined') {
-    window.initURLRouting = initURLRouting;
-    window.navigateToPage = navigateToPage;
-    window.getCurrentRoute = getCurrentRoute;
-    window.getCurrentPageFromURL = getCurrentPageFromURL;
-    window.getURLForPage = getURLForPage;
-    window.getAllRoutes = getAllRoutes;
-    window.getURLRoutingStatus = getURLRoutingStatus;
-    window.enhanceSwitchPage = enhanceSwitchPage;
-    window.urlRoutingSystem = urlRoutingSystem;
-}
-
-console.log('🌐 URL Routing System loaded and ready');
+console.log('🌐 URL Routing system loaded');
