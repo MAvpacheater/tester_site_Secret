@@ -1,4 +1,4 @@
-// Fixed URL Routing System - Proper GitHub Pages handling
+// Fixed URL Routing System - Updated for armwrestlerinfopost repository
 class URLRouter {
     constructor() {
         this.baseURL = this.getBaseURL();
@@ -18,10 +18,10 @@ class URLRouter {
         
         console.log('🔍 Detecting base URL from:', { protocol, host, pathname });
         
-        // For GitHub Pages - always include repository path
+        // For GitHub Pages - armwrestlerinfopost repository
         if (host.includes('.github.io') && host === 'mavpacheater.github.io') {
             const baseUrl = `${protocol}//${host}/armwrestlerinfopost/`;
-            console.log('✅ Detected GitHub Pages with repo:', baseUrl);
+            console.log('✅ Detected GitHub Pages with armwrestlerinfopost repo:', baseUrl);
             return baseUrl;
         }
         
@@ -105,7 +105,7 @@ class URLRouter {
             setTimeout(() => {
                 switchPage(initialPage);
                 console.log(`✅ Switched to page from URL: ${initialPage}`);
-            }, 500); // Reduced delay
+            }, 500);
         }
 
         this.isInitialized = true;
@@ -262,4 +262,3 @@ class URLRouter {
         console.log('========================');
     }
 }
-
