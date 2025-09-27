@@ -287,16 +287,18 @@
     },
     "codes": [
       {
-        "code": "desertmines",
+        "code": "playfulmines",
         "hours": 72,
         "extras": "Новий",
         "isNew": true
       },
       {
+        "code": "desertmines",
+        "hours": 72
+      },
+      {
         "code": "welovemining",
-        "hours": 72,
-        "extras": "Новий",
-        "isNew": true
+        "hours": 72
       },
       {
         "code": "sorryfordelay",
@@ -559,16 +561,18 @@
     },
     "codes": [
       {
-        "code": "desertmines",
+        "code": "playfulmines",
         "hours": 72,
         "extras": "Новый",
         "isNew": true
       },
       {
+        "code": "desertmines",
+        "hours": 72
+      },
+      {
         "code": "welovemining",
-        "hours": 72,
-        "extras": "Новый",
-        "isNew": true
+        "hours": 72
       },
       {
         "code": "sorryfordelay",
