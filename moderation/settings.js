@@ -1,4 +1,4 @@
- // Налаштування - Керування фоном і позицією меню з згортаними категоріями
+// Налаштування - Керування фоном і позицією меню з згортаними категоріями
 let settingsInitialized = false;
 let settingsTranslations = null;
 let categoriesState = {
@@ -11,7 +11,7 @@ const GITHUB_CONFIG = {
     user: 'MAvpacheater',
     repo: 'tester_site_Secret',
     branch: 'main',
-    imagePath: 'images/bg/'
+    imagePath: 'image/bg/'
 };
 
 // Функція для створення GitHub URL зображення
@@ -26,6 +26,16 @@ const backgroundOptions = {
         filename: 'penguin.png',
         get url() { return getGitHubImageURL(this.filename); }
     },
+    game: {
+        icon: '🎮',
+        filename: 'game.png',
+        get url() { return getGitHubImageURL(this.filename); }
+    },
+    code: {
+        icon: '💻',
+        filename: 'code.png',
+        get url() { return getGitHubImageURL(this.filename); }
+    },
     dodep: {
         icon: '🎰', 
         filename: 'dodep.png',
@@ -34,6 +44,11 @@ const backgroundOptions = {
     prison: {
         icon: '👮‍♂️', 
         filename: 'prison.png',
+        get url() { return getGitHubImageURL(this.filename); }
+    },
+    forest: {
+        icon: '🌲',
+        filename: 'forest.png',
         get url() { return getGitHubImageURL(this.filename); }
     }
 };
@@ -115,7 +130,8 @@ async function loadBackgroundImage(background) {
             game: 'https://i.postimg.cc/43yVBkY8/Generated-image-1.png',
             code: 'https://i.postimg.cc/nrvZbvKw/image.png',
             dodep: 'https://i.postimg.cc/nV4dxr1X/2025-09-16-22-26-42.png',
-            prison: 'https://i.postimg.cc/ZR75v48p/2025-09-16-22-26-34.png'
+            prison: 'https://i.postimg.cc/ZR75v48p/2025-09-16-22-26-34.png',
+            forest: 'https://i.postimg.cc/sample/forest-background.png' // Додайте правильне посилання
         };
         
         return fallbackUrls[background] || primaryUrl;
@@ -446,6 +462,7 @@ async function loadSettingsTranslations() {
                 code: "Code",
                 dodep: "Dodep",
                 prison: "Prison",
+                forest: "Forest",
                 up: "Top",
                 down: "Bottom",
                 left: "Left", 
@@ -460,6 +477,7 @@ async function loadSettingsTranslations() {
                 code: "Код",
                 dodep: "Додеп",
                 prison: "В'язниця",
+                forest: "Ліс",
                 up: "Верх",
                 down: "Низ", 
                 left: "Ліворуч",
@@ -474,6 +492,7 @@ async function loadSettingsTranslations() {
                 code: "Код",
                 dodep: "Додеп",
                 prison: "Тюрьма",
+                forest: "Лес",
                 up: "Верх",
                 down: "Низ",
                 left: "Слева", 
