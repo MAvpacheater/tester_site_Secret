@@ -1,4 +1,4 @@
-// URL Routing System - Fixed for proper path recognition
+// URL Routing System - Fixed for GitHub Pages with repository name
 
 class URLRouter {
     constructor() {
@@ -17,9 +17,23 @@ class URLRouter {
         const host = window.location.host;
         const pathname = window.location.pathname;
         
-        // For Vercel, Netlify, GitHub Pages
-        if (host.includes('.vercel.app') || host.includes('.netlify.app') || host.includes('.github.io')) {
-            // For custom domains or root deployments
+        // For GitHub Pages with repository name
+        if (host.includes('.github.io')) {
+            // Extract repository name from pathname
+            const pathParts = pathname.split('/').filter(part => part);
+            
+            if (pathParts.length > 0) {
+                // If we have path parts, the first one is likely the repository name
+                const repoName = pathParts[0];
+                return `${protocol}//${host}/${repoName}/`;
+            } else {
+                // Root repository (username.github.io)
+                return `${protocol}//${host}/`;
+            }
+        }
+        
+        // For other platforms (Vercel, Netlify, etc.)
+        if (host.includes('.vercel.app') || host.includes('.netlify.app')) {
             return `${protocol}//${host}/`;
         }
         
@@ -41,7 +55,7 @@ class URLRouter {
             'charms': '/charms_info',
             'potions': '/potions_food',
             'worlds': '/worlds_info',
-            'settings': '/settings', // Fixed: removed trailing slash for consistency
+            'settings': '/settings',
             'help': '/help_guide',
             'peoples': '/peoples_thanks'
         };
@@ -96,12 +110,20 @@ class URLRouter {
     getPageFromURL() {
         let currentPath = window.location.pathname;
         
+        // Remove base path from GitHub Pages URLs
+        const baseURL = this.baseURL;
+        const basePath = new URL(baseURL).pathname;
+        
+        if (basePath !== '/' && currentPath.startsWith(basePath)) {
+            currentPath = currentPath.substring(basePath.length - 1);
+        }
+        
         // Remove trailing slash for consistency (except root)
         if (currentPath !== '/' && currentPath.endsWith('/')) {
             currentPath = currentPath.slice(0, -1);
         }
         
-        console.log(`🔍 Analyzing URL path: "${currentPath}"`);
+        console.log(`🔍 Analyzing URL path: "${currentPath}" (original: ${window.location.pathname})`);
         
         // Direct lookup in routes map
         if (this.routes.has(currentPath)) {
@@ -131,7 +153,14 @@ class URLRouter {
             return;
         }
 
-        const newURL = this.baseURL.slice(0, -1) + path;
+        // Build the complete URL with base path
+        let newURL;
+        if (path === '/') {
+            newURL = this.baseURL;
+        } else {
+            newURL = this.baseURL + path.substring(1); // Remove leading slash from path
+        }
+        
         const currentURL = window.location.href;
 
         if (newURL !== currentURL) {
@@ -191,6 +220,17 @@ class URLRouter {
 
         return pageData[page] || { title: 'Arm Helper', description: 'Ultimate helper tool' };
     }
+
+    // Debug function to check current state
+    debug() {
+        console.log('=== URL ROUTER DEBUG ===');
+        console.log('Current URL:', window.location.href);
+        console.log('Pathname:', window.location.pathname);
+        console.log('Base URL:', this.baseURL);
+        console.log('Detected page:', this.getPageFromURL());
+        console.log('Routes:', Array.from(this.routes.entries()));
+        console.log('========================');
+    }
 }
 
 // Global instance
@@ -230,8 +270,18 @@ function initURLRouting() {
     return urlRouter;
 }
 
+// Debug function
+function debugURLRouter() {
+    if (urlRouter) {
+        urlRouter.debug();
+    } else {
+        console.warn('⚠️ URL Router not initialized');
+    }
+}
+
 // Export functions
 window.initURLRouting = initURLRouting;
+window.debugURLRouter = debugURLRouter;
 window.urlRouter = urlRouter;
 
 console.log('🌐 URL Routing system loaded');
