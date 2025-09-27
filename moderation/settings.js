@@ -1,4 +1,4 @@
-// Налаштування - Керування фоном і позицією меню з згортаними категоріями
+ // Налаштування - Керування фоном і позицією меню з згортаними категоріями
 let settingsInitialized = false;
 let settingsTranslations = null;
 let categoriesState = {
@@ -420,25 +420,6 @@ function updateMenuPositionUI() {
     });
 }
 
-// Скинути налаштування до за замовчуванням
-function resetSettings() {
-    const confirmText = getTranslation('confirmReset', 'Ви впевнені, що хочете скинути всі налаштування?');
-    if (confirm(confirmText)) {
-        localStorage.removeItem('armHelper_background');
-        localStorage.removeItem('armHelper_menuPosition');
-        localStorage.removeItem('armHelper_categoriesState');
-        
-        // Скинути стан
-        categoriesState = { background: false, menu: false };
-        
-        changeBackground('penguin');
-        changeMenuPosition('left');
-        applyCategoriesState();
-        
-        console.log('Налаштування скинуто до за замовчуванням');
-    }
-}
-
 // Завантажити переклади налаштувань
 async function loadSettingsTranslations() {
     if (settingsTranslations) return settingsTranslations;
@@ -468,9 +449,7 @@ async function loadSettingsTranslations() {
                 up: "Top",
                 down: "Bottom",
                 left: "Left", 
-                right: "Right",
-                reset: "Reset Settings",
-                confirmReset: "Are you sure you want to reset all settings?"
+                right: "Right"
             },
             uk: {
                 title: "⚙️ Налаштування", 
@@ -484,9 +463,7 @@ async function loadSettingsTranslations() {
                 up: "Верх",
                 down: "Низ", 
                 left: "Ліворуч",
-                right: "Праворуч",
-                reset: "Скинути налаштування",
-                confirmReset: "Ви впевнені, що хочете скинути всі налаштування?"
+                right: "Праворуч"
             },
             ru: {
                 title: "⚙️ Настройки",
@@ -500,9 +477,7 @@ async function loadSettingsTranslations() {
                 up: "Верх",
                 down: "Низ",
                 left: "Слева", 
-                right: "Справа",
-                reset: "Сбросить настройки",
-                confirmReset: "Вы уверены, что хотите сбросить все настройки?"
+                right: "Справа"
             }
         };
         return settingsTranslations;
@@ -569,16 +544,10 @@ async function updateSettingsLanguage(lang = null) {
         }
     });
     
-    // Оновити кнопку скидання
-    const resetBtn = document.querySelector('#settingsPage .reset-btn');
-    if (resetBtn && translations.reset) {
-        resetBtn.textContent = translations.reset;
-    }
-    
     console.log(`✅ Мову налаштувань оновлено до ${currentLang}`);
 }
 
-// Створити HTML налаштувань з правильним відображенням тексту
+// Створити HTML налаштувань з правильним відображенням тексту (БЕЗ кнопки Reset та GitHub info)
 function createSettingsHTML() {
     // Створити опції фону динамічно
     const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => {
@@ -595,8 +564,6 @@ function createSettingsHTML() {
 
     return `
         <div class="settings-container">
-            <h1 class="settings-title"><!-- Буде заповнено перекладом --></h1>
-            
             <div class="settings-section" data-category="background">
                 <div class="category-header collapsed" onclick="toggleSettingsCategory('background')">
                     <div class="category-title">
@@ -740,8 +707,7 @@ if (document.readyState === 'loading') {
 window.initializeSettings = initializeSettings;
 window.changeBackground = changeBackground;
 window.changeMenuPosition = changeMenuPosition;
-window.resetSettings = resetSettings;
 window.toggleSettingsCategory = toggleSettingsCategory;
 window.updateSettingsLanguage = updateSettingsLanguage;
 window.updateStaticMenuActiveState = updateStaticMenuActiveState;
-window.getGitHubImageURL = getGitHubImageURL;this.filename); }
+window.getGitHubImageURL = getGitHubImageURL;
