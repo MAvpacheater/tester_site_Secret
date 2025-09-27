@@ -22,36 +22,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Background pattern */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.03) 0%, transparent 40%),
-        radial-gradient(circle at 75% 75%, rgba(255, 165, 0, 0.03) 0%, transparent 40%);
-    background-size: 200px 200px, 150px 150px;
-    pointer-events: none;
-    z-index: -1;
-}
-
-/* Desktop background */
-@media (min-width: 769px) {
-    body {
-        background-attachment: fixed;
-    }
-}
-
-/* Mobile background */
-@media (max-width: 768px) {
-    body {
-        background-attachment: scroll;
-    }
-}
-
 .container {
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.9) 0%, 
@@ -72,7 +42,6 @@ body::before {
     overflow: hidden;
 }
 
-/* Container decorations */
 .container::before {
     content: '⛏️';
     position: absolute;
@@ -328,19 +297,6 @@ body::before {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.nav-btn.active::after {
-    content: '';
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
-    background: #2F1B14;
-    border-radius: 50%;
-    box-shadow: 0 0 8px rgba(47, 27, 20, 0.8);
-}
-
 /* User Section */
 .sidebar-user {
     padding: 20px;
@@ -376,21 +332,6 @@ body::before {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.auth-btn-sidebar.disabled {
-    opacity: 0.6;
-    cursor: not-allowed !important;
-    background: rgba(139, 69, 19, 0.2);
-    color: rgba(245, 222, 179, 0.7);
-    pointer-events: none;
-}
-
-.auth-btn-sidebar.disabled:hover {
-    background: rgba(139, 69, 19, 0.2) !important;
-    border-color: #8B4513 !important;
-    transform: none !important;
-    box-shadow: none !important;
-}
-
 /* Settings and Language Controls */
 .sidebar-controls {
     display: flex;
@@ -411,7 +352,6 @@ body::before {
     justify-content: center;
 }
 
-/* Settings Button in Sidebar */
 .settings-btn-sidebar {
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.3) 0%, 
@@ -519,112 +459,7 @@ body::before {
     backdrop-filter: blur(10px);
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 300px;
-        left: -300px;
-    }
-    
-    .nav-buttons {
-        padding: 20px 15px;
-    }
-    
-    .sidebar-user {
-        padding: 15px;
-    }
-    
-    .sidebar-controls {
-        padding: 15px;
-    }
-    
-    .control-buttons {
-        gap: 12px;
-    }
-    
-    .settings-btn-sidebar {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2em;
-        padding: 8px;
-    }
-    
-    .language-flags {
-        gap: 10px;
-    }
-    
-    .lang-flag-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2em;
-        padding: 8px;
-    }
-    
-    .container {
-        padding: 30px;
-        margin: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .sidebar {
-        width: 280px;
-        left: -280px;
-    }
-    
-    .sidebar-user {
-        padding: 15px 10px;
-    }
-    
-    .nav-buttons {
-        padding: 15px 10px 10px 10px;
-    }
-    
-    .sidebar-controls {
-        padding: 12px 10px;
-    }
-    
-    .control-buttons {
-        gap: 8px;
-    }
-    
-    .settings-btn-sidebar {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1em;
-        padding: 6px;
-    }
-    
-    .language-flags {
-        gap: 8px;
-    }
-    
-    .lang-flag-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1em;
-        padding: 6px;
-    }
-    
-    .container {
-        padding: 25px;
-        margin: 10px;
-    }
-    
-    .container::before {
-        font-size: 1.5em;
-        top: 10px;
-        right: 15px;
-    }
-    
-    .container::after {
-        font-size: 1.2em;
-        bottom: 10px;
-        left: 15px;
-    }
-}
-
-/* Loading Screen Styles */
+/* Loading Screen */
 #loading-screen {
     position: fixed;
     top: 0;
@@ -636,10 +471,10 @@ body::before {
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    font-family: system-ui, -apple-system, sans-serif;
     color: white;
     font-size: 18px;
     transition: opacity 0.3s ease-out;
+    font-family: 'Segoe UI', sans-serif;
 }
 
 .loading-content {
@@ -682,4 +517,53 @@ body::before {
 
 .auto-reload-indicator.show {
     opacity: 1;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 300px;
+        left: -300px;
+    }
+    
+    .container {
+        padding: 30px;
+        margin: 15px;
+    }
+    
+    .settings-btn-sidebar {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3em;
+    }
+    
+    .lang-flag-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3em;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        width: 280px;
+        left: -280px;
+    }
+    
+    .container {
+        padding: 25px;
+        margin: 10px;
+    }
+    
+    .settings-btn-sidebar {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
+    }
+    
+    .lang-flag-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
+    }
 }
