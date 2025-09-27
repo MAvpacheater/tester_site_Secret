@@ -1,4 +1,4 @@
-// General JavaScript functions - Complete version with single menu management
+// General JavaScript functions - Enhanced with MenuManager support
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -133,16 +133,6 @@ async function switchAppLanguage(lang) {
         }
     });
     
-    // Legacy support for older function names
-    if (typeof window.switchWorldsLanguage === 'function') {
-        try {
-            window.switchWorldsLanguage(lang);
-            console.log('✅ Worlds language updated via legacy function');
-        } catch (error) {
-            console.error('❌ Error in legacy worlds language update:', error);
-        }
-    }
-    
     console.log(`🌍 App language switched to: ${lang}`);
 }
 
@@ -173,7 +163,7 @@ function updateMenuTranslations() {
         }
     });
     
-    // Update page buttons
+    // Update page buttons in sidebar
     Object.entries(translations.pages).forEach(([page, translation]) => {
         const pageButton = document.querySelector(`[data-page="${page}"]`);
         if (pageButton) {
@@ -238,7 +228,7 @@ function updatePageTitles() {
     console.log(`✅ Page titles updated for ${currentAppLanguage}`);
 }
 
-// Page switching functionality with persistence and static menu support
+// Enhanced page switching with MenuManager support
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
     
@@ -283,13 +273,18 @@ function switchPage(page) {
         console.log(`Nav button activated for ${page}`);
     }
     
-    // Update static menu active state if it exists
-    if (typeof window.updateStaticMenuActiveState === 'function') {
+    // Update static menu active state via MenuManager if available
+    if (typeof window.menuManager !== 'undefined' && window.menuManager.updateStaticMenuActiveState) {
+        window.menuManager.updateStaticMenuActiveState(page);
+    } else if (typeof window.updateStaticMenuActiveState === 'function') {
         window.updateStaticMenuActiveState(page);
     }
     
-    // Close sidebar after selection
-    closeSidebar();
+    // Close sidebar after selection (only for sidebar menus)
+    const currentMenuType = getCurrentMenuPosition();
+    if (currentMenuType === 'left' || currentMenuType === 'right') {
+        closeSidebar();
+    }
     
     // Dispatch page change event
     const pageChangeEvent = new CustomEvent('pageChanged', {
@@ -304,6 +299,12 @@ function switchPage(page) {
     setTimeout(() => {
         initializePageContent(page);
     }, 100);
+}
+
+// Get current menu position (for MenuManager compatibility)
+function getCurrentMenuPosition() {
+    const saved = localStorage.getItem('armHelper_menuPosition');
+    return saved || 'left';
 }
 
 // Initialize specific page content when switching
@@ -506,14 +507,14 @@ function loadSettingsFromStorage(key) {
 // Flag to prevent repeated initialization
 let appInitialized = false;
 
-// App initialization with enhanced language support and page state restoration
+// Enhanced app initialization with MenuManager support
 async function initializeApp() {
     if (appInitialized) {
         console.log('⚠️ App already initialized');
         return;
     }
     
-    console.log('🚀 Starting app initialization...');
+    console.log('🚀 Starting app initialization with MenuManager support...');
     
     // Check if content is loaded
     const appContent = document.getElementById('app-content');
@@ -546,14 +547,28 @@ async function initializeApp() {
     // Initialize all modules first
     initializeAllModules();
     
-    // Restore last page or default to calculator
-    const lastPage = getCurrentPage();
-    console.log(`🔄 Restoring last page: ${lastPage}`);
-    
+    // Wait for MenuManager to be available
     setTimeout(() => {
-        switchPage(lastPage);
-        console.log(`✅ Page restored to: ${lastPage}`);
-    }, 200);
+        // Apply menu position via MenuManager if available
+        if (typeof window.menuManager !== 'undefined') {
+            console.log('🎯 Using MenuManager for menu initialization...');
+            const currentMenuPos = getCurrentMenuPosition();
+            if (typeof window.applyMenuPosition === 'function') {
+                window.applyMenuPosition(currentMenuPos);
+            }
+        } else {
+            console.warn('⚠️ MenuManager not available, falling back to legacy menu system');
+        }
+        
+        // Restore last page or default to calculator
+        const lastPage = getCurrentPage();
+        console.log(`🔄 Restoring last page: ${lastPage}`);
+        
+        setTimeout(() => {
+            switchPage(lastPage);
+            console.log(`✅ Page restored to: ${lastPage}`);
+        }, 200);
+    }, 300);
     
     // Enhanced click outside settings panel handler
     document.addEventListener('click', e => {
@@ -598,7 +613,7 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed - Single menu management enabled');
+    console.log('✅ App initialization completed with MenuManager support');
 }
 
 // Initialize all modules with proper DOM readiness checks
@@ -716,7 +731,7 @@ function forceReinitializeModule(moduleName) {
     }
 }
 
-// Make functions globally available
+// Make functions globally available with MenuManager support
 window.switchPage = switchPage;
 window.toggleMobileMenu = toggleMobileMenu;
 window.closeSidebar = closeSidebar;
@@ -735,3 +750,4 @@ window.updateMenuTranslations = updateMenuTranslations;
 window.updatePageTitles = updatePageTitles;
 window.saveCurrentPage = saveCurrentPage;
 window.getCurrentPage = getCurrentPage;
+window.getCurrentMenuPosition = getCurrentMenuPosition;
