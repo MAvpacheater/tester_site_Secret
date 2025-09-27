@@ -105,26 +105,39 @@
         // Display current path
         document.getElementById('currentPath').textContent = window.location.pathname;
         
-        // GitHub Pages SPA redirect script
+        // GitHub Pages SPA redirect script - Fixed for repository-based URLs
         var currentPath = window.location.pathname;
         var search = window.location.search;
         var hash = window.location.hash;
         
         console.log('🔄 404 Redirect triggered for:', currentPath);
         
-        // Store the original path for restoration
+        // Store the original path for restoration (keep the full path)
         var fullOriginalURL = currentPath + search + hash;
         sessionStorage.setItem('pathToRestore', fullOriginalURL);
         
         console.log('💾 Stored path for restoration:', fullOriginalURL);
         
-        // Redirect to the base path (index.html)
-        var targetURL = window.location.protocol + '//' + window.location.host + '/';
-        console.log('🔄 Redirecting to:', targetURL);
+        // Build the correct base URL for GitHub Pages
+        var protocol = window.location.protocol;
+        var host = window.location.host;
+        var pathParts = currentPath.split('/').filter(part => part);
+        
+        var baseURL;
+        if (host.includes('.github.io') && pathParts.length > 0) {
+            // For repository-based GitHub Pages (e.g., username.github.io/repo-name)
+            var repoName = pathParts[0];
+            baseURL = protocol + '//' + host + '/' + repoName + '/';
+        } else {
+            // For root GitHub Pages or other platforms
+            baseURL = protocol + '//' + host + '/';
+        }
+        
+        console.log('🔄 Redirecting to base URL:', baseURL);
         
         // Use replace to avoid infinite loops
         setTimeout(function() {
-            window.location.replace(targetURL);
+            window.location.replace(baseURL);
         }, 1500);
     </script>
 </body>
