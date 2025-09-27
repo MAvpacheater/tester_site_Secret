@@ -139,7 +139,7 @@ function animateMenuButton(isMenuOpen) {
     }
 }
 
-// Створити лінії для кнопки меню
+// Створити лінії для кнопки меню - оновлено для квадратної кнопки
 function createMenuButtonLines(menuToggle) {
     // Очистити існуючий контент
     menuToggle.innerHTML = '';
@@ -149,8 +149,8 @@ function createMenuButtonLines(menuToggle) {
         const line = document.createElement('div');
         line.className = 'menu-line';
         line.style.cssText = `
-            width: 24px;
-            height: 3px;
+            width: 20px;
+            height: 2px;
             background: #F5DEB3;
             border-radius: 2px;
             position: absolute;
@@ -161,18 +161,18 @@ function createMenuButtonLines(menuToggle) {
             transform-origin: center;
         `;
         
-        // Встановити початкові позиції
+        // Встановити початкові позиції для квадратної кнопки
         if (i === 0) {
-            line.style.transform = 'translate(-50%, -50%) translateY(-6px)';
+            line.style.transform = 'translate(-50%, -50%) translateY(-5px)';
         } else if (i === 1) {
             line.style.transform = 'translate(-50%, -50%)';
         } else {
-            line.style.transform = 'translate(-50%, -50%) translateY(6px)';
+            line.style.transform = 'translate(-50%, -50%) translateY(5px)';
         }
         
         menuToggle.appendChild(line);
     }
-    console.log('✅ Лінії кнопки меню створено');
+    console.log('✅ Лінії квадратної кнопки меню створено');
 }
 
 // НОВА СИСТЕМА УПРАВЛІННЯ МЕНЮ - ГАРАНТУЄ ЛИШЕ ОДНЕ МЕНЮ + АНІМАЦІЯ
