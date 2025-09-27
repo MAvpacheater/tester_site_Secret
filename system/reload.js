@@ -378,6 +378,48 @@ function handlePageRestoration() {
         // Clean up invalid data
         sessionStorage.removeItem('urlBeforeReload');
     }
+
+    // Priority 1.5: Check for manual refresh URL restoration
+    const manualRefreshData = sessionStorage.getItem('manualRefreshURL');
+    if (manualRefreshData) {
+        try {
+            const urlData = JSON.parse(manualRefreshData);
+            const timeDiff = Date.now() - urlData.timestamp;
+            
+            // Only restore if reload was recent (within 10 seconds) and it's a manual refresh
+            if (timeDiff < 10000 && urlData.type === 'manual') {
+                console.log('🔄 Restoring URL after manual refresh:', urlData.fullURL);
+                
+                // Restore the exact URL if needed
+                if (urlData.fullURL !== window.location.href) {
+                    window.history.replaceState(null, '', urlData.fullURL);
+                    console.log('✅ URL restored after manual refresh');
+                }
+                
+                // Get page from restored URL
+                if (urlRouter) {
+                    const restoredPage = urlRouter.getPageFromURL();
+                    console.log(`🎯 Page from manual refresh URL: ${restoredPage}`);
+                    
+                    setTimeout(() => {
+                        if (typeof switchPage === 'function') {
+                            switchPage(restoredPage);
+                            console.log(`✅ Page switched after manual refresh to: ${restoredPage}`);
+                        }
+                    }, 300);
+                }
+                
+                // Clean up
+                sessionStorage.removeItem('manualRefreshURL');
+                return;
+            }
+        } catch (error) {
+            console.error('❌ Error restoring manual refresh URL:', error);
+        }
+        
+        // Clean up invalid data
+        sessionStorage.removeItem('manualRefreshURL');
+    }
     
     // Priority 2: Check for page restoration from auto-reload (backup)
     const savedPage = sessionStorage.getItem('pageBeforeReload');
