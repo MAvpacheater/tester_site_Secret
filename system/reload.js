@@ -1,14 +1,16 @@
-// GitHub Auto-reload system - Simplified and fixed
+// GitHub Auto-reload system - Fixed with better error handling
 
 class GitHubAutoReload {
     constructor(options = {}) {
         this.githubUser = options.githubUser || 'MAvpacheater';
         this.githubRepo = options.githubRepo || 'tester_site_Secret';
         this.branch = options.branch || 'main';
-        this.checkInterval = options.checkInterval || 30000;
+        this.checkInterval = options.checkInterval || 60000; // Увеличено до 1 минуты
         this.lastCommitSha = null;
         this.isActive = false;
         this.intervalId = null;
+        this.failureCount = 0;
+        this.maxFailures = 3;
     }
 
     async init() {
@@ -21,7 +23,7 @@ class GitHubAutoReload {
             console.log('✅ GitHub auto-reload activated');
             return true;
         } catch (error) {
-            console.error('❌ Failed to initialize GitHub auto-reload:', error);
+            console.warn('⚠️ GitHub auto-reload initialization failed, continuing without auto-reload:', error.message);
             return false;
         }
     }
@@ -30,21 +32,38 @@ class GitHubAutoReload {
         try {
             const apiUrl = `https://api.github.com/repos/${this.githubUser}/${this.githubRepo}/commits/${this.branch}`;
             
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+            
             const response = await fetch(apiUrl, {
                 headers: {
                     'Accept': 'application/vnd.github.v3+json',
                     'User-Agent': 'Auto-Reload-System'
-                }
+                },
+                signal: controller.signal
             });
 
+            clearTimeout(timeoutId);
+
+            if (response.status === 403) {
+                throw new Error('GitHub API rate limit exceeded. Auto-reload disabled temporarily.');
+            }
+
+            if (response.status === 404) {
+                throw new Error('Repository not found or private. Auto-reload disabled.');
+            }
+
             if (!response.ok) {
-                throw new Error(`GitHub API error: ${response.status}`);
+                throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
             }
 
             const commitData = await response.json();
             const newSha = commitData.sha;
             
             console.log(`📝 Latest commit: ${newSha.substring(0, 8)}...`);
+
+            // Reset failure count on successful request
+            this.failureCount = 0;
 
             if (this.lastCommitSha === null) {
                 this.lastCommitSha = newSha;
@@ -60,7 +79,16 @@ class GitHubAutoReload {
 
             return false;
         } catch (error) {
-            console.error('❌ Error fetching commit data:', error.message);
+            this.failureCount++;
+            console.warn(`❌ GitHub API request failed (${this.failureCount}/${this.maxFailures}):`, error.message);
+            
+            // If we hit max failures, stop auto-reload
+            if (this.failureCount >= this.maxFailures) {
+                console.warn('⚠️ Max failures reached, stopping auto-reload');
+                this.stop();
+                this.hideIndicator();
+            }
+            
             throw error;
         }
     }
@@ -77,7 +105,7 @@ class GitHubAutoReload {
                     this.reloadPage();
                 }
             } catch (error) {
-                console.warn('⚠️ Auto-reload check failed:', error.message);
+                // Error already handled in getCurrentCommitSha
             }
         }, this.checkInterval);
         
@@ -157,6 +185,13 @@ class GitHubAutoReload {
         }
     }
 
+    hideIndicator() {
+        const indicator = document.getElementById('autoReloadIndicator');
+        if (indicator) {
+            indicator.classList.remove('show');
+        }
+    }
+
     async checkNow() {
         try {
             const hasChanges = await this.getCurrentCommitSha();
@@ -185,14 +220,17 @@ function initGitHubAutoReload(options = {}) {
     
     setTimeout(async () => {
         await githubAutoReloadSystem.init();
-    }, 3000);
+    }, 5000); // Увеличено до 5 секунд
 
     return githubAutoReloadSystem;
 }
 
 // Control functions
 function stopGitHubAutoReload() {
-    if (githubAutoReloadSystem) githubAutoReloadSystem.stop();
+    if (githubAutoReloadSystem) {
+        githubAutoReloadSystem.stop();
+        githubAutoReloadSystem.hideIndicator();
+    }
 }
 
 function startGitHubAutoReload() {
