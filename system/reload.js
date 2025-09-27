@@ -2,7 +2,7 @@
 class GitHubAutoReload {
     constructor(options = {}) {
         this.githubUser = options.githubUser || 'MAvpacheater';
-        this.githubRepo = options.githubRepo || 'tester_site_Secret';
+        this.githubRepo = options.githubRepo || 'armwrestlerinfopost';
         this.branch = options.branch || 'main';
         this.checkInterval = options.checkInterval || 30000; // 30 seconds
         this.lastCommitSha = null;
