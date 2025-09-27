@@ -48,7 +48,6 @@ const menuItems = [
     { page: 'charms', icon: '🔮', title: 'Charms' },
     { page: 'potions', icon: '🧪', title: 'Potions & Food' },
     { page: 'worlds', icon: '🌍', title: 'Worlds' },
-    { page: 'updates', icon: '📝', title: 'Updates' },
     { page: 'help', icon: '🆘', title: 'Help' },
     { page: 'peoples', icon: '🙏', title: 'Peoples' }
 ];
