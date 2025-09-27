@@ -302,30 +302,37 @@ function applyMenuPosition(position) {
     }
     
     const body = document.body;
+    console.log(`🔄 Застосування позиції меню: ${position}`);
     
-    // ВАЖЛИВО: Видалити всі класи позицій меню і статичні меню
+    // КРОК 1: Видалити ВСІ класи позицій меню
     Object.keys(menuPositions).forEach(pos => {
         body.classList.remove(`menu-${pos}`);
+        console.log(`❌ Видалено клас menu-${pos}`);
     });
     
-    // Видалити будь-яке існуюче статичне меню перед створенням нового
+    // КРОК 2: Видалити ВСІ існуючі статичні меню
     removeStaticMenu();
     
-    // Додати новий клас позиції меню
-    body.classList.add(`menu-${position}`);
+    // КРОК 3: Переконатися, що сайдбар закритий
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+        sidebar.classList.remove('open');
+    }
+    const overlay = document.getElementById('sidebarOverlay');
+    if (overlay) {
+        overlay.classList.remove('show');
+    }
     
-    // Обробити статичне відображення меню
+    // КРОК 4: Додати ТІЛЬКИ новий клас позиції меню
+    body.classList.add(`menu-${position}`);
+    console.log(`✅ Додано клас menu-${position}`);
+    
+    // КРОК 5: Створити статичне меню ТІЛЬКИ для up/down
     if (position === 'up' || position === 'down') {
-        createStaticMenu(position);
-        // Переконатися, що сайдбар прихований
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar) {
-            sidebar.classList.remove('open');
-        }
-        const overlay = document.getElementById('sidebarOverlay');
-        if (overlay) {
-            overlay.classList.remove('show');
-        }
+        // Невелика затримка щоб CSS встиг застосуватися
+        setTimeout(() => {
+            createStaticMenu(position);
+        }, 50);
     }
     
     console.log(`✅ Позицію меню застосовано: ${position}`);
@@ -401,11 +408,14 @@ function createStaticMenu(position) {
 
 // Видалити статичне меню
 function removeStaticMenu() {
-    const existingMenu = document.getElementById('staticMenu');
-    if (existingMenu) {
-        existingMenu.remove();
-        console.log('🗑️ Статичне меню видалено');
-    }
+    // Видалити ВСІ можливі статичні меню
+    const existingMenus = document.querySelectorAll('.static-menu, #staticMenu, .menu-top, .menu-bottom');
+    existingMenus.forEach(menu => {
+        menu.remove();
+        console.log(`🗑️ Видалено статичне меню:`, menu.className || menu.id);
+    });
+    
+    console.log('🧹 Всі статичні меню видалено');
 }
 
 // Оновити активний стан статичного меню
@@ -586,7 +596,7 @@ async function updateSettingsLanguage(lang = null) {
     console.log(`✅ Мову налаштувань оновлено до ${currentLang}`);
 }
 
-// Створити HTML налаштувань з правильним відображенням тексту
+// Створити HTML налаштувань з заголовком
 function createSettingsHTML() {
     // Створити опції фону динамічно
     const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => {
@@ -603,11 +613,13 @@ function createSettingsHTML() {
 
     return `
         <div class="settings-container">
+            <h1 class="settings-title">⚙️ Settings</h1>
+            
             <div class="settings-section" data-category="background">
                 <div class="category-header collapsed" onclick="toggleSettingsCategory('background')">
                     <div class="category-title">
                         <span class="section-icon">🎨</span>
-                        <span><!-- Буде заповнено перекладом --></span>
+                        <span>Background</span>
                     </div>
                     <span class="category-toggle">▼</span>
                 </div>
@@ -621,7 +633,7 @@ function createSettingsHTML() {
                 <div class="category-header collapsed" onclick="toggleSettingsCategory('menu')">
                     <div class="category-title">
                         <span class="section-icon">📱</span>
-                        <span><!-- Буде заповнено перекладом --></span>
+                        <span>Menu Position</span>
                     </div>
                     <span class="category-toggle">▼</span>
                 </div>
@@ -629,26 +641,25 @@ function createSettingsHTML() {
                 <div class="menu-options collapsed">
                     <div class="menu-option" data-position="up" onclick="changeMenuPosition('up')">
                         <div class="menu-option-icon">⬆️</div>
-                        <div class="menu-option-name"><!-- Буде заповнено перекладом --></div>
+                        <div class="menu-option-name">Top</div>
                     </div>
                     
                     <div class="menu-option" data-position="left" onclick="changeMenuPosition('left')">
                         <div class="menu-option-icon">⬅️</div>
-                        <div class="menu-option-name"><!-- Буде заповнено перекладом --></div>
+                        <div class="menu-option-name">Left</div>
                     </div>
                     
                     <div class="menu-option" data-position="right" onclick="changeMenuPosition('right')">
                         <div class="menu-option-icon">➡️</div>
-                        <div class="menu-option-name"><!-- Буде заповнено перекладом --></div>
+                        <div class="menu-option-name">Right</div>
                     </div>
                     
                     <div class="menu-option" data-position="down" onclick="changeMenuPosition('down')">
                         <div class="menu-option-icon">⬇️</div>
-                        <div class="menu-option-name"><!-- Буде заповнено перекладом --></div>
+                        <div class="menu-option-name">Bottom</div>
                     </div>
                 </div>
             </div>
-            
         </div>
     `;
 }
@@ -699,11 +710,19 @@ async function initializeSettings() {
 
 // Застосувати фон і позицію меню при запуску додатка
 async function initializeSettingsOnStart() {
+    console.log('🚀 Ініціалізація налаштувань при старті...');
+    
+    // КРОК 1: Очистити ВСІ меню при старті
+    await forceCleanAllMenus();
+    
+    // КРОК 2: Застосувати фон
     const currentBg = getCurrentBackground();
     await applyBackground(currentBg);
     console.log(`Початковий фон застосовано: ${currentBg}`);
     
+    // КРОК 3: Застосувати позицію меню
     const currentMenuPos = getCurrentMenuPosition();
+    console.log(`🎯 Застосування початкової позиції меню: ${currentMenuPos}`);
     
     // Додати клас для поточної позиції меню до body
     const body = document.body;
@@ -712,8 +731,43 @@ async function initializeSettingsOnStart() {
     });
     body.classList.add(`menu-${currentMenuPos}`);
     
-    applyMenuPosition(currentMenuPos);
-    console.log(`Початкову позицію меню застосовано: ${currentMenuPos}`);
+    // Застосувати позицію з затримкою для DOM
+    setTimeout(() => {
+        applyMenuPosition(currentMenuPos);
+        console.log(`✅ Початкову позицію меню застосовано: ${currentMenuPos}`);
+    }, 100);
+}
+
+// Примусово очистити всі меню
+async function forceCleanAllMenus() {
+    console.log('🧹 Примусове очищення всіх меню...');
+    
+    // Видалити всі статичні меню
+    const existingMenus = document.querySelectorAll('.static-menu, #staticMenu, .menu-top:not(.sidebar), .menu-bottom:not(.sidebar)');
+    existingMenus.forEach(menu => {
+        if (!menu.classList.contains('sidebar')) { // Не видаляти сайдбар
+            menu.remove();
+            console.log(`🗑️ Видалено меню:`, menu.className || menu.id);
+        }
+    });
+    
+    // Закрити сайдбар
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+        sidebar.classList.remove('open');
+    }
+    const overlay = document.getElementById('sidebarOverlay');
+    if (overlay) {
+        overlay.classList.remove('show');
+    }
+    
+    // Очистити всі класи позицій меню з body
+    const body = document.body;
+    Object.keys(menuPositions).forEach(pos => {
+        body.classList.remove(`menu-${pos}`);
+    });
+    
+    console.log('✅ Всі меню очищено');
 }
 
 // Слухати зміни мови
@@ -750,3 +804,4 @@ window.toggleSettingsCategory = toggleSettingsCategory;
 window.updateSettingsLanguage = updateSettingsLanguage;
 window.updateStaticMenuActiveState = updateStaticMenuActiveState;
 window.getGitHubImageURL = getGitHubImageURL;
+window.forceCleanAllMenus = forceCleanAllMenus;
