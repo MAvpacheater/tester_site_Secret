@@ -134,12 +134,32 @@
         console.log('🔄 404 Redirect triggered for:', currentPath);
         console.log('🔍 Path parts:', pathParts);
         
-        // Determine if this is a direct access to a page (without repository path)
+        // Check if this is a repository-based URL
+        var isRepoURL = pathParts.length >= 2 && pathParts[0] === 'tester_site_Secret';
         var isDirectPageAccess = pathParts.length === 1 && pageNames['/' + pathParts[0]];
         
-        if (isDirectPageAccess) {
-            // This is a direct access like mavpacheater.github.io/shiny_list
-            // We need to redirect to mavpacheater.github.io/tester_site_Secret/shiny_list
+        if (isRepoURL) {
+            // This is mavpacheater.github.io/tester_site_Secret/page_name
+            var pagePath = '/' + pathParts.slice(1).join('/');
+            pageName = pageNames[pagePath] || 'Arm Helper';
+            
+            document.getElementById('currentPath').textContent = pagePath;
+            document.getElementById('pageName').textContent = pageName;
+            
+            // Store the page path for restoration
+            sessionStorage.setItem('pathToRestore', pagePath + search + hash);
+            console.log('💾 Stored repo-based path for restoration:', pagePath + search + hash);
+            
+            // Redirect to the base repository URL
+            var baseURL = window.location.protocol + '//' + window.location.host + '/tester_site_Secret/';
+            console.log('🔄 Redirecting to repository base:', baseURL);
+            
+            setTimeout(function() {
+                window.location.replace(baseURL);
+            }, 1500);
+            
+        } else if (isDirectPageAccess) {
+            // This is mavpacheater.github.io/page_name (direct access without repo)
             var pagePath = '/' + pathParts[0];
             pageName = pageNames[pagePath] || 'Arm Helper';
             
@@ -148,6 +168,7 @@
             
             // Store the page path for restoration
             sessionStorage.setItem('pathToRestore', pagePath + search + hash);
+            console.log('💾 Stored direct path for restoration:', pagePath + search + hash);
             
             // Redirect to the correct repository URL
             var correctURL = window.location.protocol + '//' + window.location.host + '/tester_site_Secret' + pagePath + search + hash;
@@ -158,27 +179,14 @@
             }, 1500);
             
         } else {
-            // This is a repository-based access that failed
-            // Extract page path for display
-            var displayPath = currentPath;
-            if (pathParts.length > 1) {
-                var relativePath = '/' + pathParts.slice(1).join('/');
-                displayPath = relativePath;
-                pageName = pageNames[relativePath] || 'Arm Helper';
-            }
+            // Fallback for other cases
+            document.getElementById('currentPath').textContent = currentPath;
+            document.getElementById('pageName').textContent = 'Arm Helper';
             
-            document.getElementById('currentPath').textContent = displayPath;
-            document.getElementById('pageName').textContent = pageName;
+            sessionStorage.setItem('pathToRestore', '/' + search + hash);
             
-            // Store the relative path for restoration
-            var pathToStore = displayPath;
-            sessionStorage.setItem('pathToRestore', pathToStore + search + hash);
-            
-            console.log('💾 Stored path for restoration:', pathToStore + search + hash);
-            
-            // Build the correct base URL for repository
             var baseURL = window.location.protocol + '//' + window.location.host + '/tester_site_Secret/';
-            console.log('🔄 Redirecting to base URL:', baseURL);
+            console.log('🔄 Fallback redirect to:', baseURL);
             
             setTimeout(function() {
                 window.location.replace(baseURL);
