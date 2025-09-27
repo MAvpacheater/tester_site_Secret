@@ -447,60 +447,102 @@
     transform: translateY(-1px) rotate(90deg);
 }
 
-/* СТРОГИЙ КОНТРОЛЬ ВИДИМОСТІ МЕНЮ */
+/* МАКСИМАЛЬНО АГРЕСИВНИЙ КОНТРОЛЬ ВИДИМОСТІ МЕНЮ */
 
-/* За замовчуванням ВСЕ сховано */
+/* За замовчуванням ВСЕ ПОВНІСТЮ СХОВАНО */
 .mobile-menu-toggle,
 .sidebar,
 .sidebar-overlay,
-.static-menu {
+.static-menu,
+#staticMenu,
+.menu-top,
+.menu-bottom {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
 }
 
-/* Показувати ТІЛЬКИ для конкретних позицій меню */
+/* СТРОГЕ ПРАВИЛО: Показувати ТІЛЬКИ для конкретних позицій меню */
 
-/* LEFT Menu - показати тільки сайдбар */
+/* LEFT Menu - показати ТІЛЬКИ сайдбар елементи, сховати ВСІ статичні */
 body.menu-left .mobile-menu-toggle,
 body.menu-left .sidebar,
 body.menu-left .sidebar-overlay {
     display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1002 !important;
 }
 
-body.menu-left .static-menu {
+body.menu-left .static-menu,
+body.menu-left #staticMenu,
+body.menu-left .menu-top,
+body.menu-left .menu-bottom {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
 }
 
-/* RIGHT Menu - показати тільки сайдбар справа */
+/* RIGHT Menu - показати ТІЛЬКИ сайдбар елементи справа, сховати ВСІ статичні */
 body.menu-right .mobile-menu-toggle,
 body.menu-right .sidebar,
 body.menu-right .sidebar-overlay {
     display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1002 !important;
 }
 
-body.menu-right .static-menu {
+body.menu-right .static-menu,
+body.menu-right #staticMenu,
+body.menu-right .menu-top,
+body.menu-right .menu-bottom {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
 }
 
-/* UP Menu - показати тільки верхнє статичне меню */
-body.menu-up .static-menu.menu-top {
+/* UP Menu - показати ТІЛЬКИ верхнє статичне меню, сховати ВСІ сайдбар елементи */
+body.menu-up .static-menu.menu-top,
+body.menu-up #staticMenu.menu-top {
     display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1002 !important;
 }
 
 body.menu-up .mobile-menu-toggle,
 body.menu-up .sidebar,
-body.menu-up .sidebar-overlay {
+body.menu-up .sidebar-overlay,
+body.menu-up .static-menu.menu-bottom,
+body.menu-up #staticMenu.menu-bottom {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
 }
 
-/* DOWN Menu - показати тільки нижнє статичне меню */
-body.menu-down .static-menu.menu-bottom {
+/* DOWN Menu - показати ТІЛЬКИ нижнє статичне меню, сховати ВСІ сайдбар елементи */
+body.menu-down .static-menu.menu-bottom,
+body.menu-down #staticMenu.menu-bottom {
     display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1002 !important;
 }
 
 body.menu-down .mobile-menu-toggle,
 body.menu-down .sidebar,
-body.menu-down .sidebar-overlay {
+body.menu-down .sidebar-overlay,
+body.menu-down .static-menu.menu-top,
+body.menu-down #staticMenu.menu-top {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
 }
 
 /* Body padding adjustments */
