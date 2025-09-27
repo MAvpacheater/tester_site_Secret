@@ -294,26 +294,29 @@ function saveMenuPosition(position) {
     console.log(`Позицію меню збережено: ${position}`);
 }
 
-// Застосувати позицію меню з єдиністю меню
+// Застосувати позицію меню з ПОВНИМ контролем
 function applyMenuPosition(position) {
     if (!menuPositions[position]) {
         console.error(`Позицію меню ${position} не знайдено`);
         return;
     }
     
-    const body = document.body;
-    console.log(`🔄 Застосування позиції меню: ${position}`);
+    console.log(`🔄 ЗАСТОСУВАННЯ ПОЗИЦІЇ МЕНЮ: ${position}`);
     
-    // КРОК 1: Видалити ВСІ класи позицій меню
+    const body = document.body;
+    
+    // КРОК 1: ВИДАЛИТИ ВСІ класи позицій меню
     Object.keys(menuPositions).forEach(pos => {
         body.classList.remove(`menu-${pos}`);
         console.log(`❌ Видалено клас menu-${pos}`);
     });
     
-    // КРОК 2: Видалити ВСІ існуючі статичні меню
+    // КРОК 2: ВИДАЛИТИ ВСІ статичні меню
+    console.log('🗑️ Видаляю всі статичні меню...');
     removeStaticMenu();
     
-    // КРОК 3: Переконатися, що сайдбар закритий
+    // КРОК 3: ЗАКРИТИ сайдбар
+    console.log('🔒 Закриваю сайдбар...');
     const sidebar = document.getElementById('sidebar');
     if (sidebar) {
         sidebar.classList.remove('open');
@@ -323,19 +326,34 @@ function applyMenuPosition(position) {
         overlay.classList.remove('show');
     }
     
-    // КРОК 4: Додати ТІЛЬКИ новий клас позиції меню
+    // КРОК 4: ПРИМУСОВО перезапустити CSS
+    body.style.display = 'none';
+    body.offsetHeight; // Trigger reflow
+    body.style.display = '';
+    
+    // КРОК 5: ДОДАТИ новий клас позиції меню
     body.classList.add(`menu-${position}`);
     console.log(`✅ Додано клас menu-${position}`);
     
-    // КРОК 5: Створити статичне меню ТІЛЬКИ для up/down
+    // КРОК 6: СТВОРИТИ статичне меню ТІЛЬКИ для up/down
     if (position === 'up' || position === 'down') {
-        // Невелика затримка щоб CSS встиг застосуватися
+        console.log(`📱 Створюю статичне меню для позиції: ${position}`);
         setTimeout(() => {
             createStaticMenu(position);
+            // Переконатися що сайдбар схований
+            if (sidebar) sidebar.style.display = 'none';
+            if (overlay) overlay.style.display = 'none';
+        }, 100);
+    } else {
+        console.log(`📝 Позиція ${position} використовує сайдбар`);
+        // Для left/right позицій переконатися що статичного меню немає
+        setTimeout(() => {
+            const staticMenus = document.querySelectorAll('.static-menu');
+            staticMenus.forEach(menu => menu.remove());
         }, 50);
     }
     
-    console.log(`✅ Позицію меню застосовано: ${position}`);
+    console.log(`✅ ПОЗИЦІЮ МЕНЮ ЗАСТОСОВАНО: ${position}`);
 }
 
 // Створити статичне меню для верхніх/нижніх позицій з кнопкою налаштувань
@@ -544,10 +562,8 @@ function getTranslation(key, fallback) {
     return fallback || key;
 }
 
-// Оновити мову налаштувань
+// Оновити мову налаштувань з правильним заповненням тексту
 async function updateSettingsLanguage(lang = null) {
-    if (!settingsInitialized) return;
-    
     const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en');
     
     await loadSettingsTranslations();
@@ -559,22 +575,24 @@ async function updateSettingsLanguage(lang = null) {
     
     const translations = settingsTranslations[currentLang];
     
-    // Оновити заголовок
+    // Оновити заголовок сторінки
     const titleElement = document.querySelector('#settingsPage .settings-title');
     if (titleElement) {
         titleElement.textContent = translations.title;
+        console.log(`✅ Оновлено заголовок: ${translations.title}`);
     }
     
-    // Оновити заголовок секції фону
+    // Оновити заголовки секцій
     const backgroundSectionTitle = document.querySelector('#settingsPage [data-category="background"] .category-title span:last-child');
     if (backgroundSectionTitle) {
         backgroundSectionTitle.textContent = translations.background;
+        console.log(`✅ Оновлено секцію фону: ${translations.background}`);
     }
     
-    // Оновити заголовок секції меню
     const menuSectionTitle = document.querySelector('#settingsPage [data-category="menu"] .category-title span:last-child');
     if (menuSectionTitle) {
         menuSectionTitle.textContent = translations.menu;
+        console.log(`✅ Оновлено секцію меню: ${translations.menu}`);
     }
     
     // Оновити назви опцій фону
@@ -582,6 +600,7 @@ async function updateSettingsLanguage(lang = null) {
         const option = document.querySelector(`#settingsPage [data-background="${bg}"] .option-name`);
         if (option && translations[bg]) {
             option.textContent = translations[bg];
+            console.log(`✅ Оновлено опцію фону ${bg}: ${translations[bg]}`);
         }
     });
     
@@ -590,21 +609,40 @@ async function updateSettingsLanguage(lang = null) {
         const option = document.querySelector(`#settingsPage [data-position="${pos}"] .menu-option-name`);
         if (option && translations[pos]) {
             option.textContent = translations[pos];
+            console.log(`✅ Оновлено опцію позиції ${pos}: ${translations[pos]}`);
         }
     });
     
     console.log(`✅ Мову налаштувань оновлено до ${currentLang}`);
 }
 
-// Створити HTML налаштувань з заголовком
+// Створити HTML налаштувань з фіксованим текстом
 function createSettingsHTML() {
-    // Створити опції фону динамічно
+    // Базові переклади з settings.json
+    const baseTranslations = {
+        title: "⚙️ Settings",
+        background: "Background", 
+        menu: "Menu Position",
+        penguin: "Penguin",
+        game: "Game",
+        code: "Code", 
+        dodep: "Dodep",
+        prison: "Prison",
+        forest: "Forest",
+        up: "Top",
+        down: "Bottom", 
+        left: "Left",
+        right: "Right"
+    };
+    
+    // Створити опції фону з фіксованими назвами
     const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => {
         const config = backgroundOptions[bg];
+        const name = baseTranslations[bg] || bg.charAt(0).toUpperCase() + bg.slice(1);
         return `
             <div class="background-option" data-background="${bg}" onclick="changeBackground('${bg}')">
                 <div class="option-icon">${config.icon}</div>
-                <div class="option-name"><!-- Буде заповнено перекладом --></div>
+                <div class="option-name">${name}</div>
                 <div class="background-preview" style="background-image: url('${config.url}')"></div>
                 <div class="loading-indicator" style="display: none;">⏳</div>
             </div>
@@ -613,13 +651,13 @@ function createSettingsHTML() {
 
     return `
         <div class="settings-container">
-            <h1 class="settings-title">⚙️ Settings</h1>
+            <h1 class="settings-title">${baseTranslations.title}</h1>
             
             <div class="settings-section" data-category="background">
                 <div class="category-header collapsed" onclick="toggleSettingsCategory('background')">
                     <div class="category-title">
                         <span class="section-icon">🎨</span>
-                        <span>Background</span>
+                        <span>${baseTranslations.background}</span>
                     </div>
                     <span class="category-toggle">▼</span>
                 </div>
@@ -633,7 +671,7 @@ function createSettingsHTML() {
                 <div class="category-header collapsed" onclick="toggleSettingsCategory('menu')">
                     <div class="category-title">
                         <span class="section-icon">📱</span>
-                        <span>Menu Position</span>
+                        <span>${baseTranslations.menu}</span>
                     </div>
                     <span class="category-toggle">▼</span>
                 </div>
@@ -641,22 +679,22 @@ function createSettingsHTML() {
                 <div class="menu-options collapsed">
                     <div class="menu-option" data-position="up" onclick="changeMenuPosition('up')">
                         <div class="menu-option-icon">⬆️</div>
-                        <div class="menu-option-name">Top</div>
+                        <div class="menu-option-name">${baseTranslations.up}</div>
                     </div>
                     
                     <div class="menu-option" data-position="left" onclick="changeMenuPosition('left')">
                         <div class="menu-option-icon">⬅️</div>
-                        <div class="menu-option-name">Left</div>
+                        <div class="menu-option-name">${baseTranslations.left}</div>
                     </div>
                     
                     <div class="menu-option" data-position="right" onclick="changeMenuPosition('right')">
                         <div class="menu-option-icon">➡️</div>
-                        <div class="menu-option-name">Right</div>
+                        <div class="menu-option-name">${baseTranslations.right}</div>
                     </div>
                     
                     <div class="menu-option" data-position="down" onclick="changeMenuPosition('down')">
                         <div class="menu-option-icon">⬇️</div>
-                        <div class="menu-option-name">Bottom</div>
+                        <div class="menu-option-name">${baseTranslations.down}</div>
                     </div>
                 </div>
             </div>
@@ -664,7 +702,7 @@ function createSettingsHTML() {
     `;
 }
 
-// Ініціалізувати сторінку налаштувань
+// Ініціалізувати сторінку налаштувань з гарантованим текстом
 async function initializeSettings() {
     if (settingsInitialized) {
         console.log('⚠️ Налаштування вже ініціалізовано');
@@ -682,14 +720,18 @@ async function initializeSettings() {
     // Завантажити стан категорій
     loadCategoriesState();
     
-    // Завантажити переклади
+    // Завантажити переклади ПЕРЕД створенням HTML
     await loadSettingsTranslations();
     
-    // Встановити HTML контент
+    // Встановити HTML контент з початковим текстом
     settingsPage.innerHTML = createSettingsHTML();
+    console.log('✅ HTML контент створено');
     
-    // ВАЖЛИВО: Оновити мову ПІСЛЯ створення HTML, щоб заповнити текст
-    await updateSettingsLanguage();
+    // Негайно оновити переклади
+    setTimeout(async () => {
+        await updateSettingsLanguage();
+        console.log('✅ Переклади застосовано');
+    }, 100);
     
     // Застосувати поточний фон
     const currentBg = getCurrentBackground();
@@ -705,7 +747,7 @@ async function initializeSettings() {
     applyCategoriesState();
     
     settingsInitialized = true;
-    console.log('✅ Налаштування ініціалізовано');
+    console.log('✅ Налаштування повністю ініціалізовано');
 }
 
 // Застосувати фон і позицію меню при запуску додатка
