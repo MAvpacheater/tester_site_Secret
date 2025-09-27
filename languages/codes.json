@@ -10,14 +10,13 @@
       "available": "Available", 
       "progress": "Progress"
     },
-        "codes": [
+      "codes": [
       {
         "code": "playfulmines",
         "hours": 72,
         "extras": "NEW",
         "isNew": true
       },
-    "codes": [
       {
         "code": "desertmines",
         "hours": 72
