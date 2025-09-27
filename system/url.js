@@ -17,27 +17,40 @@ class URLRouter {
         const host = window.location.host;
         const pathname = window.location.pathname;
         
-        // For GitHub Pages with repository name
+        console.log('🔍 Detecting base URL from:', { protocol, host, pathname });
+        
+        // For GitHub Pages
         if (host.includes('.github.io')) {
-            // Extract repository name from pathname
             const pathParts = pathname.split('/').filter(part => part);
             
+            // Check if this is a repository-based GitHub Pages (not username.github.io root)
             if (pathParts.length > 0) {
-                // If we have path parts, the first one is likely the repository name
-                const repoName = pathParts[0];
-                return `${protocol}//${host}/${repoName}/`;
-            } else {
-                // Root repository (username.github.io)
-                return `${protocol}//${host}/`;
+                // For URLs like mavpacheater.github.io/tester_site_Secret/something
+                // We need to check if the first part is actually a repository name
+                const potentialRepo = pathParts[0];
+                
+                // Common repository indicators or check against known repo name
+                if (potentialRepo === 'tester_site_Secret' || 
+                    potentialRepo.includes('_') || 
+                    potentialRepo.includes('-') ||
+                    pathParts.length === 1) { // If only one path part, it's likely a repo
+                    
+                    const baseUrl = `${protocol}//${host}/${potentialRepo}/`;
+                    console.log('✅ Detected repository-based GitHub Pages:', baseUrl);
+                    return baseUrl;
+                }
             }
+            
+            // Root GitHub Pages (username.github.io)
+            const baseUrl = `${protocol}//${host}/`;
+            console.log('✅ Detected root GitHub Pages:', baseUrl);
+            return baseUrl;
         }
         
         // For other platforms (Vercel, Netlify, etc.)
-        if (host.includes('.vercel.app') || host.includes('.netlify.app')) {
-            return `${protocol}//${host}/`;
-        }
-        
-        return `${protocol}//${host}/`;
+        const baseUrl = `${protocol}//${host}/`;
+        console.log('✅ Detected standard hosting:', baseUrl);
+        return baseUrl;
     }
 
     setupRoutes() {
@@ -156,10 +169,15 @@ class URLRouter {
         // Build the complete URL with base path
         let newURL;
         if (path === '/') {
-            newURL = this.baseURL;
+            // For root path, use base URL as is (it already has trailing slash)
+            newURL = this.baseURL.endsWith('/') ? this.baseURL.slice(0, -1) : this.baseURL;
         } else {
-            newURL = this.baseURL + path.substring(1); // Remove leading slash from path
+            // For other paths, append to base URL (remove trailing slash from base, path starts with /)
+            const cleanBase = this.baseURL.endsWith('/') ? this.baseURL.slice(0, -1) : this.baseURL;
+            newURL = cleanBase + path;
         }
+        
+        console.log(`🔗 Building URL: page="${page}", path="${path}", base="${this.baseURL}", result="${newURL}"`);
         
         const currentURL = window.location.href;
 
