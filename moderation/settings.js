@@ -48,7 +48,7 @@ const backgroundOptions = {
     },
     forest: {
         icon: '🌲',
-        filename: 'forest.png',
+        filename: 'forest.jpg',
         get url() { return getGitHubImageURL(this.filename); }
     }
 };
