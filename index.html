@@ -5,28 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arm Helper</title>
     
-    <!-- Handle redirect from 404.html -->
+    <!-- Handle redirect from 404.html - Improved URL handling -->
     <script>
         (function() {
-            var redirect = sessionStorage.pathToRestore;
-            delete sessionStorage.pathToRestore;
+            console.log('🔍 Checking for URL restoration...');
             
+            // Priority 1: Check for URL restoration from auto-reload
+            const savedURLData = sessionStorage.getItem('urlBeforeReload');
+            if (savedURLData) {
+                try {
+                    const urlData = JSON.parse(savedURLData);
+                    const timeDiff = Date.now() - urlData.timestamp;
+                    
+                    if (timeDiff < 15000) { // Within 15 seconds
+                        console.log('🔄 Auto-reload URL restoration detected:', urlData.fullURL);
+                        
+                        // Don't process 404 redirects when auto-reload is happening
+                        if (sessionStorage.getItem('pathToRestore')) {
+                            sessionStorage.removeItem('pathToRestore');
+                            console.log('🗑️ Cleared pathToRestore due to auto-reload');
+                        }
+                        
+                        // Let the reload system handle URL restoration
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Invalid URL restore data, cleaning up');
+                    sessionStorage.removeItem('urlBeforeReload');
+                }
+            }
+            
+            // Priority 2: Handle 404 redirect
+            const redirect = sessionStorage.pathToRestore;
             if (redirect && redirect !== '/') {
-                console.log('🔄 Restoring path from 404:', redirect);
+                console.log('🔄 404 redirect restoration detected:', redirect);
                 
                 // Build the correct URL with base path
-                var protocol = window.location.protocol;
-                var host = window.location.host;
-                var basePath = '';
+                const protocol = window.location.protocol;
+                const host = window.location.host;
+                let basePath = '';
                 
                 if (host.includes('.github.io') && host === 'mavpacheater.github.io') {
                     basePath = '/tester_site_Secret';
                 }
                 
-                var fullPath = basePath + redirect;
+                const fullPath = basePath + redirect;
                 console.log('🎯 Full restored path:', fullPath);
                 
+                // Use replaceState to avoid history pollution
                 history.replaceState(null, null, fullPath);
+                
+                // Clean up
+                delete sessionStorage.pathToRestore;
             }
         })();
     </script>
@@ -180,7 +210,7 @@
         
         function initializeSystems() {
             try {
-                // Initialize URL routing
+                // Initialize URL routing FIRST
                 if (typeof initURLRouting === 'function') {
                     initURLRouting();
                     console.log('✅ URL routing initialized');
@@ -198,10 +228,10 @@
                     console.log('✅ GitHub auto-reload initialized');
                 }
                 
-                // Handle URL routing
+                // Handle URL routing with improved coordination
                 setTimeout(() => {
                     handleInitialRouting();
-                }, 500);
+                }, 300); // Reduced delay for faster response
                 
             } catch (error) {
                 console.error('❌ Error initializing systems:', error);
@@ -209,42 +239,60 @@
         }
         
         function handleInitialRouting() {
-            const currentPath = window.location.pathname;
-            console.log('🔍 Current path:', currentPath);
+            console.log('🎯 Starting initial routing...');
             
-            // Simple path-to-page mapping
-            const pathMappings = {
-                '/settings/': 'settings',
-                '/secret_pets/': 'secret', 
-                '/potions_food/': 'potions',
-                '/worlds_info/': 'worlds',
-                '/help_guide/': 'help',
-                '/peoples_thanks/': 'peoples',
-                '/arm_calculator/': 'arm',
-                '/grind_calculator/': 'grind',
-                '/boosts_info/': 'boosts',
-                '/shiny_list/': 'shiny',
-                '/codes_list/': 'codes',
-                '/aura_info/': 'aura',
-                '/trainer_info/': 'trainer',
-                '/charms_info/': 'charms'
-            };
+            // Check if this is an auto-reload restoration
+            const urlData = sessionStorage.getItem('urlBeforeReload');
+            if (urlData) {
+                console.log('🔄 Auto-reload detected, letting reload system handle routing');
+                // Let the reload system handle this in handlePageRestoration
+                return;
+            }
             
+            // Normal routing
             let targetPage = 'calculator'; // default
             
-            for (const [path, page] of Object.entries(pathMappings)) {
-                if (currentPath.includes(path)) {
-                    console.log(`🎯 Found page match: ${path} -> ${page}`);
-                    targetPage = page;
-                    break;
+            if (typeof urlRouter === 'function') {
+                const router = urlRouter();
+                if (router) {
+                    targetPage = router.getPageFromURL();
+                    console.log(`🎯 Page from URL: ${targetPage}`);
+                }
+            } else {
+                // Fallback manual parsing
+                const currentPath = window.location.pathname;
+                console.log(`🔍 Current path: ${currentPath}`);
+                
+                const pathMappings = {
+                    '/settings/': 'settings',
+                    '/secret_pets/': 'secret', 
+                    '/potions_food/': 'potions',
+                    '/worlds_info/': 'worlds',
+                    '/help_guide/': 'help',
+                    '/peoples_thanks/': 'peoples',
+                    '/arm_calculator/': 'arm',
+                    '/grind_calculator/': 'grind',
+                    '/boosts_info/': 'boosts',
+                    '/shiny_list/': 'shiny',
+                    '/codes_list/': 'codes',
+                    '/aura_info/': 'aura',
+                    '/trainer_info/': 'trainer',
+                    '/charms_info/': 'charms'
+                };
+                
+                for (const [path, page] of Object.entries(pathMappings)) {
+                    if (currentPath.includes(path)) {
+                        console.log(`🎯 Found page match: ${path} -> ${page}`);
+                        targetPage = page;
+                        break;
+                    }
                 }
             }
             
+            // Switch to the target page
             if (typeof switchPage === 'function') {
-                setTimeout(() => {
-                    switchPage(targetPage);
-                    console.log(`✅ Switched to page: ${targetPage}`);
-                }, 300);
+                console.log(`🔀 Switching to initial page: ${targetPage}`);
+                switchPage(targetPage);
             }
         }
         
@@ -297,6 +345,29 @@
             console.error('❌ JavaScript Error:', e.error);
         });
         
+        // Enhanced beforeunload handler to save current state for manual refreshes
+        window.addEventListener('beforeunload', function() {
+            // Only save for manual refresh, not auto-reload
+            if (!sessionStorage.getItem('urlBeforeReload')) {
+                const currentURL = window.location.href;
+                const currentPathname = window.location.pathname;
+                const currentSearch = window.location.search;
+                const currentHash = window.location.hash;
+                
+                const urlData = {
+                    fullURL: currentURL,
+                    pathname: currentPathname,
+                    search: currentSearch,
+                    hash: currentHash,
+                    timestamp: Date.now(),
+                    type: 'manual'
+                };
+                
+                sessionStorage.setItem('manualRefreshURL', JSON.stringify(urlData));
+                console.log('💾 Saved URL for manual refresh:', urlData);
+            }
+        });
+        
         // Debug function
         window.checkLoadedModules = function() {
             console.log('=== LOADED MODULES CHECK ===');
@@ -305,6 +376,7 @@
             console.log('initURLRouting:', typeof initURLRouting);
             console.log('initGitHubAutoReload:', typeof initGitHubAutoReload);
             console.log('App content element:', document.getElementById('app-content') ? 'Found' : 'Missing');
+            console.log('URL Router:', typeof urlRouter === 'function' ? urlRouter() : 'Not available');
             console.log('=========================');
         };
     </script>
