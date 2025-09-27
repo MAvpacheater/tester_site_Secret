@@ -88,36 +88,67 @@
 <body>
     <div class="redirect-container">
         <div class="loading-icon">🚀</div>
-        <div class="redirect-title">Redirecting to Arm Helper</div>
+        <div class="redirect-title">Redirecting to <span id="pageName">Arm Helper</span></div>
         <div class="redirect-subtitle">
-            Loading your requested page...<br>
             <span id="currentPath"></span>
         </div>
         <div class="progress-bar">
             <div class="progress-fill"></div>
         </div>
         <div class="tech-info">
-            GitHub Pages SPA Routing
+            Loading...
         </div>
     </div>
 
     <script>
-        // Display current path
-        document.getElementById('currentPath').textContent = window.location.pathname;
+        // Page name mappings
+        var pageNames = {
+            '/shiny_list': 'Shiny Stats',
+            '/arm_calculator': 'Arm Calculator',
+            '/grind_calculator': 'Grind Calculator',
+            '/boosts_info': 'Boosts Info',
+            '/secret_pets': 'Secret Pets',
+            '/codes_list': 'Codes List',
+            '/aura_info': 'Aura Info',
+            '/trainer_info': 'Trainer Info',
+            '/charms_info': 'Charms Info',
+            '/potions_food': 'Potions & Food',
+            '/worlds_info': 'Worlds Info',
+            '/settings': 'Settings',
+            '/help_guide': 'Help Guide',
+            '/peoples_thanks': 'Thanks & Credits'
+        };
         
-        // GitHub Pages SPA redirect script - Fixed for repository-based URLs
+        // Display current path and determine page name
         var currentPath = window.location.pathname;
-        var search = window.location.search;
-        var hash = window.location.hash;
+        var pathParts = currentPath.split('/').filter(part => part);
+        var pageName = 'Arm Helper';
+        
+        // Extract page path for display
+        var displayPath = currentPath;
+        if (pathParts.length > 1) {
+            var relativePath = '/' + pathParts.slice(1).join('/');
+            displayPath = relativePath;
+            pageName = pageNames[relativePath] || 'Arm Helper';
+        } else if (pathParts.length === 1) {
+            var singlePath = '/' + pathParts[0];
+            displayPath = singlePath;
+            pageName = pageNames[singlePath] || 'Arm Helper';
+        }
+        
+        document.getElementById('currentPath').textContent = displayPath;
+        document.getElementById('pageName').textContent = pageName;
         
         console.log('🔄 404 Redirect triggered for:', currentPath);
         
         // Store the original path for restoration (keep the relative path)
         // For URLs like /tester_site_Secret/shiny_list, we want to store /shiny_list
         var pathToStore = currentPath;
+        var search = window.location.search;
+        var hash = window.location.hash;
         
         // If this is a repository-based URL, extract the relative path
-        if (host.includes('.github.io') && pathParts.length > 1) {
+        if (window.location.host.includes('.github.io') && pathParts.length > 1) {
             var potentialRepo = pathParts[0];
             if (potentialRepo === 'tester_site_Secret' || 
                 potentialRepo.includes('_') || 
@@ -135,7 +166,6 @@
         // Build the correct base URL for GitHub Pages
         var protocol = window.location.protocol;
         var host = window.location.host;
-        var pathParts = currentPath.split('/').filter(part => part);
         
         var baseURL;
         if (host.includes('.github.io')) {
