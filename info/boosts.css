@@ -2,9 +2,9 @@
 
 .boosts-page {
     display: none;
-    transform: scale(2);
+    transform: scale(1.5);
     transform-origin: top left;
-    width: 50%;
+    width: 66.67%;
 }
 
 .boosts-page.active {
