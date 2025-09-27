@@ -314,7 +314,7 @@
 }
 
 /* Menu Position Styles */
-/* Top Menu - Icon Only with Fixed Width */
+/* Top Menu - Icon Only with Fixed Width + Settings Button */
 .menu-top {
     position: fixed;
     top: 0;
@@ -330,7 +330,7 @@
     z-index: 1002;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     padding: 0 20px;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
     overflow-x: auto;
@@ -386,7 +386,52 @@
     transform: translateY(-1px);
 }
 
-/* Bottom Menu - Icon Only with Fixed Width */
+/* Settings Container in Static Menu */
+.settings-container-static {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    padding-left: 20px;
+}
+
+.settings-btn-static {
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.3) 0%, 
+        rgba(62, 39, 35, 0.4) 100%);
+    border: 2px solid #8B4513;
+    color: #F5DEB3;
+    padding: 8px 10px;
+    font-size: 1.8em;
+    width: 50px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.settings-btn-static:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.3) 0%, 
+        rgba(139, 69, 19, 0.6) 100%);
+    border-color: #FFD700;
+    color: #FFD700;
+    transform: translateY(-2px) scale(1.05) rotate(90deg);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+}
+
+.settings-btn-static.active {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-color: #8B4513;
+    color: #2F1B14;
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    transform: translateY(-1px) rotate(90deg);
+}
+
+/* Bottom Menu - Icon Only with Fixed Width + Settings Button */
 .menu-bottom {
     position: fixed;
     bottom: 0;
@@ -402,7 +447,7 @@
     z-index: 1002;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     padding: 0 20px;
     box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.6);
     overflow-x: auto;
@@ -456,6 +501,44 @@
     color: #2F1B14;
     box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
     transform: translateY(-1px);
+}
+
+/* Apply same settings button styles to bottom menu */
+.menu-bottom .settings-btn-static {
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.3) 0%, 
+        rgba(62, 39, 35, 0.4) 100%);
+    border: 2px solid #8B4513;
+    color: #F5DEB3;
+    padding: 8px 10px;
+    font-size: 1.8em;
+    width: 50px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.menu-bottom .settings-btn-static:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.3) 0%, 
+        rgba(139, 69, 19, 0.6) 100%);
+    border-color: #FFD700;
+    color: #FFD700;
+    transform: translateY(-2px) scale(1.05) rotate(90deg);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+}
+
+.menu-bottom .settings-btn-static.active {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-color: #8B4513;
+    color: #2F1B14;
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    transform: translateY(-1px) rotate(90deg);
 }
 
 /* Default state - hide static menu unless specifically shown */
@@ -687,7 +770,8 @@ body.menu-right .mobile-menu-toggle {
     }
     
     .menu-top .nav-btn,
-    .menu-bottom .nav-btn {
+    .menu-bottom .nav-btn,
+    .settings-btn-static {
         padding: 6px 8px;
         font-size: 1.6em;
         width: 44px;
@@ -699,7 +783,25 @@ body.menu-right .mobile-menu-toggle {
     }
     
     body.menu-bottom {
-        padding-bottom: 70px;
+        padding-bottom: 65px;
+    }
+    
+    body.menu-top .settings-gear-btn {
+        top: 5px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+    
+    body.menu-bottom .settings-gear-btn {
+        bottom: 60px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+}bottom: 70px;
     }
     
     body.menu-top .settings-gear-btn {
@@ -796,7 +898,8 @@ body.menu-right .mobile-menu-toggle {
     }
     
     .menu-top .nav-btn,
-    .menu-bottom .nav-btn {
+    .menu-bottom .nav-btn,
+    .settings-btn-static {
         padding: 5px 7px;
         font-size: 1.4em;
         width: 40px;
@@ -808,22 +911,4 @@ body.menu-right .mobile-menu-toggle {
     }
     
     body.menu-bottom {
-        padding-bottom: 65px;
-    }
-    
-    body.menu-top .settings-gear-btn {
-        top: 5px;
-        right: 10px;
-        width: 35px;
-        height: 35px;
-        font-size: 18px;
-    }
-    
-    body.menu-bottom .settings-gear-btn {
-        bottom: 60px;
-        right: 10px;
-        width: 35px;
-        height: 35px;
-        font-size: 18px;
-    }
-}
+        padding-
