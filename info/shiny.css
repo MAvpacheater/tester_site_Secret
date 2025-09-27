@@ -1,7 +1,9 @@
-/* Shiny Stats Page Styles - Mining Theme */
+/* Shiny Stats Page Styles - Mining Theme - Wider Layout */
 
 .shiny-page {
     display: none;
+    width: 200%;
+    max-width: none;
 }
 
 .shiny-page.active {
@@ -24,14 +26,15 @@
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     max-height: 400px;
     overflow-y: auto;
     padding-right: 10px;
     margin-bottom: 30px;
+    width: 100%;
 }
 
 .stats-grid::-webkit-scrollbar {
@@ -52,7 +55,7 @@
 .stat-row {
     display: flex;
     justify-content: space-between;
-    padding: 12px 16px;
+    padding: 20px 25px;
     background: linear-gradient(135deg, rgba(139, 69, 19, 0.6), rgba(101, 67, 33, 0.7));
     border-radius: 10px;
     transition: all 0.3s ease;
@@ -62,6 +65,8 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
+    min-height: 60px;
+    align-items: center;
 }
 
 .stat-row::before {
@@ -104,6 +109,7 @@
     font-family: 'Orbitron', monospace;
     position: relative;
     z-index: 1;
+    font-size: 1.1em;
 }
 
 .right-value {
@@ -112,9 +118,40 @@
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     position: relative;
     z-index: 1;
+    font-size: 1.1em;
 }
 
 /* Mobile Styles */
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+}
+
+@media (max-width: 900px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .shiny-page {
+        width: 100%;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .stat-row {
+        padding: 15px 20px;
+        min-height: 50px;
+    }
+}
+
 @media (max-width: 480px) {
     .shiny-page .title {
         font-size: 2em;
@@ -129,6 +166,7 @@
     
     .stat-row {
         padding: 10px 14px;
+        min-height: 45px;
     }
     
     .stat-row:hover {
