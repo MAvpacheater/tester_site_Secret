@@ -124,87 +124,66 @@
         var pathParts = currentPath.split('/').filter(part => part);
         var pageName = 'Arm Helper';
         
-        // Extract page path for display
-        var displayPath = currentPath;
-        if (pathParts.length > 1) {
-            var relativePath = '/' + pathParts.slice(1).join('/');
-            displayPath = relativePath;
-            pageName = pageNames[relativePath] || 'Arm Helper';
-        } else if (pathParts.length === 1) {
-            var singlePath = '/' + pathParts[0];
-            displayPath = singlePath;
-            pageName = pageNames[singlePath] || 'Arm Helper';
-        }
-        
-        document.getElementById('currentPath').textContent = displayPath;
-        document.getElementById('pageName').textContent = pageName;
-        
-        console.log('🔄 404 Redirect triggered for:', currentPath);
-        
-        // Store the original path for restoration (keep the relative path)
-        // For URLs like /tester_site_Secret/shiny_list, we want to store /shiny_list
-        var pathToStore = currentPath;
+        // Display current path and determine page name
+        var currentPath = window.location.pathname;
         var search = window.location.search;
         var hash = window.location.hash;
+        var pathParts = currentPath.split('/').filter(part => part);
+        var pageName = 'Arm Helper';
         
-        // If this is a repository-based URL, extract the relative path
-        if (window.location.host.includes('.github.io') && pathParts.length > 1) {
-            var potentialRepo = pathParts[0];
-            if (potentialRepo === 'tester_site_Secret' || 
-                potentialRepo.includes('_') || 
-                potentialRepo.includes('-')) {
-                // Remove the repository name from the path
-                pathToStore = '/' + pathParts.slice(1).join('/');
-            }
-        }
+        console.log('🔄 404 Redirect triggered for:', currentPath);
+        console.log('🔍 Path parts:', pathParts);
         
-        var fullOriginalURL = pathToStore + search + hash;
-        sessionStorage.setItem('pathToRestore', fullOriginalURL);
+        // Determine if this is a direct access to a page (without repository path)
+        var isDirectPageAccess = pathParts.length === 1 && pageNames['/' + pathParts[0]];
         
-        console.log('💾 Stored path for restoration:', fullOriginalURL);
-        
-        // Build the correct base URL for GitHub Pages
-        var protocol = window.location.protocol;
-        var host = window.location.host;
-        
-        var baseURL;
-        if (host.includes('.github.io')) {
-            // For GitHub Pages, we need to detect if this is repository-based
-            if (pathParts.length > 0) {
-                var potentialRepo = pathParts[0];
-                
-                // Check if this looks like a repository name
-                // Repository names often contain underscores, hyphens, or are known names
-                if (potentialRepo === 'tester_site_Secret' || 
-                    potentialRepo.includes('_') || 
-                    potentialRepo.includes('-') ||
-                    // Add other repository detection logic if needed
-                    host === 'mavpacheater.github.io') {
-                    
-                    baseURL = protocol + '//' + host + '/' + potentialRepo + '/';
-                    console.log('🎯 Detected repository-based GitHub Pages:', baseURL);
-                } else {
-                    // Fallback to root
-                    baseURL = protocol + '//' + host + '/';
-                    console.log('🏠 Using root GitHub Pages:', baseURL);
-                }
-            } else {
-                // No path parts, use root
-                baseURL = protocol + '//' + host + '/';
-                console.log('🏠 Using root GitHub Pages (no path):', baseURL);
-            }
+        if (isDirectPageAccess) {
+            // This is a direct access like mavpacheater.github.io/shiny_list
+            // We need to redirect to mavpacheater.github.io/tester_site_Secret/shiny_list
+            var pagePath = '/' + pathParts[0];
+            pageName = pageNames[pagePath] || 'Arm Helper';
+            
+            document.getElementById('currentPath').textContent = pagePath;
+            document.getElementById('pageName').textContent = pageName;
+            
+            // Store the page path for restoration
+            sessionStorage.setItem('pathToRestore', pagePath + search + hash);
+            
+            // Redirect to the correct repository URL
+            var correctURL = window.location.protocol + '//' + window.location.host + '/tester_site_Secret' + pagePath + search + hash;
+            console.log('🎯 Redirecting to correct repository URL:', correctURL);
+            
+            setTimeout(function() {
+                window.location.replace(correctURL);
+            }, 1500);
+            
         } else {
-            // For other platforms
-            baseURL = protocol + '//' + host + '/';
-            console.log('🌐 Using standard hosting:', baseURL);
+            // This is a repository-based access that failed
+            // Extract page path for display
+            var displayPath = currentPath;
+            if (pathParts.length > 1) {
+                var relativePath = '/' + pathParts.slice(1).join('/');
+                displayPath = relativePath;
+                pageName = pageNames[relativePath] || 'Arm Helper';
+            }
+            
+            document.getElementById('currentPath').textContent = displayPath;
+            document.getElementById('pageName').textContent = pageName;
+            
+            // Store the relative path for restoration
+            var pathToStore = displayPath;
+            sessionStorage.setItem('pathToRestore', pathToStore + search + hash);
+            
+            console.log('💾 Stored path for restoration:', pathToStore + search + hash);
+            
+            // Build the correct base URL for repository
+            var baseURL = window.location.protocol + '//' + window.location.host + '/tester_site_Secret/';
+            console.log('🔄 Redirecting to base URL:', baseURL);
+            
+            setTimeout(function() {
+                window.location.replace(baseURL);
+            }, 1500);
         }
-        
-        console.log('🔄 Final redirect URL:', baseURL);
-        
-        // Use replace to avoid infinite loops
-        setTimeout(function() {
-            window.location.replace(baseURL);
-        }, 1500);
     </script>
 </body>
 </html>
