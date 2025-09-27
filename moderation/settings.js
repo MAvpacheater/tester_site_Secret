@@ -643,14 +643,6 @@ function createSettingsHTML() {
                 </div>
             </div>
             
-            <div class="reset-section">
-                <button class="reset-btn" onclick="resetSettings()"><!-- Буде заповнено перекладом --></button>
-            </div>
-            
-            <div class="github-info">
-                <p>🖼️ Зображення завантажуються з GitHub: <br>
-                <code>${GITHUB_CONFIG.user}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.imagePath}</code></p>
-            </div>
         </div>
     `;
 }
