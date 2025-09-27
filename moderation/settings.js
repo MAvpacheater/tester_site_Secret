@@ -1,4 +1,4 @@
-// Налаштування - Керування фоном і позицією меню з згортаними категоріями
+// Налаштування - Керування фоном і позицією меню з гарантованим одним меню
 let settingsInitialized = false;
 let settingsTranslations = null;
 let categoriesState = {
@@ -73,7 +73,7 @@ const menuPositions = {
     }
 };
 
-// Конфігурація елементів меню з іконками (БЕЗ налаштувань - вони тепер в сайдбарі)
+// Конфігурація елементів меню з іконками
 const menuItems = [
     { page: 'calculator', icon: '🐾', title: 'Pet Calculator' },
     { page: 'arm', icon: '💪', title: 'Arm Calculator' },
@@ -90,8 +90,231 @@ const menuItems = [
     { page: 'updates', icon: '📝', title: 'Updates' },
     { page: 'help', icon: '🆘', title: 'Help' },
     { page: 'peoples', icon: '🙏', title: 'Peoples' }
-    // Налаштування видалено з топ/боттом меню, оскільки вони тепер в сайдбарі
 ];
+
+// НОВА СИСТЕМА УПРАВЛІННЯ МЕНЮ - ГАРАНТУЄ ЛИШЕ ОДНЕ МЕНЮ
+class MenuManager {
+    constructor() {
+        this.currentMenuType = null;
+        this.initialized = false;
+    }
+
+    // Повністю очистити ВСІ меню з DOM
+    clearAllMenus() {
+        console.log('🧹 MenuManager: Очищення ВСІХ меню...');
+        
+        // Видалити всі статичні меню
+        const staticMenus = document.querySelectorAll('.static-menu, #staticMenu, .menu-top, .menu-bottom');
+        staticMenus.forEach(menu => {
+            if (!menu.classList.contains('sidebar')) { // Не чіпаємо сайдбар
+                menu.remove();
+                console.log(`🗑️ Видалено статичне меню:`, menu.className || menu.id);
+            }
+        });
+
+        // Закрити та сховати сайдбар
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        
+        if (sidebar) {
+            sidebar.classList.remove('open');
+            sidebar.style.display = 'none';
+            console.log('🔒 Сайдбар закрито та сховано');
+        }
+        
+        if (overlay) {
+            overlay.classList.remove('show');
+            overlay.style.display = 'none';
+            console.log('🔒 Overlay сховано');
+        }
+        
+        if (mobileToggle) {
+            mobileToggle.style.display = 'none';
+            console.log('🔒 Mobile toggle сховано');
+        }
+
+        // Очистити всі класи позицій меню з body
+        const body = document.body;
+        Object.keys(menuPositions).forEach(pos => {
+            body.classList.remove(`menu-${pos}`);
+        });
+        
+        console.log('✅ MenuManager: ВСІ меню очищено');
+    }
+
+    // Показати тільки вказаний тип меню
+    showOnlyMenu(menuType) {
+        console.log(`🎯 MenuManager: Показ ЛИШЕ меню типу: ${menuType}`);
+        
+        // Спочатку очистити все
+        this.clearAllMenus();
+        
+        // Встановити клас body для нового типу меню
+        document.body.classList.add(`menu-${menuType}`);
+        
+        // Показати відповідні елементи в залежності від типу
+        switch(menuType) {
+            case 'left':
+            case 'right':
+                this.showSidebarMenu(menuType);
+                break;
+            case 'up':
+            case 'down':
+                this.showStaticMenu(menuType);
+                break;
+            default:
+                console.error(`❌ Невідомий тип меню: ${menuType}`);
+                return;
+        }
+        
+        this.currentMenuType = menuType;
+        console.log(`✅ MenuManager: Активний тип меню встановлено: ${menuType}`);
+    }
+
+    // Показати сайдбар меню (left/right)
+    showSidebarMenu(position) {
+        console.log(`📱 MenuManager: Показ сайдбар меню: ${position}`);
+        
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        
+        if (sidebar) {
+            sidebar.style.display = 'flex';
+            
+            // Встановити позицію сайдбара
+            if (position === 'right') {
+                sidebar.style.left = 'auto';
+                sidebar.style.right = '-320px';
+            } else {
+                sidebar.style.left = '-320px';
+                sidebar.style.right = 'auto';
+            }
+            
+            console.log(`✅ Сайдбар налаштовано для позиції: ${position}`);
+        }
+        
+        if (overlay) {
+            overlay.style.display = 'block';
+        }
+        
+        if (mobileToggle) {
+            mobileToggle.style.display = 'block';
+            
+            // Встановити позицію toggle кнопки
+            if (position === 'right') {
+                mobileToggle.style.left = 'auto';
+                mobileToggle.style.right = '20px';
+            } else {
+                mobileToggle.style.left = '20px';
+                mobileToggle.style.right = 'auto';
+            }
+        }
+    }
+
+    // Показати статичне меню (up/down)
+    showStaticMenu(position) {
+        console.log(`📊 MenuManager: Показ статичного меню: ${position}`);
+        
+        // Створити статичне меню
+        this.createStaticMenu(position);
+        
+        // Встановити правильний padding для body
+        if (position === 'up') {
+            document.body.style.paddingTop = '80px';
+            document.body.style.paddingBottom = '';
+        } else if (position === 'down') {
+            document.body.style.paddingBottom = '80px';
+            document.body.style.paddingTop = '';
+        }
+    }
+
+    // Створити статичне меню
+    createStaticMenu(position) {
+        console.log(`🔨 MenuManager: Створення статичного меню для: ${position}`);
+        
+        const menuClass = position === 'up' ? 'menu-top' : 'menu-bottom';
+        const staticMenu = document.createElement('div');
+        staticMenu.className = `static-menu ${menuClass}`;
+        staticMenu.id = 'staticMenu';
+        
+        // Створити контейнер навігаційних кнопок
+        const navButtons = document.createElement('div');
+        navButtons.className = 'nav-buttons';
+        
+        // Створити кнопки для всіх елементів меню
+        menuItems.forEach(item => {
+            const btn = document.createElement('button');
+            btn.className = 'nav-btn';
+            btn.dataset.page = item.page;
+            btn.title = item.title;
+            btn.textContent = item.icon;
+            
+            btn.onclick = () => {
+                if (typeof window.switchPage === 'function') {
+                    window.switchPage(item.page);
+                }
+                this.updateStaticMenuActiveState(item.page);
+            };
+            
+            navButtons.appendChild(btn);
+        });
+        
+        // Створити кнопку налаштувань
+        const settingsBtn = document.createElement('button');
+        settingsBtn.className = 'nav-btn settings-btn-static';
+        settingsBtn.title = 'Settings';
+        settingsBtn.textContent = '⚙️';
+        settingsBtn.onclick = () => {
+            if (typeof window.switchPage === 'function') {
+                window.switchPage('settings');
+            }
+            this.updateStaticMenuActiveState('settings');
+        };
+        
+        // Додати кнопки до контейнера
+        staticMenu.appendChild(navButtons);
+        
+        // Створити окремий контейнер для кнопки налаштувань (праворуч)
+        const settingsContainer = document.createElement('div');
+        settingsContainer.className = 'settings-container-static';
+        settingsContainer.appendChild(settingsBtn);
+        staticMenu.appendChild(settingsContainer);
+        
+        document.body.appendChild(staticMenu);
+        
+        // Оновити активний стан для поточної сторінки
+        const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
+        this.updateStaticMenuActiveState(currentPage);
+        
+        console.log(`✅ Статичне ${position} меню створено з ${menuItems.length} елементами + налаштування`);
+    }
+
+    // Оновити активний стан статичного меню
+    updateStaticMenuActiveState(activePage) {
+        const staticMenu = document.getElementById('staticMenu');
+        if (!staticMenu) return;
+        
+        staticMenu.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.page === activePage || 
+                (activePage === 'settings' && btn.classList.contains('settings-btn-static'))) {
+                btn.classList.add('active');
+            }
+        });
+        
+        console.log(`MenuManager: Активний стан статичного меню оновлено: ${activePage}`);
+    }
+
+    // Отримати поточний тип меню
+    getCurrentMenuType() {
+        return this.currentMenuType;
+    }
+}
+
+// Глобальний екземпляр менеджера меню
+const menuManager = new MenuManager();
 
 // Перевірити доступність зображення
 async function checkImageAvailability(url) {
@@ -121,24 +344,22 @@ async function loadBackgroundImage(background) {
         console.log(`✅ Зображення доступне: ${primaryUrl}`);
         return primaryUrl;
     } else {
-        // Резервний варіант - повернутися до старого URL (якщо потрібно)
         console.warn(`⚠️ Зображення недоступне, використовуємо резервний варіант`);
         
-        // Можна додати резервні URL тут
         const fallbackUrls = {
             penguin: 'https://i.postimg.cc/rmW86W6S/Gemini-Generated-Image-fh66csfh66csfh66.png',
             game: 'https://i.postimg.cc/43yVBkY8/Generated-image-1.png',
             code: 'https://i.postimg.cc/nrvZbvKw/image.png',
             dodep: 'https://i.postimg.cc/nV4dxr1X/2025-09-16-22-26-42.png',
             prison: 'https://i.postimg.cc/ZR75v48p/2025-09-16-22-26-34.png',
-            forest: 'https://i.postimg.cc/sample/forest-background.png' // Додайте правильне посилання
+            forest: 'https://i.postimg.cc/sample/forest-background.png'
         };
         
         return fallbackUrls[background] || primaryUrl;
     }
 }
 
-// Перемикання видимості категорії в настройках (не конфліктує з головним меню)
+// Перемикання видимості категорії в настройках
 function toggleSettingsCategory(categoryName) {
     if (!categoriesState.hasOwnProperty(categoryName)) return;
     
@@ -150,16 +371,13 @@ function toggleSettingsCategory(categoryName) {
     if (!header || !options) return;
     
     if (categoriesState[categoryName]) {
-        // Розгорнути
         header.classList.remove('collapsed');
         options.classList.remove('collapsed');
     } else {
-        // Згорнути
         header.classList.add('collapsed');
         options.classList.add('collapsed');
     }
     
-    // Зберегти стан
     localStorage.setItem('armHelper_categoriesState', JSON.stringify(categoriesState));
     console.log(`Категорію настройок ${categoryName} ${categoriesState[categoryName] ? 'розгорнуто' : 'згорнуто'}`);
 }
@@ -216,7 +434,6 @@ async function applyBackground(background) {
     
     console.log(`🎨 Застосування фону: ${background}`);
     
-    // Показати індикатор завантаження (опціонально)
     const body = document.body;
     body.classList.add('loading-background');
     
@@ -243,22 +460,15 @@ async function changeBackground(background) {
         return;
     }
     
-    // Показати індикатор завантаження на кнопці
     const button = document.querySelector(`[data-background="${background}"]`);
     if (button) {
         button.classList.add('loading');
     }
     
     try {
-        // Зберегти налаштування
         saveBackground(background);
-        
-        // Застосувати фон
         await applyBackground(background);
-        
-        // Оновити UI
         updateBackgroundUI();
-        
         console.log(`Фон змінено на: ${background}`);
     } catch (error) {
         console.error(`❌ Помилка зміни фону:`, error);
@@ -273,7 +483,6 @@ async function changeBackground(background) {
 function updateBackgroundUI() {
     const currentBg = getCurrentBackground();
     
-    // Оновити активні стани
     document.querySelectorAll('#settingsPage .background-option').forEach(option => {
         option.classList.remove('active');
         if (option.dataset.background === currentBg) {
@@ -294,162 +503,19 @@ function saveMenuPosition(position) {
     console.log(`Позицію меню збережено: ${position}`);
 }
 
-// Застосувати позицію меню з ПОВНИМ контролем
+// Застосувати позицію меню використовуючи MenuManager
 function applyMenuPosition(position) {
     if (!menuPositions[position]) {
         console.error(`Позицію меню ${position} не знайдено`);
         return;
     }
     
-    console.log(`🔄 ЗАСТОСУВАННЯ ПОЗИЦІЇ МЕНЮ: ${position}`);
+    console.log(`🔄 ЗАСТОСУВАННЯ ПОЗИЦІЇ МЕНЮ ЧЕРЕЗ MenuManager: ${position}`);
     
-    const body = document.body;
-    
-    // КРОК 1: ВИДАЛИТИ ВСІ класи позицій меню
-    Object.keys(menuPositions).forEach(pos => {
-        body.classList.remove(`menu-${pos}`);
-        console.log(`❌ Видалено клас menu-${pos}`);
-    });
-    
-    // КРОК 2: ВИДАЛИТИ ВСІ статичні меню
-    console.log('🗑️ Видаляю всі статичні меню...');
-    removeStaticMenu();
-    
-    // КРОК 3: ЗАКРИТИ сайдбар
-    console.log('🔒 Закриваю сайдбар...');
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar) {
-        sidebar.classList.remove('open');
-    }
-    const overlay = document.getElementById('sidebarOverlay');
-    if (overlay) {
-        overlay.classList.remove('show');
-    }
-    
-    // КРОК 4: ПРИМУСОВО перезапустити CSS
-    body.style.display = 'none';
-    body.offsetHeight; // Trigger reflow
-    body.style.display = '';
-    
-    // КРОК 5: ДОДАТИ новий клас позиції меню
-    body.classList.add(`menu-${position}`);
-    console.log(`✅ Додано клас menu-${position}`);
-    
-    // КРОК 6: СТВОРИТИ статичне меню ТІЛЬКИ для up/down
-    if (position === 'up' || position === 'down') {
-        console.log(`📱 Створюю статичне меню для позиції: ${position}`);
-        setTimeout(() => {
-            createStaticMenu(position);
-            // Переконатися що сайдбар схований
-            if (sidebar) sidebar.style.display = 'none';
-            if (overlay) overlay.style.display = 'none';
-        }, 100);
-    } else {
-        console.log(`📝 Позиція ${position} використовує сайдбар`);
-        // Для left/right позицій переконатися що статичного меню немає
-        setTimeout(() => {
-            const staticMenus = document.querySelectorAll('.static-menu');
-            staticMenus.forEach(menu => menu.remove());
-        }, 50);
-    }
+    // Використати MenuManager для показу лише одного типу меню
+    menuManager.showOnlyMenu(position);
     
     console.log(`✅ ПОЗИЦІЮ МЕНЮ ЗАСТОСОВАНО: ${position}`);
-}
-
-// Створити статичне меню для верхніх/нижніх позицій з кнопкою налаштувань
-function createStaticMenu(position) {
-    console.log(`🔨 Створення статичного меню для позиції: ${position}`);
-    
-    // Видалити існуюче статичне меню
-    removeStaticMenu();
-    
-    const menuClass = position === 'up' ? 'menu-top' : 'menu-bottom';
-    const staticMenu = document.createElement('div');
-    staticMenu.className = `static-menu ${menuClass}`;
-    staticMenu.id = 'staticMenu';
-    
-    // Встановити початковий display
-    staticMenu.style.display = 'flex';
-    
-    // Створити контейнер навігаційних кнопок
-    const navButtons = document.createElement('div');
-    navButtons.className = 'nav-buttons';
-    
-    // Створити кнопки для всіх елементів меню тільки з іконками
-    menuItems.forEach(item => {
-        const btn = document.createElement('button');
-        btn.className = 'nav-btn';
-        btn.dataset.page = item.page;
-        btn.title = item.title; // Підказка показує повну назву
-        btn.textContent = item.icon; // Показувати тільки іконку
-        
-        btn.onclick = () => {
-            // Використовувати глобальну функцію switchPage замість перевизначення
-            if (typeof window.switchPage === 'function') {
-                window.switchPage(item.page);
-            }
-            updateStaticMenuActiveState(item.page);
-        };
-        
-        navButtons.appendChild(btn);
-    });
-    
-    // Створити кнопку налаштувань
-    const settingsBtn = document.createElement('button');
-    settingsBtn.className = 'nav-btn settings-btn-static';
-    settingsBtn.title = 'Settings';
-    settingsBtn.textContent = '⚙️';
-    settingsBtn.onclick = () => {
-        if (typeof window.switchPage === 'function') {
-            window.switchPage('settings');
-        }
-        updateStaticMenuActiveState('settings');
-    };
-    
-    // Додати кнопки до контейнера
-    staticMenu.appendChild(navButtons);
-    
-    // Створити окремий контейнер для кнопки налаштувань (праворуч)
-    const settingsContainer = document.createElement('div');
-    settingsContainer.className = 'settings-container-static';
-    settingsContainer.appendChild(settingsBtn);
-    staticMenu.appendChild(settingsContainer);
-    
-    document.body.appendChild(staticMenu);
-    
-    // Оновити активний стан для поточної сторінки
-    const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
-    updateStaticMenuActiveState(currentPage);
-    
-    console.log(`✅ Статичне ${position} меню створено з ${menuItems.length} елементами + налаштування`);
-}
-
-// Видалити статичне меню
-function removeStaticMenu() {
-    // Видалити ВСІ можливі статичні меню
-    const existingMenus = document.querySelectorAll('.static-menu, #staticMenu, .menu-top, .menu-bottom');
-    existingMenus.forEach(menu => {
-        menu.remove();
-        console.log(`🗑️ Видалено статичне меню:`, menu.className || menu.id);
-    });
-    
-    console.log('🧹 Всі статичні меню видалено');
-}
-
-// Оновити активний стан статичного меню
-function updateStaticMenuActiveState(activePage) {
-    const staticMenu = document.getElementById('staticMenu');
-    if (!staticMenu) return;
-    
-    staticMenu.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.page === activePage || 
-            (activePage === 'settings' && btn.classList.contains('settings-btn-static'))) {
-            btn.classList.add('active');
-        }
-    });
-    
-    console.log(`Активний стан статичного меню оновлено: ${activePage}`);
 }
 
 // Змінити позицію меню
@@ -459,13 +525,8 @@ function changeMenuPosition(position) {
         return;
     }
     
-    // Зберегти налаштування
     saveMenuPosition(position);
-    
-    // Застосувати позицію меню
     applyMenuPosition(position);
-    
-    // Оновити UI
     updateMenuPositionUI();
     
     console.log(`Позицію меню змінено на: ${position}`);
@@ -475,13 +536,17 @@ function changeMenuPosition(position) {
 function updateMenuPositionUI() {
     const currentPos = getCurrentMenuPosition();
     
-    // Оновити активні стани
     document.querySelectorAll('#settingsPage .menu-option').forEach(option => {
         option.classList.remove('active');
         if (option.dataset.position === currentPos) {
             option.classList.add('active');
         }
     });
+}
+
+// Оновити активний стан статичного меню (глобальна функція)
+function updateStaticMenuActiveState(activePage) {
+    menuManager.updateStaticMenuActiveState(activePage);
 }
 
 // Завантажити переклади налаштувань
@@ -499,7 +564,6 @@ async function loadSettingsTranslations() {
         return settingsTranslations;
     } catch (error) {
         console.error('❌ Помилка завантаження перекладів налаштувань:', error);
-        // Резервний варіант
         settingsTranslations = {
             en: {
                 title: "⚙️ Settings",
@@ -562,7 +626,7 @@ function getTranslation(key, fallback) {
     return fallback || key;
 }
 
-// Оновити мову налаштувань з правильним заповненням тексту
+// Оновити мову налаштувань
 async function updateSettingsLanguage(lang = null) {
     const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en');
     
@@ -616,9 +680,8 @@ async function updateSettingsLanguage(lang = null) {
     console.log(`✅ Мову налаштувань оновлено до ${currentLang}`);
 }
 
-// Створити HTML налаштувань з фіксованим текстом
+// Створити HTML налаштувань
 function createSettingsHTML() {
-    // Базові переклади з settings.json
     const baseTranslations = {
         title: "⚙️ Settings",
         background: "Background", 
@@ -635,7 +698,6 @@ function createSettingsHTML() {
         right: "Right"
     };
     
-    // Створити опції фону з фіксованими назвами
     const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => {
         const config = backgroundOptions[bg];
         const name = baseTranslations[bg] || bg.charAt(0).toUpperCase() + bg.slice(1);
@@ -702,14 +764,14 @@ function createSettingsHTML() {
     `;
 }
 
-// Ініціалізувати сторінку налаштувань з гарантованим текстом
+// Ініціалізувати сторінку налаштувань
 async function initializeSettings() {
     if (settingsInitialized) {
         console.log('⚠️ Налаштування вже ініціалізовано');
         return;
     }
     
-    console.log('⚙️ Ініціалізація налаштувань...');
+    console.log('⚙️ Ініціалізація налаштувань з MenuManager...');
     
     const settingsPage = document.getElementById('settingsPage');
     if (!settingsPage) {
@@ -720,14 +782,14 @@ async function initializeSettings() {
     // Завантажити стан категорій
     loadCategoriesState();
     
-    // Завантажити переклади ПЕРЕД створенням HTML
+    // Завантажити переклади
     await loadSettingsTranslations();
     
-    // Встановити HTML контент з початковим текстом
+    // Встановити HTML контент
     settingsPage.innerHTML = createSettingsHTML();
     console.log('✅ HTML контент створено');
     
-    // Негайно оновити переклади
+    // Оновити переклади
     setTimeout(async () => {
         await updateSettingsLanguage();
         console.log('✅ Переклади застосовано');
@@ -738,7 +800,7 @@ async function initializeSettings() {
     await applyBackground(currentBg);
     updateBackgroundUI();
     
-    // Застосувати поточну позицію меню
+    // Застосувати поточну позицію меню через MenuManager
     const currentMenuPos = getCurrentMenuPosition();
     applyMenuPosition(currentMenuPos);
     updateMenuPositionUI();
@@ -747,69 +809,33 @@ async function initializeSettings() {
     applyCategoriesState();
     
     settingsInitialized = true;
-    console.log('✅ Налаштування повністю ініціалізовано');
+    console.log('✅ Налаштування повністю ініціалізовано з MenuManager');
 }
 
 // Застосувати фон і позицію меню при запуску додатка
 async function initializeSettingsOnStart() {
-    console.log('🚀 Ініціалізація налаштувань при старті...');
+    console.log('🚀 Ініціалізація налаштувань при старті з MenuManager...');
     
-    // КРОК 1: Очистити ВСІ меню при старті
-    await forceCleanAllMenus();
-    
-    // КРОК 2: Застосувати фон
+    // Застосувати фон
     const currentBg = getCurrentBackground();
     await applyBackground(currentBg);
     console.log(`Початковий фон застосовано: ${currentBg}`);
     
-    // КРОК 3: Застосувати позицію меню
+    // Застосувати позицію меню через MenuManager
     const currentMenuPos = getCurrentMenuPosition();
-    console.log(`🎯 Застосування початкової позиції меню: ${currentMenuPos}`);
+    console.log(`🎯 Застосування початкової позиції меню через MenuManager: ${currentMenuPos}`);
     
-    // Додати клас для поточної позиції меню до body
-    const body = document.body;
-    Object.keys(menuPositions).forEach(pos => {
-        body.classList.remove(`menu-${pos}`);
-    });
-    body.classList.add(`menu-${currentMenuPos}`);
-    
-    // Застосувати позицію з затримкою для DOM
     setTimeout(() => {
         applyMenuPosition(currentMenuPos);
-        console.log(`✅ Початкову позицію меню застосовано: ${currentMenuPos}`);
+        console.log(`✅ Початкову позицію меню застосовано через MenuManager: ${currentMenuPos}`);
     }, 100);
 }
 
-// Примусово очистити всі меню
+// Примусово очистити всі меню (використовує MenuManager)
 async function forceCleanAllMenus() {
-    console.log('🧹 Примусове очищення всіх меню...');
-    
-    // Видалити всі статичні меню
-    const existingMenus = document.querySelectorAll('.static-menu, #staticMenu, .menu-top:not(.sidebar), .menu-bottom:not(.sidebar)');
-    existingMenus.forEach(menu => {
-        if (!menu.classList.contains('sidebar')) { // Не видаляти сайдбар
-            menu.remove();
-            console.log(`🗑️ Видалено меню:`, menu.className || menu.id);
-        }
-    });
-    
-    // Закрити сайдбар
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar) {
-        sidebar.classList.remove('open');
-    }
-    const overlay = document.getElementById('sidebarOverlay');
-    if (overlay) {
-        overlay.classList.remove('show');
-    }
-    
-    // Очистити всі класи позицій меню з body
-    const body = document.body;
-    Object.keys(menuPositions).forEach(pos => {
-        body.classList.remove(`menu-${pos}`);
-    });
-    
-    console.log('✅ Всі меню очищено');
+    console.log('🧹 Примусове очищення всіх меню через MenuManager...');
+    menuManager.clearAllMenus();
+    console.log('✅ Всі меню очищено через MenuManager');
 }
 
 // Слухати зміни мови
@@ -826,12 +852,11 @@ document.addEventListener('pageChanged', (event) => {
     }
 });
 
-// Застосувати налаштування негайно при завантаженні скрипта
+// Застосувати налаштування при завантаженні
 document.addEventListener('DOMContentLoaded', () => {
     initializeSettingsOnStart();
 });
 
-// Якщо DOM вже завантажено, застосувати негайно
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeSettingsOnStart);
 } else {
@@ -847,3 +872,4 @@ window.updateSettingsLanguage = updateSettingsLanguage;
 window.updateStaticMenuActiveState = updateStaticMenuActiveState;
 window.getGitHubImageURL = getGitHubImageURL;
 window.forceCleanAllMenus = forceCleanAllMenus;
+window.menuManager = menuManager;
