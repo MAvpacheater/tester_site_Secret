@@ -1,4 +1,4 @@
-// Peoples page functionality with multilingual support and dynamic HTML creation
+// Peoples page functionality with multilingual support and dynamic content generation
 let peoplesInitialized = false;
 let currentFilter = 'all'; // 'all', 'admin', 'helper'
 let peoplesTranslations = null;
@@ -62,53 +62,6 @@ async function loadPeoplesTranslations() {
     }
 }
 
-// Update peoples page language
-async function updatePeoplesLanguage(lang) {
-    if (!peoplesTranslations) {
-        await loadPeoplesTranslations();
-    }
-    
-    currentPeoplesLanguage = lang;
-    
-    if (!peoplesTranslations[lang]) {
-        console.error(`❌ Peoples language ${lang} not found, defaulting to English`);
-        currentPeoplesLanguage = 'en';
-    }
-    
-    const translations = peoplesTranslations[currentPeoplesLanguage];
-    if (!translations) return;
-    
-    // Update page title and description
-    const pageTitle = document.querySelector('#peoplesPage .peoples-title');
-    const pageSubtitle = document.querySelector('#peoplesPage .peoples-subtitle');
-    const pageDescription = document.querySelector('#peoplesPage .peoples-description');
-    
-    if (pageTitle && translations.title) {
-        pageTitle.textContent = translations.title;
-    }
-    
-    if (pageSubtitle && translations.subtitle) {
-        pageSubtitle.textContent = translations.subtitle;
-    }
-    
-    if (pageDescription && translations.description) {
-        pageDescription.textContent = translations.description;
-    }
-    
-    // Update filter buttons
-    updateFilterButtonsText();
-    
-    // Update stats if they exist
-    updateStatsText();
-    
-    // Re-render contributors with new language
-    if (peoplesInitialized) {
-        renderContributors();
-    }
-    
-    console.log(`✅ Peoples page language updated to: ${currentPeoplesLanguage}`);
-}
-
 // Contributors data
 const contributors = [
     {
@@ -155,95 +108,43 @@ const contributors = [
     }
 ];
 
-async function initializePeoples() {
-    if (peoplesInitialized) {
-        console.log('⚠️ Peoples already initialized');
-        return;
+// Generate peoples page HTML content (like help.js)
+function generatePeoplesHTML(translations) {
+    if (!translations) {
+        return '<div style="padding: 40px; text-align: center; color: #666;">Loading peoples page...</div>';
     }
 
-    console.log('🙏 Initializing Peoples page with multilingual support...');
+    const stats = getContributorStats();
 
-    const peoplesPage = document.getElementById('peoplesPage');
-    if (!peoplesPage) {
-        console.error('❌ Peoples page element not found');
-        return;
-    }
-
-    // Load translations
-    await loadPeoplesTranslations();
-    
-    // Get current app language
-    const currentAppLanguage = (typeof getCurrentAppLanguage === 'function') 
-        ? getCurrentAppLanguage() 
-        : 'en';
-    
-    // Update peoples page language
-    await updatePeoplesLanguage(currentAppLanguage);
-
-    // Create the complete HTML structure
-    createPageStructure();
-    
-    // Initialize interactive elements
-    createFilterControls();
-    createStatsSection();
-    renderContributors();
-    
-    peoplesInitialized = true;
-    console.log('✅ Peoples page initialized successfully with multilingual support');
-}
-
-function createPageStructure() {
-    const peoplesPage = document.getElementById('peoplesPage');
-    if (!peoplesPage) return;
-
-    // Clear existing content
-    peoplesPage.innerHTML = '';
-    
-    // Get translations
-    const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
-    const title = (translations && translations.title) || "🙏 Peoples & Developer";
-    const subtitle = (translations && translations.subtitle) || "Special thanks to everyone who contributed!";
-    const description = (translations && translations.description) || "This project wouldn't exist without the amazing community support and contributions from these wonderful people.";
-
-    // Create complete page structure
-    peoplesPage.innerHTML = `
+    return `
         <div class="peoples-header">
-            <h1 class="peoples-title">${title}</h1>
-            <div class="peoples-subtitle">${subtitle}</div>
-            <div class="peoples-description">${description}</div>
+            <h1 class="peoples-title">${translations.title || '🙏 Peoples & Developer'}</h1>
+            <div class="peoples-subtitle">${translations.subtitle || 'Special thanks to everyone who contributed!'}</div>
+            <div class="peoples-description">${translations.description || 'This project wouldn\'t exist without the amazing community support and contributions from these wonderful people.'}</div>
         </div>
         
         <div class="peoples-stats" id="peoplesStats">
-            <!-- Stats will be populated by createStatsSection() -->
+            ${generateStatsHTML(translations, stats)}
         </div>
         
         <div class="filter-controls" id="filterControls">
-            <!-- Filter buttons will be populated by createFilterControls() -->
+            ${generateFilterControlsHTML(translations)}
         </div>
         
         <div class="contributors-list" id="contributorsList">
-            <!-- Contributors will be populated by renderContributors() -->
+            ${generateContributorsHTML(translations)}
         </div>
     `;
-
-    console.log('✅ Peoples page structure created');
 }
 
-function createStatsSection() {
-    const statsContainer = document.getElementById('peoplesStats');
-    if (!statsContainer) return;
+function generateStatsHTML(translations, stats) {
+    const totalLabel = (translations && translations.stats?.total) || "Total Contributors";
+    const adminsLabel = (translations && translations.stats?.admins) || "Project Admins";
+    const helpersLabel = (translations && translations.stats?.helpers) || "Community Helpers";
+    const telegramLabel = (translations && translations.stats?.withTelegram) || "On Telegram";
+    const discordLabel = (translations && translations.stats?.withDiscord) || "On Discord";
 
-    const stats = getContributorStats();
-    const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
-    
-    // Get stat labels
-    const totalLabel = (translations && translations.stats.total) || "Total Contributors";
-    const adminsLabel = (translations && translations.stats.admins) || "Project Admins";
-    const helpersLabel = (translations && translations.stats.helpers) || "Community Helpers";
-    const telegramLabel = (translations && translations.stats.withTelegram) || "On Telegram";
-    const discordLabel = (translations && translations.stats.withDiscord) || "On Discord";
-
-    statsContainer.innerHTML = `
+    return `
         <div class="stat-item">
             <div class="stat-number">${stats.total}</div>
             <div class="stat-label">${totalLabel}</div>
@@ -265,41 +166,14 @@ function createStatsSection() {
             <div class="stat-label">${discordLabel}</div>
         </div>
     `;
-
-    console.log('✅ Stats section created with translations');
 }
 
-function updateStatsText() {
-    const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
-    if (!translations || !translations.stats) return;
+function generateFilterControlsHTML(translations) {
+    const allText = (translations && translations.filters?.all) || '👥 Show All';
+    const adminsText = (translations && translations.filters?.admins) || '👑 Admins';
+    const helpersText = (translations && translations.filters?.helpers) || '🤝 Helpers';
     
-    const statItems = document.querySelectorAll('#peoplesStats .stat-item');
-    const labels = [
-        translations.stats.total,
-        translations.stats.admins,
-        translations.stats.helpers,
-        translations.stats.withTelegram,
-        translations.stats.withDiscord
-    ];
-    
-    statItems.forEach((item, index) => {
-        const label = item.querySelector('.stat-label');
-        if (label && labels[index]) {
-            label.textContent = labels[index];
-        }
-    });
-}
-
-function createFilterControls() {
-    const filterContainer = document.getElementById('filterControls');
-    if (!filterContainer) return;
-    
-    const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
-    const allText = (translations && translations.filters.all) || '👥 Show All';
-    const adminsText = (translations && translations.filters.admins) || '👑 Admins';
-    const helpersText = (translations && translations.filters.helpers) || '🤝 Helpers';
-    
-    filterContainer.innerHTML = `
+    return `
         <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" data-filter="all" onclick="setFilter('all')">
             ${allText}
         </button>
@@ -310,29 +184,134 @@ function createFilterControls() {
             ${helpersText}
         </button>
     `;
-
-    console.log('✅ Filter controls created with translations');
 }
 
-function updateFilterButtonsText() {
-    const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
-    if (!translations) return;
-    
-    const allBtn = document.querySelector('[data-filter="all"]');
-    const adminBtn = document.querySelector('[data-filter="admin"]');
-    const helperBtn = document.querySelector('[data-filter="helper"]');
-    
-    if (allBtn && translations.filters.all) {
-        allBtn.textContent = translations.filters.all;
-    }
-    if (adminBtn && translations.filters.admins) {
-        adminBtn.textContent = translations.filters.admins;
-    }
-    if (helperBtn && translations.filters.helpers) {
-        helperBtn.textContent = translations.filters.helpers;
-    }
+function generateContributorsHTML(translations) {
+    return contributors.map((contributor, index) => {
+        return generateContributorCardHTML(contributor, index, translations);
+    }).join('');
 }
 
+function generateContributorCardHTML(contributor, index, translations) {
+    // Role badge styling and text
+    const roleClass = contributor.role === 'Admin' ? 'role-admin' : 'role-helper';
+    const roleText = translations && translations.roles 
+        ? (contributor.role === 'Admin' ? translations.roles.admin : translations.roles.helper)
+        : contributor.role;
+
+    // Generate social buttons only if they exist
+    let socialButtons = '';
+    if (contributor.telegram) {
+        const telegramText = (translations && translations.social?.telegram) || '📱 Telegram Profile';
+        socialButtons += `
+            <button class="social-btn telegram-social" onclick="openTelegramProfile('${contributor.telegram}')">
+                ${telegramText}
+            </button>
+        `;
+    }
+    if (contributor.discord) {
+        const discordText = (translations && translations.social?.discord) || '🎮 Discord Profile';
+        socialButtons += `
+            <button class="social-btn discord-social" onclick="openDiscordProfile('${contributor.discord}')">
+                ${discordText}
+            </button>
+        `;
+    }
+
+    return `
+        <div class="contributor-card" data-index="${index}" data-role="${contributor.role.toLowerCase()}">
+            <div class="contributor-main">
+                <div class="contributor-info">
+                    <div class="contributor-name">${escapeHtml(contributor.name)}</div>
+                    <div class="contributor-contribution">${escapeHtml(contributor.contribution)}</div>
+                </div>
+                <div class="contributor-actions">
+                    <div class="role-badge ${roleClass}">${roleText}</div>
+                </div>
+            </div>
+            ${socialButtons ? `
+                <div class="contributor-social">
+                    ${socialButtons}
+                </div>
+            ` : ''}
+        </div>
+    `;
+}
+
+// Update peoples page language
+async function updatePeoplesLanguage(lang) {
+    if (!peoplesTranslations) {
+        await loadPeoplesTranslations();
+    }
+    
+    if (!peoplesTranslations) {
+        console.error('❌ Peoples translations not available');
+        return;
+    }
+    
+    currentPeoplesLanguage = lang;
+    
+    if (!peoplesTranslations[lang]) {
+        console.error(`❌ Peoples language ${lang} not found, defaulting to English`);
+        currentPeoplesLanguage = 'en';
+    }
+    
+    // Regenerate content with new language
+    const peoplesPage = document.getElementById('peoplesPage');
+    if (peoplesPage) {
+        const translations = peoplesTranslations[currentPeoplesLanguage];
+        peoplesPage.innerHTML = generatePeoplesHTML(translations);
+        
+        // Apply current filter after regenerating
+        setTimeout(() => {
+            filterContributors();
+        }, 100);
+    }
+    
+    console.log(`✅ Peoples page language updated to: ${currentPeoplesLanguage}`);
+}
+
+async function initializePeoples() {
+    if (peoplesInitialized) {
+        console.log('⚠️ Peoples already initialized');
+        return;
+    }
+
+    console.log('🙏 Initializing Peoples page with dynamic content generation...');
+
+    const peoplesPage = document.getElementById('peoplesPage');
+    if (!peoplesPage) {
+        console.error('❌ Peoples page element not found');
+        return;
+    }
+
+    // Load translations
+    await loadPeoplesTranslations();
+    
+    // Get current app language
+    const currentAppLanguage = (typeof getCurrentAppLanguage === 'function') 
+        ? getCurrentAppLanguage() 
+        : 'en';
+    
+    // Generate and insert content
+    if (peoplesTranslations) {
+        const translations = peoplesTranslations[currentAppLanguage] || peoplesTranslations['en'];
+        peoplesPage.innerHTML = generatePeoplesHTML(translations);
+        currentPeoplesLanguage = currentAppLanguage;
+    } else {
+        peoplesPage.innerHTML = generatePeoplesHTML(null);
+    }
+
+    // Apply initial filter after content is generated
+    setTimeout(() => {
+        filterContributors();
+    }, 100);
+
+    peoplesInitialized = true;
+    console.log('✅ Peoples page initialized successfully');
+}
+
+// Filter functionality
 function setFilter(filter) {
     currentFilter = filter;
     updateFilterButtons();
@@ -374,7 +353,7 @@ function filterContributors() {
         }
     });
 
-    // Show count of filtered results with translations
+    // Show count of filtered results
     const visibleCount = document.querySelectorAll('.contributor-card:not(.hidden)').length;
     const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
     let filterMessage = '';
@@ -419,84 +398,11 @@ function filterContributors() {
     }
 }
 
-function renderContributors() {
-    const contributorsContainer = document.getElementById('contributorsList');
-    if (!contributorsContainer) {
-        console.error('❌ Contributors container not found');
-        return;
-    }
-
-    contributorsContainer.innerHTML = '';
-
-    contributors.forEach((contributor, index) => {
-        const contributorCard = createContributorCard(contributor, index);
-        contributorsContainer.appendChild(contributorCard);
-    });
-
-    // Apply current filter
-    filterContributors();
-    
-    console.log(`✅ Rendered ${contributors.length} contributors with translations`);
-}
-
-function createContributorCard(contributor, index) {
-    const card = document.createElement('div');
-    card.className = 'contributor-card';
-    card.setAttribute('data-index', index);
-    card.setAttribute('data-role', contributor.role.toLowerCase());
-
-    // Get translations
-    const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
-    
-    // Role badge styling and text
-    const roleClass = contributor.role === 'Admin' ? 'role-admin' : 'role-helper';
-    const roleText = translations && translations.roles 
-        ? (contributor.role === 'Admin' ? translations.roles.admin : translations.roles.helper)
-        : contributor.role;
-
-    // Generate social buttons only if they exist
-    let socialButtons = '';
-    if (contributor.telegram) {
-        const telegramText = (translations && translations.social.telegram) || '📱 Telegram Profile';
-        socialButtons += `
-            <button class="social-btn telegram-social" onclick="openTelegramProfile('${contributor.telegram}')">
-                ${telegramText}
-            </button>
-        `;
-    }
-    if (contributor.discord) {
-        const discordText = (translations && translations.social.discord) || '🎮 Discord Profile';
-        socialButtons += `
-            <button class="social-btn discord-social" onclick="openDiscordProfile('${contributor.discord}')">
-                ${discordText}
-            </button>
-        `;
-    }
-
-    card.innerHTML = `
-        <div class="contributor-main">
-            <div class="contributor-info">
-                <div class="contributor-name">${escapeHtml(contributor.name)}</div>
-                <div class="contributor-contribution">${escapeHtml(contributor.contribution)}</div>
-            </div>
-            <div class="contributor-actions">
-                <div class="role-badge ${roleClass}">${roleText}</div>
-            </div>
-        </div>
-        ${socialButtons ? `
-            <div class="contributor-social">
-                ${socialButtons}
-            </div>
-        ` : ''}
-    `;
-
-    return card;
-}
-
+// Social profile functions
 function openTelegramProfile(telegramHandle) {
     if (!telegramHandle) {
         const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
-        const errorMsg = (translations && translations.notifications.telegramNotAvailable) 
+        const errorMsg = (translations && translations.notifications?.telegramNotAvailable) 
             || '❌ Telegram profile not available';
         showNotification(errorMsg, 'error');
         return;
@@ -510,14 +416,14 @@ function openTelegramProfile(telegramHandle) {
         console.log(`📱 Opening Telegram profile: ${url}`);
         
         const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
-        const successMsg = (translations && translations.notifications.telegramOpening) 
+        const successMsg = (translations && translations.notifications?.telegramOpening) 
             || '📱 Opening Telegram profile...';
         showNotification(successMsg, 'success');
     } catch (error) {
         console.error('❌ Error opening Telegram profile:', error);
         
         const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
-        const errorMsg = (translations && translations.notifications.telegramFailed) 
+        const errorMsg = (translations && translations.notifications?.telegramFailed) 
             || '❌ Failed to open Telegram profile';
         showNotification(errorMsg, 'error');
     }
@@ -526,29 +432,21 @@ function openTelegramProfile(telegramHandle) {
 function openDiscordProfile(discordTag) {
     if (!discordTag) {
         const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
-        const errorMsg = (translations && translations.notifications.discordNotAvailable) 
+        const errorMsg = (translations && translations.notifications?.discordNotAvailable) 
             || '❌ Discord profile not available';
         showNotification(errorMsg, 'error');
         return;
     }
 
-    // Try to open Discord profile URL (works if Discord is installed)
-    const discordUrl = `discord://users/${discordTag}`;
-    
     try {
-        // First try to open Discord app
-        window.location.href = discordUrl;
-        
-        // Show notification that Discord tag is copied as backup
-        const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
-        const openingMsg = translations && translations.notifications.discordOpening 
-            ? translations.notifications.discordOpening.replace('{tag}', discordTag)
-            : `🎮 Opening Discord... Tag: ${discordTag}`;
-        showNotification(openingMsg, 'info');
-        
-        // Copy Discord tag to clipboard as fallback
+        // Copy Discord tag to clipboard
         navigator.clipboard.writeText(discordTag).then(() => {
             console.log(`🎮 Discord tag copied to clipboard: ${discordTag}`);
+            const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
+            const copiedMsg = translations && translations.notifications?.discordCopied 
+                ? translations.notifications.discordCopied.replace('{tag}', discordTag)
+                : `📋 Discord tag copied: ${discordTag}`;
+            showNotification(copiedMsg, 'success');
         }).catch(() => {
             // Fallback for older browsers
             const textArea = document.createElement('textarea');
@@ -557,31 +455,21 @@ function openDiscordProfile(discordTag) {
             textArea.select();
             document.execCommand('copy');
             document.body.removeChild(textArea);
-        });
-        
-        // If Discord app doesn't open, show fallback message after delay
-        setTimeout(() => {
-            const copiedMsg = translations && translations.notifications.discordCopied 
+            
+            const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
+            const copiedMsg = translations && translations.notifications?.discordCopied 
                 ? translations.notifications.discordCopied.replace('{tag}', discordTag)
                 : `📋 Discord tag copied: ${discordTag}`;
             showNotification(copiedMsg, 'success');
-        }, 2000);
+        });
         
     } catch (error) {
-        console.error('❌ Error opening Discord profile:', error);
+        console.error('❌ Error copying Discord tag:', error);
         
         const translations = peoplesTranslations && peoplesTranslations[currentPeoplesLanguage];
-        const fallbackMsg = translations && translations.notifications.discordCopied 
-            ? translations.notifications.discordCopied.replace('{tag}', discordTag)
-            : `📋 Discord: ${discordTag} (copied to clipboard)`;
-        showNotification(fallbackMsg, 'info');
-        
-        // Copy to clipboard as fallback
-        try {
-            navigator.clipboard.writeText(discordTag);
-        } catch (clipboardError) {
-            console.error('❌ Error copying to clipboard:', clipboardError);
-        }
+        const errorMsg = (translations && translations.notifications?.discordFailed) 
+            || '❌ Failed to copy Discord tag';
+        showNotification(errorMsg, 'error');
     }
 }
 
@@ -613,37 +501,13 @@ function showNotification(message, type = 'info') {
     }
 }
 
+// Utility functions
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
 
-// Add contributor functionality (for future admin features)
-function addContributor(contributorData) {
-    contributors.push(contributorData);
-    if (peoplesInitialized) {
-        createStatsSection(); // Update stats
-        renderContributors();
-    }
-    console.log('✅ Contributor added:', contributorData.name);
-}
-
-// Remove contributor functionality (for future admin features)
-function removeContributor(index) {
-    if (index >= 0 && index < contributors.length) {
-        const removed = contributors.splice(index, 1)[0];
-        if (peoplesInitialized) {
-            createStatsSection(); // Update stats
-            renderContributors();
-        }
-        console.log('✅ Contributor removed:', removed.name);
-        return removed;
-    }
-    return null;
-}
-
-// Statistics
 function getContributorStats() {
     const stats = {
         total: contributors.length,
@@ -656,11 +520,76 @@ function getContributorStats() {
     return stats;
 }
 
+// Add/Remove contributor functionality (for future admin features)
+function addContributor(contributorData) {
+    contributors.push(contributorData);
+    if (peoplesInitialized) {
+        // Regenerate the entire page to update stats and contributors
+        const translations = peoplesTranslations[currentPeoplesLanguage];
+        const peoplesPage = document.getElementById('peoplesPage');
+        if (peoplesPage && translations) {
+            peoplesPage.innerHTML = generatePeoplesHTML(translations);
+            setTimeout(() => {
+                filterContributors();
+            }, 100);
+        }
+    }
+    console.log('✅ Contributor added:', contributorData.name);
+}
+
+function removeContributor(index) {
+    if (index >= 0 && index < contributors.length) {
+        const removed = contributors.splice(index, 1)[0];
+        if (peoplesInitialized) {
+            // Regenerate the entire page to update stats and contributors
+            const translations = peoplesTranslations[currentPeoplesLanguage];
+            const peoplesPage = document.getElementById('peoplesPage');
+            if (peoplesPage && translations) {
+                peoplesPage.innerHTML = generatePeoplesHTML(translations);
+                setTimeout(() => {
+                    filterContributors();
+                }, 100);
+            }
+        }
+        console.log('✅ Contributor removed:', removed.name);
+        return removed;
+    }
+    return null;
+}
+
 // Listen for language change events
 document.addEventListener('languageChanged', async (event) => {
     const newLanguage = event.detail.language;
     console.log('🌍 Peoples page received language change:', newLanguage);
-    await updatePeoplesLanguage(newLanguage);
+    if (peoplesInitialized && peoplesTranslations) {
+        await updatePeoplesLanguage(newLanguage);
+    }
+});
+
+// Auto-initialize when page loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        // Only initialize if peoples page is visible
+        const peoplesPage = document.getElementById('peoplesPage');
+        if (peoplesPage && peoplesPage.classList.contains('active')) {
+            initializePeoples();
+        }
+    });
+} else {
+    // Page already loaded
+    const peoplesPage = document.getElementById('peoplesPage');
+    if (peoplesPage && peoplesPage.classList.contains('active')) {
+        initializePeoples();
+    }
+}
+
+// Listen for page changes to initialize when peoples page becomes active
+document.addEventListener('pageChanged', (event) => {
+    if (event.detail && event.detail.page === 'peoples') {
+        if (!peoplesInitialized) {
+            initializePeoples();
+        }
+    }
 });
 
 // Make functions globally available
@@ -673,5 +602,6 @@ window.openDiscordProfile = openDiscordProfile;
 window.addContributor = addContributor;
 window.removeContributor = removeContributor;
 window.getContributorStats = getContributorStats;
+window.showNotification = showNotification;
 
-console.log('✅ peoples.js loaded successfully with dynamic HTML creation and multilingual support');
+console.log('✅ peoples.js loaded successfully with dynamic content generation (like help.js)');
