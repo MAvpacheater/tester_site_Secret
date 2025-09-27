@@ -1,753 +1,869 @@
-// General JavaScript functions - Enhanced with MenuManager support
+// Налаштування - Керування фоном і позицією меню з гарантованим одним меню
+let settingsInitialized = false;
+let settingsTranslations = null;
+let categoriesState = {
+    background: false, // false = згорнуто, true = розгорнуто
+    menu: false
+};
 
-// Global language state
-let currentAppLanguage = 'en';
-let menuTranslations = null;
+// GitHub конфігурація для зображень
+const GITHUB_CONFIG = {
+    user: 'MAvpacheater',
+    repo: 'tester_site_Secret',
+    branch: 'main',
+    imagePath: 'image/bg/'
+};
 
-// Page state management
-function saveCurrentPage(page) {
-    localStorage.setItem('armHelper_currentPage', page);
-    console.log(`Current page saved: ${page}`);
+// Функція для створення GitHub URL зображення
+function getGitHubImageURL(filename) {
+    return `https://raw.githubusercontent.com/${GITHUB_CONFIG.user}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${GITHUB_CONFIG.imagePath}${filename}`;
 }
 
-function getCurrentPage() {
-    return localStorage.getItem('armHelper_currentPage') || 'calculator';
-}
-
-// Language management functions
-function getCurrentAppLanguage() {
-    const saved = localStorage.getItem('armHelper_language');
-    return saved || 'en';
-}
-
-function saveAppLanguage(lang) {
-    localStorage.setItem('armHelper_language', lang);
-    console.log(`App language saved: ${lang}`);
-}
-
-// Load menu translations
-async function loadMenuTranslations() {
-    if (menuTranslations) return menuTranslations;
-    
-    try {
-        console.log('📥 Loading menu translations...');
-        const response = await fetch('languages/menu.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        menuTranslations = await response.json();
-        console.log('✅ Menu translations loaded successfully');
-        return menuTranslations;
-    } catch (error) {
-        console.error('❌ Error loading menu translations:', error);
-        // Fallback to English
-        menuTranslations = {
-            en: {
-                menu: "Menu",
-                calculator: "Calculator", 
-                info: "Info",
-                others: "Others",
-                pages: {
-                    calculator: "🐾 Pet Calculator",
-                    arm: "💪 Arm Calculator",
-                    grind: "🏋️‍♂️ Grind Calculator",
-                    boosts: "🚀 Boosts",
-                    shiny: "✨ Shiny Stats",
-                    secret: "🔮 Secret Pets",
-                    codes: "🎁 Codes",
-                    aura: "🌟 Aura",
-                    trainer: "🏆 Trainer",
-                    charms: "🔮 Charms",
-                    potions: "🧪 Potions & Food",
-                    worlds: "🌍 Worlds",
-                    settings: "⚙️ Settings",
-                    help: "🆘 Help",
-                    peoples: "🙏 Peoples"
-                },
-                auth: {
-                    login: "Login (Soon...)"
-                }
-            }
-        };
-        return menuTranslations;
+// Конфігурації фонів з GitHub зображеннями
+const backgroundOptions = {
+    penguin: {
+        icon: '🐧',
+        filename: 'penguin.png',
+        get url() { return getGitHubImageURL(this.filename); }
+    },
+    game: {
+        icon: '🎮',
+        filename: 'game.png',
+        get url() { return getGitHubImageURL(this.filename); }
+    },
+    code: {
+        icon: '💻',
+        filename: 'code.png',
+        get url() { return getGitHubImageURL(this.filename); }
+    },
+    dodep: {
+        icon: '🎰', 
+        filename: 'dodep.png',
+        get url() { return getGitHubImageURL(this.filename); }
+    },
+    prison: {
+        icon: '👮‍♂️', 
+        filename: 'prison.png',
+        get url() { return getGitHubImageURL(this.filename); }
+    },
+    forest: {
+        icon: '🌲',
+        filename: 'forest.jpg',
+        get url() { return getGitHubImageURL(this.filename); }
     }
-}
+};
 
-// Switch app language
-async function switchAppLanguage(lang) {
-    if (!menuTranslations) {
-        await loadMenuTranslations();
+// Конфігурації позицій меню
+const menuPositions = {
+    left: {
+        icon: '⬅️',
+        description: 'Гамбургер меню ліворуч'
+    },
+    right: {
+        icon: '➡️',
+        description: 'Гамбургер меню праворуч'
+    },
+    up: {
+        icon: '⬆️',
+        description: 'Іконки меню зверху'
+    },
+    down: {
+        icon: '⬇️',
+        description: 'Іконки меню знизу'
     }
-    
-    if (!menuTranslations[lang]) {
-        console.error(`❌ Language ${lang} not found, defaulting to English`);
-        lang = 'en';
-    }
-    
-    const previousLanguage = currentAppLanguage;
-    currentAppLanguage = lang;
-    saveAppLanguage(lang);
-    
-    // Update language flag buttons
-    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.lang === lang) {
-            btn.classList.add('active');
-        }
-    });
-    
-    // Update menu text AND page titles
-    updateMenuTranslations();
-    updatePageTitles();
-    
-    // Notify ALL modules about language change
-    console.log(`🌍 Broadcasting language change from ${previousLanguage} to ${lang}`);
-    
-    // Dispatch custom event for language change
-    const languageChangeEvent = new CustomEvent('languageChanged', {
-        detail: {
-            language: lang,
-            previousLanguage: previousLanguage
-        }
-    });
-    document.dispatchEvent(languageChangeEvent);
-    
-    // Directly notify specific modules if their functions exist
-    const moduleNotifications = [
-        { name: 'worlds', func: 'updateWorldsLanguage' },
-        { name: 'potions', func: 'updatePotionsLanguage' },
-        { name: 'secret', func: 'updateSecretLanguage' },
-        { name: 'peoples', func: 'updatePeoplesLanguage' },
-        { name: 'help', func: 'updateHelpLanguage' },
-        { name: 'settings', func: 'updateSettingsLanguage' }
-    ];
-    
-    moduleNotifications.forEach(({ name, func }) => {
-        if (typeof window[func] === 'function') {
-            try {
-                window[func](lang);
-                console.log(`✅ ${name} language updated via ${func}`);
-            } catch (error) {
-                console.error(`❌ Error updating ${name} language:`, error);
-            }
-        }
-    });
-    
-    console.log(`🌍 App language switched to: ${lang}`);
-}
+};
 
-// Update menu text with translations
-function updateMenuTranslations() {
-    if (!menuTranslations || !currentAppLanguage) return;
-    
-    const translations = menuTranslations[currentAppLanguage];
-    if (!translations) return;
-    
-    // Update sidebar header
-    const sidebarHeader = document.querySelector('.sidebar-header h3');
-    if (sidebarHeader) {
-        sidebarHeader.textContent = translations.menu;
-    }
-    
-    // Update category headers
-    const categoryMappings = {
-        'calculatorButtons': 'calculator',
-        'infoButtons': 'info',
-        'othersButtons': 'others'
-    };
-    
-    Object.entries(categoryMappings).forEach(([categoryId, translationKey]) => {
-        const categoryHeader = document.querySelector(`[data-category="${categoryId}"] .category-title span:last-child`);
-        if (categoryHeader && translations[translationKey]) {
-            categoryHeader.textContent = translations[translationKey];
-        }
-    });
-    
-    // Update page buttons in sidebar
-    Object.entries(translations.pages).forEach(([page, translation]) => {
-        const pageButton = document.querySelector(`[data-page="${page}"]`);
-        if (pageButton) {
-            pageButton.textContent = translation;
-        }
-    });
-    
-    // Update auth button
-    const authButton = document.getElementById('authButton');
-    if (authButton && translations.auth.login) {
-        authButton.textContent = translations.auth.login;
-    }
-    
-    console.log(`✅ Menu translations updated for ${currentAppLanguage}`);
-}
+// Конфігурація елементів меню з іконками
+const menuItems = [
+    { page: 'calculator', icon: '🐾', title: 'Pet Calculator' },
+    { page: 'arm', icon: '💪', title: 'Arm Calculator' },
+    { page: 'grind', icon: '🏋️‍♂️', title: 'Grind Calculator' },
+    { page: 'boosts', icon: '🚀', title: 'Boosts' },
+    { page: 'shiny', icon: '✨', title: 'Shiny Stats' },
+    { page: 'secret', icon: '🔮', title: 'Secret Pets' },
+    { page: 'codes', icon: '🎁', title: 'Codes' },
+    { page: 'aura', icon: '🌟', title: 'Aura' },
+    { page: 'trainer', icon: '🏆', title: 'Trainer' },
+    { page: 'charms', icon: '🔮', title: 'Charms' },
+    { page: 'potions', icon: '🧪', title: 'Potions & Food' },
+    { page: 'worlds', icon: '🌍', title: 'Worlds' },
+    { page: 'updates', icon: '📝', title: 'Updates' },
+    { page: 'help', icon: '🆘', title: 'Help' },
+    { page: 'peoples', icon: '🙏', title: 'Peoples' }
+];
 
-// Update page titles
-function updatePageTitles() {
-    if (!menuTranslations || !currentAppLanguage) return;
-    
-    const translations = menuTranslations[currentAppLanguage];
-    if (!translations || !translations.pages) return;
-    
-    // Page title mappings
-    const pageTitleMappings = {
-        'calculatorPage': 'calculator',
-        'armPage': 'arm',
-        'grindPage': 'grind',
-        'boostsPage': 'boosts',
-        'shinyPage': 'shiny',
-        'secretPage': 'secret',
-        'codesPage': 'codes',
-        'auraPage': 'aura',
-        'trainerPage': 'trainer',
-        'charmsPage': 'charms',
-        'potionsPage': 'potions',
-        'worldsPage': 'worlds',
-        'settingsPage': 'settings',
-        'helpPage': 'help',
-        'peoplesPage': 'peoples'
-    };
-    
-    // Update each page title
-    Object.entries(pageTitleMappings).forEach(([pageId, translationKey]) => {
-        const page = document.getElementById(pageId);
-        if (page && translations.pages[translationKey]) {
-            const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title, .settings-title');
-            if (titleElement) {
-                titleElement.textContent = translations.pages[translationKey];
-                console.log(`✅ Updated title for ${pageId}: ${translations.pages[translationKey]}`);
+// НОВА СИСТЕМА УПРАВЛІННЯ МЕНЮ - ГАРАНТУЄ ЛИШЕ ОДНЕ МЕНЮ
+class MenuManager {
+    constructor() {
+        this.currentMenuType = null;
+        this.initialized = false;
+    }
+
+    // Повністю очистити ВСІ меню з DOM
+    clearAllMenus() {
+        console.log('🧹 MenuManager: Очищення ВСІХ меню...');
+        
+        // Видалити всі статичні меню
+        const staticMenus = document.querySelectorAll('.static-menu, #staticMenu');
+        staticMenus.forEach(menu => {
+            menu.remove();
+            console.log(`🗑️ Видалено статичне меню:`, menu.className || menu.id);
+        });
+
+        // Закрити та сховати сайдбар
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        if (sidebar) {
+            sidebar.classList.remove('open');
+            console.log('🔒 Сайдбар закрито');
+        }
+        
+        if (overlay) {
+            overlay.classList.remove('show');
+            console.log('🔒 Overlay сховано');
+        }
+
+        // Очистити всі класи позицій меню з body
+        const body = document.body;
+        Object.keys(menuPositions).forEach(pos => {
+            body.classList.remove(`menu-${pos}`);
+        });
+        
+        // Очистити padding
+        body.style.paddingTop = '';
+        body.style.paddingBottom = '';
+        
+        console.log('✅ MenuManager: ВСІ меню очищено');
+    }
+
+    // Показати тільки вказаний тип меню
+    showOnlyMenu(menuType) {
+        console.log(`🎯 MenuManager: Показ ЛИШЕ меню типу: ${menuType}`);
+        
+        // Спочатку очистити все
+        this.clearAllMenus();
+        
+        // Встановити клас body для нового типу меню
+        document.body.classList.add(`menu-${menuType}`);
+        
+        // Показати відповідні елементи в залежності від типу
+        switch(menuType) {
+            case 'left':
+            case 'right':
+                this.showSidebarMenu(menuType);
+                break;
+            case 'up':
+            case 'down':
+                this.showStaticMenu(menuType);
+                break;
+            default:
+                console.error(`❌ Невідомий тип меню: ${menuType}`);
+                return;
+        }
+        
+        this.currentMenuType = menuType;
+        console.log(`✅ MenuManager: Активний тип меню встановлено: ${menuType}`);
+    }
+
+    // Показати сайдбар меню (left/right)
+    showSidebarMenu(position) {
+        console.log(`📱 MenuManager: Показ сайдбар меню: ${position}`);
+        
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        
+        if (sidebar) {
+            // Встановити позицію сайдбара
+            if (position === 'right') {
+                sidebar.style.left = 'auto';
+                sidebar.style.right = '-320px';
+            } else {
+                sidebar.style.left = '-320px';
+                sidebar.style.right = 'auto';
             }
             
-            // Special handling for header-controls h1 elements
-            const headerControlsTitle = page.querySelector('.header-controls h1');
-            if (headerControlsTitle) {
-                headerControlsTitle.textContent = translations.pages[translationKey];
-                console.log(`✅ Updated header title for ${pageId}: ${translations.pages[translationKey]}`);
+            console.log(`✅ Сайдбар налаштовано для позиції: ${position}`);
+        }
+        
+        if (mobileToggle) {
+            // Встановити позицію toggle кнопки
+            if (position === 'right') {
+                mobileToggle.style.left = 'auto';
+                mobileToggle.style.right = '20px';
+            } else {
+                mobileToggle.style.left = '20px';
+                mobileToggle.style.right = 'auto';
             }
         }
-    });
-    
-    console.log(`✅ Page titles updated for ${currentAppLanguage}`);
+    }
+
+    // Показати статичне меню (up/down)
+    showStaticMenu(position) {
+        console.log(`📊 MenuManager: Показ статичного меню: ${position}`);
+        
+        // Створити статичне меню
+        this.createStaticMenu(position);
+        
+        // Встановити правильний padding для body
+        if (position === 'up') {
+            document.body.style.paddingTop = '80px';
+            document.body.style.paddingBottom = '';
+        } else if (position === 'down') {
+            document.body.style.paddingBottom = '80px';
+            document.body.style.paddingTop = '';
+        }
+    }
+
+    // Створити статичне меню
+    createStaticMenu(position) {
+        console.log(`🔨 MenuManager: Створення статичного меню для: ${position}`);
+        
+        const menuClass = position === 'up' ? 'menu-top' : 'menu-bottom';
+        const staticMenu = document.createElement('div');
+        staticMenu.className = `static-menu ${menuClass}`;
+        staticMenu.id = 'staticMenu';
+        
+        // Створити контейнер навігаційних кнопок
+        const navButtons = document.createElement('div');
+        navButtons.className = 'nav-buttons';
+        
+        // Створити кнопки для всіх елементів меню
+        menuItems.forEach(item => {
+            const btn = document.createElement('button');
+            btn.className = 'nav-btn';
+            btn.dataset.page = item.page;
+            btn.title = item.title;
+            btn.textContent = item.icon;
+            
+            btn.onclick = () => {
+                if (typeof window.switchPage === 'function') {
+                    window.switchPage(item.page);
+                }
+                this.updateStaticMenuActiveState(item.page);
+            };
+            
+            navButtons.appendChild(btn);
+        });
+        
+        // Створити кнопку налаштувань
+        const settingsBtn = document.createElement('button');
+        settingsBtn.className = 'nav-btn settings-btn-static';
+        settingsBtn.title = 'Settings';
+        settingsBtn.textContent = '⚙️';
+        settingsBtn.onclick = () => {
+            if (typeof window.switchPage === 'function') {
+                window.switchPage('settings');
+            }
+            this.updateStaticMenuActiveState('settings');
+        };
+        
+        // Додати кнопки до контейнера
+        staticMenu.appendChild(navButtons);
+        
+        // Створити окремий контейнер для кнопки налаштувань (праворуч)
+        const settingsContainer = document.createElement('div');
+        settingsContainer.className = 'settings-container-static';
+        settingsContainer.appendChild(settingsBtn);
+        staticMenu.appendChild(settingsContainer);
+        
+        document.body.appendChild(staticMenu);
+        
+        // Оновити активний стан для поточної сторінки
+        const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
+        this.updateStaticMenuActiveState(currentPage);
+        
+        console.log(`✅ Статичне ${position} меню створено з ${menuItems.length} елементами + налаштування`);
+    }
+
+    // Оновити активний стан статичного меню
+    updateStaticMenuActiveState(activePage) {
+        const staticMenu = document.getElementById('staticMenu');
+        if (!staticMenu) return;
+        
+        staticMenu.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.page === activePage || 
+                (activePage === 'settings' && btn.classList.contains('settings-btn-static'))) {
+                btn.classList.add('active');
+            }
+        });
+        
+        console.log(`MenuManager: Активний стан статичного меню оновлено: ${activePage}`);
+    }
+
+    // Отримати поточний тип меню
+    getCurrentMenuType() {
+        return this.currentMenuType;
+    }
 }
 
-// Enhanced page switching with MenuManager support
-function switchPage(page) {
-    console.log(`Switching to page: ${page}`);
+// Глобальний екземпляр менеджера меню
+const menuManager = new MenuManager();
+
+// Перевірити доступність зображення
+async function checkImageAvailability(url) {
+    try {
+        const response = await fetch(url, { method: 'HEAD' });
+        return response.ok;
+    } catch (error) {
+        console.warn(`❌ Зображення недоступне: ${url}`);
+        return false;
+    }
+}
+
+// Завантажити зображення з резервним варіантом
+async function loadBackgroundImage(background) {
+    const config = backgroundOptions[background];
+    if (!config) {
+        console.error(`Фон ${background} не знайдено`);
+        return null;
+    }
     
-    // Save current page to localStorage
-    saveCurrentPage(page);
+    const primaryUrl = config.url;
+    console.log(`🔍 Перевіряємо доступність зображення: ${primaryUrl}`);
     
-    // Remove active class from all pages and nav buttons
-    document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+    const isAvailable = await checkImageAvailability(primaryUrl);
     
-    // Add active class to selected page
-    const targetPage = document.getElementById(page + 'Page');
-    if (targetPage) {
-        targetPage.classList.add('active');
-        console.log(`Page ${page}Page activated`);
+    if (isAvailable) {
+        console.log(`✅ Зображення доступне: ${primaryUrl}`);
+        return primaryUrl;
     } else {
-        console.error(`Page ${page}Page not found`);
+        console.warn(`⚠️ Зображення недоступне, використовуємо резервний варіант`);
+        
+        const fallbackUrls = {
+            penguin: 'https://i.postimg.cc/rmW86W6S/Gemini-Generated-Image-fh66csfh66csfh66.png',
+            game: 'https://i.postimg.cc/43yVBkY8/Generated-image-1.png',
+            code: 'https://i.postimg.cc/nrvZbvKw/image.png',
+            dodep: 'https://i.postimg.cc/nV4dxr1X/2025-09-16-22-26-42.png',
+            prison: 'https://i.postimg.cc/ZR75v48p/2025-09-16-22-26-34.png',
+            forest: 'https://i.postimg.cc/sample/forest-background.png'
+        };
+        
+        return fallbackUrls[background] || primaryUrl;
+    }
+}
+
+// Перемикання видимості категорії в настройках
+function toggleSettingsCategory(categoryName) {
+    if (!categoriesState.hasOwnProperty(categoryName)) return;
+    
+    categoriesState[categoryName] = !categoriesState[categoryName];
+    
+    const header = document.querySelector(`#settingsPage [data-category="${categoryName}"] .category-header`);
+    const options = document.querySelector(`#settingsPage .${categoryName}-options`);
+    
+    if (!header || !options) return;
+    
+    if (categoriesState[categoryName]) {
+        header.classList.remove('collapsed');
+        options.classList.remove('collapsed');
+    } else {
+        header.classList.add('collapsed');
+        options.classList.add('collapsed');
     }
     
-    // Update active nav button in sidebar
-    const pageMap = {
-        'calculator': 'calculator',
-        'arm': 'arm',
-        'grind': 'grind',
-        'boosts': 'boosts',
-        'shiny': 'shiny',
-        'codes': 'codes',
-        'aura': 'aura',
-        'trainer': 'trainer',
-        'charms': 'charms',
-        'secret': 'secret',
-        'potions': 'potions',
-        'worlds': 'worlds',
-        'settings': 'settings',
-        'help': 'help',
-        'peoples': 'peoples'
-    };
-    
-    const targetButton = document.querySelector(`[data-page="${pageMap[page]}"]`);
-    if (targetButton) {
-        targetButton.classList.add('active');
-        console.log(`Nav button activated for ${page}`);
+    localStorage.setItem('armHelper_categoriesState', JSON.stringify(categoriesState));
+    console.log(`Категорію настройок ${categoryName} ${categoriesState[categoryName] ? 'розгорнуто' : 'згорнуто'}`);
+}
+
+// Завантажити стан категорій
+function loadCategoriesState() {
+    const saved = localStorage.getItem('armHelper_categoriesState');
+    if (saved) {
+        try {
+            categoriesState = { ...categoriesState, ...JSON.parse(saved) };
+        } catch (e) {
+            console.warn('Не вдалося завантажити стан категорій, використовуємо за замовчуванням');
+        }
     }
-    
-    // Update static menu active state via MenuManager if available
-    if (typeof window.menuManager !== 'undefined' && window.menuManager.updateStaticMenuActiveState) {
-        window.menuManager.updateStaticMenuActiveState(page);
-    } else if (typeof window.updateStaticMenuActiveState === 'function') {
-        window.updateStaticMenuActiveState(page);
-    }
-    
-    // Close sidebar after selection (only for sidebar menus)
-    const currentMenuType = getCurrentMenuPosition();
-    if (currentMenuType === 'left' || currentMenuType === 'right') {
-        closeSidebar();
-    }
-    
-    // Dispatch page change event
-    const pageChangeEvent = new CustomEvent('pageChanged', {
-        detail: {
-            page: page,
-            previousPage: getCurrentPage()
+}
+
+// Застосувати стан категорій до UI
+function applyCategoriesState() {
+    Object.keys(categoriesState).forEach(category => {
+        const header = document.querySelector(`#settingsPage [data-category="${category}"] .category-header`);
+        const options = document.querySelector(`#settingsPage .${category}-options`);
+        
+        if (!header || !options) return;
+        
+        if (categoriesState[category]) {
+            header.classList.remove('collapsed');
+            options.classList.remove('collapsed');
+        } else {
+            header.classList.add('collapsed');
+            options.classList.add('collapsed');
         }
     });
-    document.dispatchEvent(pageChangeEvent);
-    
-    // Force re-initialize specific page content when switching
-    setTimeout(() => {
-        initializePageContent(page);
-    }, 100);
 }
 
-// Get current menu position (for MenuManager compatibility)
+// Отримати поточне налаштування фону
+function getCurrentBackground() {
+    const saved = localStorage.getItem('armHelper_background');
+    return saved || 'penguin';
+}
+
+// Зберегти налаштування фону
+function saveBackground(background) {
+    localStorage.setItem('armHelper_background', background);
+    console.log(`Фон збережено: ${background}`);
+}
+
+// Застосувати фон до body
+async function applyBackground(background) {
+    const config = backgroundOptions[background];
+    if (!config) {
+        console.error(`Фон ${background} не знайдено`);
+        return;
+    }
+    
+    console.log(`🎨 Застосування фону: ${background}`);
+    
+    const body = document.body;
+    body.classList.add('loading-background');
+    
+    try {
+        const imageUrl = await loadBackgroundImage(background);
+        
+        const backgroundStyle = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${imageUrl}') center center / cover no-repeat`;
+        
+        body.style.background = backgroundStyle;
+        body.style.backgroundAttachment = window.innerWidth > 768 ? 'fixed' : 'scroll';
+        
+        console.log(`✅ Фон застосовано: ${background} (${imageUrl})`);
+    } catch (error) {
+        console.error(`❌ Помилка застосування фону ${background}:`, error);
+    } finally {
+        body.classList.remove('loading-background');
+    }
+}
+
+// Змінити фон
+async function changeBackground(background) {
+    if (!backgroundOptions[background]) {
+        console.error(`Недійсний фон: ${background}`);
+        return;
+    }
+    
+    const button = document.querySelector(`[data-background="${background}"]`);
+    if (button) {
+        button.classList.add('loading');
+    }
+    
+    try {
+        saveBackground(background);
+        await applyBackground(background);
+        updateBackgroundUI();
+        console.log(`Фон змінено на: ${background}`);
+    } catch (error) {
+        console.error(`❌ Помилка зміни фону:`, error);
+    } finally {
+        if (button) {
+            button.classList.remove('loading');
+        }
+    }
+}
+
+// Оновити UI фону
+function updateBackgroundUI() {
+    const currentBg = getCurrentBackground();
+    
+    document.querySelectorAll('#settingsPage .background-option').forEach(option => {
+        option.classList.remove('active');
+        if (option.dataset.background === currentBg) {
+            option.classList.add('active');
+        }
+    });
+}
+
+// Отримати поточне налаштування позиції меню
 function getCurrentMenuPosition() {
     const saved = localStorage.getItem('armHelper_menuPosition');
     return saved || 'left';
 }
 
-// Initialize specific page content when switching
-function initializePageContent(page) {
-    console.log(`🔄 Initializing content for page: ${page}`);
-    
-    // Check if the page container exists first
-    const pageContainer = document.getElementById(page + 'Page');
-    if (!pageContainer) {
-        console.error(`❌ Page container ${page}Page not found`);
+// Зберегти налаштування позиції меню
+function saveMenuPosition(position) {
+    localStorage.setItem('armHelper_menuPosition', position);
+    console.log(`Позицію меню збережено: ${position}`);
+}
+
+// Застосувати позицію меню використовуючи MenuManager
+function applyMenuPosition(position) {
+    if (!menuPositions[position]) {
+        console.error(`Позицію меню ${position} не знайдено`);
         return;
     }
     
-    switch(page) {
-        case 'calculator':
-            if (typeof initializeCalculator === 'function') {
-                initializeCalculator();
-            }
-            break;
-        case 'arm':
-            if (typeof initializeArm === 'function') {
-                initializeArm();
-            }
-            break;
-        case 'grind':
-            if (typeof initializeGrind === 'function') {
-                if (typeof window !== 'undefined' && window.grindInitialized !== undefined) {
-                    window.grindInitialized = false;
-                }
-                initializeGrind();
-            }
-            break;
-        case 'shiny':
-            if (typeof initializeShiny === 'function') {
-                initializeShiny();
-            }
-            break;
-        case 'boosts':
-            if (typeof initializeBoosts === 'function') {
-                initializeBoosts();
-            }
-            break;
-        case 'trainer':
-            if (typeof initializeTrainer === 'function') {
-                initializeTrainer();
-            }
-            break;
-        case 'aura':
-            if (typeof initializeAura === 'function') {
-                initializeAura();
-            }
-            break;
-        case 'codes':
-            if (typeof initializeCodes === 'function') {
-                initializeCodes();
-            }
-            break;
-        case 'charms':
-            if (typeof initializeCharms === 'function') {
-                initializeCharms();
-            }
-            break;
-        case 'secret':
-            console.log('🔮 Initializing Secret Pets page...');
-            if (typeof initializeSecret === 'function') {
-                if (typeof window !== 'undefined' && window.secretInitialized !== undefined) {
-                    window.secretInitialized = false;
-                }
-                initializeSecret();
-            } else {
-                console.error('❌ initializeSecret function not found');
-            }
-            break;
-        case 'potions':
-            console.log('🧪 Initializing Potions & Food page...');
-            if (typeof initializePotions === 'function') {
-                if (typeof window !== 'undefined' && window.potionsInitialized !== undefined) {
-                    window.potionsInitialized = false;
-                }
-                initializePotions();
-            } else {
-                console.error('❌ initializePotions function not found');
-            }
-            break;
-        case 'worlds':
-            console.log('🌍 Initializing Worlds page...');
-            if (typeof initializeWorlds === 'function') {
-                initializeWorlds();
-            } else {
-                console.error('❌ initializeWorlds function not found');
-            }
-            break;
-        case 'settings':
-            console.log('⚙️ Initializing Settings page...');
-            if (typeof initializeSettings === 'function') {
-                initializeSettings();
-            } else {
-                console.error('❌ initializeSettings function not found');
-            }
-            break;
-        case 'help':
-            console.log('🆘 Initializing Help page...');
-            if (typeof initializeHelp === 'function') {
-                if (typeof window !== 'undefined' && window.helpInitialized !== undefined) {
-                    window.helpInitialized = false;
-                }
-                initializeHelp();
-            } else {
-                console.error('❌ initializeHelp function not found');
-            }
-            break;
-        case 'peoples':
-            console.log('🙏 Initializing Peoples page...');
-            if (typeof initializePeoples === 'function') {
-                if (typeof window !== 'undefined' && window.peoplesInitialized !== undefined) {
-                    window.peoplesInitialized = false;
-                }
-                initializePeoples();
-            } else {
-                console.error('❌ initializePeoples function not found');
-            }
-            break;
-    }
+    console.log(`🔄 ЗАСТОСУВАННЯ ПОЗИЦІЇ МЕНЮ ЧЕРЕЗ MenuManager: ${position}`);
+    
+    // Використати MenuManager для показу лише одного типу меню
+    menuManager.showOnlyMenu(position);
+    
+    console.log(`✅ ПОЗИЦІЮ МЕНЮ ЗАСТОСОВАНО: ${position}`);
 }
 
-// Category toggle functionality
-function toggleCategory(categoryId) {
-    const categoryButtons = document.getElementById(categoryId);
-    const toggleIcon = document.querySelector(`[data-category="${categoryId}"] .category-toggle`);
+// Примусово очистити всі меню (спрощена версія)
+async function forceCleanAllMenus() {
+    console.log('🧹 Примусове очищення всіх меню...');
+    menuManager.clearAllMenus();
+    console.log('✅ Всі меню очищено');
+}
+
+// Змінити позицію меню
+function changeMenuPosition(position) {
+    if (!menuPositions[position]) {
+        console.error(`Недійсна позиція меню: ${position}`);
+        return;
+    }
     
-    if (categoryButtons && toggleIcon) {
-        const isExpanded = categoryButtons.classList.contains('expanded');
-        
-        // Close all categories first
-        document.querySelectorAll('.category-buttons').forEach(el => {
-            el.classList.remove('expanded');
-        });
-        document.querySelectorAll('.category-toggle').forEach(el => {
-            el.classList.remove('expanded');
-        });
-        
-        // If this category wasn't expanded, expand it
-        if (!isExpanded) {
-            categoryButtons.classList.add('expanded');
-            toggleIcon.classList.add('expanded');
+    saveMenuPosition(position);
+    applyMenuPosition(position);
+    updateMenuPositionUI();
+    
+    console.log(`Позицію меню змінено на: ${position}`);
+}
+
+// Оновити UI позиції меню
+function updateMenuPositionUI() {
+    const currentPos = getCurrentMenuPosition();
+    
+    document.querySelectorAll('#settingsPage .menu-option').forEach(option => {
+        option.classList.remove('active');
+        if (option.dataset.position === currentPos) {
+            option.classList.add('active');
         }
-    }
+    });
 }
 
-// Initialize categories on app start
-function initializeCategories() {
-    console.log('✅ Categories initialized - all closed by default');
+// Оновити активний стан статичного меню (глобальна функція)
+function updateStaticMenuActiveState(activePage) {
+    menuManager.updateStaticMenuActiveState(activePage);
 }
 
-// Sidebar functionality
-function toggleMobileMenu() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
+// Завантажити переклади налаштувань
+async function loadSettingsTranslations() {
+    if (settingsTranslations) return settingsTranslations;
     
-    if (sidebar && overlay) {
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('show');
-    }
-}
-
-function closeSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    
-    if (sidebar && overlay) {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('show');
-    }
-}
-
-// Disabled auth action
-function handleAuthAction() {
-    console.log('Login feature coming soon...');
-}
-
-// Settings persistence helpers
-function saveSettingsToStorage(key, settings) {
-    localStorage.setItem(`armHelper_${key}_settings`, JSON.stringify(settings));
-    console.log(`Settings saved to localStorage for ${key}`);
-}
-
-function loadSettingsFromStorage(key) {
-    const localSettings = localStorage.getItem(`armHelper_${key}_settings`);
-    if (localSettings) {
-        try {
-            return JSON.parse(localSettings);
-        } catch (e) {
-            console.warn('Invalid local settings data');
-            return null;
+    try {
+        console.log('📥 Завантаження перекладів налаштувань...');
+        const response = await fetch('languages/settings.json');
+        if (!response.ok) {
+            throw new Error(`HTTP помилка! статус: ${response.status}`);
         }
+        settingsTranslations = await response.json();
+        console.log('✅ Переклади налаштувань завантажено');
+        return settingsTranslations;
+    } catch (error) {
+        console.error('❌ Помилка завантаження перекладів налаштувань:', error);
+        settingsTranslations = {
+            en: {
+                title: "⚙️ Settings",
+                background: "Background",
+                menu: "Menu Position",
+                penguin: "Penguin",
+                game: "Game",
+                code: "Code",
+                dodep: "Dodep",
+                prison: "Prison",
+                forest: "Forest",
+                up: "Top",
+                down: "Bottom",
+                left: "Left", 
+                right: "Right"
+            },
+            uk: {
+                title: "⚙️ Налаштування", 
+                background: "Фон",
+                menu: "Позиція меню",
+                penguin: "Пінгвін",
+                game: "Гра",
+                code: "Код",
+                dodep: "Додеп",
+                prison: "В'язниця",
+                forest: "Ліс",
+                up: "Верх",
+                down: "Низ", 
+                left: "Ліворуч",
+                right: "Праворуч"
+            },
+            ru: {
+                title: "⚙️ Настройки",
+                background: "Фон",
+                menu: "Позиция меню", 
+                penguin: "Пингвин",
+                game: "Игра",
+                code: "Код",
+                dodep: "Додеп",
+                prison: "Тюрьма",
+                forest: "Лес",
+                up: "Верх",
+                down: "Низ",
+                left: "Слева", 
+                right: "Справа"
+            }
+        };
+        return settingsTranslations;
     }
-    return null;
 }
 
-// Flag to prevent repeated initialization
-let appInitialized = false;
+// Отримати переклад
+function getTranslation(key, fallback) {
+    const currentLang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
+    
+    if (settingsTranslations && settingsTranslations[currentLang] && settingsTranslations[currentLang][key]) {
+        return settingsTranslations[currentLang][key];
+    }
+    
+    return fallback || key;
+}
 
-// Enhanced app initialization with MenuManager support
-async function initializeApp() {
-    if (appInitialized) {
-        console.log('⚠️ App already initialized');
+// Оновити мову налаштувань
+async function updateSettingsLanguage(lang = null) {
+    const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en');
+    
+    await loadSettingsTranslations();
+    
+    if (!settingsTranslations[currentLang]) {
+        console.warn(`Мова налаштувань ${currentLang} не знайдена, використовуємо англійську`);
         return;
     }
     
-    console.log('🚀 Starting app initialization with MenuManager support...');
+    const translations = settingsTranslations[currentLang];
     
-    // Check if content is loaded
-    const appContent = document.getElementById('app-content');
-    if (!appContent || !appContent.innerHTML.trim()) {
-        console.error('❌ Content not loaded');
-        return;
+    // Оновити заголовок сторінки
+    const titleElement = document.querySelector('#settingsPage .settings-title');
+    if (titleElement) {
+        titleElement.textContent = translations.title;
+        console.log(`✅ Оновлено заголовок: ${translations.title}`);
     }
     
-    // Load current language
-    currentAppLanguage = getCurrentAppLanguage();
+    // Оновити заголовки секцій
+    const backgroundSectionTitle = document.querySelector('#settingsPage [data-category="background"] .category-title span:last-child');
+    if (backgroundSectionTitle) {
+        backgroundSectionTitle.textContent = translations.background;
+        console.log(`✅ Оновлено секцію фону: ${translations.background}`);
+    }
     
-    // Load menu translations
-    await loadMenuTranslations();
+    const menuSectionTitle = document.querySelector('#settingsPage [data-category="menu"] .category-title span:last-child');
+    if (menuSectionTitle) {
+        menuSectionTitle.textContent = translations.menu;
+        console.log(`✅ Оновлено секцію меню: ${translations.menu}`);
+    }
     
-    // Update active state of language flags
-    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.lang === currentAppLanguage) {
-            btn.classList.add('active');
+    // Оновити назви опцій фону
+    Object.keys(backgroundOptions).forEach(bg => {
+        const option = document.querySelector(`#settingsPage [data-background="${bg}"] .option-name`);
+        if (option && translations[bg]) {
+            option.textContent = translations[bg];
+            console.log(`✅ Оновлено опцію фону ${bg}: ${translations[bg]}`);
         }
     });
     
-    // Update menu translations AND page titles
-    updateMenuTranslations();
-    updatePageTitles();
+    // Оновити назви опцій позиції меню
+    Object.keys(menuPositions).forEach(pos => {
+        const option = document.querySelector(`#settingsPage [data-position="${pos}"] .menu-option-name`);
+        if (option && translations[pos]) {
+            option.textContent = translations[pos];
+            console.log(`✅ Оновлено опцію позиції ${pos}: ${translations[pos]}`);
+        }
+    });
     
-    // Initialize categories
-    initializeCategories();
+    console.log(`✅ Мову налаштувань оновлено до ${currentLang}`);
+}
+
+// Створити HTML налаштувань
+function createSettingsHTML() {
+    const baseTranslations = {
+        title: "⚙️ Settings",
+        background: "Background", 
+        menu: "Menu Position",
+        penguin: "Penguin",
+        game: "Game",
+        code: "Code", 
+        dodep: "Dodep",
+        prison: "Prison",
+        forest: "Forest",
+        up: "Top",
+        down: "Bottom", 
+        left: "Left",
+        right: "Right"
+    };
     
-    // Initialize all modules first
-    initializeAllModules();
+    const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => {
+        const config = backgroundOptions[bg];
+        const name = baseTranslations[bg] || bg.charAt(0).toUpperCase() + bg.slice(1);
+        return `
+            <div class="background-option" data-background="${bg}" onclick="changeBackground('${bg}')">
+                <div class="option-icon">${config.icon}</div>
+                <div class="option-name">${name}</div>
+                <div class="background-preview" style="background-image: url('${config.url}')"></div>
+                <div class="loading-indicator" style="display: none;">⏳</div>
+            </div>
+        `;
+    }).join('');
+
+    return `
+        <div class="settings-container">
+            <h1 class="settings-title">${baseTranslations.title}</h1>
+            
+            <div class="settings-section" data-category="background">
+                <div class="category-header collapsed" onclick="toggleSettingsCategory('background')">
+                    <div class="category-title">
+                        <span class="section-icon">🎨</span>
+                        <span>${baseTranslations.background}</span>
+                    </div>
+                    <span class="category-toggle">▼</span>
+                </div>
+                
+                <div class="background-options collapsed">
+                    ${backgroundOptionsHTML}
+                </div>
+            </div>
+            
+            <div class="settings-section" data-category="menu">
+                <div class="category-header collapsed" onclick="toggleSettingsCategory('menu')">
+                    <div class="category-title">
+                        <span class="section-icon">📱</span>
+                        <span>${baseTranslations.menu}</span>
+                    </div>
+                    <span class="category-toggle">▼</span>
+                </div>
+                
+                <div class="menu-options collapsed">
+                    <div class="menu-option" data-position="up" onclick="changeMenuPosition('up')">
+                        <div class="menu-option-icon">⬆️</div>
+                        <div class="menu-option-name">${baseTranslations.up}</div>
+                    </div>
+                    
+                    <div class="menu-option" data-position="left" onclick="changeMenuPosition('left')">
+                        <div class="menu-option-icon">⬅️</div>
+                        <div class="menu-option-name">${baseTranslations.left}</div>
+                    </div>
+                    
+                    <div class="menu-option" data-position="right" onclick="changeMenuPosition('right')">
+                        <div class="menu-option-icon">➡️</div>
+                        <div class="menu-option-name">${baseTranslations.right}</div>
+                    </div>
+                    
+                    <div class="menu-option" data-position="down" onclick="changeMenuPosition('down')">
+                        <div class="menu-option-icon">⬇️</div>
+                        <div class="menu-option-name">${baseTranslations.down}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Ініціалізувати сторінку налаштувань
+async function initializeSettings() {
+    if (settingsInitialized) {
+        console.log('⚠️ Налаштування вже ініціалізовано');
+        return;
+    }
     
-    // Wait for MenuManager to be available
+    console.log('⚙️ Ініціалізація налаштувань з MenuManager...');
+    
+    const settingsPage = document.getElementById('settingsPage');
+    if (!settingsPage) {
+        console.error('❌ Сторінку налаштувань не знайдено');
+        return;
+    }
+    
+    // Завантажити стан категорій
+    loadCategoriesState();
+    
+    // Завантажити переклади
+    await loadSettingsTranslations();
+    
+    // Встановити HTML контент
+    settingsPage.innerHTML = createSettingsHTML();
+    console.log('✅ HTML контент створено');
+    
+    // Оновити переклади
+    setTimeout(async () => {
+        await updateSettingsLanguage();
+        console.log('✅ Переклади застосовано');
+    }, 100);
+    
+    // Застосувати поточний фон
+    const currentBg = getCurrentBackground();
+    await applyBackground(currentBg);
+    updateBackgroundUI();
+    
+    // Застосувати поточну позицію меню через MenuManager
+    const currentMenuPos = getCurrentMenuPosition();
+    applyMenuPosition(currentMenuPos);
+    updateMenuPositionUI();
+    
+    // Застосувати стан категорій
+    applyCategoriesState();
+    
+    settingsInitialized = true;
+    console.log('✅ Налаштування повністю ініціалізовано з MenuManager');
+}
+
+// Застосувати фон і позицію меню при запуску додатка
+async function initializeSettingsOnStart() {
+    console.log('🚀 Ініціалізація налаштувань при старті з MenuManager...');
+    
+    // Застосувати фон
+    const currentBg = getCurrentBackground();
+    await applyBackground(currentBg);
+    console.log(`Початковий фон застосовано: ${currentBg}`);
+    
+    // Застосувати позицію меню через MenuManager
+    const currentMenuPos = getCurrentMenuPosition();
+    console.log(`🎯 Застосування початкової позиції меню через MenuManager: ${currentMenuPos}`);
+    
     setTimeout(() => {
-        // Apply menu position via MenuManager if available
-        if (typeof window.menuManager !== 'undefined') {
-            console.log('🎯 Using MenuManager for menu initialization...');
-            const currentMenuPos = getCurrentMenuPosition();
-            if (typeof window.applyMenuPosition === 'function') {
-                window.applyMenuPosition(currentMenuPos);
-            }
-        } else {
-            console.warn('⚠️ MenuManager not available, falling back to legacy menu system');
-        }
-        
-        // Restore last page or default to calculator
-        const lastPage = getCurrentPage();
-        console.log(`🔄 Restoring last page: ${lastPage}`);
-        
-        setTimeout(() => {
-            switchPage(lastPage);
-            console.log(`✅ Page restored to: ${lastPage}`);
-        }, 200);
-    }, 300);
-    
-    // Enhanced click outside settings panel handler
-    document.addEventListener('click', e => {
-        const settingsPanels = [
-            { panel: document.getElementById('settingsPanel'), btn: document.querySelector('#calculatorPage .settings-btn'), name: 'calculator' },
-            { panel: document.getElementById('settingsPanelArm'), btn: document.querySelector('#armPage .settings-btn'), name: 'arm' },
-            { panel: document.getElementById('settingsPanelGrind'), btn: document.querySelector('#grindPage .settings-btn'), name: 'grind' }
-        ];
-        
-        settingsPanels.forEach(({ panel, btn, name }) => {
-            if (panel && btn) {
-                // Check if panel just opened
-                if (panel.dataset.justOpened === 'true') {
-                    console.log(`⏸️ Skipping close for ${name} panel - just opened`);
-                    return;
-                }
-                
-                const isClickInsidePanel = panel.contains(e.target);
-                const isClickOnSettingsBtn = btn.contains(e.target);
-                const isClickOnCategoryButton = e.target.closest('.category-button');
-                const isClickOnBackButton = e.target.closest('.back-btn');
-                const isClickOnCategorySwitch = e.target.closest('.category-switch');
-                const isClickOnSimpleModifier = e.target.closest('.simple-modifier');
-                const isClickOnCategoryHeader = e.target.closest('.category-header');
-                const isClickOnGrindCategoryHeader = e.target.closest('.category-header-modifier');
-                const isClickOnLanguageFlag = e.target.closest('.lang-flag-btn');
-                
-                const shouldKeepOpen = isClickInsidePanel || isClickOnSettingsBtn || 
-                    isClickOnCategoryButton || isClickOnBackButton || 
-                    isClickOnCategorySwitch || isClickOnSimpleModifier ||
-                    isClickOnCategoryHeader || isClickOnGrindCategoryHeader ||
-                    isClickOnLanguageFlag;
-                
-                if (!shouldKeepOpen && panel.classList.contains('show')) {
-                    console.log(`🔒 Closing ${name} settings panel`);
-                    panel.classList.remove('show');
-                } else if (shouldKeepOpen) {
-                    console.log(`✋ Keeping ${name} settings panel open`);
-                }
-            }
-        });
-    });
-
-    appInitialized = true;
-    console.log('✅ App initialization completed with MenuManager support');
+        applyMenuPosition(currentMenuPos);
+        console.log(`✅ Початкову позицію меню застосовано через MenuManager: ${currentMenuPos}`);
+    }, 100);
 }
 
-// Initialize all modules with proper DOM readiness checks
-function initializeAllModules() {
-    console.log('🔧 Initializing all modules...');
-    
-    const modules = [
-        'initializeCalculator',
-        'initializeArm', 
-        'initializeGrind',
-        'initializeBoosts',
-        'initializeShiny',
-        'initializeSecret',
-        'initializePotions',
-        'initializeAura',
-        'initializeTrainer',
-        'initializeCharms',
-        'initializeCodes',
-        'initializeWorlds',
-        'initializeSettings',
-        'initializeHelp',
-        'initializePeoples'
-    ];
-
-    modules.forEach(moduleName => {
-        try {
-            if (typeof window[moduleName] === 'function') {
-                // Add delay for DOM-dependent modules
-                if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || 
-                    moduleName === 'initializeGrind' || moduleName === 'initializePeoples' ||
-                    moduleName === 'initializeWorlds' || moduleName === 'initializeHelp' ||
-                    moduleName === 'initializeSettings') {
-                    setTimeout(() => {
-                        try {
-                            // Force reinitialization by resetting flags
-                            if (moduleName === 'initializeSecret' && window.secretInitialized) {
-                                window.secretInitialized = false;
-                            }
-                            if (moduleName === 'initializePotions' && window.potionsInitialized) {
-                                window.potionsInitialized = false;
-                            }
-                            if (moduleName === 'initializeGrind' && window.grindInitialized) {
-                                window.grindInitialized = false;
-                            }
-                            if (moduleName === 'initializePeoples' && window.peoplesInitialized) {
-                                window.peoplesInitialized = false;
-                            }
-                            if (moduleName === 'initializeHelp' && window.helpInitialized) {
-                                window.helpInitialized = false;
-                            }
-                            if (moduleName === 'initializeSettings' && window.settingsInitialized) {
-                                window.settingsInitialized = false;
-                            }
-                            
-                            window[moduleName]();
-                            console.log(`✅ ${moduleName} initialized (delayed)`);
-                        } catch (error) {
-                            console.error(`❌ Error initializing ${moduleName}:`, error);
-                        }
-                    }, 300);
-                } else {
-                    window[moduleName]();
-                    console.log(`✅ ${moduleName} initialized`);
-                }
-            } else {
-                console.warn(`⚠️ Function ${moduleName} not found`);
-            }
-        } catch (error) {
-            console.error(`❌ Error initializing ${moduleName}:`, error);
-        }
-    });
+// Примусово очистити всі меню (використовує MenuManager)
+async function forceCleanAllMenus() {
+    console.log('🧹 Примусове очищення всіх меню через MenuManager...');
+    menuManager.clearAllMenus();
+    console.log('✅ Всі меню очищено через MenuManager');
 }
 
-// Debug function to check page states
-function debugPageStates() {
-    console.log('=== DEBUG PAGE STATES ===');
-    document.querySelectorAll('.page').forEach(page => {
-        console.log(`${page.id}: ${page.classList.contains('active') ? 'ACTIVE' : 'INACTIVE'}`);
-    });
-    console.log(`Current saved page: ${getCurrentPage()}`);
-    console.log('========================');
+// Слухати зміни мови
+document.addEventListener('languageChanged', (event) => {
+    if (settingsInitialized) {
+        updateSettingsLanguage(event.detail.language);
+    }
+});
+
+// Слухати зміни сторінок для оновлення активного стану статичного меню
+document.addEventListener('pageChanged', (event) => {
+    if (event.detail && event.detail.page) {
+        updateStaticMenuActiveState(event.detail.page);
+    }
+});
+
+// Застосувати налаштування при завантаженні
+document.addEventListener('DOMContentLoaded', () => {
+    initializeSettingsOnStart();
+});
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeSettingsOnStart);
+} else {
+    initializeSettingsOnStart();
 }
 
-// Force reinitialization for specific modules
-function forceReinitializeModule(moduleName) {
-    console.log(`🔄 Force reinitializing ${moduleName}...`);
-    
-    // Reset initialization flags
-    if (moduleName === 'secret' && typeof window !== 'undefined') {
-        window.secretInitialized = false;
-    }
-    if (moduleName === 'potions' && typeof window !== 'undefined') {
-        window.potionsInitialized = false;
-    }
-    if (moduleName === 'grind' && typeof window !== 'undefined') {
-        window.grindInitialized = false;
-    }
-    if (moduleName === 'peoples' && typeof window !== 'undefined') {
-        window.peoplesInitialized = false;
-    }
-    if (moduleName === 'help' && typeof window !== 'undefined') {
-        window.helpInitialized = false;
-    }
-    if (moduleName === 'settings' && typeof window !== 'undefined') {
-        window.settingsInitialized = false;
-    }
-    
-    // Call initialization
-    const initFunctionName = `initialize${moduleName.charAt(0).toUpperCase() + moduleName.slice(1)}`;
-    if (typeof window[initFunctionName] === 'function') {
-        setTimeout(() => {
-            window[initFunctionName]();
-            console.log(`✅ ${initFunctionName} force reinitialized`);
-        }, 100);
-    }
-}
-
-// Make functions globally available with MenuManager support
-window.switchPage = switchPage;
-window.toggleMobileMenu = toggleMobileMenu;
-window.closeSidebar = closeSidebar;
-window.handleAuthAction = handleAuthAction;
-window.initializeApp = initializeApp;
-window.debugPageStates = debugPageStates;
-window.saveSettingsToStorage = saveSettingsToStorage;
-window.loadSettingsFromStorage = loadSettingsFromStorage;
-window.toggleCategory = toggleCategory;
-window.initializeCategories = initializeCategories;
-window.forceReinitializeModule = forceReinitializeModule;
-window.switchAppLanguage = switchAppLanguage;
-window.getCurrentAppLanguage = getCurrentAppLanguage;
-window.saveAppLanguage = saveAppLanguage;
-window.updateMenuTranslations = updateMenuTranslations;
-window.updatePageTitles = updatePageTitles;
-window.saveCurrentPage = saveCurrentPage;
-window.getCurrentPage = getCurrentPage;
-window.getCurrentMenuPosition = getCurrentMenuPosition;
+// Глобальні функції
+window.initializeSettings = initializeSettings;
+window.changeBackground = changeBackground;
+window.changeMenuPosition = changeMenuPosition;
+window.toggleSettingsCategory = toggleSettingsCategory;
+window.updateSettingsLanguage = updateSettingsLanguage;
+window.updateStaticMenuActiveState = updateStaticMenuActiveState;
+window.getGitHubImageURL = getGitHubImageURL;
+window.forceCleanAllMenus = forceCleanAllMenus;
+window.applyMenuPosition = applyMenuPosition;
+window.menuManager = menuManager;
