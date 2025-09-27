@@ -20,7 +20,7 @@ class URLRouter {
         
         // For GitHub Pages - always include repository path
         if (host.includes('.github.io') && host === 'mavpacheater.github.io') {
-            const baseUrl = `${protocol}//${host}/tester_site_Secret/`;
+            const baseUrl = `${protocol}//${host}/armwrestlerinfopost/`;
             console.log('✅ Detected GitHub Pages with repo:', baseUrl);
             return baseUrl;
         }
