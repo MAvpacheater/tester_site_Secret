@@ -91,14 +91,14 @@
     transform: rotate(-90deg);
 }
 
-/* Контейнер для кнопок фонів */
+/* Контейнер для кнопок фонів - ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
 .background-options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr); /* ЗМІНЕНО З 2 НА 3 РЯДИ */
     gap: 15px;
     margin-top: 10px;
-    max-height: 300px;
+    max-height: 450px; /* ЗБІЛЬШЕНО ВИСОТУ ДЛЯ 3 РЯДІВ */
     overflow: hidden;
     transition: all 0.4s ease;
     opacity: 1;
@@ -554,7 +554,7 @@ body.menu-right {
     background: rgba(255, 215, 0, 0.8);
 }
 
-/* Mobile Responsiveness */
+/* Mobile Responsiveness - ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
 @media (max-width: 768px) {
     .mobile-menu-toggle {
         width: 55px;
@@ -579,6 +579,7 @@ body.menu-right {
     .background-options {
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
+        max-height: 360px; /* ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
     }
     
     .background-option {
@@ -630,6 +631,7 @@ body.menu-right {
     .background-options {
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
+        max-height: 260px; /* ОНОВЛЕНО ДЛЯ КОМПАКТНОГО ВІДОБРАЖЕННЯ НА МАЛИХ ЕКРАНАХ */
     }
     
     .background-option {
