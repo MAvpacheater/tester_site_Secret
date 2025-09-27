@@ -1,4 +1,4 @@
-// Fixed GitHub Auto-reload System
+// Fixed GitHub Auto-reload System - Updated for armwrestlerinfopost repository
 class GitHubAutoReload {
     constructor(options = {}) {
         this.githubUser = options.githubUser || 'MAvpacheater';
@@ -14,13 +14,13 @@ class GitHubAutoReload {
     }
 
     async init() {
-        console.log('🔄 Initializing GitHub auto-reload...');
+        console.log(`🔄 Initializing GitHub auto-reload for ${this.githubRepo}...`);
         
         try {
             await this.getCurrentCommitSha();
             this.start();
             this.showIndicator();
-            console.log('✅ GitHub auto-reload activated');
+            console.log(`✅ GitHub auto-reload activated for ${this.githubRepo}`);
             return true;
         } catch (error) {
             console.warn('⚠️ GitHub auto-reload initialization failed:', error.message);
@@ -52,7 +52,7 @@ class GitHubAutoReload {
             }
 
             if (response.status === 404) {
-                throw new Error('Repository not found or private');
+                throw new Error(`Repository ${this.githubUser}/${this.githubRepo} not found or private`);
             }
 
             if (!response.ok) {
@@ -62,7 +62,7 @@ class GitHubAutoReload {
             const commitData = await response.json();
             const newSha = commitData.sha;
             
-            console.log(`📝 Latest commit: ${newSha.substring(0, 8)}...`);
+            console.log(`📝 Latest commit in ${this.githubRepo}: ${newSha.substring(0, 8)}...`);
 
             this.failureCount = 0;
 
@@ -113,7 +113,7 @@ class GitHubAutoReload {
             }
         }, this.checkInterval);
         
-        console.log(`🚀 GitHub monitoring started (${this.checkInterval/1000}s interval)`);
+        console.log(`🚀 GitHub monitoring started for ${this.githubRepo} (${this.checkInterval/1000}s interval)`);
     }
 
     stop() {
@@ -125,7 +125,7 @@ class GitHubAutoReload {
             this.intervalId = null;
         }
         
-        console.log('⏸️ GitHub monitoring stopped');
+        console.log(`⏸️ GitHub monitoring stopped for ${this.githubRepo}`);
     }
 
     reloadPage() {
@@ -206,7 +206,7 @@ class GitHubAutoReload {
     showIndicator() {
         const indicator = document.getElementById('autoReloadIndicator');
         if (indicator) {
-            indicator.innerHTML = `🔄 Auto-reload active`;
+            indicator.innerHTML = `🔄 Auto-reload active (${this.githubRepo})`;
             indicator.classList.add('show');
             
             // Auto-hide after 5 seconds
@@ -225,7 +225,7 @@ class GitHubAutoReload {
 
     async checkNow() {
         try {
-            console.log('🔍 Manual check requested...');
+            console.log(`🔍 Manual check requested for ${this.githubRepo}...`);
             const hasChanges = await this.getCurrentCommitSha();
             if (hasChanges) {
                 this.reloadPage();
@@ -251,6 +251,8 @@ class GitHubAutoReload {
     getStatus() {
         return {
             active: this.isActive,
+            repository: `${this.githubUser}/${this.githubRepo}`,
+            branch: this.branch,
             lastCommitSha: this.lastCommitSha?.substring(0, 8),
             checkInterval: this.checkInterval,
             failureCount: this.failureCount,
@@ -407,4 +409,4 @@ document.addEventListener('DOMContentLoaded', () => {
     handlePageRestoration();
 });
 
-console.log('✅ Fixed URL and Auto-reload systems loaded');
+console.log('✅ Fixed URL and Auto-reload systems loaded for armwrestlerinfopost');
