@@ -103,7 +103,7 @@ const contributors = [
         name: 'Mr dep Dodep',
         contribution: 'Project Creator & Developer',
         role: 'Admin',
-        telegram: '@privatefanat_dep',
+        telegram: '@privatefanat_dep_ne_scam_15proof',
         discord: 'trader_aws'
     }
 ];
