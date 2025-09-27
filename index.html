@@ -20,7 +20,7 @@
                 var basePath = '';
                 
                 if (host.includes('.github.io') && host === 'mavpacheater.github.io') {
-                    basePath = '/tester_site_Secret';
+                    basePath = '/armwrestlerinfopost';
                 }
                 
                 var fullPath = basePath + redirect;
@@ -186,7 +186,7 @@
                     console.log('✅ URL routing initialized');
                 }
                 
-                // Initialize GitHub auto-reload
+                // Initialize GitHub auto-reload with correct repository
                 if (typeof initGitHubAutoReload === 'function') {
                     const githubConfig = {
                         githubUser: 'MAvpacheater',
@@ -195,7 +195,7 @@
                         checkInterval: 30000
                     };
                     initGitHubAutoReload(githubConfig);
-                    console.log('✅ GitHub auto-reload initialized');
+                    console.log('✅ GitHub auto-reload initialized for armwrestlerinfopost');
                 }
                 
                 // Handle URL routing
