@@ -1,4 +1,4 @@
-// General JavaScript functions - ВИПРАВЛЕНА ВЕРСІЯ
+// General JavaScript functions - FIXED VERSION без app_settings
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -25,12 +25,13 @@ function saveAppLanguage(lang) {
     console.log(`App language saved: ${lang}`);
 }
 
-// Load menu translations
+// Load menu translations with CORRECT path
 async function loadMenuTranslations() {
     if (menuTranslations) return menuTranslations;
     
     try {
         console.log('📥 Loading menu translations...');
+        // FIXED: Correct path without app_settings
         const response = await fetch('languages/menu.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -541,10 +542,8 @@ async function initializeApp() {
         console.log(`✅ Page restored to: ${lastPage}`);
     }, 200);
     
-    // ВИПРАВЛЕНИЙ Enhanced click outside settings panel handler
+    // Enhanced click outside settings panel handler
     document.addEventListener('click', e => {
-        console.log('🖱️ Click detected, target:', e.target);
-        
         const settingsPanels = [
             { panel: document.getElementById('settingsPanel'), btn: document.querySelector('#calculatorPage .settings-btn'), name: 'calculator' },
             { panel: document.getElementById('settingsPanelArm'), btn: document.querySelector('#armPage .settings-btn'), name: 'arm' },
@@ -553,7 +552,7 @@ async function initializeApp() {
         
         settingsPanels.forEach(({ panel, btn, name }) => {
             if (panel && btn) {
-                // Перевіряємо чи панель щойно відкрилась
+                // Check if panel just opened
                 if (panel.dataset.justOpened === 'true') {
                     console.log(`⏸️ Skipping close for ${name} panel - just opened`);
                     return;
