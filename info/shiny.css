@@ -1,10 +1,10 @@
-/* Shiny Stats Page Styles - Mining Theme - Wider Layout */
+/* Shiny Stats Page Styles - Mining Theme - Scaled 2x */
 
 .shiny-page {
     display: none;
-    width: 200%;
-    max-width: none;
-    padding: 0 40px;
+    transform: scale(2);
+    transform-origin: top left;
+    width: 50%;
 }
 
 .shiny-page.active {
@@ -27,18 +27,14 @@
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     max-height: 400px;
     overflow-y: auto;
     padding-right: 10px;
     margin-bottom: 30px;
-    width: 100%;
-    max-width: 1400px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .stats-grid::-webkit-scrollbar {
@@ -58,12 +54,10 @@
 
 .stat-row {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 15px 20px;
+    justify-content: space-between;
+    padding: 12px 16px;
     background: linear-gradient(135deg, rgba(139, 69, 19, 0.6), rgba(101, 67, 33, 0.7));
-    border-radius: 12px;
+    border-radius: 10px;
     transition: all 0.3s ease;
     border-left: 4px solid transparent;
     border: 2px solid rgba(139, 69, 19, 0.5);
@@ -71,8 +65,6 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
-    min-height: 75px;
-    text-align: center;
 }
 
 .stat-row::before {
@@ -115,83 +107,23 @@
     font-family: 'Orbitron', monospace;
     position: relative;
     z-index: 1;
-    font-size: 0.95em;
-    margin-bottom: 5px;
-    word-wrap: break-word;
-    max-width: 100%;
 }
 
 .right-value {
-    font-weight: 600;
+    font-weight: 500;
     color: #F5DEB3;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     position: relative;
     z-index: 1;
-    font-size: 1.05em;
-    word-wrap: break-word;
-    max-width: 100%;
 }
 
 /* Mobile Styles */
-@media (max-width: 1400px) {
-    .stats-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 18px;
-    }
-}
-
-@media (max-width: 1200px) {
-    .stats-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
-    }
-}
-
-@media (max-width: 900px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-    }
-    
-    .stat-row {
-        min-height: 70px;
-    }
-}
-
-@media (max-width: 768px) {
-    .shiny-page {
-        width: 100%;
-        padding: 0 20px;
-    }
-    
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-        max-width: none;
-    }
-    
-    .stat-row {
-        padding: 12px 15px;
-        min-height: 60px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        text-align: left;
-    }
-    
-    .left-value {
-        margin-bottom: 0;
-        font-size: 0.9em;
-    }
-    
-    .right-value {
-        font-size: 0.9em;
-        text-align: right;
-    }
-}
-
 @media (max-width: 480px) {
+    .shiny-page {
+        transform: scale(1);
+        width: 100%;
+    }
+    
     .shiny-page .title {
         font-size: 2em;
     }
@@ -205,7 +137,6 @@
     
     .stat-row {
         padding: 10px 14px;
-        min-height: 50px;
     }
     
     .stat-row:hover {
@@ -213,10 +144,10 @@
     }
     
     .left-value {
-        font-size: 0.85em;
+        font-size: 0.9em;
     }
     
     .right-value {
-        font-size: 0.85em;
+        font-size: 0.9em;
     }
 }
