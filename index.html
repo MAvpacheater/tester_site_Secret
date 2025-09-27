@@ -9,10 +9,11 @@
     <script>
         // Handle redirect from 404.html
         (function() {
-            var redirect = sessionStorage.redirect;
-            delete sessionStorage.redirect;
+            var redirect = sessionStorage.pathToRestore;
+            delete sessionStorage.pathToRestore;
             
             if (redirect && redirect !== location.pathname) {
+                console.log('🔄 Restoring path from 404:', redirect);
                 history.replaceState(null, null, redirect);
             }
         })();
