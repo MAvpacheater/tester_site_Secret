@@ -1,10 +1,10 @@
-// Fixed GitHub Auto-reload System - Improved URL preservation
+// Simplified and Reliable GitHub Auto-reload System
 class GitHubAutoReload {
     constructor(options = {}) {
         this.githubUser = options.githubUser || 'MAvpacheater';
         this.githubRepo = options.githubRepo || 'tester_site_Secret';
         this.branch = options.branch || 'main';
-        this.checkInterval = options.checkInterval || 30000; // 30 seconds
+        this.checkInterval = options.checkInterval || 30000;
         this.lastCommitSha = null;
         this.isActive = false;
         this.intervalId = null;
@@ -51,10 +51,6 @@ class GitHubAutoReload {
                 throw new Error(`GitHub API rate limit exceeded. Resets at ${resetDate.toLocaleTimeString()}`);
             }
 
-            if (response.status === 404) {
-                throw new Error('Repository not found or private');
-            }
-
             if (!response.ok) {
                 throw new Error(`GitHub API error: ${response.status}`);
             }
@@ -62,8 +58,6 @@ class GitHubAutoReload {
             const commitData = await response.json();
             const newSha = commitData.sha;
             
-            console.log(`📝 Latest commit: ${newSha.substring(0, 8)}...`);
-
             this.failureCount = 0;
 
             if (this.lastCommitSha === null) {
@@ -74,8 +68,6 @@ class GitHubAutoReload {
 
             if (this.lastCommitSha !== newSha) {
                 console.log('🔄 New commit detected!');
-                console.log(`Old: ${this.lastCommitSha.substring(0, 8)}...`);
-                console.log(`New: ${newSha.substring(0, 8)}...`);
                 this.lastCommitSha = newSha;
                 return true;
             }
@@ -86,7 +78,6 @@ class GitHubAutoReload {
             console.warn(`❌ GitHub API request failed (${this.failureCount}/${this.maxFailures}):`, error.message);
             
             if (this.failureCount >= this.maxFailures) {
-                console.warn('⚠️ Max failures reached, stopping auto-reload');
                 this.stop();
                 this.hideIndicator();
             }
@@ -109,11 +100,11 @@ class GitHubAutoReload {
                     this.reloadPage();
                 }
             } catch (error) {
-                // Error already handled in getCurrentCommitSha
+                // Error handled in getCurrentCommitSha
             }
         }, this.checkInterval);
         
-        console.log(`🚀 GitHub monitoring started (${this.checkInterval/1000}s interval)`);
+        console.log(`🚀 GitHub monitoring started`);
     }
 
     stop() {
@@ -124,51 +115,31 @@ class GitHubAutoReload {
             clearInterval(this.intervalId);
             this.intervalId = null;
         }
-        
-        console.log('⏸️ GitHub monitoring stopped');
     }
 
     reloadPage() {
         if (this.isReloading) return;
         
         this.isReloading = true;
-        console.log('🔄 Changes detected, preparing to reload...');
+        console.log('🔄 Changes detected, reloading...');
         
         this.stop();
+        
+        // Simple: just save current URL
+        const currentURL = window.location.href;
+        sessionStorage.setItem('reloadURL', currentURL);
+        sessionStorage.setItem('reloadTime', Date.now().toString());
+        
+        console.log(`💾 Saved URL: ${currentURL}`);
+        
         this.showReloadNotification();
         
-        // Save CURRENT URL exactly as is for restoration
-        const currentURL = window.location.href;
-        const currentPathname = window.location.pathname;
-        const currentSearch = window.location.search;
-        const currentHash = window.location.hash;
-        
-        // Save complete URL data
-        const urlData = {
-            fullURL: currentURL,
-            pathname: currentPathname,
-            search: currentSearch,
-            hash: currentHash,
-            timestamp: Date.now()
-        };
-        
-        sessionStorage.setItem('urlBeforeReload', JSON.stringify(urlData));
-        
-        // Also save current page for backup
-        const currentPage = urlRouter ? urlRouter.getPageFromURL() : 'calculator';
-        sessionStorage.setItem('pageBeforeReload', currentPage);
-        
-        console.log(`💾 Saved URL before reload:`, urlData);
-        console.log(`💾 Backup page saved: ${currentPage}`);
-        
         setTimeout(() => {
-            console.log('🔄 Reloading page...');
             window.location.reload(true);
-        }, 2000);
+        }, 1500);
     }
 
     showReloadNotification() {
-        // Remove any existing notifications
         const existing = document.querySelector('.reload-notification');
         if (existing) existing.remove();
         
@@ -187,18 +158,12 @@ class GitHubAutoReload {
                 box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
                 z-index: 30000;
                 text-align: center;
-                max-width: 400px;
                 font-family: 'Segoe UI', sans-serif;
                 animation: slideIn 0.3s ease-out;
             ">
                 <div style="font-size: 3em; margin-bottom: 15px;">🚀</div>
                 <div style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">Code Updated!</div>
-                <div style="font-size: 14px; opacity: 0.9; margin-bottom: 20px;">
-                    Reloading in <span id="reloadCountdown">2</span> seconds...
-                </div>
-                <div style="font-size: 12px; opacity: 0.7;">
-                    Your current page will be restored
-                </div>
+                <div style="font-size: 14px; opacity: 0.9;">Reloading...</div>
             </div>
             <style>
                 @keyframes slideIn {
@@ -209,15 +174,6 @@ class GitHubAutoReload {
         `;
         
         document.body.appendChild(notification);
-        
-        // Countdown
-        let seconds = 2;
-        const countdownEl = document.getElementById('reloadCountdown');
-        const countdownInterval = setInterval(() => {
-            seconds--;
-            if (countdownEl) countdownEl.textContent = seconds;
-            if (seconds <= 0) clearInterval(countdownInterval);
-        }, 1000);
     }
 
     showIndicator() {
@@ -226,7 +182,6 @@ class GitHubAutoReload {
             indicator.innerHTML = `🔄 Auto-reload active`;
             indicator.classList.add('show');
             
-            // Auto-hide after 5 seconds
             setTimeout(() => {
                 indicator.classList.remove('show');
             }, 5000);
@@ -237,31 +192,6 @@ class GitHubAutoReload {
         const indicator = document.getElementById('autoReloadIndicator');
         if (indicator) {
             indicator.classList.remove('show');
-        }
-    }
-
-    async checkNow() {
-        try {
-            console.log('🔍 Manual check requested...');
-            const hasChanges = await this.getCurrentCommitSha();
-            if (hasChanges) {
-                this.reloadPage();
-            } else {
-                console.log('✅ No changes detected');
-                // Show temporary notification
-                const indicator = document.getElementById('autoReloadIndicator');
-                if (indicator) {
-                    const original = indicator.innerHTML;
-                    indicator.innerHTML = '✅ No updates available';
-                    indicator.classList.add('show');
-                    setTimeout(() => {
-                        indicator.innerHTML = original;
-                        indicator.classList.remove('show');
-                    }, 3000);
-                }
-            }
-        } catch (error) {
-            console.error('❌ Manual check failed:', error);
         }
     }
 
@@ -282,14 +212,10 @@ let githubAutoReloadSystem = null;
 
 // Initialize URL Routing
 function initURLRouting() {
-    if (urlRouter) {
-        console.log('⚠️ URL Router already initialized');
-        return urlRouter;
-    }
+    if (urlRouter) return urlRouter;
 
     urlRouter = new URLRouter();
     
-    // Initialize immediately for faster routing
     setTimeout(() => {
         urlRouter.init();
     }, 100);
@@ -298,8 +224,6 @@ function initURLRouting() {
     const originalSwitchPage = window.switchPage;
     if (typeof originalSwitchPage === 'function') {
         window.switchPage = function(page) {
-            console.log(`🔀 Enhanced switchPage called for: ${page}`);
-            
             const result = originalSwitchPage.call(this, page);
             
             if (urlRouter) {
@@ -308,8 +232,6 @@ function initURLRouting() {
             
             return result;
         };
-        
-        console.log('✅ switchPage function enhanced with URL routing');
     }
 
     return urlRouter;
@@ -317,14 +239,10 @@ function initURLRouting() {
 
 // Initialize Auto-reload
 function initGitHubAutoReload(options = {}) {
-    if (githubAutoReloadSystem) {
-        console.log('⚠️ GitHub auto-reload already initialized');
-        return githubAutoReloadSystem;
-    }
+    if (githubAutoReloadSystem) return githubAutoReloadSystem;
 
     githubAutoReloadSystem = new GitHubAutoReload(options);
     
-    // Start after page is fully loaded
     setTimeout(async () => {
         await githubAutoReloadSystem.init();
     }, 3000);
@@ -332,138 +250,64 @@ function initGitHubAutoReload(options = {}) {
     return githubAutoReloadSystem;
 }
 
-// Improved page restoration after reload - handles both auto-reload and manual reload
+// Simple and reliable page restoration
 function handlePageRestoration() {
-    console.log('🔄 Checking for page restoration after reload...');
+    console.log('🔄 Checking page restoration...');
     
-    // Priority 1: Check for URL restoration from auto-reload
-    const savedURLData = sessionStorage.getItem('urlBeforeReload');
-    if (savedURLData) {
-        try {
-            const urlData = JSON.parse(savedURLData);
-            const timeDiff = Date.now() - urlData.timestamp;
+    // Check for reload restoration
+    const savedURL = sessionStorage.getItem('reloadURL');
+    const reloadTime = sessionStorage.getItem('reloadTime');
+    
+    if (savedURL && reloadTime) {
+        const timeDiff = Date.now() - parseInt(reloadTime);
+        
+        if (timeDiff < 30000) { // 30 seconds max
+            console.log(`🔄 Restoring URL: ${savedURL}`);
             
-            // Only restore if reload was recent (within 15 seconds)
-            if (timeDiff < 15000) {
-                console.log('🔄 Restoring URL after auto-reload:', urlData.fullURL);
-                
-                // Restore the exact URL
-                if (urlData.fullURL !== window.location.href) {
-                    window.history.replaceState(null, '', urlData.fullURL);
-                    console.log('✅ URL restored via history.replaceState');
-                }
-                
-                // Get page from restored URL
-                if (urlRouter) {
-                    const restoredPage = urlRouter.getPageFromURL();
-                    console.log(`🎯 Page from restored URL: ${restoredPage}`);
-                    
-                    setTimeout(() => {
-                        if (typeof switchPage === 'function') {
-                            switchPage(restoredPage);
-                            console.log(`✅ Page switched to: ${restoredPage}`);
-                        }
-                    }, 500);
-                }
-                
-                // Clean up
-                sessionStorage.removeItem('urlBeforeReload');
-                sessionStorage.removeItem('pageBeforeReload');
-                return;
+            // Only restore if different
+            if (savedURL !== window.location.href) {
+                window.history.replaceState(null, null, savedURL);
+                console.log('✅ URL restored');
             }
-        } catch (error) {
-            console.error('❌ Error restoring URL data:', error);
-        }
-        
-        // Clean up invalid data
-        sessionStorage.removeItem('urlBeforeReload');
-    }
-
-    // Priority 1.5: Check for manual refresh URL restoration
-    const manualRefreshData = sessionStorage.getItem('manualRefreshURL');
-    if (manualRefreshData) {
-        try {
-            const urlData = JSON.parse(manualRefreshData);
-            const timeDiff = Date.now() - urlData.timestamp;
             
-            // Only restore if reload was recent (within 10 seconds) and it's a manual refresh
-            if (timeDiff < 10000 && urlData.type === 'manual') {
-                console.log('🔄 Restoring URL after manual refresh:', urlData.fullURL);
-                
-                // Restore the exact URL if needed
-                if (urlData.fullURL !== window.location.href) {
-                    window.history.replaceState(null, '', urlData.fullURL);
-                    console.log('✅ URL restored after manual refresh');
-                }
-                
-                // Get page from restored URL
-                if (urlRouter) {
-                    const restoredPage = urlRouter.getPageFromURL();
-                    console.log(`🎯 Page from manual refresh URL: ${restoredPage}`);
-                    
-                    setTimeout(() => {
-                        if (typeof switchPage === 'function') {
-                            switchPage(restoredPage);
-                            console.log(`✅ Page switched after manual refresh to: ${restoredPage}`);
-                        }
-                    }, 300);
-                }
-                
-                // Clean up
-                sessionStorage.removeItem('manualRefreshURL');
-                return;
-            }
-        } catch (error) {
-            console.error('❌ Error restoring manual refresh URL:', error);
-        }
-        
-        // Clean up invalid data
-        sessionStorage.removeItem('manualRefreshURL');
-    }
-    
-    // Priority 2: Check for page restoration from auto-reload (backup)
-    const savedPage = sessionStorage.getItem('pageBeforeReload');
-    const reloadTimestamp = sessionStorage.getItem('reloadTimestamp');
-    
-    if (savedPage && reloadTimestamp) {
-        const timeDiff = Date.now() - parseInt(reloadTimestamp);
-        
-        // Only restore if reload was recent (within 15 seconds)
-        if (timeDiff < 15000) {
-            console.log(`🔄 Restoring page after auto-reload (backup): ${savedPage}`);
-            
+            // Let URL router handle page switching
             setTimeout(() => {
-                if (typeof switchPage === 'function') {
-                    switchPage(savedPage);
+                if (urlRouter && typeof switchPage === 'function') {
+                    const page = urlRouter.getPageFromURL();
+                    switchPage(page);
+                    console.log(`✅ Page restored: ${page}`);
                 }
-            }, 1000);
+            }, 300);
         }
         
         // Clean up
-        sessionStorage.removeItem('pageBeforeReload');
-        sessionStorage.removeItem('reloadTimestamp');
+        sessionStorage.removeItem('reloadURL');
+        sessionStorage.removeItem('reloadTime');
         return;
     }
     
-    // Priority 3: Check for path restoration from 404 redirect
-    const restoredPath = sessionStorage.getItem('pathToRestore');
-    if (restoredPath) {
-        console.log(`🔄 Found restored path from 404: ${restoredPath}`);
+    // Check for 404 redirect
+    const redirect = sessionStorage.getItem('pathToRestore');
+    if (redirect && redirect !== '/') {
+        console.log(`🔄 404 redirect: ${redirect}`);
         
-        // Build correct URL
-        if (urlRouter) {
-            const correctURL = urlRouter.baseURL.replace(/\/$/, '') + restoredPath;
-            if (correctURL !== window.location.href) {
-                window.history.replaceState(null, '', correctURL);
-                console.log(`✅ URL corrected from 404: ${correctURL}`);
-            }
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+        let basePath = '';
+        
+        if (host === 'mavpacheater.github.io') {
+            basePath = '/tester_site_Secret';
         }
         
+        const fullPath = basePath + redirect;
+        window.history.replaceState(null, null, fullPath);
+        
         sessionStorage.removeItem('pathToRestore');
+        console.log(`✅ 404 URL corrected: ${fullPath}`);
         return;
     }
     
-    console.log('ℹ️ No special restoration needed - normal page load');
+    console.log('ℹ️ No restoration needed');
 }
 
 // Control functions
@@ -486,34 +330,20 @@ function startGitHubAutoReload() {
 function checkGitHubNow() {
     if (githubAutoReloadSystem) {
         githubAutoReloadSystem.checkNow();
-    } else {
-        console.warn('⚠️ Auto-reload not initialized');
     }
 }
 
 function debugURLRouter() {
     if (urlRouter) {
         urlRouter.debug();
-    } else {
-        console.warn('⚠️ URL Router not initialized');
     }
 }
 
 function getSystemStatus() {
-    const status = {
-        urlRouter: {
-            initialized: !!urlRouter,
-            baseURL: urlRouter?.baseURL,
-            currentPage: urlRouter?.getPageFromURL()
-        },
-        autoReload: {
-            initialized: !!githubAutoReloadSystem,
-            status: githubAutoReloadSystem?.getStatus()
-        }
+    return {
+        urlRouter: !!urlRouter,
+        autoReload: githubAutoReloadSystem?.getStatus()
     };
-    
-    console.table(status);
-    return status;
 }
 
 // Export functions
@@ -528,12 +358,9 @@ window.getSystemStatus = getSystemStatus;
 window.urlRouter = () => urlRouter;
 window.githubAutoReloadSystem = () => githubAutoReloadSystem;
 
-// Initialize page restoration on load
+// Initialize on load
 document.addEventListener('DOMContentLoaded', () => {
-    // Delay restoration to ensure URL router is initialized
-    setTimeout(() => {
-        handlePageRestoration();
-    }, 200);
+    setTimeout(handlePageRestoration, 500);
 });
 
-console.log('✅ Fixed URL and Auto-reload systems loaded');
+console.log('✅ Simplified reload system loaded');
