@@ -1,0 +1,50 @@
+{
+  "en": {
+    "title": "⚙️ Settings",
+    "background": "Background",
+    "menu": "Menu Position",
+    "penguin": "Penguin",
+    "game": "Game", 
+    "code": "Code",
+    "dodep": "Dodep",
+    "prison": "Prison",
+    "up": "Top",
+    "down": "Bottom",
+    "left": "Left",
+    "right": "Right",
+    "reset": "Reset Settings",
+    "confirmReset": "Are you sure you want to reset all settings?"
+  },
+  "uk": {
+    "title": "⚙️ Налаштування", 
+    "background": "Фон",
+    "menu": "Позиція меню",
+    "penguin": "Пінгвін",
+    "game": "Гра",
+    "code": "Код",
+    "dodep": "Додеп",
+    "prison": "В'язниця",
+    "up": "Верх",
+    "down": "Низ", 
+    "left": "Ліворуч",
+    "right": "Праворуч",
+    "reset": "Скинути налаштування",
+    "confirmReset": "Ви впевнені, що хочете скинути всі налаштування?"
+  },
+  "ru": {
+    "title": "⚙️ Настройки",
+    "background": "Фон",
+    "menu": "Позиция меню", 
+    "penguin": "Пингвин",
+    "game": "Игра",
+    "code": "Код",
+    "dodep": "Додеп",
+    "prison": "Тюрьма",
+    "up": "Верх",
+    "down": "Низ",
+    "left": "Слева", 
+    "right": "Справа",
+    "reset": "Сбросить настройки",
+    "confirmReset": "Вы уверены, что хотите сбросить все настройки?"
+  }
+}
