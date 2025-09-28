@@ -51,6 +51,7 @@ async function loadMenuTranslations() {
                     calculator: "🐾 Pet Calculator",
                     arm: "💪 Arm Calculator",
                     grind: "🏋️‍♂️ Grind Calculator",
+                    roulette: "🎰 Roulette Calculator",
                     boosts: "🚀 Boosts",
                     shiny: "✨ Shiny Stats",
                     secret: "🔮 Secret Pets",
@@ -119,7 +120,8 @@ async function switchAppLanguage(lang) {
         { name: 'secret', func: 'updateSecretLanguage' },
         { name: 'peoples', func: 'updatePeoplesLanguage' },
         { name: 'help', func: 'updateHelpLanguage' },
-        { name: 'settings', func: 'updateSettingsLanguage' }
+        { name: 'settings', func: 'updateSettingsLanguage' },
+        { name: 'roulette', func: 'updateRouletteLanguage' }
     ];
     
     moduleNotifications.forEach(({ name, func }) => {
@@ -192,6 +194,7 @@ function updatePageTitles() {
         'calculatorPage': 'calculator',
         'armPage': 'arm',
         'grindPage': 'grind',
+        'roulettePage': 'roulette',
         'boostsPage': 'boosts',
         'shinyPage': 'shiny',
         'secretPage': 'secret',
@@ -253,6 +256,7 @@ function switchPage(page) {
         'calculator': 'calculator',
         'arm': 'arm',
         'grind': 'grind',
+        'roulette': 'roulette',
         'boosts': 'boosts',
         'shiny': 'shiny',
         'codes': 'codes',
@@ -335,6 +339,17 @@ function initializePageContent(page) {
                     window.grindInitialized = false;
                 }
                 initializeGrind();
+            }
+            break;
+        case 'roulette':
+            console.log('🎰 Initializing Roulette Calculator page...');
+            if (typeof initializeRoulette === 'function') {
+                if (typeof window !== 'undefined' && window.rouletteInitialized !== undefined) {
+                    window.rouletteInitialized = false;
+                }
+                initializeRoulette();
+            } else {
+                console.error('❌ initializeRoulette function not found');
             }
             break;
         case 'shiny':
@@ -624,6 +639,7 @@ function initializeAllModules() {
         'initializeCalculator',
         'initializeArm', 
         'initializeGrind',
+        'initializeRoulette',
         'initializeBoosts',
         'initializeShiny',
         'initializeSecret',
@@ -645,7 +661,7 @@ function initializeAllModules() {
                 if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || 
                     moduleName === 'initializeGrind' || moduleName === 'initializePeoples' ||
                     moduleName === 'initializeWorlds' || moduleName === 'initializeHelp' ||
-                    moduleName === 'initializeSettings') {
+                    moduleName === 'initializeSettings' || moduleName === 'initializeRoulette') {
                     setTimeout(() => {
                         try {
                             // Force reinitialization by resetting flags
@@ -666,6 +682,9 @@ function initializeAllModules() {
                             }
                             if (moduleName === 'initializeSettings' && window.settingsInitialized) {
                                 window.settingsInitialized = false;
+                            }
+                            if (moduleName === 'initializeRoulette' && window.rouletteInitialized) {
+                                window.rouletteInitialized = false;
                             }
                             
                             window[moduleName]();
@@ -719,6 +738,9 @@ function forceReinitializeModule(moduleName) {
     }
     if (moduleName === 'settings' && typeof window !== 'undefined') {
         window.settingsInitialized = false;
+    }
+    if (moduleName === 'roulette' && typeof window !== 'undefined') {
+        window.rouletteInitialized = false;
     }
     
     // Call initialization
