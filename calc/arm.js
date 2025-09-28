@@ -1,85 +1,29 @@
-// Arm Stats Calculator functionality with multilingual support
+// Arm Stats Calculator - Full implementation with HTML structure creation
 
-// Global variables for translations
-let armCalcTranslations = null;
+// Global variables for arm calculator
+let armInitialized = false;
 let currentArmLanguage = 'en';
+let armTranslations = {};
 
-// Load calculator translations (reuse from calculator)
-async function loadArmTranslations() {
-    if (armCalcTranslations) return armCalcTranslations;
-    
-    try {
-        console.log('📥 Loading arm calculator translations...');
-        const response = await fetch('languages/calc.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+// Default translations - fallback (matches arm.json structure)
+const defaultArmTranslations = {
+    en: {
+        title: "💪 Arm Stats Calculator",
+        settings: "Settings",
+        inputLabel: "If arm base",
+        inputPlaceholder: "Enter number...",
+        resultLabel: "Max stats",
+        calculateBtn: "Calculate",
+        golden1: "1/5 golden",
+        golden2: "2/5 golden", 
+        golden3: "3/5 golden",
+        golden4: "4/5 golden",
+        golden5: "5/5 golden",
+        errors: {
+            invalidInput: "Please enter a valid number"
         }
-        armCalcTranslations = await response.json();
-        console.log('✅ Arm calculator translations loaded successfully');
-        return armCalcTranslations;
-    } catch (error) {
-        console.error('❌ Error loading arm calculator translations:', error);
-        // Fallback to English
-        armCalcTranslations = {
-            en: {
-                common: { calculate: "Calculate", settings: "Settings" },
-                arm: {
-                    inputLabel: "If arm base",
-                    inputPlaceholder: "Enter number...",
-                    resultLabel: "Max stats",
-                    errorInvalidNumber: "Please enter a valid number"
-                }
-            }
-        };
-        return armCalcTranslations;
     }
-}
-
-// Update arm calculator language
-async function updateArmLanguage(lang) {
-    if (!armCalcTranslations) {
-        await loadArmTranslations();
-    }
-    
-    currentArmLanguage = lang;
-    
-    if (!armCalcTranslations[lang]) {
-        console.error(`❌ Arm calculator language ${lang} not found, defaulting to English`);
-        currentArmLanguage = 'en';
-    }
-    
-    const translations = armCalcTranslations[currentArmLanguage];
-    if (!translations || !translations.arm) return;
-    
-    // Update arm calculator input elements
-    const inputLabel = document.querySelector('#armPage .input-label');
-    const inputField = document.getElementById('armNumberInput');
-    const calculateBtn = document.querySelector('#armPage .calculate-btn');
-    const resultLabel = document.querySelector('#armPage .stats-label');
-    const settingsTitle = document.querySelector('#settingsPanelArm .settings-title');
-    
-    if (inputLabel && translations.arm.inputLabel) {
-        inputLabel.textContent = translations.arm.inputLabel;
-    }
-    
-    if (inputField && translations.arm.inputPlaceholder) {
-        inputField.placeholder = translations.arm.inputPlaceholder;
-    }
-    
-    if (calculateBtn && translations.common.calculate) {
-        calculateBtn.textContent = translations.common.calculate;
-    }
-    
-    if (resultLabel && translations.arm.resultLabel) {
-        resultLabel.textContent = translations.arm.resultLabel;
-    }
-    
-    if (settingsTitle && translations.common.settings) {
-        settingsTitle.textContent = translations.common.settings;
-    }
-    
-    console.log(`✅ Arm calculator language updated to: ${currentArmLanguage}`);
-}
+};
 
 // FIXED: Множники для golden рівнів (правильні значення як в HTML)
 const goldenModifiers = {
@@ -91,6 +35,223 @@ const goldenModifiers = {
 };
 
 let armMultiplier = 2.1; // За замовчуванням 5/5 golden (x2.1)
+
+// Create HTML structure for arm calculator
+function createArmHTML() {
+    const armPage = document.getElementById('armPage');
+    if (!armPage) {
+        console.error('❌ Arm page container not found');
+        return;
+    }
+
+    const t = armTranslations[currentArmLanguage] || defaultArmTranslations['en'];
+    console.log('Using arm translations:', t); // Debug log
+
+    armPage.innerHTML = `
+        <div class="header-controls">
+            <h1>${t.title}</h1>
+            <button class="settings-btn" onclick="toggleArmSettings()">⚙️</button>
+        </div>
+
+        <div class="settings-panel" id="settingsPanelArm">
+            <div class="settings-title">${t.settings}</div>
+            
+            <div class="simple-toggle">
+                <div class="toggle-info">
+                    <div class="toggle-label">${t.golden1}</div>
+                    <div class="toggle-multiplier">(x1.5)</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="golden1" onchange="handleGoldenSelection('golden1')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="simple-toggle">
+                <div class="toggle-info">
+                    <div class="toggle-label">${t.golden2}</div>
+                    <div class="toggle-multiplier">(x1.65)</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="golden2" onchange="handleGoldenSelection('golden2')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="simple-toggle">
+                <div class="toggle-info">
+                    <div class="toggle-label">${t.golden3}</div>
+                    <div class="toggle-multiplier">(x1.8)</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="golden3" onchange="handleGoldenSelection('golden3')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="simple-toggle">
+                <div class="toggle-info">
+                    <div class="toggle-label">${t.golden4}</div>
+                    <div class="toggle-multiplier">(x1.95)</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="golden4" onchange="handleGoldenSelection('golden4')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="simple-toggle">
+                <div class="toggle-info">
+                    <div class="toggle-label">${t.golden5}</div>
+                    <div class="toggle-multiplier">(x2.1)</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="golden5" checked onchange="handleGoldenSelection('golden5')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <label class="input-label" for="armNumberInput">${t.inputLabel}</label>
+            <input type="number" class="number-input" id="armNumberInput" placeholder="${t.inputPlaceholder}" step="any" oninput="calculateArmStats()">
+            <button class="calculate-btn" onclick="calculateArmStats()">${t.calculateBtn}</button>
+            <div class="error" id="armErrorMessage"></div>
+        </div>
+
+        <div class="result-section" id="armResultSection">
+            <div class="stats-label">${t.resultLabel}</div>
+            <div class="result-value" id="armResultValue">0</div>
+        </div>
+    `;
+
+    console.log('✅ Arm HTML structure created');
+}
+
+// Load arm translations from JSON file
+async function loadArmTranslations() {
+    try {
+        console.log('📥 Loading arm translations...');
+        const response = await fetch('./languages/arm.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        armTranslations = data;
+        console.log('✅ Arm translations loaded successfully');
+        console.log('Loaded translations:', armTranslations);
+        return true;
+    } catch (error) {
+        console.error('❌ Error loading arm translations:', error);
+        // Use default translations as fallback
+        armTranslations = defaultArmTranslations;
+        console.log('Using default arm translations:', armTranslations);
+        return false;
+    }
+}
+
+// Get current language from app or default to 'en'
+function getCurrentAppLanguage() {
+    // Try to get from global app language if available
+    if (typeof getCurrentLanguage === 'function') {
+        return getCurrentLanguage();
+    }
+    // Fallback to localStorage or default
+    return localStorage.getItem('selectedLanguage') || 'en';
+}
+
+// Initialize Arm Calculator
+async function initializeArm() {
+    console.log('🚀 Initializing Arm Calculator...');
+    
+    // Reset initialization flag
+    armInitialized = false;
+    
+    // Load translations first
+    const translationsLoaded = await loadArmTranslations();
+    console.log('Arm translation load result:', translationsLoaded);
+    console.log('Available arm translations:', Object.keys(armTranslations));
+    
+    // Set current language
+    currentArmLanguage = getCurrentAppLanguage();
+    console.log('Current arm language:', currentArmLanguage);
+    
+    // Create HTML structure
+    createArmHTML();
+    
+    // Add event listeners
+    addArmEventListeners();
+    
+    // Set default values
+    updateArmMultiplier();
+    
+    armInitialized = true;
+    console.log('✅ Arm Calculator initialized');
+}
+
+// Add event listeners for arm calculator
+function addArmEventListeners() {
+    // Listen for language changes
+    document.addEventListener('languageChanged', function(event) {
+        const newLanguage = event.detail.language;
+        console.log(`🌍 Arm Calculator: Language changed to ${newLanguage}`);
+        updateArmLanguage(newLanguage);
+    });
+    
+    // Add real-time calculation listeners
+    setTimeout(() => {
+        const armNumberInput = document.getElementById('armNumberInput');
+        if (armNumberInput) {
+            armNumberInput.addEventListener('keypress', e => {
+                if (e.key === 'Enter') {
+                    calculateArmStats();
+                }
+            });
+
+            armNumberInput.addEventListener('input', () => {
+                const errorMessage = document.getElementById('armErrorMessage');
+                if (errorMessage) errorMessage.textContent = '';
+            });
+        }
+    }, 100);
+    
+    console.log('✅ Arm Calculator event listeners added');
+}
+
+// Update arm calculator language
+function updateArmLanguage(language) {
+    if (!armTranslations[language]) {
+        console.warn(`❌ Language ${language} not found for arm calculator, using English`);
+        language = 'en';
+    }
+    
+    currentArmLanguage = language;
+    
+    // Recreate HTML with new language
+    createArmHTML();
+    
+    // Re-add event listeners
+    setTimeout(() => {
+        const armNumberInput = document.getElementById('armNumberInput');
+        if (armNumberInput) {
+            armNumberInput.addEventListener('keypress', e => {
+                if (e.key === 'Enter') {
+                    calculateArmStats();
+                }
+            });
+
+            armNumberInput.addEventListener('input', () => {
+                const errorMessage = document.getElementById('armErrorMessage');
+                if (errorMessage) errorMessage.textContent = '';
+            });
+        }
+    }, 100);
+    
+    // Restore previous settings
+    updateArmMultiplier();
+    
+    console.log(`✅ Arm Calculator language updated to ${language}`);
+}
 
 // Показ/приховування налаштувань для калькулятора рук
 function toggleArmSettings() {
@@ -138,13 +299,21 @@ function updateArmMultiplier() {
 
 // Розрахунок результату для рук
 function calculateArmStats() {
+    console.log('💪 Calculating arm stats...');
+    
     const input = document.getElementById('armNumberInput');
     const resultSection = document.getElementById('armResultSection');
     const resultValue = document.getElementById('armResultValue');
     const errorMessage = document.getElementById('armErrorMessage');
 
-    if (!input || !resultSection || !resultValue || !errorMessage) return;
+    if (!input || !resultSection || !resultValue || !errorMessage) {
+        console.error('❌ Arm calculator elements not found');
+        return;
+    }
 
+    const t = armTranslations[currentArmLanguage] || defaultArmTranslations['en'];
+    
+    // Clear previous errors
     errorMessage.textContent = '';
 
     const baseValue = parseFloat(input.value);
@@ -152,9 +321,7 @@ function calculateArmStats() {
     if (isNaN(baseValue) || input.value.trim() === '') {
         if (input.value.trim() !== '') {
             // Use translated error message
-            const translations = armCalcTranslations && armCalcTranslations[currentArmLanguage];
-            const errorText = (translations && translations.arm && translations.arm.errorInvalidNumber) 
-                || 'Please enter a valid number';
+            const errorText = (t.errors && t.errors.invalidInput) || 'Please enter a valid number';
             errorMessage.textContent = errorText;
         }
         resultSection.classList.remove('show');
@@ -171,62 +338,28 @@ function calculateArmStats() {
         maximumFractionDigits: 8
     });
 
-    resultSection.classList.add('show');
+    // Show result section with animation
+    setTimeout(() => {
+        resultSection.classList.add('show');
+    }, 100);
+    
+    console.log(`✅ Arm calculation completed: ${baseValue} * ${armMultiplier} = ${finalValue}`);
 }
 
-// Ініціалізація калькулятора рук при завантаженні сторінки
-async function initializeArm() {
-    console.log('🚀 Initializing arm calculator with multilingual support...');
-    
-    // Load translations
-    await loadArmTranslations();
-    
-    // Get current app language
-    const currentAppLanguage = (typeof getCurrentAppLanguage === 'function') 
-        ? getCurrentAppLanguage() 
-        : 'en';
-    
-    // Update arm calculator language
-    await updateArmLanguage(currentAppLanguage);
-    
-    // Встановлюємо 5/5 golden за замовчуванням
-    const golden5Checkbox = document.getElementById('golden5');
-    if (golden5Checkbox) {
-        golden5Checkbox.checked = true;
-        console.log('Golden5 checkbox set to checked'); // Для відладки
+// Auto-initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Only initialize if arm page exists
+    if (document.getElementById('armPage')) {
+        initializeArm();
     }
-    
-    updateArmMultiplier();
-    
-    const armNumberInput = document.getElementById('armNumberInput');
-    if (armNumberInput) {
-        armNumberInput.addEventListener('keypress', e => {
-            if (e.key === 'Enter') {
-                calculateArmStats();
-            }
-        });
-
-        armNumberInput.addEventListener('input', () => {
-            const errorMessage = document.getElementById('armErrorMessage');
-            if (errorMessage) errorMessage.textContent = '';
-        });
-    }
-    
-    console.log('✅ Arm calculator initialized with multilingual support');
-}
-
-// Listen for language change events
-document.addEventListener('languageChanged', async (event) => {
-    const newLanguage = event.detail.language;
-    console.log('🌍 Arm calculator received language change:', newLanguage);
-    await updateArmLanguage(newLanguage);
 });
 
 // Make functions globally available
+window.initializeArm = initializeArm;
+window.calculateArmStats = calculateArmStats;
 window.updateArmLanguage = updateArmLanguage;
-window.loadArmTranslations = loadArmTranslations;
+window.toggleArmSettings = toggleArmSettings;
 window.handleGoldenSelection = handleGoldenSelection;
 window.updateArmMultiplier = updateArmMultiplier;
-window.toggleArmSettings = toggleArmSettings;
-window.calculateArmStats = calculateArmStats;
-window.initializeArm = initializeArm;
+
+console.log('✅ Arm Calculator module loaded');
