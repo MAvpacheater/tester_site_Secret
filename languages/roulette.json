@@ -1,0 +1,50 @@
+{
+  "en": {
+    "title": "🎰 Roulette Calculator",
+    "totalSpins": "Total Spins Needed:",
+    "spinsPerTurn": "Spins per Turn:",
+    "placeholderTotal": "Enter total spins needed...",
+    "placeholderPerTurn": "Enter spins per turn...",
+    "calculate": "Calculate Time",
+    "result": "Total Time Needed:",
+    "errorEmpty": "Please enter both values",
+    "errorInvalid": "Please enter valid positive numbers",
+    "errorZero": "Spins per turn cannot be zero",
+    "totalSpinsText": "total spins",
+    "spinsPerTurnText": "per turn",
+    "turns": "turns",
+    "seconds": "seconds"
+  },
+  "uk": {
+    "title": "🎰 Калькулятор Рулетки",
+    "totalSpins": "Загальна кількість спінів:",
+    "spinsPerTurn": "Спінів за хід:",
+    "placeholderTotal": "Введіть загальну кількість спінів...",
+    "placeholderPerTurn": "Введіть кількість спінів за хід...",
+    "calculate": "Розрахувати час",
+    "result": "Загальний необхідний час:",
+    "errorEmpty": "Будь ласка, введіть обидва значення",
+    "errorInvalid": "Будь ласка, введіть дійсні позитивні числа",
+    "errorZero": "Спіни за хід не можуть дорівнювати нулю",
+    "totalSpinsText": "загальних спінів",
+    "spinsPerTurnText": "за хід",
+    "turns": "ходів",
+    "seconds": "секунд"
+  },
+  "ru": {
+    "title": "🎰 Калькулятор Рулетки",
+    "totalSpins": "Общее количество спинов:",
+    "spinsPerTurn": "Спинов за ход:",
+    "placeholderTotal": "Введите общее количество спинов...",
+    "placeholderPerTurn": "Введите количество спинов за ход...",
+    "calculate": "Рассчитать время",
+    "result": "Общее необходимое время:",
+    "errorEmpty": "Пожалуйста, введите оба значения",
+    "errorInvalid": "Пожалуйста, введите действительные положительные числа",
+    "errorZero": "Спины за ход не могут равняться нулю",
+    "totalSpinsText": "общих спинов",
+    "spinsPerTurnText": "за ход",
+    "turns": "ходов",
+    "seconds": "секунд"
+  }
+}
