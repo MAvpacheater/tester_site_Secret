@@ -33,6 +33,7 @@ function createBossHTML() {
     }
 
     const t = bossTranslations[currentBossLanguage] || defaultTranslations['en'];
+    console.log('Using translations:', t); // Debug log
 
     bossPage.innerHTML = `
         <div class="header-controls">
@@ -109,10 +110,13 @@ async function initializeBoss() {
     console.log('🚀 Initializing Boss Calculator...');
     
     // Load translations first
-    await loadBossTranslations();
+    const translationsLoaded = await loadBossTranslations();
+    console.log('Translation load result:', translationsLoaded);
+    console.log('Available translations:', Object.keys(bossTranslations));
     
     // Set current language
     currentBossLanguage = getCurrentAppLanguage();
+    console.log('Current language:', currentBossLanguage);
     
     // Create HTML structure
     createBossHTML();
