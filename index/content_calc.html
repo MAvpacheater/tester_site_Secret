@@ -375,32 +375,3 @@
         <p class="error" id="errorMessageGrind"></p>
     </div>
 </div>
-<!-- Roulette Calculator Page -->
-<div class="page roulette-page" id="roulettePage">
-    <div class="header-controls">
-        <h1>🎰 Roulette Calculator</h1>
-    </div>
-
-    <!-- Input Section -->
-    <div class="input-section">
-        <div class="input-group">
-            <label class="input-label" for="totalSpinsInput">Total Spins Needed:</label>
-            <input type="number" class="number-input" id="totalSpinsInput" placeholder="Enter total spins needed..." step="1" min="1" oninput="calculateRouletteTime()">
-        </div>
-        
-        <div class="input-group">
-            <label class="input-label" for="spinsPerTurnInput">Spins per Turn:</label>
-            <input type="number" class="number-input" id="spinsPerTurnInput" placeholder="Enter spins per turn..." step="1" min="1" oninput="calculateRouletteTime()">
-        </div>
-        
-        <button class="calculate-btn" onclick="calculateRouletteTime()">Calculate Time</button>
-        <div class="error" id="rouletteErrorMessage"></div>
-    </div>
-
-    <!-- Result Section -->
-    <div class="result-section" id="rouletteResultSection">
-        <div class="stats-label">Total Time Needed:</div>
-        <div class="result-value" id="rouletteResultValue">0</div>
-        <div class="result-details" id="rouletteResultDetails"></div>
-    </div>
-</div>
