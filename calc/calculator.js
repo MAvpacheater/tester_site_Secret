@@ -116,20 +116,34 @@ function createPetCalculatorHTML() {
     const t = petCalculatorTranslations[currentPetLanguage] || defaultPetTranslations['en'];
     console.log('Using pet calculator translations:', t); // Debug log
 
+    // Make sure we have fallback values if translations fail
+    const title = t.title || "🐾 Pet Calculator";
+    const settings = t.settings || "Settings";
+    const inputLabel = t.inputLabel || "Enter Pet Stats:";
+    const inputPlaceholder = t.inputPlaceholder || "Enter your pet's base stats...";
+    const calculateBtn = t.calculateBtn || "Calculate";
+    const resultLabel = t.resultLabel || "Final Pet Stats:";
+    const slimes = t.slimes || "Slimes";
+    const mutation = t.mutation || "Mutation";
+    const evolutionSize = t.evolutionSize || "Evolution and Size";
+    const type = t.type || "Type";
+    const shiny = t.shiny || "Shiny";
+    const maxlvl = t.maxlvl || "Max lvl";
+
     calculatorPage.innerHTML = `
         <div class="header-controls">
-            <h1>${t.title}</h1>
+            <h1>${title}</h1>
             <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
         </div>
 
         <!-- Settings Panel - MODAL STYLE -->
         <div class="settings-panel" id="settingsPanel">
-            <div class="settings-title">${t.settings}</div>
+            <div class="settings-title">${settings}</div>
             
             <!-- Category buttons with modal opening -->
             <div class="category-button" onclick="openSlimeSettings()">
                 <div class="category-info">
-                    <div class="category-label">${t.slimes}</div>
+                    <div class="category-label">${slimes}</div>
                     <div class="category-selected">Shock</div>
                 </div>
                 <div class="category-arrow">→</div>
@@ -137,7 +151,7 @@ function createPetCalculatorHTML() {
 
             <div class="category-button" onclick="openMutationSettings()">
                 <div class="category-info">
-                    <div class="category-label">${t.mutation}</div>
+                    <div class="category-label">${mutation}</div>
                     <div class="category-selected">Cosmic</div>
                 </div>
                 <div class="category-arrow">→</div>
@@ -145,7 +159,7 @@ function createPetCalculatorHTML() {
 
             <div class="category-button" onclick="openEvolutionSettings()">
                 <div class="category-info">
-                    <div class="category-label">${t.evolutionSize}</div>
+                    <div class="category-label">${evolutionSize}</div>
                     <div class="category-selected">Goliath</div>
                 </div>
                 <div class="category-arrow">→</div>
@@ -153,7 +167,7 @@ function createPetCalculatorHTML() {
 
             <div class="category-button" onclick="openTypeSettings()">
                 <div class="category-info">
-                    <div class="category-label">${t.type}</div>
+                    <div class="category-label">${type}</div>
                     <div class="category-selected">Pristine</div>
                 </div>
                 <div class="category-arrow">→</div>
@@ -162,7 +176,7 @@ function createPetCalculatorHTML() {
             <!-- Simple toggles like in photo -->
             <div class="simple-toggle">
                 <div class="toggle-info">
-                    <div class="toggle-label">${t.shiny}</div>
+                    <div class="toggle-label">${shiny}</div>
                     <div class="toggle-multiplier">(x1.15)</div>
                 </div>
                 <label class="switch">
@@ -173,7 +187,7 @@ function createPetCalculatorHTML() {
 
             <div class="simple-toggle">
                 <div class="toggle-info">
-                    <div class="toggle-label">${t.maxlvl}</div>
+                    <div class="toggle-label">${maxlvl}</div>
                     <div class="toggle-multiplier">(x2.2388)</div>
                 </div>
                 <label class="switch">
@@ -185,15 +199,15 @@ function createPetCalculatorHTML() {
 
         <!-- Input Section -->
         <div class="input-section">
-            <label class="input-label" for="numberInput">${t.inputLabel}</label>
-            <input type="number" class="number-input" id="numberInput" placeholder="${t.inputPlaceholder}" step="any" oninput="calculateStats()">
-            <button class="calculate-btn" onclick="calculateStats()">${t.calculateBtn}</button>
+            <label class="input-label" for="numberInput">${inputLabel}</label>
+            <input type="number" class="number-input" id="numberInput" placeholder="${inputPlaceholder}" step="any" oninput="calculateStats()">
+            <button class="calculate-btn" onclick="calculateStats()">${calculateBtn}</button>
             <div class="error" id="errorMessage"></div>
         </div>
 
         <!-- Result Section -->
         <div class="result-section" id="resultSection">
-            <div class="stats-label">${t.resultLabel}</div>
+            <div class="stats-label">${resultLabel}</div>
             <div class="result-value" id="resultValue">0</div>
         </div>
     `;
@@ -615,6 +629,103 @@ window.debugInitializePetCalculator = function() {
     console.log('🔧 Debug: Force initializing pet calculator');
     petCalculatorInitialized = false;
     initializePetCalculator();
+};
+
+// Emergency initialization function that uses hardcoded values
+window.emergencyInitializePetCalculator = function() {
+    console.log('🚨 Emergency: Initializing pet calculator with hardcoded values');
+    const calculatorPage = document.getElementById('calculatorPage');
+    if (!calculatorPage) {
+        console.error('❌ Pet calculator page not found');
+        return;
+    }
+
+    calculatorPage.innerHTML = `
+        <div class="header-controls">
+            <h1>🐾 Pet Calculator</h1>
+            <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
+        </div>
+
+        <!-- Settings Panel - MODAL STYLE -->
+        <div class="settings-panel" id="settingsPanel">
+            <div class="settings-title">Settings</div>
+            
+            <!-- Category buttons with modal opening -->
+            <div class="category-button" onclick="openSlimeSettings()">
+                <div class="category-info">
+                    <div class="category-label">Slimes</div>
+                    <div class="category-selected">Shock</div>
+                </div>
+                <div class="category-arrow">→</div>
+            </div>
+
+            <div class="category-button" onclick="openMutationSettings()">
+                <div class="category-info">
+                    <div class="category-label">Mutation</div>
+                    <div class="category-selected">Cosmic</div>
+                </div>
+                <div class="category-arrow">→</div>
+            </div>
+
+            <div class="category-button" onclick="openEvolutionSettings()">
+                <div class="category-info">
+                    <div class="category-label">Evolution and Size</div>
+                    <div class="category-selected">Goliath</div>
+                </div>
+                <div class="category-arrow">→</div>
+            </div>
+
+            <div class="category-button" onclick="openTypeSettings()">
+                <div class="category-info">
+                    <div class="category-label">Type</div>
+                    <div class="category-selected">Pristine</div>
+                </div>
+                <div class="category-arrow">→</div>
+            </div>
+
+            <!-- Simple toggles -->
+            <div class="simple-toggle">
+                <div class="toggle-info">
+                    <div class="toggle-label">Shiny</div>
+                    <div class="toggle-multiplier">(x1.15)</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="shiny" checked onchange="updatePetMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="simple-toggle">
+                <div class="toggle-info">
+                    <div class="toggle-label">Max lvl</div>
+                    <div class="toggle-multiplier">(x2.2388)</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="maxlvl" checked onchange="updatePetMultiplier()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section">
+            <label class="input-label" for="numberInput">Enter Pet Stats:</label>
+            <input type="number" class="number-input" id="numberInput" placeholder="Enter your pet's base stats..." step="any" oninput="calculateStats()">
+            <button class="calculate-btn" onclick="calculateStats()">Calculate</button>
+            <div class="error" id="errorMessage"></div>
+        </div>
+
+        <!-- Result Section -->
+        <div class="result-section" id="resultSection">
+            <div class="stats-label">Final Pet Stats:</div>
+            <div class="result-value" id="resultValue">0</div>
+        </div>
+    `;
+    
+    // Set default values
+    setDefaultPetCalculatorValues();
+    
+    console.log('✅ Emergency pet calculator initialization completed');
 };
 
 // Make functions globally available
