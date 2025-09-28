@@ -1,160 +1,246 @@
 /* Boss Calculator Styles - calc/boss.css */
-/* Updated to match arm calculator design */
+/* Updated to match arm calculator mining theme */
 
 .boss-page {
-    display: none;
-    padding: 20px;
-    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-    min-height: 100vh;
-    color: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    display: none !important;
 }
 
 .boss-page.active {
-    display: block;
+    display: block !important;
 }
 
-/* Header Controls */
+.boss-page h1 {
+    color: #FFD700;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: 'Orbitron', 'Arial Black', sans-serif;
+    background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Header controls */
 .boss-page .header-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 16px;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.8) 0%, 
+        rgba(101, 67, 33, 0.9) 50%, 
+        rgba(62, 39, 35, 0.95) 100%);
+    border: 3px solid #8B4513;
+    border-radius: 15px;
+    backdrop-filter: blur(15px);
     box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 15px 35px rgba(0, 0, 0, 0.5),
+        inset 0 2px 10px rgba(255, 215, 0, 0.1);
+    position: relative;
+    overflow: hidden;
 }
 
-.boss-page .header-controls h1 {
-    margin: 0;
-    font-size: 2.2em;
-    font-weight: 700;
-    background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-    letter-spacing: -0.5px;
+.boss-page .header-controls::before {
+    content: '⚔️💀';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.2em;
+    opacity: 0.6;
+    animation: floatIcons 4s ease-in-out infinite;
 }
 
-/* Input Section */
-.boss-page .input-section {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 16px;
-    padding: 30px;
-    margin-bottom: 20px;
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+@keyframes floatIcons {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-3px) rotate(5deg); }
+}
+
+.boss-page .header-controls::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 215, 0, 0.03) 50%, 
+        transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.boss-page .header-controls > * {
+    position: relative;
+    z-index: 1;
+}
+
+.boss-page .settings-btn {
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.2), 
+        rgba(139, 69, 19, 0.3));
+    border: 2px solid #8B4513;
+    color: #FFD700;
+    padding: 10px 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
     transition: all 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
 }
 
-.boss-page .input-section:hover {
+.boss-page .settings-btn:hover {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #2F1B14;
+    border-color: #FFD700;
     transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Input Section - Mining Style */
+.boss-page .input-section {
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.8) 0%, 
+        rgba(101, 67, 33, 0.9) 50%, 
+        rgba(62, 39, 35, 0.95) 100%);
+    border: 3px solid #8B4513;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(15px);
     box-shadow: 
-        0 12px 40px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        0 15px 35px rgba(0, 0, 0, 0.5),
+        inset 0 2px 10px rgba(255, 215, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.boss-page .input-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 215, 0, 0.03) 50%, 
+        transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.boss-page .input-section > * {
+    position: relative;
+    z-index: 1;
 }
 
 .boss-page .input-group {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .boss-page .input-group:last-of-type {
-    margin-bottom: 0;
+    margin-bottom: 25px;
 }
 
 .boss-page .input-label {
     display: block;
-    margin-bottom: 10px;
-    font-weight: 600;
+    color: #F5DEB3;
     font-size: 1.1em;
-    color: #e1e5e9;
-    letter-spacing: 0.3px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .boss-page .number-input {
     width: 100%;
-    padding: 16px 20px;
-    border: 2px solid rgba(255, 255, 255, 0.12);
+    padding: 15px 20px;
+    font-size: 1.2em;
+    border: 3px solid #8B4513;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    color: #ffffff;
-    font-size: 1.1em;
-    font-weight: 500;
+    outline: none;
     transition: all 0.3s ease;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.2), 
+        rgba(62, 39, 35, 0.3));
+    color: #F5DEB3;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
     box-sizing: border-box;
 }
 
 .boss-page .number-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(245, 222, 179, 0.7);
+    text-shadow: none;
 }
 
 .boss-page .number-input:focus {
-    outline: none;
-    border-color: #4ecdc4;
-    background: rgba(78, 205, 196, 0.08);
+    border-color: #FFD700;
     box-shadow: 
-        0 0 0 3px rgba(78, 205, 196, 0.2),
-        0 4px 20px rgba(78, 205, 196, 0.15);
-    transform: translateY(-1px);
+        0 0 0 3px rgba(255, 215, 0, 0.3),
+        0 8px 20px rgba(255, 215, 0, 0.2);
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.1), 
+        rgba(139, 69, 19, 0.3));
 }
 
 .boss-page .number-input:hover:not(:focus) {
-    border-color: rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: #D4AF37;
+    background: linear-gradient(135deg, 
+        rgba(212, 175, 55, 0.1), 
+        rgba(139, 69, 19, 0.3));
 }
 
 /* Toggle Section */
 .boss-toggle-section {
     margin: 25px 0;
-    padding: 24px;
+    padding: 20px;
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
+    border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
 }
 
 .boss-page .simple-toggle {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
+    padding: 10px 0;
 }
 
 .boss-page .toggle-info {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
 }
 
 .boss-page .toggle-label {
-    font-weight: 600;
+    color: #F5DEB3;
     font-size: 1.1em;
-    color: #e1e5e9;
-    letter-spacing: 0.3px;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .boss-page .toggle-multiplier {
-    font-size: 0.95em;
-    color: #4ecdc4;
+    color: rgba(255, 215, 0, 0.8);
+    font-size: 0.9em;
     font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-/* Switch Styles */
+/* Toggle Switches - Mining Style */
 .boss-page .switch {
     position: relative;
     display: inline-block;
-    width: 56px;
-    height: 32px;
+    width: 50px;
+    height: 25px;
 }
 
 .boss-page .switch input {
@@ -170,79 +256,185 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-    border-radius: 32px;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.8), 
+        rgba(101, 67, 33, 0.9));
+    transition: .4s;
+    border-radius: 25px;
+    border: 2px solid #8B4513;
 }
 
 .boss-page .slider:before {
     position: absolute;
     content: "";
-    height: 24px;
-    width: 24px;
+    height: 19px;
+    width: 19px;
     left: 2px;
     bottom: 2px;
-    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+    background: linear-gradient(135deg, #F5DEB3, #D4AF37);
+    transition: .4s;
     border-radius: 50%;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .boss-page input:checked + .slider {
-    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-    border-color: #4ecdc4;
-    box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-color: #FFD700;
 }
 
 .boss-page input:checked + .slider:before {
-    transform: translateX(24px);
-    box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
+    transform: translateX(21px);
+    background: linear-gradient(135deg, #2F1B14, #1A0F0A);
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
 }
 
-/* Calculate Button */
+/* Calculate Button - Mining Style */
 .boss-page .calculate-btn {
-    width: 100%;
-    padding: 16px 32px;
-    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-    color: #ffffff;
-    border: none;
-    border-radius: 12px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #2F1B14;
+    border: 3px solid #8B4513;
+    padding: 15px 30px;
     font-size: 1.1em;
-    font-weight: 600;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 24px;
-    letter-spacing: 0.5px;
-    box-shadow: 0 4px 16px rgba(78, 205, 196, 0.3);
+    margin-top: 20px;
+    font-weight: 700;
+    width: 100%;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.boss-page .calculate-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+    opacity: 0;
+}
+
+.boss-page .calculate-btn:hover::before {
+    opacity: 1;
+    animation: shine 0.8s ease-in-out;
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
 .boss-page .calculate-btn:hover {
-    background: linear-gradient(135deg, #44a08d 0%, #4ecdc4 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(78, 205, 196, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 
+        0 15px 35px rgba(255, 215, 0, 0.4),
+        inset 0 2px 10px rgba(255, 255, 255, 0.2);
+    border-color: #FFD700;
 }
 
 .boss-page .calculate-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 16px rgba(78, 205, 196, 0.3);
+    transform: translateY(-1px);
 }
 
-/* Result Section */
+/* Error Messages - Mining Style */
+.boss-page .error {
+    color: #FF6347;
+    font-size: 0.9em;
+    margin-top: 10px;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    background: linear-gradient(135deg, 
+        rgba(255, 99, 71, 0.1), 
+        rgba(139, 69, 19, 0.2));
+    border: 2px solid rgba(255, 99, 71, 0.3);
+    border-radius: 8px;
+    display: none;
+}
+
+.boss-page .error:not(:empty) {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 100px;
+    }
+}
+
+/* Result Section - Mining Style */
 .boss-page .result-section {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 16px;
-    padding: 30px;
-    text-align: center;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.4s ease;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.8) 0%, 
+        rgba(101, 67, 33, 0.9) 50%, 
+        rgba(62, 39, 35, 0.95) 100%);
+    border: 3px solid #8B4513;
+    border-radius: 15px;
+    padding: 25px;
+    backdrop-filter: blur(15px);
     box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 15px 35px rgba(0, 0, 0, 0.5),
+        inset 0 2px 10px rgba(255, 215, 0, 0.1);
+    opacity: 0.6;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.boss-page .result-section::before {
+    content: '⚔️💀';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5em;
+    opacity: 0.6;
+    animation: floatGem 4s ease-in-out infinite;
+}
+
+@keyframes floatGem {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-5px) rotate(10deg); }
+}
+
+.boss-page .result-section::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 215, 0, 0.03) 50%, 
+        transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.boss-page .result-section > * {
+    position: relative;
+    z-index: 1;
 }
 
 .boss-page .result-section.show {
@@ -251,126 +443,114 @@
 }
 
 .boss-page .stats-label {
+    color: #FFD700;
     font-size: 1.2em;
-    font-weight: 600;
-    margin-bottom: 16px;
-    color: #e1e5e9;
-    letter-spacing: 0.3px;
+    margin-bottom: 15px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: 'Orbitron', Arial, sans-serif;
+    text-align: center;
 }
 
 .boss-page .result-value {
-    font-size: 2.8em;
-    font-weight: 700;
-    margin: 24px 0;
-    background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 50%, #4ecdc4 100%);
+    font-size: 2.5em;
+    color: #FFD700;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-    letter-spacing: -1px;
-    line-height: 1.1;
-    word-break: break-all;
+    animation: resultGlow 2s ease-in-out infinite alternate;
+    text-align: center;
+    margin-bottom: 15px;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+@keyframes resultGlow {
+    0% { 
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7));
+    }
+    100% { 
+        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 1));
+    }
 }
 
 .boss-page .result-details {
-    font-size: 1em;
-    color: #b8bcc2;
-    margin-top: 20px;
-    line-height: 1.6;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    border-left: 3px solid #4ecdc4;
-}
-
-/* Error Messages */
-.boss-page .error {
-    color: #ff6b6b;
+    color: #D4AF37;
     font-size: 0.9em;
-    margin-top: 12px;
     text-align: center;
     font-weight: 500;
-    padding: 12px 16px;
-    background: rgba(255, 107, 107, 0.1);
-    border: 1px solid rgba(255, 107, 107, 0.2);
-    border-radius: 8px;
-    backdrop-filter: blur(10px);
-}
-
-/* Settings Button */
-.boss-page .settings-btn {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    line-height: 1.5;
+    padding: 15px;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.3), 
+        rgba(62, 39, 35, 0.4));
     border-radius: 10px;
-    color: #ffffff;
-    padding: 10px 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.1em;
-}
-
-.boss-page .settings-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
+    border-left: 4px solid #FFD700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .boss-page {
-        padding: 16px;
+        padding: 15px;
     }
-    
+
     .boss-page .header-controls {
         flex-direction: column;
-        gap: 12px;
-        padding: 16px;
+        text-align: center;
+        gap: 10px;
+        padding: 15px;
     }
-    
+
     .boss-page .header-controls h1 {
         font-size: 1.8em;
+        margin-bottom: 0;
     }
-    
-    .boss-page .input-section,
-    .boss-page .result-section {
-        padding: 24px;
-    }
-    
-    .boss-page .result-value {
-        font-size: 2.2em;
-    }
-    
-    .boss-page .simple-toggle {
-        flex-direction: column;
-        gap: 16px;
-        align-items: flex-start;
-    }
-    
-    .boss-page .number-input {
-        font-size: 16px; /* Prevents zoom on iOS */
-    }
-}
 
-@media (max-width: 480px) {
-    .boss-page {
-        padding: 12px;
-    }
-    
-    .boss-page .header-controls h1 {
-        font-size: 1.6em;
-    }
-    
-    .boss-page .result-value {
-        font-size: 2em;
-    }
-    
     .boss-page .input-section,
     .boss-page .result-section {
         padding: 20px;
     }
+
+    .boss-page .result-value {
+        font-size: 2em;
+    }
+
+    .boss-page .number-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 12px 15px;
+    }
     
-    .boss-page .number-input,
     .boss-page .calculate-btn {
-        padding: 14px 18px;
+        padding: 12px 25px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .boss-page .result-value {
+        font-size: 1.8em;
+    }
+
+    .boss-page .header-controls h1 {
+        font-size: 1.5em;
+    }
+    
+    .boss-page .input-section,
+    .boss-page .result-section {
+        padding: 15px;
+    }
+    
+    .boss-page .input-label {
+        font-size: 1em;
+    }
+    
+    .boss-page .number-input {
+        font-size: 1.1em;
+        padding: 12px 15px;
     }
 }
