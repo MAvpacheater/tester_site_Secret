@@ -40,12 +40,13 @@ class URLRouter {
     }
 
     setupRoutes() {
-        // Enhanced route mapping with exact path matching
+        // Enhanced route mapping with exact path matching - includes boss
         const routeMapping = {
             'calculator': '',  // Root page
             'arm': 'arm_calculator',
             'grind': 'grind_calculator', 
             'roulette': 'roulette_calculator',
+            'boss': 'boss_calculator',
             'boosts': 'boosts_info',
             'shiny': 'shiny_list',
             'secret': 'secret_pets',
@@ -95,7 +96,7 @@ class URLRouter {
         });
 
         if (this.debugMode) {
-            console.log('🗺️ Enhanced routes configured:', Array.from(this.routes.entries()).slice(0, 20));
+            console.log('🗺️ Enhanced routes configured (includes boss):', Array.from(this.routes.entries()).slice(0, 20));
         }
     }
 
@@ -370,6 +371,7 @@ class URLRouter {
             'arm': { title: '💪 Arm Calculator', description: 'Calculate arm strength upgrades and costs' },
             'grind': { title: '🏋️‍♂️ Grind Calculator', description: 'Calculate grinding efficiency and rewards' },
             'roulette': { title: '🎰 Roulette Calculator', description: 'Calculate time needed for roulette spins and rewards' },
+            'boss': { title: '👹 Boss Calculator', description: 'Calculate time needed for boss battles and rewards' },
             'boosts': { title: '🚀 Boosts Information', description: 'Complete guide to all boosts and their effects' },
             'shiny': { title: '✨ Shiny Pet Statistics', description: 'Complete list of shiny pets and their stats' },
             'secret': { title: '🔮 Secret Pets Guide', description: 'Discover all secret pets and how to get them' },
@@ -396,8 +398,8 @@ class URLRouter {
         console.log('Detected page:', this.getPageFromURL());
         console.log('Is initialized:', this.isInitialized);
         console.log('Total routes:', this.routes.size);
-        console.log('Sample routes:');
-        Array.from(this.routes.entries()).slice(0, 15).forEach(([path, page]) => {
+        console.log('Sample routes (including boss):');
+        Array.from(this.routes.entries()).slice(0, 20).forEach(([path, page]) => {
             console.log(`  "${path}" -> ${page}`);
         });
         console.log('========================');
