@@ -1,5 +1,4 @@
-/* Boss Calculator Styles - calc/boss.css */
-/* Updated to match arm calculator mining theme */
+/* Boss Calculator Styles - Matching Arm Calculator Design */
 
 .boss-page {
     display: none !important;
@@ -22,140 +21,31 @@
     background-clip: text;
 }
 
-/* Header controls */
+/* Header controls - Clean and simple like Arm Calculator */
 .boss-page .header-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
-    padding: 20px;
-    background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.8) 0%, 
-        rgba(101, 67, 33, 0.9) 50%, 
-        rgba(62, 39, 35, 0.95) 100%);
-    border: 3px solid #8B4513;
-    border-radius: 15px;
-    backdrop-filter: blur(15px);
-    box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.5),
-        inset 0 2px 10px rgba(255, 215, 0, 0.1);
-    position: relative;
-    overflow: hidden;
 }
 
-.boss-page .header-controls::before {
-    content: '⚔️💀';
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 1.2em;
-    opacity: 0.6;
-    animation: floatIcons 4s ease-in-out infinite;
-}
-
-@keyframes floatIcons {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-3px) rotate(5deg); }
-}
-
-.boss-page .header-controls::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, 
-        transparent 30%, 
-        rgba(255, 215, 0, 0.03) 50%, 
-        transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-}
-
-.boss-page .header-controls > * {
-    position: relative;
-    z-index: 1;
-}
-
-.boss-page .settings-btn {
-    background: linear-gradient(135deg, 
-        rgba(255, 215, 0, 0.2), 
-        rgba(139, 69, 19, 0.3));
-    border: 2px solid #8B4513;
-    color: #FFD700;
-    padding: 10px 15px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-}
-
-.boss-page .settings-btn:hover {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
-    color: #2F1B14;
-    border-color: #FFD700;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-/* Input Section - Mining Style */
-.boss-page .input-section {
-    background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.8) 0%, 
-        rgba(101, 67, 33, 0.9) 50%, 
-        rgba(62, 39, 35, 0.95) 100%);
-    border: 3px solid #8B4513;
-    border-radius: 15px;
-    padding: 25px;
-    margin-bottom: 20px;
-    backdrop-filter: blur(15px);
-    box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.5),
-        inset 0 2px 10px rgba(255, 215, 0, 0.1);
-    position: relative;
-    overflow: hidden;
-}
-
-.boss-page .input-section::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, 
-        transparent 30%, 
-        rgba(255, 215, 0, 0.03) 50%, 
-        transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-}
-
-.boss-page .input-section > * {
-    position: relative;
-    z-index: 1;
-}
-
-.boss-page .input-group {
-    margin-bottom: 20px;
-}
-
-.boss-page .input-group:last-of-type {
-    margin-bottom: 25px;
+/* Input Section - Matching Arm Calculator Style */
+.boss-page .input-section { 
+    margin-bottom: 30px; 
 }
 
 .boss-page .input-label {
     display: block;
     color: #F5DEB3;
     font-size: 1.1em;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    margin-top: 15px;
     font-weight: 600;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.boss-page .input-label:first-of-type {
+    margin-top: 0;
 }
 
 .boss-page .number-input {
@@ -192,33 +82,20 @@
         rgba(139, 69, 19, 0.3));
 }
 
-.boss-page .number-input:hover:not(:focus) {
-    border-color: #D4AF37;
-    background: linear-gradient(135deg, 
-        rgba(212, 175, 55, 0.1), 
-        rgba(139, 69, 19, 0.3));
-}
-
-/* Toggle Section */
-.boss-toggle-section {
-    margin: 25px 0;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
+/* Simple toggles like in Arm Calculator */
 .boss-page .simple-toggle {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 15px 0;
+    margin-top: 20px;
+    border-top: 2px solid rgba(139, 69, 19, 0.5);
 }
 
 .boss-page .toggle-info {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
 }
 
 .boss-page .toggle-label {
@@ -243,18 +120,18 @@
     height: 25px;
 }
 
-.boss-page .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+.boss-page .switch input { 
+    opacity: 0; 
+    width: 0; 
+    height: 0; 
 }
 
 .boss-page .slider {
     position: absolute;
     cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; 
+    left: 0; 
+    right: 0; 
     bottom: 0;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.8), 
@@ -267,9 +144,9 @@
 .boss-page .slider:before {
     position: absolute;
     content: "";
-    height: 19px;
+    height: 19px; 
     width: 19px;
-    left: 2px;
+    left: 2px; 
     bottom: 2px;
     background: linear-gradient(135deg, #F5DEB3, #D4AF37);
     transition: .4s;
@@ -277,18 +154,17 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.boss-page input:checked + .slider {
+.boss-page input:checked + .slider { 
     background: linear-gradient(135deg, #FFD700, #FFA500);
     border-color: #FFD700;
 }
 
-.boss-page input:checked + .slider:before {
+.boss-page input:checked + .slider:before { 
     transform: translateX(21px);
     background: linear-gradient(135deg, #2F1B14, #1A0F0A);
     box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
 }
 
-/* Calculate Button - Mining Style */
 .boss-page .calculate-btn {
     background: linear-gradient(135deg, #FFD700, #FFA500);
     color: #2F1B14;
@@ -300,13 +176,11 @@
     transition: all 0.3s ease;
     margin-top: 20px;
     font-weight: 700;
-    width: 100%;
+    min-width: 150px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
 .boss-page .calculate-btn::before {
@@ -343,67 +217,40 @@
     border-color: #FFD700;
 }
 
-.boss-page .calculate-btn:active {
-    transform: translateY(-1px);
+.boss-page .calculate-btn:active { 
+    transform: translateY(-1px); 
 }
 
-/* Error Messages - Mining Style */
+/* Error Messages - Matching Arm Calculator */
 .boss-page .error {
     color: #FF6347;
     font-size: 0.9em;
     margin-top: 10px;
     font-weight: 600;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    padding: 10px;
-    background: linear-gradient(135deg, 
-        rgba(255, 99, 71, 0.1), 
-        rgba(139, 69, 19, 0.2));
-    border: 2px solid rgba(255, 99, 71, 0.3);
-    border-radius: 8px;
-    display: none;
 }
 
-.boss-page .error:not(:empty) {
-    display: block;
-    animation: slideDown 0.3s ease-out;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-        max-height: 0;
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-        max-height: 100px;
-    }
-}
-
-/* Result Section - Mining Style */
+/* Result Section - Clean style like Arm Calculator */
 .boss-page .result-section {
+    margin-top: 30px;
+    padding: 25px;
     background: linear-gradient(135deg, 
         rgba(139, 69, 19, 0.8) 0%, 
         rgba(101, 67, 33, 0.9) 50%, 
         rgba(62, 39, 35, 0.95) 100%);
-    border: 3px solid #8B4513;
     border-radius: 15px;
-    padding: 25px;
+    border: 3px solid #8B4513;
+    display: none;
     backdrop-filter: blur(15px);
     box-shadow: 
         0 15px 35px rgba(0, 0, 0, 0.5),
         inset 0 2px 10px rgba(255, 215, 0, 0.1);
-    opacity: 0.6;
-    transform: translateY(10px);
-    transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
-    text-align: center;
 }
 
 .boss-page .result-section::before {
-    content: '⚔️💀';
+    content: '⛏️💎';
     position: absolute;
     top: 10px;
     right: 15px;
@@ -417,29 +264,9 @@
     50% { transform: translateY(-5px) rotate(10deg); }
 }
 
-.boss-page .result-section::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, 
-        transparent 30%, 
-        rgba(255, 215, 0, 0.03) 50%, 
-        transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-}
-
-.boss-page .result-section > * {
-    position: relative;
-    z-index: 1;
-}
-
 .boss-page .result-section.show {
-    opacity: 1;
-    transform: translateY(0);
+    display: block;
+    animation: slideIn 0.5s ease-out;
 }
 
 .boss-page .stats-label {
@@ -449,11 +276,10 @@
     font-weight: 700;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     font-family: 'Orbitron', Arial, sans-serif;
-    text-align: center;
 }
 
 .boss-page .result-value {
-    font-size: 2.5em;
+    font-size: 2em;
     color: #FFD700;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -462,10 +288,6 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: resultGlow 2s ease-in-out infinite alternate;
-    text-align: center;
-    margin-bottom: 15px;
-    line-height: 1.2;
-    word-break: break-word;
 }
 
 @keyframes resultGlow {
@@ -477,80 +299,53 @@
     }
 }
 
+/* Hide result details for cleaner design */
 .boss-page .result-details {
-    color: #D4AF37;
-    font-size: 0.9em;
-    text-align: center;
-    font-weight: 500;
-    line-height: 1.5;
-    padding: 15px;
-    background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.3), 
-        rgba(62, 39, 35, 0.4));
-    border-radius: 10px;
-    border-left: 4px solid #FFD700;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
+    display: none;
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-    .boss-page {
-        padding: 15px;
-    }
+/* Remove bottom border/line from result section */
+.boss-page .result-section::after {
+    display: none;
+}
 
-    .boss-page .header-controls {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
-        padding: 15px;
+@keyframes slideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
     }
-
-    .boss-page .header-controls h1 {
-        font-size: 1.8em;
-        margin-bottom: 0;
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
     }
+}
 
-    .boss-page .input-section,
-    .boss-page .result-section {
-        padding: 20px;
+/* Mobile Styles - Mining Theme */
+@media (max-width: 480px) {
+    .boss-page h1 { 
+        font-size: 1.8em; 
     }
-
-    .boss-page .result-value {
-        font-size: 2em;
+    
+    .boss-page .result-value { 
+        font-size: 1.6em; 
     }
-
+    
+    .boss-page .header-controls { 
+        flex-direction: column; 
+        gap: 15px; 
+    }
+    
+    .boss-page .simple-toggle {
+        padding: 12px 0;
+    }
+    
     .boss-page .number-input {
-        font-size: 16px; /* Prevents zoom on iOS */
+        font-size: 1.1em;
         padding: 12px 15px;
     }
     
     .boss-page .calculate-btn {
         padding: 12px 25px;
         font-size: 1em;
-    }
-}
-
-@media (max-width: 480px) {
-    .boss-page .result-value {
-        font-size: 1.8em;
-    }
-
-    .boss-page .header-controls h1 {
-        font-size: 1.5em;
-    }
-    
-    .boss-page .input-section,
-    .boss-page .result-section {
-        padding: 15px;
-    }
-    
-    .boss-page .input-label {
-        font-size: 1em;
-    }
-    
-    .boss-page .number-input {
-        font-size: 1.1em;
-        padding: 12px 15px;
     }
 }
