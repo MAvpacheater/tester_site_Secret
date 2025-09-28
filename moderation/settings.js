@@ -37,11 +37,12 @@ const menuPositions = {
     down: { icon: '⬇️', description: 'Іконки меню знизу' }
 };
 
-// Конфігурація елементів меню
+// Конфігурація елементів меню - ДОДАНО РУЛЕТКУ
 const menuItems = [
     { page: 'calculator', icon: '🐾', title: 'Pet Calculator' },
     { page: 'arm', icon: '💪', title: 'Arm Calculator' },
     { page: 'grind', icon: '🏋️‍♂️', title: 'Grind Calculator' },
+    { page: 'roulette', icon: '🎰', title: 'Roulette Calculator' },
     { page: 'boosts', icon: '🚀', title: 'Boosts' },
     { page: 'shiny', icon: '✨', title: 'Shiny Stats' },
     { page: 'secret', icon: '🔮', title: 'Secret Pets' },
@@ -168,7 +169,7 @@ class MenuManager {
         staticMenu.className = `static-menu ${menuClass}`;
         staticMenu.id = 'staticMenu';
         
-        // Навігаційні кнопки
+        // Навігаційні кнопки - ВКЛЮЧАЮЧИ РУЛЕТКУ
         const navButtons = document.createElement('div');
         navButtons.className = 'nav-buttons';
         
