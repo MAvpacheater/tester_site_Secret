@@ -71,11 +71,25 @@ async function generateAuraContent() {
             item.className = 'aura-item';
             item.style.animationDelay = `${index * 0.05}s`;
             
-            // Generate description with stats
-            const description = data.description
-                .replace('%', `${aura.strength}%`)
-                .replace('%', `${aura.luck}%`)
-                .replace('%', `${aura.speed}%`);
+            // Generate description with proper replacements
+            let description = data.description;
+            
+            // Replace placeholders with actual values in proper order
+            description = description
+                .replace(/%strength%/g, `${aura.strength}%`)
+                .replace(/%luck%/g, `${aura.luck}%`)
+                .replace(/%speed%/g, `${aura.speed}%`)
+                // Fallback for old format - replace remaining % with values in order
+                .replace(/(\d+)%/g, (match, p1) => match) // Keep existing percentages
+                .replace(/%/g, () => {
+                    // This is for the old format - replace first % with strength, second with luck, third with speed
+                    const matches = description.match(/%/g) || [];
+                    const index = data.description.match(/%/g).length - matches.length;
+                    if (index === 0) return `${aura.strength}%`;
+                    if (index === 1) return `${aura.luck}%`;
+                    if (index === 2) return `${aura.speed}%`;
+                    return '%';
+                });
             
             const photoHtml = aura.image 
                 ? `<img src="${aura.image}" alt="${aura.name}" onerror="this.parentElement.innerHTML='<div class=\\'aura-photo-placeholder\\'>No Image</div>'">`
