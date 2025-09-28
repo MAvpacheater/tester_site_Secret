@@ -4,7 +4,7 @@
     "loading": "Loading auras...",
     "error": "Error loading aura data",
     "retry": "Retry",
-    "description": "Gives you % strength, % luck and % training speed",
+    "description": "Gives you %strength% strength, %luck% luck and %speed% training speed",
     "auras": [
       {
         "name": "Hacked [1/37.5m]",
@@ -133,7 +133,7 @@
     "loading": "Завантаження аур...",
     "error": "Помилка завантаження аур",
     "retry": "Спробувати знову",
-    "description": "Дає вам % сили, % удачі та % швидкості тренування",
+    "description": "Дає вам %strength% сили, %luck% удачі та %speed% швидкості тренування",
     "auras": [
       {
         "name": "Зламана [1/37.5м]",
@@ -262,7 +262,7 @@
     "loading": "Загрузка аур...",
     "error": "Ошибка загрузки аур",
     "retry": "Повторить",
-    "description": "Дает вам % силы, % удачи и % скорости тренировки",
+    "description": "Дает вам %strength% силы, %luck% удачи и %speed% скорости тренировки",
     "auras": [
       {
         "name": "Взломанная [1/37.5м]",
