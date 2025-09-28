@@ -404,3 +404,78 @@
         <div class="result-details" id="rouletteResultDetails"></div>
     </div>
 </div>
+<!-- Boss Calculator Page - додаємо в index/content_calc.html -->
+
+<!-- Boss Calculator Page -->
+<div class="page boss-page" id="bossPage">
+    <div class="header-controls">
+        <h1>👹 Boss Calculator</h1>
+    </div>
+
+    <!-- Input Section -->
+    <div class="input-section">
+        <div class="input-group">
+            <label class="input-label" for="totalNeededInput">Total Needed to Collect:</label>
+            <input type="number" class="number-input" id="totalNeededInput" placeholder="Enter total amount needed..." step="1" min="1" oninput="calculateBossTime()">
+        </div>
+        
+        <div class="input-group">
+            <label class="input-label" for="rewardPerWinInput">Reward per Victory:</label>
+            <input type="number" class="number-input" id="rewardPerWinInput" placeholder="Enter reward per win..." step="1" min="1" oninput="calculateBossTime()">
+        </div>
+        
+        <!-- VIP + Autoclicker Toggle -->
+        <div class="boss-toggle-section">
+            <div class="simple-toggle">
+                <div class="toggle-info">
+                    <div class="toggle-label">VIP + Autoclicker</div>
+                    <div class="toggle-multiplier">(2.5s vs 4.5s)</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="vipAutoclicker" onchange="calculateBossTime()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <button class="calculate-btn" onclick="calculateBossTime()">Calculate Time</button>
+        <div class="error" id="bossErrorMessage"></div>
+    </div>
+
+    <!-- Result Section -->
+    <div class="result-section" id="bossResultSection">
+        <div class="stats-label">Total Time Needed:</div>
+        <div class="result-value" id="bossResultValue">0</div>
+        <div class="result-details" id="bossResultDetails"></div>
+    </div>
+</div>
+
+<!-- Roulette Calculator Page -->
+<div class="page roulette-page" id="roulettePage">
+    <div class="header-controls">
+        <h1>🎰 Roulette Calculator</h1>
+    </div>
+
+    <!-- Input Section -->
+    <div class="input-section">
+        <div class="input-group">
+            <label class="input-label" for="totalSpinsInput">Total Spins Needed:</label>
+            <input type="number" class="number-input" id="totalSpinsInput" placeholder="Enter total spins needed..." step="1" min="1" oninput="calculateRouletteTime()">
+        </div>
+        
+        <div class="input-group">
+            <label class="input-label" for="spinsPerTurnInput">Spins per Turn:</label>
+            <input type="number" class="number-input" id="spinsPerTurnInput" placeholder="Enter spins per turn..." step="1" min="1" oninput="calculateRouletteTime()">
+        </div>
+        
+        <button class="calculate-btn" onclick="calculateRouletteTime()">Calculate Time</button>
+        <div class="error" id="rouletteErrorMessage"></div>
+    </div>
+
+    <!-- Result Section -->
+    <div class="result-section" id="rouletteResultSection">
+        <div class="stats-label">Total Time Needed:</div>
+        <div class="result-value" id="rouletteResultValue">0</div>
+        <div class="result-details" id="rouletteResultDetails"></div>
+    </div>
+</div>
