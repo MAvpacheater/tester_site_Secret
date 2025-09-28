@@ -1,4 +1,4 @@
-// Aura functionality with multilingual support
+// Aura functionality with multilingual support - FIXED VERSION
 
 let auraCurrentLanguage = 'en';
 let auraTranslations = null;
@@ -44,7 +44,7 @@ function updateAuraLanguage(newLanguage) {
     }
 }
 
-// Generate content
+// Generate content - FIXED VERSION
 async function generateAuraContent() {
     const container = document.getElementById('auraContainer');
     if (!container) return console.error('❌ Aura container not found');
@@ -65,17 +65,24 @@ async function generateAuraContent() {
         await new Promise(resolve => setTimeout(resolve, 300));
         container.innerHTML = '';
         
-        // Create aura items
+        // Create aura items with INDIVIDUAL descriptions
         data.auras.forEach((aura, index) => {
             const item = document.createElement('div');
             item.className = 'aura-item';
             item.style.animationDelay = `${index * 0.05}s`;
             
-            // Generate description with proper replacements
-            let description = data.description
-                .replace('%strength%', `${aura.strength}%`)
-                .replace('%luck%', `${aura.luck}%`)
-                .replace('%speed%', `${aura.speed}%`);
+            // FIXED: Use individual description for each aura or generate dynamic one
+            let description;
+            if (aura.description) {
+                // Use individual description if provided
+                description = aura.description;
+            } else {
+                // Generate dynamic description using template
+                description = data.description
+                    .replace('%strength%', `${aura.strength}%`)
+                    .replace('%luck%', `${aura.luck}%`)
+                    .replace('%speed%', `${aura.speed}%`);
+            }
             
             const photoHtml = aura.image 
                 ? `<img src="${aura.image}" alt="${aura.name}" onerror="this.parentElement.innerHTML='<div class=\\'aura-photo-placeholder\\'>No Image</div>'">`
@@ -89,7 +96,7 @@ async function generateAuraContent() {
                     <div class="aura-name">${aura.name}</div>
                     <div class="aura-description">${description}</div>
                 </div>
-                <div class="aura-rarity ${aura.rarity}">${aura.rarity}</div>
+                <div class="aura-rarity ${aura.rarity}">${aura.rarity.toUpperCase()}</div>
             `;
             container.appendChild(item);
         });
@@ -174,4 +181,4 @@ window.updateAuraLanguage = updateAuraLanguage;
 window.generateAuraContent = generateAuraContent;
 window.auraInitialized = auraInitialized;
 
-console.log('✅ Aura.js loaded and ready');
+console.log('✅ Fixed Aura.js loaded and ready');
