@@ -224,6 +224,11 @@
     display: none;
 }
 
+/* Remove bottom border/line from result section */
+.roulette-page .result-section::after {
+    display: none;
+}
+
 @keyframes slideIn {
     from { 
         opacity: 0; 
