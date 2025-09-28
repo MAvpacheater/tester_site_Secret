@@ -407,37 +407,5 @@
     </div>
 </div>
 
-<!-- Boss Calculator Page - Exactly like Arm Calculator structure -->
-<div class="page boss-page" id="bossPage">
-    <div class="header-controls">
-        <h1>👹 Boss Calculator</h1>
-    </div>
-    
-    <div class="input-section">
-        <label class="input-label" for="totalNeededInput">Total Needed to Collect:</label>
-        <input type="number" class="number-input" id="totalNeededInput" placeholder="Enter total amount needed..." step="1" min="1" oninput="calculateBossTime()">
-        
-        <label class="input-label" for="rewardPerWinInput">Reward per Victory:</label>
-        <input type="number" class="number-input" id="rewardPerWinInput" placeholder="Enter reward per win..." step="1" min="1" oninput="calculateBossTime()">
-        
-        <!-- VIP + Autoclicker Toggle -->
-        <div class="simple-toggle">
-            <div class="toggle-info">
-                <div class="toggle-label">VIP + Autoclicker</div>
-                <div class="toggle-multiplier">(2.5s vs 4.5s)</div>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="vipAutoclicker" onchange="calculateBossTime()">
-                <span class="slider"></span>
-            </label>
-        </div>
-        
-        <button class="calculate-btn" onclick="calculateBossTime()">Calculate</button>
-        <div class="error" id="bossErrorMessage"></div>
-    </div>
-
-    <div class="result-section" id="bossResultSection">
-        <div class="stats-label">Total Time Needed:</div>
-        <div class="result-value" id="bossResultValue">0</div>
-    </div>
-</div>
+<<!-- Boss Calculator - Only connection, all structure in JS -->
+<div class="page boss-page" id="bossPage"></div>
