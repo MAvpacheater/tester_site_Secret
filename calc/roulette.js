@@ -43,30 +43,39 @@ function createRouletteHTML() {
     const t = rouletteTranslations[currentRouletteLanguage] || defaultRouletteTranslations['en'];
     console.log('Using roulette translations:', t); // Debug log
 
+    // Make sure we have fallback values if translations fail
+    const title = t.title || "🎰 Roulette Calculator";
+    const totalSpins = t.totalSpins || "Total Spins Needed:";
+    const spinsPerTurn = t.spinsPerTurn || "Spins per Turn:";
+    const calculateBtn = t.calculateBtn || "Calculate Time";
+    const resultTitle = t.resultTitle || "Total Time Needed:";
+    const totalSpinsPlaceholder = t.totalSpinsPlaceholder || "Enter total spins needed...";
+    const spinsPerTurnPlaceholder = t.spinsPerTurnPlaceholder || "Enter spins per turn...";
+
     roulettePage.innerHTML = `
         <div class="header-controls">
-            <h1>${t.title}</h1>
+            <h1>${title}</h1>
         </div>
 
         <!-- Input Section -->
         <div class="input-section">
             <div class="input-group">
-                <label class="input-label" for="totalSpinsInput">${t.totalSpins}</label>
-                <input type="number" class="number-input" id="totalSpinsInput" placeholder="${t.totalSpinsPlaceholder}" step="1" min="1" oninput="calculateRouletteTime()">
+                <label class="input-label" for="totalSpinsInput">${totalSpins}</label>
+                <input type="number" class="number-input" id="totalSpinsInput" placeholder="${totalSpinsPlaceholder}" step="1" min="1" oninput="calculateRouletteTime()">
             </div>
             
             <div class="input-group">
-                <label class="input-label" for="spinsPerTurnInput">${t.spinsPerTurn}</label>
-                <input type="number" class="number-input" id="spinsPerTurnInput" placeholder="${t.spinsPerTurnPlaceholder}" step="1" min="1" oninput="calculateRouletteTime()">
+                <label class="input-label" for="spinsPerTurnInput">${spinsPerTurn}</label>
+                <input type="number" class="number-input" id="spinsPerTurnInput" placeholder="${spinsPerTurnPlaceholder}" step="1" min="1" oninput="calculateRouletteTime()">
             </div>
             
-            <button class="calculate-btn" onclick="calculateRouletteTime()">${t.calculateBtn}</button>
+            <button class="calculate-btn" onclick="calculateRouletteTime()">${calculateBtn}</button>
             <div class="error" id="rouletteErrorMessage"></div>
         </div>
 
         <!-- Result Section -->
         <div class="result-section" id="rouletteResultSection">
-            <div class="stats-label">${t.resultTitle}</div>
+            <div class="stats-label">${resultTitle}</div>
             <div class="result-value" id="rouletteResultValue">0</div>
             <div class="result-details" id="rouletteResultDetails"></div>
         </div>
