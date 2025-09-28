@@ -1,4 +1,4 @@
-// General JavaScript functions - Enhanced with Roulette support
+// General JavaScript functions - Enhanced with Boss support
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -52,6 +52,7 @@ async function loadMenuTranslations() {
                     arm: "💪 Arm Calculator",
                     grind: "🏋️‍♂️ Grind Calculator",
                     roulette: "🎰 Roulette Calculator",
+                    boss: "👹 Boss Calculator",
                     boosts: "🚀 Boosts",
                     shiny: "✨ Shiny Stats",
                     secret: "🔮 Secret Pets",
@@ -79,6 +80,7 @@ async function loadMenuTranslations() {
                     arm: "💪 Калькулятор Рук",
                     grind: "🏋️‍♂️ Калькулятор Гринду",
                     roulette: "🎰 Калькулятор Рулетки",
+                    boss: "👹 Калькулятор Босів",
                     boosts: "🚀 Бусти",
                     shiny: "✨ Шайні Статистика",
                     secret: "🔮 Секретні Пети",
@@ -106,6 +108,7 @@ async function loadMenuTranslations() {
                     arm: "💪 Калькулятор Рук",
                     grind: "🏋️‍♂️ Калькулятор Гринда",
                     roulette: "🎰 Калькулятор Рулетки",
+                    boss: "👹 Калькулятор Боссов",
                     boosts: "🚀 Бусты",
                     shiny: "✨ Шайни Статистика",
                     secret: "🔮 Секретные Петы",
@@ -128,7 +131,7 @@ async function loadMenuTranslations() {
     }
 }
 
-// Switch app language with enhanced roulette support
+// Switch app language with enhanced boss support
 async function switchAppLanguage(lang) {
     if (!menuTranslations) {
         await loadMenuTranslations();
@@ -170,6 +173,7 @@ async function switchAppLanguage(lang) {
     // Directly notify specific modules if their functions exist
     const moduleNotifications = [
         { name: 'roulette', func: 'updateRouletteLanguage' },
+        { name: 'boss', func: 'updateBossLanguage' },
         { name: 'worlds', func: 'updateWorldsLanguage' },
         { name: 'potions', func: 'updatePotionsLanguage' },
         { name: 'secret', func: 'updateSecretLanguage' },
@@ -236,14 +240,14 @@ function updateMenuTranslations() {
     console.log(`✅ Menu translations updated for ${currentAppLanguage}`);
 }
 
-// Update page titles with roulette support
+// Update page titles with boss support
 function updatePageTitles() {
     if (!menuTranslations || !currentAppLanguage) return;
     
     const translations = menuTranslations[currentAppLanguage];
     if (!translations || !translations.pages) return;
     
-    // Page title mappings - includes roulette
+    // Page title mappings - includes boss
     const pageTitleMappings = {
         'calculatorPage': 'calculator',
         'armPage': 'arm',
@@ -286,7 +290,7 @@ function updatePageTitles() {
     console.log(`✅ Page titles updated for ${currentAppLanguage}`);
 }
 
-// Enhanced page switching with roulette support
+// Enhanced page switching with boss support
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
     
@@ -306,7 +310,7 @@ function switchPage(page) {
         console.error(`Page ${page}Page not found`);
     }
     
-    // Update active nav button in sidebar - includes roulette
+    // Update active nav button in sidebar - includes boss
     const pageMap = {
         'calculator': 'calculator',
         'arm': 'arm',
@@ -367,7 +371,7 @@ function getCurrentMenuPosition() {
     return saved || 'left';
 }
 
-// Initialize specific page content when switching - includes roulette
+// Initialize specific page content when switching - includes boss
 function initializePageContent(page) {
     console.log(`🔄 Initializing content for page: ${page}`);
     
@@ -406,6 +410,17 @@ function initializePageContent(page) {
                 initializeRoulette();
             } else {
                 console.error('❌ initializeRoulette function not found');
+            }
+            break;
+        case 'boss':
+            console.log('👹 Initializing Boss Calculator page...');
+            if (typeof initializeBoss === 'function') {
+                if (typeof window !== 'undefined' && window.bossInitialized !== undefined) {
+                    window.bossInitialized = false;
+                }
+                initializeBoss();
+            } else {
+                console.error('❌ initializeBoss function not found');
             }
             break;
         case 'shiny':
@@ -578,14 +593,14 @@ function loadSettingsFromStorage(key) {
 // Flag to prevent repeated initialization
 let appInitialized = false;
 
-// Enhanced app initialization with roulette support
+// Enhanced app initialization with boss support
 async function initializeApp() {
     if (appInitialized) {
         console.log('⚠️ App already initialized');
         return;
     }
     
-    console.log('🚀 Starting app initialization with roulette support...');
+    console.log('🚀 Starting app initialization with boss support...');
     
     // Check if content is loaded
     const appContent = document.getElementById('app-content');
@@ -615,7 +630,7 @@ async function initializeApp() {
     // Initialize categories
     initializeCategories();
     
-    // Initialize all modules first (including roulette)
+    // Initialize all modules first (including boss)
     initializeAllModules();
     
     // Wait for MenuManager to be available
@@ -684,10 +699,10 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed with roulette support');
+    console.log('✅ App initialization completed with boss support');
 }
 
-// Initialize all modules with proper DOM readiness checks - includes roulette
+// Initialize all modules with proper DOM readiness checks - includes boss
 function initializeAllModules() {
     console.log('🔧 Initializing all modules...');
     
@@ -696,6 +711,7 @@ function initializeAllModules() {
         'initializeArm', 
         'initializeGrind',
         'initializeRoulette',
+        'initializeBoss',
         'initializeBoosts',
         'initializeShiny',
         'initializeSecret',
@@ -717,7 +733,8 @@ function initializeAllModules() {
                 if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || 
                     moduleName === 'initializeGrind' || moduleName === 'initializePeoples' ||
                     moduleName === 'initializeWorlds' || moduleName === 'initializeHelp' ||
-                    moduleName === 'initializeSettings' || moduleName === 'initializeRoulette') {
+                    moduleName === 'initializeSettings' || moduleName === 'initializeRoulette' ||
+                    moduleName === 'initializeBoss') {
                     setTimeout(() => {
                         try {
                             // Force reinitialization by resetting flags
@@ -741,6 +758,9 @@ function initializeAllModules() {
                             }
                             if (moduleName === 'initializeRoulette' && window.rouletteInitialized) {
                                 window.rouletteInitialized = false;
+                            }
+                            if (moduleName === 'initializeBoss' && window.bossInitialized) {
+                                window.bossInitialized = false;
                             }
                             
                             window[moduleName]();
@@ -772,7 +792,7 @@ function debugPageStates() {
     console.log('========================');
 }
 
-// Force reinitialization for specific modules - includes roulette
+// Force reinitialization for specific modules - includes boss
 function forceReinitializeModule(moduleName) {
     console.log(`🔄 Force reinitializing ${moduleName}...`);
     
@@ -798,6 +818,9 @@ function forceReinitializeModule(moduleName) {
     if (moduleName === 'roulette' && typeof window !== 'undefined') {
         window.rouletteInitialized = false;
     }
+    if (moduleName === 'boss' && typeof window !== 'undefined') {
+        window.bossInitialized = false;
+    }
     
     // Call initialization
     const initFunctionName = `initialize${moduleName.charAt(0).toUpperCase() + moduleName.slice(1)}`;
@@ -809,7 +832,7 @@ function forceReinitializeModule(moduleName) {
     }
 }
 
-// Make functions globally available with roulette support
+// Make functions globally available with boss support
 window.switchPage = switchPage;
 window.toggleMobileMenu = toggleMobileMenu;
 window.closeSidebar = closeSidebar;
