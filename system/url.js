@@ -43,7 +43,8 @@ class URLRouter {
         const routeMapping = {
             'calculator': '',  // Root page
             'arm': 'arm_calculator',
-            'grind': 'grind_calculator', 
+            'grind': 'grind_calculator',
+            'roulette': 'roulette_calculator',
             'boosts': 'boosts_info',
             'shiny': 'shiny_list',
             'secret': 'secret_pets',
@@ -235,6 +236,7 @@ class URLRouter {
             'calculator': { title: '🐾 Pet Calculator', description: 'Calculate pet upgrades and evolution costs' },
             'arm': { title: '💪 Arm Calculator', description: 'Calculate arm strength upgrades and costs' },
             'grind': { title: '🏋️‍♂️ Grind Calculator', description: 'Calculate grinding efficiency and rewards' },
+            'roulette': { title: '🎰 Roulette Calculator', description: 'Calculate time needed for roulette spins' },
             'boosts': { title: '🚀 Boosts Information', description: 'Complete guide to all boosts and their effects' },
             'shiny': { title: '✨ Shiny Pet Statistics', description: 'Complete list of shiny pets and their stats' },
             'secret': { title: '🔮 Secret Pets Guide', description: 'Discover all secret pets and how to get them' },
@@ -262,4 +264,3 @@ class URLRouter {
         console.log('========================');
     }
 }
-
