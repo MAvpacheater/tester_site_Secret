@@ -1,33 +1,44 @@
 /* Roulette Calculator Styles - calc/roulette.css */
-/* Updated to match modern arm calculator design with mining theme accents */
+/* Updated to match arm calculator mining theme */
 
 .roulette-page {
     display: none !important;
-    padding: 20px;
-    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-    min-height: 100vh;
-    color: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
 }
 
 .roulette-page.active {
     display: block !important;
 }
 
-/* Header Controls */
+.roulette-page h1 {
+    color: #FFD700;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: 'Orbitron', 'Arial Black', sans-serif;
+    background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Header controls */
 .roulette-page .header-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 215, 0, 0.15);
-    border-radius: 16px;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.8) 0%, 
+        rgba(101, 67, 33, 0.9) 50%, 
+        rgba(62, 39, 35, 0.95) 100%);
+    border: 3px solid #8B4513;
+    border-radius: 15px;
+    backdrop-filter: blur(15px);
     box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 215, 0, 0.1);
+        0 15px 35px rgba(0, 0, 0, 0.5),
+        inset 0 2px 10px rgba(255, 215, 0, 0.1);
     position: relative;
     overflow: hidden;
 }
@@ -35,10 +46,10 @@
 .roulette-page .header-controls::before {
     content: '🎰⛏️';
     position: absolute;
-    top: 12px;
-    right: 16px;
-    font-size: 1.3em;
-    opacity: 0.4;
+    top: 10px;
+    right: 15px;
+    font-size: 1.2em;
+    opacity: 0.6;
     animation: floatIcons 4s ease-in-out infinite;
 }
 
@@ -47,32 +58,65 @@
     50% { transform: translateY(-3px) rotate(5deg); }
 }
 
-.roulette-page .header-controls h1 {
-    margin: 0;
-    font-size: 2.2em;
-    font-weight: 700;
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-    letter-spacing: -0.5px;
+.roulette-page .header-controls::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 215, 0, 0.03) 50%, 
+        transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.roulette-page .header-controls > * {
     position: relative;
     z-index: 1;
 }
 
-/* Input Section */
-.roulette-page .input-section {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 215, 0, 0.15);
-    border-radius: 16px;
-    padding: 30px;
-    margin-bottom: 20px;
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 215, 0, 0.1);
+.roulette-page .settings-btn {
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.2), 
+        rgba(139, 69, 19, 0.3));
+    border: 2px solid #8B4513;
+    color: #FFD700;
+    padding: 10px 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
     transition: all 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.roulette-page .settings-btn:hover {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #2F1B14;
+    border-color: #FFD700;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Input Section - Mining Style */
+.roulette-page .input-section {
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.8) 0%, 
+        rgba(101, 67, 33, 0.9) 50%, 
+        rgba(62, 39, 35, 0.95) 100%);
+    border: 3px solid #8B4513;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(15px);
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.5),
+        inset 0 2px 10px rgba(255, 215, 0, 0.1);
     position: relative;
     overflow: hidden;
 }
@@ -86,7 +130,7 @@
     height: 200%;
     background: linear-gradient(45deg, 
         transparent 30%, 
-        rgba(255, 215, 0, 0.02) 50%, 
+        rgba(255, 215, 0, 0.03) 50%, 
         transparent 70%);
     pointer-events: none;
     z-index: 0;
@@ -97,81 +141,83 @@
     z-index: 1;
 }
 
-.roulette-page .input-section:hover {
-    transform: translateY(-2px);
-    box-shadow: 
-        0 12px 40px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 215, 0, 0.15);
-}
-
 .roulette-page .input-group {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .roulette-page .input-group:last-of-type {
-    margin-bottom: 0;
+    margin-bottom: 25px;
 }
 
 .roulette-page .input-label {
     display: block;
-    margin-bottom: 10px;
-    font-weight: 600;
-    font-size: 1.1em;
     color: #F5DEB3;
-    letter-spacing: 0.3px;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .roulette-page .number-input {
     width: 100%;
-    padding: 16px 20px;
-    border: 2px solid rgba(255, 215, 0, 0.12);
+    padding: 15px 20px;
+    font-size: 1.2em;
+    border: 3px solid #8B4513;
     border-radius: 12px;
-    background: rgba(255, 215, 0, 0.05);
-    backdrop-filter: blur(10px);
-    color: #F5DEB3;
-    font-size: 1.1em;
-    font-weight: 500;
+    outline: none;
     transition: all 0.3s ease;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.2), 
+        rgba(62, 39, 35, 0.3));
+    color: #F5DEB3;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
     box-sizing: border-box;
 }
 
 .roulette-page .number-input::placeholder {
-    color: rgba(245, 222, 179, 0.5);
+    color: rgba(245, 222, 179, 0.7);
+    text-shadow: none;
 }
 
 .roulette-page .number-input:focus {
-    outline: none;
     border-color: #FFD700;
-    background: rgba(255, 215, 0, 0.08);
     box-shadow: 
-        0 0 0 3px rgba(255, 215, 0, 0.2),
-        0 4px 20px rgba(255, 215, 0, 0.15);
-    transform: translateY(-1px);
+        0 0 0 3px rgba(255, 215, 0, 0.3),
+        0 8px 20px rgba(255, 215, 0, 0.2);
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.1), 
+        rgba(139, 69, 19, 0.3));
 }
 
 .roulette-page .number-input:hover:not(:focus) {
-    border-color: rgba(255, 215, 0, 0.2);
-    background: rgba(255, 215, 0, 0.08);
+    border-color: #D4AF37;
+    background: linear-gradient(135deg, 
+        rgba(212, 175, 55, 0.1), 
+        rgba(139, 69, 19, 0.3));
 }
 
-/* Calculate Button */
+/* Calculate Button - Mining Style */
 .roulette-page .calculate-btn {
-    width: 100%;
-    padding: 16px 32px;
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    background: linear-gradient(135deg, #FFD700, #FFA500);
     color: #2F1B14;
-    border: none;
-    border-radius: 12px;
+    border: 3px solid #8B4513;
+    padding: 15px 30px;
     font-size: 1.1em;
-    font-weight: 700;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 24px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
+    margin-top: 10px;
+    font-weight: 700;
+    width: 100%;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .roulette-page .calculate-btn::before {
@@ -190,12 +236,6 @@
     opacity: 0;
 }
 
-.roulette-page .calculate-btn:hover {
-    background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4);
-}
-
 .roulette-page .calculate-btn:hover::before {
     opacity: 1;
     animation: shine 0.8s ease-in-out;
@@ -206,47 +246,68 @@
     100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
-.roulette-page .calculate-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
+.roulette-page .calculate-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 15px 35px rgba(255, 215, 0, 0.4),
+        inset 0 2px 10px rgba(255, 255, 255, 0.2);
+    border-color: #FFD700;
 }
 
-/* Error Messages */
+.roulette-page .calculate-btn:active {
+    transform: translateY(-1px);
+}
+
+/* Error Messages - Mining Style */
 .roulette-page .error {
-    color: #ff6b6b;
+    color: #FF6347;
     font-size: 0.9em;
-    margin-top: 12px;
-    text-align: center;
-    font-weight: 500;
-    padding: 12px 16px;
-    background: rgba(255, 107, 107, 0.1);
-    border: 1px solid rgba(255, 107, 107, 0.2);
+    margin-top: 10px;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    background: linear-gradient(135deg, 
+        rgba(255, 99, 71, 0.1), 
+        rgba(139, 69, 19, 0.2));
+    border: 2px solid rgba(255, 99, 71, 0.3);
     border-radius: 8px;
-    backdrop-filter: blur(10px);
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.3s ease;
+    display: none;
 }
 
 .roulette-page .error:not(:empty) {
-    opacity: 1;
-    transform: translateY(0);
+    display: block;
+    animation: slideDown 0.3s ease-out;
 }
 
-/* Result Section */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 100px;
+    }
+}
+
+/* Result Section - Mining Style */
 .roulette-page .result-section {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 215, 0, 0.15);
-    border-radius: 16px;
-    padding: 30px;
-    text-align: center;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.4s ease;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.8) 0%, 
+        rgba(101, 67, 33, 0.9) 50%, 
+        rgba(62, 39, 35, 0.95) 100%);
+    border: 3px solid #8B4513;
+    border-radius: 15px;
+    padding: 25px;
+    backdrop-filter: blur(15px);
     box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 215, 0, 0.1);
+        0 15px 35px rgba(0, 0, 0, 0.5),
+        inset 0 2px 10px rgba(255, 215, 0, 0.1);
+    opacity: 0.6;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
 }
@@ -254,16 +315,31 @@
 .roulette-page .result-section::before {
     content: '⏰💎';
     position: absolute;
-    top: 12px;
-    right: 16px;
+    top: 10px;
+    right: 15px;
     font-size: 1.5em;
-    opacity: 0.4;
+    opacity: 0.6;
     animation: floatGem 4s ease-in-out infinite;
 }
 
 @keyframes floatGem {
     0%, 100% { transform: translateY(0) rotate(0deg); }
     50% { transform: translateY(-5px) rotate(10deg); }
+}
+
+.roulette-page .result-section::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 215, 0, 0.03) 50%, 
+        transparent 70%);
+    pointer-events: none;
+    z-index: 0;
 }
 
 .roulette-page .result-section > * {
@@ -277,126 +353,126 @@
 }
 
 .roulette-page .stats-label {
-    font-size: 1.2em;
-    font-weight: 600;
-    margin-bottom: 16px;
     color: #FFD700;
-    letter-spacing: 0.3px;
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: 'Orbitron', Arial, sans-serif;
+    text-align: center;
 }
 
 .roulette-page .result-value {
-    font-size: 2.8em;
-    font-weight: 700;
-    margin: 24px 0;
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+    font-size: 2.5em;
+    color: #FFD700;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-    letter-spacing: -1px;
-    line-height: 1.1;
-    word-break: break-all;
     animation: resultGlow 2s ease-in-out infinite alternate;
+    text-align: center;
+    margin-bottom: 15px;
+    line-height: 1.2;
+    word-break: break-word;
 }
 
 @keyframes resultGlow {
     0% { 
-        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7));
     }
     100% { 
-        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 1));
     }
 }
 
 .roulette-page .result-details {
-    font-size: 1em;
     color: #D4AF37;
-    margin-top: 20px;
-    line-height: 1.6;
-    padding: 16px;
-    background: rgba(255, 215, 0, 0.05);
+    font-size: 0.9em;
+    text-align: center;
+    font-weight: 500;
+    line-height: 1.5;
+    padding: 15px;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.3), 
+        rgba(62, 39, 35, 0.4));
     border-radius: 10px;
-    border-left: 3px solid #FFD700;
-    backdrop-filter: blur(10px);
+    border-left: 4px solid #FFD700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
 }
 
-/* Settings Button */
-.roulette-page .settings-btn {
-    background: rgba(255, 215, 0, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 215, 0, 0.15);
-    border-radius: 10px;
-    color: #FFD700;
-    padding: 10px 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.1em;
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.roulette-page .settings-btn:hover {
-    background: rgba(255, 215, 0, 0.15);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
-}
-
-/* Mobile Responsive */
+/* Mobile Styles - Mining Theme */
 @media (max-width: 768px) {
     .roulette-page {
-        padding: 16px;
+        padding: 15px;
     }
-    
+
     .roulette-page .header-controls {
         flex-direction: column;
-        gap: 12px;
-        padding: 16px;
+        text-align: center;
+        gap: 10px;
+        padding: 15px;
     }
-    
+
     .roulette-page .header-controls h1 {
         font-size: 1.8em;
+        margin-bottom: 0;
     }
-    
+
     .roulette-page .input-section,
     .roulette-page .result-section {
-        padding: 24px;
+        padding: 20px;
     }
-    
+
     .roulette-page .result-value {
-        font-size: 2.2em;
+        font-size: 2em;
     }
-    
+
     .roulette-page .number-input {
         font-size: 16px; /* Prevents zoom on iOS */
+        padding: 12px 15px;
     }
     
     .roulette-page .calculate-btn {
+        padding: 12px 25px;
         font-size: 1em;
     }
 }
 
 @media (max-width: 480px) {
-    .roulette-page {
-        padding: 12px;
-    }
-    
-    .roulette-page .header-controls h1 {
-        font-size: 1.6em;
-    }
-    
     .roulette-page .result-value {
-        font-size: 2em;
+        font-size: 1.8em;
+    }
+
+    .roulette-page .header-controls h1 {
+        font-size: 1.5em;
     }
     
     .roulette-page .input-section,
     .roulette-page .result-section {
-        padding: 20px;
-    }
-    
-    .roulette-page .number-input,
-    .roulette-page .calculate-btn {
-        padding: 14px 18px;
+        padding: 15px;
     }
     
     .roulette-page .input-label {
         font-size: 1em;
+    }
+    
+    .roulette-page .number-input {
+        font-size: 1.1em;
+        padding: 12px 15px;
     }
 }
