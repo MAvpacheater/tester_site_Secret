@@ -1,4 +1,4 @@
-// Fixed URL Routing System - Proper GitHub Pages handling
+// Fixed URL Routing System with Roulette Support - Proper GitHub Pages handling
 class URLRouter {
     constructor() {
         this.baseURL = this.getBaseURL();
@@ -39,7 +39,7 @@ class URLRouter {
     }
 
     setupRoutes() {
-        // Route mapping
+        // Route mapping - includes roulette
         const routeMapping = {
             'calculator': '',  // Root page
             'arm': 'arm_calculator',
@@ -76,7 +76,7 @@ class URLRouter {
             }
         });
 
-        console.log('🗺️ Routes configured:', Array.from(this.routes.entries()));
+        console.log('🗺️ Routes configured with roulette:', Array.from(this.routes.entries()));
     }
 
     setupListeners() {
@@ -110,7 +110,7 @@ class URLRouter {
         }
 
         this.isInitialized = true;
-        console.log('✅ URL Router initialized');
+        console.log('✅ URL Router initialized with roulette support');
     }
 
     getPageFromURL() {
@@ -236,7 +236,7 @@ class URLRouter {
             'calculator': { title: '🐾 Pet Calculator', description: 'Calculate pet upgrades and evolution costs' },
             'arm': { title: '💪 Arm Calculator', description: 'Calculate arm strength upgrades and costs' },
             'grind': { title: '🏋️‍♂️ Grind Calculator', description: 'Calculate grinding efficiency and rewards' },
-            'roulette': { title: '🎰 Roulette Calculator', description: 'Calculate time needed for roulette spins' },
+            'roulette': { title: '🎰 Roulette Calculator', description: 'Calculate time needed for roulette spins and rewards' },
             'boosts': { title: '🚀 Boosts Information', description: 'Complete guide to all boosts and their effects' },
             'shiny': { title: '✨ Shiny Pet Statistics', description: 'Complete list of shiny pets and their stats' },
             'secret': { title: '🔮 Secret Pets Guide', description: 'Discover all secret pets and how to get them' },
@@ -251,7 +251,7 @@ class URLRouter {
             'peoples': { title: '🙏 Thanks & Credits', description: 'Special thanks to our community' }
         };
 
-        return pageData[page] || { title: 'Arm Helper', description: 'Ultimate helper tool' };
+        return pageData[page] || { title: 'Arm Helper', description: 'Ultimate helper tool with roulette calculator' };
     }
 
     debug() {
@@ -260,7 +260,7 @@ class URLRouter {
         console.log('Pathname:', window.location.pathname);
         console.log('Base URL:', this.baseURL);
         console.log('Detected page:', this.getPageFromURL());
-        console.log('Routes:', Array.from(this.routes.entries()));
+        console.log('Routes (includes roulette):', Array.from(this.routes.entries()));
         console.log('========================');
     }
 }
