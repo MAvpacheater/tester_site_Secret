@@ -10,10 +10,14 @@
     "errorEmpty": "Please enter both values",
     "errorInvalid": "Please enter valid positive numbers",
     "errorZero": "Spins per turn cannot be zero",
-    "totalSpinsText": "total spins",
-    "spinsPerTurnText": "per turn",
-    "turns": "turns",
-    "seconds": "seconds"
+    "second": "s",
+    "seconds": "s",
+    "minute": "m",
+    "minutes": "m",
+    "hour": "h",
+    "hours": "h",
+    "day": "d",
+    "days": "d"
   },
   "uk": {
     "title": "🎰 Калькулятор Рулетки",
@@ -26,10 +30,14 @@
     "errorEmpty": "Будь ласка, введіть обидва значення",
     "errorInvalid": "Будь ласка, введіть дійсні позитивні числа",
     "errorZero": "Спіни за хід не можуть дорівнювати нулю",
-    "totalSpinsText": "загальних спінів",
-    "spinsPerTurnText": "за хід",
-    "turns": "ходів",
-    "seconds": "секунд"
+    "second": "с",
+    "seconds": "с",
+    "minute": "хв",
+    "minutes": "хв",
+    "hour": "г",
+    "hours": "г",
+    "day": "д",
+    "days": "д"
   },
   "ru": {
     "title": "🎰 Калькулятор Рулетки",
@@ -42,9 +50,13 @@
     "errorEmpty": "Пожалуйста, введите оба значения",
     "errorInvalid": "Пожалуйста, введите действительные положительные числа",
     "errorZero": "Спины за ход не могут равняться нулю",
-    "totalSpinsText": "общих спинов",
-    "spinsPerTurnText": "за ход",
-    "turns": "ходов",
-    "seconds": "секунд"
+    "second": "с",
+    "seconds": "с",
+    "minute": "мин",
+    "minutes": "мин",
+    "hour": "ч",
+    "hours": "ч",
+    "day": "д",
+    "days": "д"
   }
 }
