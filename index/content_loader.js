@@ -1,4 +1,4 @@
-// Content loader script - Fixed to work with language system and single menu
+=// Content loader script - Fixed to work with language system and single menu
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -51,7 +51,6 @@ async function loadContent() {
                                 <button class="nav-btn active" data-page="calculator" onclick="switchPage('calculator')"></button>
                                 <button class="nav-btn" data-page="arm" onclick="switchPage('arm')"></button>
                                 <button class="nav-btn" data-page="grind" onclick="switchPage('grind')"></button>
-                                <button class="nav-btn" data-page="roulette" onclick="switchPage('roulette')"></button>
                             </div>
                         </div>
                         
