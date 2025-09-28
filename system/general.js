@@ -1,4 +1,4 @@
-// General JavaScript functions - Enhanced with MenuManager support
+// General JavaScript functions - Enhanced with Roulette support
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -51,6 +51,7 @@ async function loadMenuTranslations() {
                     calculator: "🐾 Pet Calculator",
                     arm: "💪 Arm Calculator",
                     grind: "🏋️‍♂️ Grind Calculator",
+                    roulette: "🎰 Roulette Calculator",
                     boosts: "🚀 Boosts",
                     shiny: "✨ Shiny Stats",
                     secret: "🔮 Secret Pets",
@@ -67,13 +68,67 @@ async function loadMenuTranslations() {
                 auth: {
                     login: "Login (Soon...)"
                 }
+            },
+            uk: {
+                menu: "Меню",
+                calculator: "Калькулятори", 
+                info: "Інформація",
+                others: "Інше",
+                pages: {
+                    calculator: "🐾 Калькулятор Петів",
+                    arm: "💪 Калькулятор Рук",
+                    grind: "🏋️‍♂️ Калькулятор Гринду",
+                    roulette: "🎰 Калькулятор Рулетки",
+                    boosts: "🚀 Бусти",
+                    shiny: "✨ Шайні Статистика",
+                    secret: "🔮 Секретні Пети",
+                    codes: "🎁 Коди",
+                    aura: "🌟 Аура",
+                    trainer: "🏆 Тренер",
+                    charms: "🔮 Чарівники",
+                    potions: "🧪 Зілля та Їжа",
+                    worlds: "🌍 Світи",
+                    settings: "⚙️ Налаштування",
+                    help: "🆘 Допомога",
+                    peoples: "🙏 Люди"
+                },
+                auth: {
+                    login: "Вхід (Скоро...)"
+                }
+            },
+            ru: {
+                menu: "Меню",
+                calculator: "Калькуляторы", 
+                info: "Информация",
+                others: "Другое",
+                pages: {
+                    calculator: "🐾 Калькулятор Петов",
+                    arm: "💪 Калькулятор Рук",
+                    grind: "🏋️‍♂️ Калькулятор Гринда",
+                    roulette: "🎰 Калькулятор Рулетки",
+                    boosts: "🚀 Бусты",
+                    shiny: "✨ Шайни Статистика",
+                    secret: "🔮 Секретные Петы",
+                    codes: "🎁 Коды",
+                    aura: "🌟 Аура",
+                    trainer: "🏆 Тренер",
+                    charms: "🔮 Чармы",
+                    potions: "🧪 Зелья и Еда",
+                    worlds: "🌍 Миры",
+                    settings: "⚙️ Настройки",
+                    help: "🆘 Помощь",
+                    peoples: "🙏 Люди"
+                },
+                auth: {
+                    login: "Вход (Скоро...)"
+                }
             }
         };
         return menuTranslations;
     }
 }
 
-// Switch app language
+// Switch app language with enhanced roulette support
 async function switchAppLanguage(lang) {
     if (!menuTranslations) {
         await loadMenuTranslations();
@@ -114,6 +169,7 @@ async function switchAppLanguage(lang) {
     
     // Directly notify specific modules if their functions exist
     const moduleNotifications = [
+        { name: 'roulette', func: 'updateRouletteLanguage' },
         { name: 'worlds', func: 'updateWorldsLanguage' },
         { name: 'potions', func: 'updatePotionsLanguage' },
         { name: 'secret', func: 'updateSecretLanguage' },
@@ -180,18 +236,19 @@ function updateMenuTranslations() {
     console.log(`✅ Menu translations updated for ${currentAppLanguage}`);
 }
 
-// Update page titles
+// Update page titles with roulette support
 function updatePageTitles() {
     if (!menuTranslations || !currentAppLanguage) return;
     
     const translations = menuTranslations[currentAppLanguage];
     if (!translations || !translations.pages) return;
     
-    // Page title mappings
+    // Page title mappings - includes roulette
     const pageTitleMappings = {
         'calculatorPage': 'calculator',
         'armPage': 'arm',
         'grindPage': 'grind',
+        'roulettePage': 'roulette',
         'boostsPage': 'boosts',
         'shinyPage': 'shiny',
         'secretPage': 'secret',
@@ -228,7 +285,7 @@ function updatePageTitles() {
     console.log(`✅ Page titles updated for ${currentAppLanguage}`);
 }
 
-// Enhanced page switching with MenuManager support
+// Enhanced page switching with roulette support
 function switchPage(page) {
     console.log(`Switching to page: ${page}`);
     
@@ -248,11 +305,12 @@ function switchPage(page) {
         console.error(`Page ${page}Page not found`);
     }
     
-    // Update active nav button in sidebar
+    // Update active nav button in sidebar - includes roulette
     const pageMap = {
         'calculator': 'calculator',
         'arm': 'arm',
         'grind': 'grind',
+        'roulette': 'roulette',
         'boosts': 'boosts',
         'shiny': 'shiny',
         'codes': 'codes',
@@ -307,7 +365,7 @@ function getCurrentMenuPosition() {
     return saved || 'left';
 }
 
-// Initialize specific page content when switching
+// Initialize specific page content when switching - includes roulette
 function initializePageContent(page) {
     console.log(`🔄 Initializing content for page: ${page}`);
     
@@ -335,6 +393,17 @@ function initializePageContent(page) {
                     window.grindInitialized = false;
                 }
                 initializeGrind();
+            }
+            break;
+        case 'roulette':
+            console.log('🎰 Initializing Roulette Calculator page...');
+            if (typeof initializeRoulette === 'function') {
+                if (typeof window !== 'undefined' && window.rouletteInitialized !== undefined) {
+                    window.rouletteInitialized = false;
+                }
+                initializeRoulette();
+            } else {
+                console.error('❌ initializeRoulette function not found');
             }
             break;
         case 'shiny':
@@ -507,14 +576,14 @@ function loadSettingsFromStorage(key) {
 // Flag to prevent repeated initialization
 let appInitialized = false;
 
-// Enhanced app initialization with MenuManager support
+// Enhanced app initialization with roulette support
 async function initializeApp() {
     if (appInitialized) {
         console.log('⚠️ App already initialized');
         return;
     }
     
-    console.log('🚀 Starting app initialization with MenuManager support...');
+    console.log('🚀 Starting app initialization with roulette support...');
     
     // Check if content is loaded
     const appContent = document.getElementById('app-content');
@@ -544,7 +613,7 @@ async function initializeApp() {
     // Initialize categories
     initializeCategories();
     
-    // Initialize all modules first
+    // Initialize all modules first (including roulette)
     initializeAllModules();
     
     // Wait for MenuManager to be available
@@ -613,10 +682,10 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed with MenuManager support');
+    console.log('✅ App initialization completed with roulette support');
 }
 
-// Initialize all modules with proper DOM readiness checks
+// Initialize all modules with proper DOM readiness checks - includes roulette
 function initializeAllModules() {
     console.log('🔧 Initializing all modules...');
     
@@ -624,6 +693,7 @@ function initializeAllModules() {
         'initializeCalculator',
         'initializeArm', 
         'initializeGrind',
+        'initializeRoulette',
         'initializeBoosts',
         'initializeShiny',
         'initializeSecret',
@@ -645,7 +715,7 @@ function initializeAllModules() {
                 if (moduleName === 'initializeSecret' || moduleName === 'initializePotions' || 
                     moduleName === 'initializeGrind' || moduleName === 'initializePeoples' ||
                     moduleName === 'initializeWorlds' || moduleName === 'initializeHelp' ||
-                    moduleName === 'initializeSettings') {
+                    moduleName === 'initializeSettings' || moduleName === 'initializeRoulette') {
                     setTimeout(() => {
                         try {
                             // Force reinitialization by resetting flags
@@ -666,6 +736,9 @@ function initializeAllModules() {
                             }
                             if (moduleName === 'initializeSettings' && window.settingsInitialized) {
                                 window.settingsInitialized = false;
+                            }
+                            if (moduleName === 'initializeRoulette' && window.rouletteInitialized) {
+                                window.rouletteInitialized = false;
                             }
                             
                             window[moduleName]();
@@ -697,7 +770,7 @@ function debugPageStates() {
     console.log('========================');
 }
 
-// Force reinitialization for specific modules
+// Force reinitialization for specific modules - includes roulette
 function forceReinitializeModule(moduleName) {
     console.log(`🔄 Force reinitializing ${moduleName}...`);
     
@@ -720,6 +793,9 @@ function forceReinitializeModule(moduleName) {
     if (moduleName === 'settings' && typeof window !== 'undefined') {
         window.settingsInitialized = false;
     }
+    if (moduleName === 'roulette' && typeof window !== 'undefined') {
+        window.rouletteInitialized = false;
+    }
     
     // Call initialization
     const initFunctionName = `initialize${moduleName.charAt(0).toUpperCase() + moduleName.slice(1)}`;
@@ -731,7 +807,7 @@ function forceReinitializeModule(moduleName) {
     }
 }
 
-// Make functions globally available with MenuManager support
+// Make functions globally available with roulette support
 window.switchPage = switchPage;
 window.toggleMobileMenu = toggleMobileMenu;
 window.closeSidebar = closeSidebar;
