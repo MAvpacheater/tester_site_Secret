@@ -600,6 +600,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Also initialize when page becomes active (for navigation)
+document.addEventListener('pageChanged', function(event) {
+    if (event.detail.pageId === 'calculatorPage') {
+        console.log('🔄 Pet calculator page activated, initializing...');
+        if (!petCalculatorInitialized) {
+            initializePetCalculator();
+        }
+    }
+});
+
+// Force initialization function for debugging
+window.debugInitializePetCalculator = function() {
+    console.log('🔧 Debug: Force initializing pet calculator');
+    petCalculatorInitialized = false;
+    initializePetCalculator();
+};
+
 // Make functions globally available
 window.initializePetCalculator = initializePetCalculator;
 window.calculateStats = calculateStats;
