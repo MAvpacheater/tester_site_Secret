@@ -1,4 +1,4 @@
-// Boss Calculator JavaScript - calc/boss.js
+// Boss Calculator JavaScript - Updated for simplified structure
 
 // Global variables for boss calculator
 let bossInitialized = false;
@@ -24,7 +24,10 @@ async function loadBossTranslations() {
                 title: "👹 Boss Calculator",
                 totalNeeded: "Total Needed to Collect:",
                 rewardPerWin: "Reward per Victory:",
-                calculateBtn: "Calculate Time",
+                calculateBtn: "Calculate",
+                vipToggle: "VIP + Autoclicker",
+                vipDescription: "(2.5s vs 4.5s)",
+                resultTitle: "Total Time Needed:",
                 errors: {
                     invalidInput: "Please enter valid positive numbers",
                     missingFields: "Please fill in both fields"
@@ -69,18 +72,6 @@ function addBossEventListeners() {
         updateBossLanguage(newLanguage);
     });
     
-    // Input validation
-    const totalNeededInput = document.getElementById('totalNeededInput');
-    const rewardPerWinInput = document.getElementById('rewardPerWinInput');
-    
-    if (totalNeededInput) {
-        totalNeededInput.addEventListener('input', validateBossInputs);
-    }
-    
-    if (rewardPerWinInput) {
-        rewardPerWinInput.addEventListener('input', validateBossInputs);
-    }
-    
     console.log('✅ Boss Calculator event listeners added');
 }
 
@@ -104,39 +95,15 @@ function updateBossLanguage(language) {
     if (title && t.title) title.textContent = t.title;
     
     // Update labels
-    const labels = {
-        'totalNeededInput': t.totalNeeded,
-        'rewardPerWinInput': t.rewardPerWin
-    };
+    const totalLabel = document.querySelector('label[for="totalNeededInput"]');
+    const rewardLabel = document.querySelector('label[for="rewardPerWinInput"]');
+    const toggleLabel = document.querySelector('#bossPage .toggle-label');
+    const toggleMultiplier = document.querySelector('#bossPage .toggle-multiplier');
     
-    Object.entries(labels).forEach(([inputId, labelText]) => {
-        if (labelText) {
-            const label = document.querySelector(`label[for="${inputId}"]`);
-            if (label) label.textContent = labelText;
-        }
-    });
-    
-    // Update placeholders
-    const totalNeededInput = document.getElementById('totalNeededInput');
-    const rewardPerWinInput = document.getElementById('rewardPerWinInput');
-    
-    if (totalNeededInput && t.totalNeededPlaceholder) {
-        totalNeededInput.placeholder = t.totalNeededPlaceholder;
-    }
-    if (rewardPerWinInput && t.rewardPerWinPlaceholder) {
-        rewardPerWinInput.placeholder = t.rewardPerWinPlaceholder;
-    }
-    
-    // Update toggle labels
-    const vipToggleLabel = document.querySelector('#bossPage .toggle-label');
-    const vipToggleMultiplier = document.querySelector('#bossPage .toggle-multiplier');
-    
-    if (vipToggleLabel && t.vipAutoclicker) {
-        vipToggleLabel.textContent = t.vipAutoclicker;
-    }
-    if (vipToggleMultiplier && t.vipDescription) {
-        vipToggleMultiplier.textContent = t.vipDescription;
-    }
+    if (totalLabel && t.totalNeeded) totalLabel.textContent = t.totalNeeded;
+    if (rewardLabel && t.rewardPerWin) rewardLabel.textContent = t.rewardPerWin;
+    if (toggleLabel && t.vipToggle) toggleLabel.textContent = t.vipToggle;
+    if (toggleMultiplier && t.vipDescription) toggleMultiplier.textContent = t.vipDescription;
     
     // Update button
     const calculateBtn = document.querySelector('#bossPage .calculate-btn');
@@ -153,44 +120,6 @@ function updateBossLanguage(language) {
     console.log(`✅ Boss Calculator language updated to ${language}`);
 }
 
-// Validate boss calculator inputs
-function validateBossInputs() {
-    const totalNeeded = document.getElementById('totalNeededInput');
-    const rewardPerWin = document.getElementById('rewardPerWinInput');
-    const errorMessage = document.getElementById('bossErrorMessage');
-    
-    if (!totalNeeded || !rewardPerWin || !errorMessage) return;
-    
-    const totalValue = parseFloat(totalNeeded.value);
-    const rewardValue = parseFloat(rewardPerWin.value);
-    
-    let isValid = true;
-    let errorText = '';
-    
-    const t = bossTranslations[currentBossLanguage];
-    if (!t || !t.errors) return;
-    
-    if (totalNeeded.value && (isNaN(totalValue) || totalValue <= 0)) {
-        isValid = false;
-        errorText = t.errors.invalidInput;
-    }
-    
-    if (rewardPerWin.value && (isNaN(rewardValue) || rewardValue <= 0)) {
-        isValid = false;
-        errorText = t.errors.invalidInput;
-    }
-    
-    if (errorText) {
-        errorMessage.textContent = errorText;
-        errorMessage.style.display = 'block';
-    } else {
-        errorMessage.textContent = '';
-        errorMessage.style.display = 'none';
-    }
-    
-    return isValid;
-}
-
 // Calculate boss time
 function calculateBossTime() {
     console.log('👹 Calculating boss time...');
@@ -201,31 +130,28 @@ function calculateBossTime() {
     const errorMessage = document.getElementById('bossErrorMessage');
     const resultSection = document.getElementById('bossResultSection');
     const resultValue = document.getElementById('bossResultValue');
-    const resultDetails = document.getElementById('bossResultDetails');
     
     if (!totalNeededInput || !rewardPerWinInput || !vipAutoclickerInput || 
-        !errorMessage || !resultSection || !resultValue || !resultDetails) {
+        !errorMessage || !resultSection || !resultValue) {
         console.error('❌ Boss calculator elements not found');
         return;
     }
     
-    const t = bossTranslations[currentBossLanguage];
-    if (!t) {
-        console.error('❌ Translation object not found for current language');
-        return;
-    }
+    const t = bossTranslations[currentBossLanguage] || bossTranslations['en'];
     
     // Get input values
     const totalNeeded = parseFloat(totalNeededInput.value);
     const rewardPerWin = parseFloat(rewardPerWinInput.value);
     const hasVipAutoclicker = vipAutoclickerInput.checked;
     
+    // Clear previous errors
+    errorMessage.textContent = '';
+    
     // Validate inputs
     if (!totalNeededInput.value || !rewardPerWinInput.value) {
         if (t.errors && t.errors.missingFields) {
             errorMessage.textContent = t.errors.missingFields;
         }
-        errorMessage.style.display = 'block';
         resultSection.classList.remove('show');
         return;
     }
@@ -234,14 +160,9 @@ function calculateBossTime() {
         if (t.errors && t.errors.invalidInput) {
             errorMessage.textContent = t.errors.invalidInput;
         }
-        errorMessage.style.display = 'block';
         resultSection.classList.remove('show');
         return;
     }
-    
-    // Hide error message
-    errorMessage.textContent = '';
-    errorMessage.style.display = 'none';
     
     // Calculate number of victories needed (round up to next whole number)
     const victoriesNeeded = Math.ceil(totalNeeded / rewardPerWin);
@@ -257,15 +178,6 @@ function calculateBossTime() {
     
     // Update result display
     resultValue.textContent = formattedTime;
-    
-    // Create details text
-    if (t.resultDetails) {
-        const vipStatus = hasVipAutoclicker ? t.resultDetails.withVip : t.resultDetails.withoutVip;
-        resultDetails.innerHTML = `
-            ${victoriesNeeded} ${t.resultDetails.victories}<br>
-            ${vipStatus}
-        `;
-    }
     
     // Show result section with animation
     setTimeout(() => {
