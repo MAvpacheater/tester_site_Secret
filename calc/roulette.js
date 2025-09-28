@@ -1,136 +1,192 @@
-// Roulette Calculator Module - Mining Style with Short Time Units
-let rouletteTexts = {};
-let rouletteInitialized = false;
+// Roulette Calculator - Full implementation with HTML structure creation
 
-// Load language translations
-async function loadRouletteLanguage() {
+// Global variables for roulette calculator
+let rouletteInitialized = false;
+let currentRouletteLanguage = 'en';
+let rouletteTranslations = {};
+
+// Default translations - fallback
+const defaultRouletteTranslations = {
+    en: {
+        title: "🎰 Roulette Calculator",
+        totalSpins: "Total Spins Needed:",
+        spinsPerTurn: "Spins per Turn:",
+        calculateBtn: "Calculate Time",
+        resultTitle: "Total Time Needed:",
+        totalSpinsPlaceholder: "Enter total spins needed...",
+        spinsPerTurnPlaceholder: "Enter spins per turn...",
+        // Short time units
+        second: "s",
+        seconds: "s", 
+        minute: "m",
+        minutes: "m",
+        hour: "h",
+        hours: "h",
+        day: "d",
+        days: "d",
+        errors: {
+            invalidInput: "Please enter valid positive numbers",
+            missingFields: "Please enter both values",
+            zeroSpins: "Spins per turn cannot be zero"
+        }
+    }
+};
+
+// Create HTML structure for roulette calculator
+function createRouletteHTML() {
+    const roulettePage = document.getElementById('roulettePage');
+    if (!roulettePage) {
+        console.error('❌ Roulette page container not found');
+        return;
+    }
+
+    const t = rouletteTranslations[currentRouletteLanguage] || defaultRouletteTranslations['en'];
+    console.log('Using roulette translations:', t); // Debug log
+
+    roulettePage.innerHTML = `
+        <div class="header-controls">
+            <h1>${t.title}</h1>
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section">
+            <div class="input-group">
+                <label class="input-label" for="totalSpinsInput">${t.totalSpins}</label>
+                <input type="number" class="number-input" id="totalSpinsInput" placeholder="${t.totalSpinsPlaceholder}" step="1" min="1" oninput="calculateRouletteTime()">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label" for="spinsPerTurnInput">${t.spinsPerTurn}</label>
+                <input type="number" class="number-input" id="spinsPerTurnInput" placeholder="${t.spinsPerTurnPlaceholder}" step="1" min="1" oninput="calculateRouletteTime()">
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateRouletteTime()">${t.calculateBtn}</button>
+            <div class="error" id="rouletteErrorMessage"></div>
+        </div>
+
+        <!-- Result Section -->
+        <div class="result-section" id="rouletteResultSection">
+            <div class="stats-label">${t.resultTitle}</div>
+            <div class="result-value" id="rouletteResultValue">0</div>
+            <div class="result-details" id="rouletteResultDetails"></div>
+        </div>
+    `;
+
+    console.log('✅ Roulette HTML structure created');
+}
+
+// Load roulette translations from JSON file
+async function loadRouletteTranslations() {
     try {
-        const response = await fetch('languages/roulette.json');
+        console.log('📥 Loading roulette translations...');
+        const response = await fetch('./languages/roulette.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        rouletteTexts = await response.json();
-        console.log('✅ Roulette language data loaded');
+        const data = await response.json();
+        rouletteTranslations = data;
+        console.log('✅ Roulette translations loaded successfully');
+        console.log('Loaded roulette translations:', rouletteTranslations);
+        return true;
     } catch (error) {
-        console.warn('⚠️ Could not load roulette language data:', error);
-        // Set empty fallback - will use default browser text
-        rouletteTexts = {};
+        console.error('❌ Error loading roulette translations:', error);
+        // Use default translations as fallback
+        rouletteTranslations = defaultRouletteTranslations;
+        console.log('Using default roulette translations:', rouletteTranslations);
+        return false;
     }
 }
 
-// Update language with improved element selection
-function updateRouletteLanguage(lang = null) {
-    if (!lang) lang = getCurrentAppLanguage();
-    
-    if (!rouletteTexts[lang]) {
-        console.warn(`❌ Roulette language ${lang} not found, using English`);
-        lang = 'en';
+// Get current language from app or default to 'en'
+function getCurrentAppLanguage() {
+    // Try to get from global app language if available
+    if (typeof getCurrentLanguage === 'function') {
+        return getCurrentLanguage();
     }
+    // Fallback to localStorage or default
+    return localStorage.getItem('selectedLanguage') || 'en';
+}
+
+// Initialize Roulette Calculator
+async function initializeRoulette() {
+    console.log('🚀 Initializing Roulette Calculator...');
     
-    const texts = rouletteTexts[lang];
-    if (!texts) {
-        console.warn('⚠️ No texts available for roulette');
-        return;
-    }
+    // Reset initialization flag
+    rouletteInitialized = false;
     
-    // Update page title with improved selector
-    const titleSelectors = [
-        '#roulettePage .header-controls h1',
-        '#roulettePage h1',
-        '.roulette-page .header-controls h1',
-        '.roulette-page h1'
-    ];
+    // Load translations first
+    const translationsLoaded = await loadRouletteTranslations();
+    console.log('Roulette translation load result:', translationsLoaded);
+    console.log('Available roulette translations:', Object.keys(rouletteTranslations));
     
-    for (const selector of titleSelectors) {
-        const title = document.querySelector(selector);
-        if (title) {
-            title.textContent = texts.title;
-            console.log(`✅ Updated roulette title: ${texts.title}`);
-            break;
+    // Set current language
+    currentRouletteLanguage = getCurrentAppLanguage();
+    console.log('Current roulette language:', currentRouletteLanguage);
+    
+    // Create HTML structure
+    createRouletteHTML();
+    
+    // Add event listeners
+    addRouletteEventListeners();
+    
+    rouletteInitialized = true;
+    console.log('✅ Roulette Calculator initialized');
+}
+
+// Add event listeners for roulette calculator
+function addRouletteEventListeners() {
+    // Listen for language changes
+    document.addEventListener('languageChanged', function(event) {
+        const newLanguage = event.detail.language;
+        console.log(`🌍 Roulette Calculator: Language changed to ${newLanguage}`);
+        updateRouletteLanguage(newLanguage);
+    });
+    
+    // Add real-time calculation listeners
+    setTimeout(() => {
+        const totalSpinsInput = document.getElementById('totalSpinsInput');
+        const spinsPerTurnInput = document.getElementById('spinsPerTurnInput');
+        
+        if (totalSpinsInput) {
+            totalSpinsInput.addEventListener('input', calculateRouletteTime);
+            totalSpinsInput.addEventListener('keypress', handleEnterKey);
+            console.log('✅ Total spins input events bound');
         }
-    }
-    
-    // Update input labels with multiple selector attempts
-    const totalSpinsLabelSelectors = [
-        '#roulettePage .input-group:first-child .input-label',
-        '#roulettePage .input-section .input-group:first-child label',
-        '.roulette-page .input-group:first-child .input-label'
-    ];
-    
-    for (const selector of totalSpinsLabelSelectors) {
-        const label = document.querySelector(selector);
-        if (label) {
-            label.textContent = texts.totalSpins;
-            console.log('✅ Updated total spins label');
-            break;
+        
+        if (spinsPerTurnInput) {
+            spinsPerTurnInput.addEventListener('input', calculateRouletteTime);
+            spinsPerTurnInput.addEventListener('keypress', handleEnterKey);
+            console.log('✅ Spins per turn input events bound');
         }
+    }, 100);
+    
+    console.log('✅ Roulette Calculator event listeners added');
+}
+
+// Update roulette calculator language
+function updateRouletteLanguage(language) {
+    if (!rouletteTranslations[language]) {
+        console.warn(`❌ Language ${language} not found for roulette calculator, using English`);
+        language = 'en';
     }
     
-    const spinsPerTurnLabelSelectors = [
-        '#roulettePage .input-group:last-of-type .input-label',
-        '#roulettePage .input-section .input-group:last-of-type label',
-        '.roulette-page .input-group:last-of-type .input-label'
-    ];
+    currentRouletteLanguage = language;
     
-    for (const selector of spinsPerTurnLabelSelectors) {
-        const label = document.querySelector(selector);
-        if (label) {
-            label.textContent = texts.spinsPerTurn;
-            console.log('✅ Updated spins per turn label');
-            break;
-        }
-    }
+    // Recreate HTML with new language
+    createRouletteHTML();
     
-    // Update input placeholders
-    const totalSpinsInput = document.getElementById('totalSpinsInput');
-    if (totalSpinsInput) {
-        totalSpinsInput.placeholder = texts.placeholderTotal;
-        console.log('✅ Updated total spins placeholder');
-    }
+    // Re-add event listeners
+    setTimeout(() => {
+        addRouletteEventListeners();
+    }, 100);
     
-    const spinsPerTurnInput = document.getElementById('spinsPerTurnInput');
-    if (spinsPerTurnInput) {
-        spinsPerTurnInput.placeholder = texts.placeholderPerTurn;
-        console.log('✅ Updated spins per turn placeholder');
-    }
-    
-    // Update calculate button
-    const calculateBtnSelectors = [
-        '#roulettePage .calculate-btn',
-        '.roulette-page .calculate-btn'
-    ];
-    
-    for (const selector of calculateBtnSelectors) {
-        const btn = document.querySelector(selector);
-        if (btn) {
-            btn.textContent = texts.calculate;
-            console.log('✅ Updated calculate button');
-            break;
-        }
-    }
-    
-    // Update result label
-    const resultLabelSelectors = [
-        '#roulettePage .stats-label',
-        '.roulette-page .stats-label'
-    ];
-    
-    for (const selector of resultLabelSelectors) {
-        const label = document.querySelector(selector);
-        if (label) {
-            label.textContent = texts.result;
-            console.log('✅ Updated result label');
-            break;
-        }
-    }
-    
-    console.log(`✅ Roulette language updated to: ${lang}`);
+    console.log(`✅ Roulette Calculator language updated to ${language}`);
 }
 
 // Enhanced time formatting with short units and language support
 function formatTime(seconds) {
-    const lang = getCurrentAppLanguage();
-    const texts = rouletteTexts[lang] || rouletteTexts['en'] || {};
+    const lang = currentRouletteLanguage;
+    const texts = rouletteTranslations[lang] || defaultRouletteTranslations['en'];
     
     // Short time unit names from language file
     const timeUnits = {
@@ -197,8 +253,7 @@ function formatTime(seconds) {
 
 // Enhanced calculation function with clean results - only showing final time
 function calculateRouletteTime() {
-    const lang = getCurrentAppLanguage();
-    const texts = rouletteTexts[lang] || rouletteTexts['en'] || {};
+    console.log('🎰 Calculating roulette time...');
     
     const totalSpinsInput = document.getElementById('totalSpinsInput');
     const spinsPerTurnInput = document.getElementById('spinsPerTurnInput');
@@ -206,6 +261,13 @@ function calculateRouletteTime() {
     const resultDetails = document.getElementById('rouletteResultDetails');
     const errorMessage = document.getElementById('rouletteErrorMessage');
     const resultSection = document.getElementById('rouletteResultSection');
+    
+    if (!totalSpinsInput || !spinsPerTurnInput || !resultValue || !errorMessage || !resultSection) {
+        console.error('❌ Roulette calculator elements not found');
+        return;
+    }
+    
+    const t = rouletteTranslations[currentRouletteLanguage] || defaultRouletteTranslations['en'];
     
     // Clear previous messages
     if (errorMessage) {
@@ -216,31 +278,34 @@ function calculateRouletteTime() {
     if (resultDetails) resultDetails.textContent = '';
     
     // Get input values
-    const totalSpins = parseFloat(totalSpinsInput?.value || 0);
-    const spinsPerTurn = parseFloat(spinsPerTurnInput?.value || 0);
+    const totalSpins = parseFloat(totalSpinsInput.value || 0);
+    const spinsPerTurn = parseFloat(spinsPerTurnInput.value || 0);
     
     // Enhanced validation
-    if (!totalSpinsInput?.value?.trim() || !spinsPerTurnInput?.value?.trim()) {
-        if (errorMessage) {
-            errorMessage.textContent = texts.errorEmpty || 'Please enter both values';
+    if (!totalSpinsInput.value.trim() || !spinsPerTurnInput.value.trim()) {
+        if (errorMessage && t.errors && t.errors.missingFields) {
+            errorMessage.textContent = t.errors.missingFields;
             errorMessage.style.display = 'block';
         }
+        resultSection.classList.remove('show-result');
         return;
     }
     
     if (totalSpins <= 0 || spinsPerTurn <= 0 || isNaN(totalSpins) || isNaN(spinsPerTurn)) {
-        if (errorMessage) {
-            errorMessage.textContent = texts.errorInvalid || 'Please enter valid positive numbers';
+        if (errorMessage && t.errors && t.errors.invalidInput) {
+            errorMessage.textContent = t.errors.invalidInput;
             errorMessage.style.display = 'block';
         }
+        resultSection.classList.remove('show-result');
         return;
     }
     
     if (spinsPerTurn === 0) {
-        if (errorMessage) {
-            errorMessage.textContent = texts.errorZero || 'Spins per turn cannot be zero';
+        if (errorMessage && t.errors && t.errors.zeroSpins) {
+            errorMessage.textContent = t.errors.zeroSpins;
             errorMessage.style.display = 'block';
         }
+        resultSection.classList.remove('show-result');
         return;
     }
     
@@ -254,16 +319,10 @@ function calculateRouletteTime() {
     if (resultValue) {
         resultValue.textContent = formattedTime;
         
-        // Add animation class with improved timing
-        if (resultSection) {
-            resultSection.classList.remove('show-result');
-            // Use requestAnimationFrame for smoother animation
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    resultSection.classList.add('show-result');
-                }, 50);
-            });
-        }
+        // Show result section with animation
+        setTimeout(() => {
+            resultSection.classList.add('show-result');
+        }, 100);
     }
     
     // Clear result details - show only the time result
@@ -274,84 +333,6 @@ function calculateRouletteTime() {
     console.log(`🎰 Calculated: ${totalSpins} spins ÷ ${spinsPerTurn} per turn = ${totalTurns} turns = ${totalSeconds}s = ${formattedTime}`);
 }
 
-// Enhanced initialization with better error handling
-function initializeRoulette() {
-    if (rouletteInitialized) {
-        console.log('⚠️ Roulette already initialized');
-        return;
-    }
-    
-    console.log('🎰 Initializing Roulette Calculator...');
-    
-    // Check if roulette page exists
-    const roulettePage = document.getElementById('roulettePage') || document.querySelector('.roulette-page');
-    if (!roulettePage) {
-        console.warn('⚠️ Roulette page not found in DOM');
-        // Retry after a delay
-        setTimeout(() => {
-            if (!rouletteInitialized) {
-                initializeRoulette();
-            }
-        }, 1000);
-        return;
-    }
-    
-    // Load language data first
-    loadRouletteLanguage().then(() => {
-        // Update language for current setting
-        updateRouletteLanguage();
-        
-        // Add event listeners with improved error handling
-        const totalSpinsInput = document.getElementById('totalSpinsInput');
-        const spinsPerTurnInput = document.getElementById('spinsPerTurnInput');
-        const calculateBtn = document.querySelector('#roulettePage .calculate-btn') || 
-                            document.querySelector('.roulette-page .calculate-btn');
-        
-        if (totalSpinsInput) {
-            // Remove existing listeners to prevent duplicates
-            totalSpinsInput.removeEventListener('input', calculateRouletteTime);
-            totalSpinsInput.removeEventListener('keypress', handleEnterKey);
-            
-            totalSpinsInput.addEventListener('input', calculateRouletteTime);
-            totalSpinsInput.addEventListener('keypress', handleEnterKey);
-            console.log('✅ Total spins input events bound');
-        } else {
-            console.warn('⚠️ Total spins input not found');
-        }
-        
-        if (spinsPerTurnInput) {
-            // Remove existing listeners to prevent duplicates
-            spinsPerTurnInput.removeEventListener('input', calculateRouletteTime);
-            spinsPerTurnInput.removeEventListener('keypress', handleEnterKey);
-            
-            spinsPerTurnInput.addEventListener('input', calculateRouletteTime);
-            spinsPerTurnInput.addEventListener('keypress', handleEnterKey);
-            console.log('✅ Spins per turn input events bound');
-        } else {
-            console.warn('⚠️ Spins per turn input not found');
-        }
-        
-        if (calculateBtn) {
-            // Remove existing listener to prevent duplicates
-            calculateBtn.removeEventListener('click', calculateRouletteTime);
-            calculateBtn.addEventListener('click', calculateRouletteTime);
-            console.log('✅ Calculate button events bound');
-        } else {
-            console.warn('⚠️ Calculate button not found');
-        }
-        
-        // Listen for language changes with improved handling
-        document.removeEventListener('languageChanged', handleLanguageChange);
-        document.addEventListener('languageChanged', handleLanguageChange);
-        
-        rouletteInitialized = true;
-        console.log('✅ Roulette Calculator initialized successfully');
-    }).catch(error => {
-        console.error('❌ Failed to initialize roulette:', error);
-        rouletteInitialized = false;
-    });
-}
-
 // Helper function for Enter key handling
 function handleEnterKey(e) {
     if (e.key === 'Enter') {
@@ -360,38 +341,34 @@ function handleEnterKey(e) {
     }
 }
 
-// Helper function for language change handling
-function handleLanguageChange(event) {
-    console.log('🌍 Roulette received language change:', event.detail.language);
-    updateRouletteLanguage(event.detail.language);
-}
-
-// Force reinitialization function
-function forceReinitializeRoulette() {
-    console.log('🔄 Force reinitializing Roulette...');
-    rouletteInitialized = false;
-    setTimeout(() => {
+// Auto-initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Only initialize if roulette page exists
+    if (document.getElementById('roulettePage')) {
         initializeRoulette();
-    }, 100);
-}
+    }
+});
 
-// Global functions - Enhanced with better error handling
+// Also initialize when page becomes active (for navigation)
+document.addEventListener('pageChanged', function(event) {
+    if (event.detail.pageId === 'roulettePage') {
+        console.log('🔄 Roulette calculator page activated, initializing...');
+        if (!rouletteInitialized) {
+            initializeRoulette();
+        }
+    }
+});
+
+// Force initialization function for debugging
+window.debugInitializeRoulette = function() {
+    console.log('🔧 Debug: Force initializing roulette calculator');
+    rouletteInitialized = false;
+    initializeRoulette();
+};
+
+// Make functions globally available
 window.initializeRoulette = initializeRoulette;
 window.calculateRouletteTime = calculateRouletteTime;
 window.updateRouletteLanguage = updateRouletteLanguage;
-window.forceReinitializeRoulette = forceReinitializeRoulette;
 
-// Debug function
-window.debugRoulette = function() {
-    console.log('=== ROULETTE DEBUG INFO ===');
-    console.log('Initialized:', rouletteInitialized);
-    console.log('Page exists:', !!document.getElementById('roulettePage'));
-    console.log('Current language:', getCurrentAppLanguage());
-    console.log('Texts loaded:', Object.keys(rouletteTexts));
-    console.log('Total spins input:', !!document.getElementById('totalSpinsInput'));
-    console.log('Spins per turn input:', !!document.getElementById('spinsPerTurnInput'));
-    console.log('Calculate button:', !!document.querySelector('.calculate-btn'));
-    console.log('============================');
-};
-
-console.log('✅ Enhanced Roulette Calculator module loaded with mining theme')
+console.log('✅ Roulette Calculator module loaded');
