@@ -5,16 +5,18 @@ let bossInitialized = false;
 let currentBossLanguage = 'en';
 let bossTranslations = {};
 
-// Default translations - fallback
+// Default translations - fallback (matches boss.json structure)
 const defaultTranslations = {
     en: {
         title: "👹 Boss Calculator",
         totalNeeded: "Total Needed to Collect:",
         rewardPerWin: "Reward per Victory:",
-        calculateBtn: "Calculate",
-        vipToggle: "VIP + Autoclicker",
+        vipAutoclicker: "VIP + Autoclicker",
         vipDescription: "(2.5s vs 4.5s)",
+        calculateBtn: "Calculate Time",
         resultTitle: "Total Time Needed:",
+        totalNeededPlaceholder: "Enter total amount needed...",
+        rewardPerWinPlaceholder: "Enter reward per win...",
         errors: {
             invalidInput: "Please enter valid positive numbers",
             missingFields: "Please fill in both fields"
@@ -39,15 +41,14 @@ function createBossHTML() {
         
         <div class="input-section">
             <label class="input-label" for="totalNeededInput">${t.totalNeeded}</label>
-            <input type="number" class="number-input" id="totalNeededInput" placeholder="Enter total amount needed..." step="1" min="1">
+            <input type="number" class="number-input" id="totalNeededInput" placeholder="${t.totalNeededPlaceholder}" step="1" min="1">
             
             <label class="input-label" for="rewardPerWinInput">${t.rewardPerWin}</label>
-            <input type="number" class="number-input" id="rewardPerWinInput" placeholder="Enter reward per win..." step="1" min="1">
+            <input type="number" class="number-input" id="rewardPerWinInput" placeholder="${t.rewardPerWinPlaceholder}" step="1" min="1">
             
-            <!-- VIP + Autoclicker Toggle -->
             <div class="simple-toggle">
                 <div class="toggle-info">
-                    <div class="toggle-label">${t.vipToggle}</div>
+                    <div class="toggle-label">${t.vipAutoclicker}</div>
                     <div class="toggle-multiplier">${t.vipDescription}</div>
                 </div>
                 <label class="switch">
