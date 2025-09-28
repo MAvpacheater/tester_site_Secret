@@ -1,9 +1,73 @@
-// Boss Calculator JavaScript - Updated for simplified structure
+// Boss Calculator JavaScript - Full implementation with HTML structure creation
 
 // Global variables for boss calculator
 let bossInitialized = false;
 let currentBossLanguage = 'en';
 let bossTranslations = {};
+
+// Default translations - fallback
+const defaultTranslations = {
+    en: {
+        title: "👹 Boss Calculator",
+        totalNeeded: "Total Needed to Collect:",
+        rewardPerWin: "Reward per Victory:",
+        calculateBtn: "Calculate",
+        vipToggle: "VIP + Autoclicker",
+        vipDescription: "(2.5s vs 4.5s)",
+        resultTitle: "Total Time Needed:",
+        errors: {
+            invalidInput: "Please enter valid positive numbers",
+            missingFields: "Please fill in both fields"
+        }
+    }
+};
+
+// Create HTML structure for boss calculator
+function createBossHTML() {
+    const bossPage = document.getElementById('bossPage');
+    if (!bossPage) {
+        console.error('❌ Boss page container not found');
+        return;
+    }
+
+    const t = bossTranslations[currentBossLanguage] || defaultTranslations['en'];
+
+    bossPage.innerHTML = `
+        <div class="header-controls">
+            <h1>${t.title}</h1>
+        </div>
+        
+        <div class="input-section">
+            <label class="input-label" for="totalNeededInput">${t.totalNeeded}</label>
+            <input type="number" class="number-input" id="totalNeededInput" placeholder="Enter total amount needed..." step="1" min="1">
+            
+            <label class="input-label" for="rewardPerWinInput">${t.rewardPerWin}</label>
+            <input type="number" class="number-input" id="rewardPerWinInput" placeholder="Enter reward per win..." step="1" min="1">
+            
+            <!-- VIP + Autoclicker Toggle -->
+            <div class="simple-toggle">
+                <div class="toggle-info">
+                    <div class="toggle-label">${t.vipToggle}</div>
+                    <div class="toggle-multiplier">${t.vipDescription}</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="vipAutoclicker">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateBossTime()">${t.calculateBtn}</button>
+            <div class="error" id="bossErrorMessage"></div>
+        </div>
+
+        <div class="result-section" id="bossResultSection">
+            <div class="stats-label">${t.resultTitle}</div>
+            <div class="result-value" id="bossResultValue">0</div>
+        </div>
+    `;
+
+    console.log('✅ Boss HTML structure created');
+}
 
 // Load boss translations from JSON file
 async function loadBossTranslations() {
@@ -18,24 +82,20 @@ async function loadBossTranslations() {
         return true;
     } catch (error) {
         console.error('❌ Error loading boss translations:', error);
-        // Fallback to prevent crashes
-        bossTranslations = {
-            en: {
-                title: "👹 Boss Calculator",
-                totalNeeded: "Total Needed to Collect:",
-                rewardPerWin: "Reward per Victory:",
-                calculateBtn: "Calculate",
-                vipToggle: "VIP + Autoclicker",
-                vipDescription: "(2.5s vs 4.5s)",
-                resultTitle: "Total Time Needed:",
-                errors: {
-                    invalidInput: "Please enter valid positive numbers",
-                    missingFields: "Please fill in both fields"
-                }
-            }
-        };
+        // Use default translations as fallback
+        bossTranslations = defaultTranslations;
         return false;
     }
+}
+
+// Get current language from app or default to 'en'
+function getCurrentAppLanguage() {
+    // Try to get from global app language if available
+    if (typeof getCurrentLanguage === 'function') {
+        return getCurrentLanguage();
+    }
+    // Fallback to localStorage or default
+    return localStorage.getItem('selectedLanguage') || 'en';
 }
 
 // Initialize Boss Calculator
@@ -53,8 +113,8 @@ async function initializeBoss() {
     // Set current language
     currentBossLanguage = getCurrentAppLanguage();
     
-    // Update language
-    updateBossLanguage(currentBossLanguage);
+    // Create HTML structure
+    createBossHTML();
     
     // Add event listeners
     addBossEventListeners();
@@ -72,6 +132,21 @@ function addBossEventListeners() {
         updateBossLanguage(newLanguage);
     });
     
+    // Add real-time calculation listeners
+    setTimeout(() => {
+        const inputs = ['totalNeededInput', 'rewardPerWinInput', 'vipAutoclicker'];
+        inputs.forEach(inputId => {
+            const element = document.getElementById(inputId);
+            if (element) {
+                if (element.type === 'checkbox') {
+                    element.addEventListener('change', calculateBossTime);
+                } else {
+                    element.addEventListener('input', calculateBossTime);
+                }
+            }
+        });
+    }, 100);
+    
     console.log('✅ Boss Calculator event listeners added');
 }
 
@@ -83,44 +158,29 @@ function updateBossLanguage(language) {
     }
     
     currentBossLanguage = language;
-    const t = bossTranslations[language];
     
-    if (!t) {
-        console.error('❌ Translation object not found');
-        return;
-    }
+    // Recreate HTML with new language
+    createBossHTML();
     
-    // Update page title
-    const title = document.querySelector('#bossPage .header-controls h1');
-    if (title && t.title) title.textContent = t.title;
-    
-    // Update labels
-    const totalLabel = document.querySelector('label[for="totalNeededInput"]');
-    const rewardLabel = document.querySelector('label[for="rewardPerWinInput"]');
-    const toggleLabel = document.querySelector('#bossPage .toggle-label');
-    const toggleMultiplier = document.querySelector('#bossPage .toggle-multiplier');
-    
-    if (totalLabel && t.totalNeeded) totalLabel.textContent = t.totalNeeded;
-    if (rewardLabel && t.rewardPerWin) rewardLabel.textContent = t.rewardPerWin;
-    if (toggleLabel && t.vipToggle) toggleLabel.textContent = t.vipToggle;
-    if (toggleMultiplier && t.vipDescription) toggleMultiplier.textContent = t.vipDescription;
-    
-    // Update button
-    const calculateBtn = document.querySelector('#bossPage .calculate-btn');
-    if (calculateBtn && t.calculateBtn) {
-        calculateBtn.textContent = t.calculateBtn;
-    }
-    
-    // Update result title
-    const resultTitle = document.querySelector('#bossPage .stats-label');
-    if (resultTitle && t.resultTitle) {
-        resultTitle.textContent = t.resultTitle;
-    }
+    // Re-add event listeners
+    setTimeout(() => {
+        const inputs = ['totalNeededInput', 'rewardPerWinInput', 'vipAutoclicker'];
+        inputs.forEach(inputId => {
+            const element = document.getElementById(inputId);
+            if (element) {
+                if (element.type === 'checkbox') {
+                    element.addEventListener('change', calculateBossTime);
+                } else {
+                    element.addEventListener('input', calculateBossTime);
+                }
+            }
+        });
+    }, 100);
     
     console.log(`✅ Boss Calculator language updated to ${language}`);
 }
 
-// Calculate boss time
+// Calculate boss time - Main function
 function calculateBossTime() {
     console.log('👹 Calculating boss time...');
     
@@ -137,7 +197,7 @@ function calculateBossTime() {
         return;
     }
     
-    const t = bossTranslations[currentBossLanguage] || bossTranslations['en'];
+    const t = bossTranslations[currentBossLanguage] || defaultTranslations['en'];
     
     // Get input values
     const totalNeeded = parseFloat(totalNeededInput.value);
@@ -215,10 +275,17 @@ function formatTime(seconds) {
     }
 }
 
+// Auto-initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Only initialize if boss page exists
+    if (document.getElementById('bossPage')) {
+        initializeBoss();
+    }
+});
+
 // Make functions globally available
 window.initializeBoss = initializeBoss;
 window.calculateBossTime = calculateBossTime;
 window.updateBossLanguage = updateBossLanguage;
-window.bossInitialized = bossInitialized;
 
 console.log('✅ Boss Calculator module loaded');
