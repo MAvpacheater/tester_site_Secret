@@ -1,4 +1,4 @@
-// Fixed Roulette Calculator Module
+// Roulette Calculator Module - Mining Style with Short Time Units
 let rouletteTexts = {};
 let rouletteInitialized = false;
 
@@ -13,57 +13,8 @@ async function loadRouletteLanguage() {
         console.log('✅ Roulette language data loaded');
     } catch (error) {
         console.warn('⚠️ Could not load roulette language data:', error);
-        // Set comprehensive fallback
-        rouletteTexts = {
-            en: {
-                title: "🎰 Roulette Calculator",
-                totalSpins: "Total Spins Needed:",
-                spinsPerTurn: "Spins per Turn:",
-                placeholderTotal: "Enter total spins needed...",
-                placeholderPerTurn: "Enter spins per turn...",
-                calculate: "Calculate Time",
-                result: "Total Time Needed:",
-                errorEmpty: "Please enter both values",
-                errorInvalid: "Please enter valid positive numbers",
-                errorZero: "Spins per turn cannot be zero",
-                totalSpinsText: "total spins",
-                spinsPerTurnText: "per turn",
-                turns: "turns",
-                seconds: "seconds"
-            },
-            uk: {
-                title: "🎰 Калькулятор Рулетки",
-                totalSpins: "Загальна кількість спінів:",
-                spinsPerTurn: "Спінів за хід:",
-                placeholderTotal: "Введіть загальну кількість спінів...",
-                placeholderPerTurn: "Введіть кількість спінів за хід...",
-                calculate: "Розрахувати час",
-                result: "Загальний необхідний час:",
-                errorEmpty: "Будь ласка, введіть обидва значення",
-                errorInvalid: "Будь ласка, введіть дійсні позитивні числа",
-                errorZero: "Спіни за хід не можуть дорівнювати нулю",
-                totalSpinsText: "загальних спінів",
-                spinsPerTurnText: "за хід",
-                turns: "ходів",
-                seconds: "секунд"
-            },
-            ru: {
-                title: "🎰 Калькулятор Рулетки",
-                totalSpins: "Общее количество спинов:",
-                spinsPerTurn: "Спинов за ход:",
-                placeholderTotal: "Введите общее количество спинов...",
-                placeholderPerTurn: "Введите количество спинов за ход...",
-                calculate: "Рассчитать время",
-                result: "Общее необходимое время:",
-                errorEmpty: "Пожалуйста, введите оба значения",
-                errorInvalid: "Пожалуйста, введите действительные положительные числа",
-                errorZero: "Спины за ход не могут равняться нулю",
-                totalSpinsText: "общих спинов",
-                spinsPerTurnText: "за ход",
-                turns: "ходов",
-                seconds: "секунд"
-            }
-        };
+        // Set empty fallback - will use default browser text
+        rouletteTexts = {};
     }
 }
 
@@ -176,36 +127,36 @@ function updateRouletteLanguage(lang = null) {
     console.log(`✅ Roulette language updated to: ${lang}`);
 }
 
-// Enhanced time formatting with language support
+// Enhanced time formatting with short units and language support
 function formatTime(seconds) {
     const lang = getCurrentAppLanguage();
     const texts = rouletteTexts[lang] || rouletteTexts['en'] || {};
     
-    // Fallback time unit names
+    // Short time unit names from language file
     const timeUnits = {
-        second: texts.second || 'second',
-        seconds: texts.seconds || 'seconds',
-        minute: texts.minute || 'minute', 
-        minutes: texts.minutes || 'minutes',
-        hour: texts.hour || 'hour',
-        hours: texts.hours || 'hours',
-        day: texts.day || 'day',
-        days: texts.days || 'days'
+        second: texts.second || 's',
+        seconds: texts.seconds || 's',
+        minute: texts.minute || 'm', 
+        minutes: texts.minutes || 'm',
+        hour: texts.hour || 'h',
+        hours: texts.hours || 'h',
+        day: texts.day || 'd',
+        days: texts.days || 'd'
     };
     
     if (seconds < 60) {
         // Less than a minute
         const sec = Math.ceil(seconds);
-        return `${sec} ${sec === 1 ? timeUnits.second : timeUnits.seconds}`;
+        return `${sec}${timeUnits.seconds}`;
     } else if (seconds < 3600) {
         // Less than an hour
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.ceil(seconds % 60);
         
         if (remainingSeconds === 0) {
-            return `${minutes} ${minutes === 1 ? timeUnits.minute : timeUnits.minutes}`;
+            return `${minutes}${timeUnits.minutes}`;
         } else {
-            return `${minutes} ${minutes === 1 ? timeUnits.minute : timeUnits.minutes} ${remainingSeconds} ${remainingSeconds === 1 ? timeUnits.second : timeUnits.seconds}`;
+            return `${minutes}${timeUnits.minutes} ${remainingSeconds}${timeUnits.seconds}`;
         }
     } else if (seconds < 86400) {
         // Less than a day
@@ -213,14 +164,14 @@ function formatTime(seconds) {
         const minutes = Math.floor((seconds % 3600) / 60);
         const remainingSeconds = Math.ceil(seconds % 60);
         
-        let result = `${hours} ${hours === 1 ? timeUnits.hour : timeUnits.hours}`;
+        let result = `${hours}${timeUnits.hours}`;
         
         if (minutes > 0) {
-            result += ` ${minutes} ${minutes === 1 ? timeUnits.minute : timeUnits.minutes}`;
+            result += ` ${minutes}${timeUnits.minutes}`;
         }
         
         if (remainingSeconds > 0 && minutes === 0) {
-            result += ` ${remainingSeconds} ${remainingSeconds === 1 ? timeUnits.second : timeUnits.seconds}`;
+            result += ` ${remainingSeconds}${timeUnits.seconds}`;
         }
         
         return result;
@@ -230,21 +181,21 @@ function formatTime(seconds) {
         const hours = Math.floor((seconds % 86400) / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         
-        let result = `${days} ${days === 1 ? timeUnits.day : timeUnits.days}`;
+        let result = `${days}${timeUnits.days}`;
         
         if (hours > 0) {
-            result += ` ${hours} ${hours === 1 ? timeUnits.hour : timeUnits.hours}`;
+            result += ` ${hours}${timeUnits.hours}`;
         }
         
         if (minutes > 0 && hours === 0) {
-            result += ` ${minutes} ${minutes === 1 ? timeUnits.minute : timeUnits.minutes}`;
+            result += ` ${minutes}${timeUnits.minutes}`;
         }
         
         return result;
     }
 }
 
-// Enhanced calculation function
+// Enhanced calculation function with result details without calculation text
 function calculateRouletteTime() {
     const lang = getCurrentAppLanguage();
     const texts = rouletteTexts[lang] || rouletteTexts['en'] || {};
@@ -315,6 +266,7 @@ function calculateRouletteTime() {
         }
     }
     
+    // Show result details without calculation text - just the formatted numbers
     if (resultDetails) {
         const turns = Math.ceil(totalTurns);
         const turnsText = texts.turns || 'turns';
@@ -444,4 +396,4 @@ window.debugRoulette = function() {
     console.log('============================');
 };
 
-console.log('✅ Enhanced Roulette Calculator module loaded');
+console.log('✅ Enhanced Roulette Calculator module loaded with mining theme');
