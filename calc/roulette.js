@@ -195,7 +195,7 @@ function formatTime(seconds) {
     }
 }
 
-// Enhanced calculation function with result details without calculation text
+// Enhanced calculation function with clean results - only showing final time
 function calculateRouletteTime() {
     const lang = getCurrentAppLanguage();
     const texts = rouletteTexts[lang] || rouletteTexts['en'] || {};
@@ -266,11 +266,9 @@ function calculateRouletteTime() {
         }
     }
     
-    // Show result details without calculation text - just the formatted numbers
+    // Clear result details - show only the time result
     if (resultDetails) {
-        const turns = Math.ceil(totalTurns);
-        const turnsText = texts.turns || 'turns';
-        resultDetails.textContent = `${totalSpins.toLocaleString()} ${texts.totalSpinsText || 'total spins'} ÷ ${spinsPerTurn.toLocaleString()} ${texts.spinsPerTurnText || 'per turn'} = ${turns.toLocaleString()} ${turnsText} × 6s`;
+        resultDetails.textContent = '';
     }
     
     console.log(`🎰 Calculated: ${totalSpins} spins ÷ ${spinsPerTurn} per turn = ${totalTurns} turns = ${totalSeconds}s = ${formattedTime}`);
@@ -396,4 +394,4 @@ window.debugRoulette = function() {
     console.log('============================');
 };
 
-console.log('✅ Enhanced Roulette Calculator module loaded with mining theme');
+console.log('✅ Enhanced Roulette Calculator module loaded with mining theme')
