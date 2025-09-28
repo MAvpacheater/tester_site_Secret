@@ -3,79 +3,49 @@
 // Global variables for boss calculator
 let bossInitialized = false;
 let currentBossLanguage = 'en';
+let bossTranslations = {};
 
-// Boss translations
-const bossTranslations = {
-    en: {
-        title: "👹 Boss Calculator",
-        totalNeeded: "Total Needed to Collect:",
-        rewardPerWin: "Reward per Victory:",
-        vipAutoclicker: "VIP + Autoclicker",
-        vipDescription: "(2.5s vs 4.5s)",
-        calculateBtn: "Calculate Time",
-        resultTitle: "Total Time Needed:",
-        totalNeededPlaceholder: "Enter total amount needed...",
-        rewardPerWinPlaceholder: "Enter reward per win...",
-        errors: {
-            invalidInput: "Please enter valid positive numbers",
-            missingFields: "Please fill in both fields"
-        },
-        resultDetails: {
-            victories: "victories needed",
-            withVip: "with VIP + Autoclicker",
-            withoutVip: "without VIP + Autoclicker"
+// Load boss translations from JSON file
+async function loadBossTranslations() {
+    try {
+        console.log('📥 Loading boss translations...');
+        const response = await fetch('./languages/boss.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    },
-    uk: {
-        title: "👹 Калькулятор Босів",
-        totalNeeded: "Загальна кількість для збору:",
-        rewardPerWin: "Нагорода за перемогу:",
-        vipAutoclicker: "VIP + Автоклікер",
-        vipDescription: "(2.5с проти 4.5с)",
-        calculateBtn: "Розрахувати Час",
-        resultTitle: "Загальний необхідний час:",
-        totalNeededPlaceholder: "Введіть загальну кількість...",
-        rewardPerWinPlaceholder: "Введіть нагороду за перемогу...",
-        errors: {
-            invalidInput: "Будь ласка, введіть коректні додатні числа",
-            missingFields: "Будь ласка, заповніть обидва поля"
-        },
-        resultDetails: {
-            victories: "перемог потрібно",
-            withVip: "з VIP + Автоклікер",
-            withoutVip: "без VIP + Автоклікер"
-        }
-    },
-    ru: {
-        title: "👹 Калькулятор Боссов",
-        totalNeeded: "Общее количество для сбора:",
-        rewardPerWin: "Награда за победу:",
-        vipAutoclicker: "VIP + Автокликер",
-        vipDescription: "(2.5с против 4.5с)",
-        calculateBtn: "Рассчитать Время",
-        resultTitle: "Общее необходимое время:",
-        totalNeededPlaceholder: "Введите общее количество...",
-        rewardPerWinPlaceholder: "Введите награду за победу...",
-        errors: {
-            invalidInput: "Пожалуйста, введите корректные положительные числа",
-            missingFields: "Пожалуйста, заполните оба поля"
-        },
-        resultDetails: {
-            victories: "побед нужно",
-            withVip: "с VIP + Автокликер",
-            withoutVip: "без VIP + Автокликер"
-        }
+        bossTranslations = await response.json();
+        console.log('✅ Boss translations loaded successfully');
+        return true;
+    } catch (error) {
+        console.error('❌ Error loading boss translations:', error);
+        // Fallback to prevent crashes
+        bossTranslations = {
+            en: {
+                title: "👹 Boss Calculator",
+                totalNeeded: "Total Needed to Collect:",
+                rewardPerWin: "Reward per Victory:",
+                calculateBtn: "Calculate Time",
+                errors: {
+                    invalidInput: "Please enter valid positive numbers",
+                    missingFields: "Please fill in both fields"
+                }
+            }
+        };
+        return false;
     }
-};
+}
 
 // Initialize Boss Calculator
-function initializeBoss() {
+async function initializeBoss() {
     if (bossInitialized) {
         console.log('⚠️ Boss calculator already initialized');
         return;
     }
 
     console.log('🚀 Initializing Boss Calculator...');
+    
+    // Load translations first
+    await loadBossTranslations();
     
     // Set current language
     currentBossLanguage = getCurrentAppLanguage();
@@ -124,9 +94,14 @@ function updateBossLanguage(language) {
     currentBossLanguage = language;
     const t = bossTranslations[language];
     
+    if (!t) {
+        console.error('❌ Translation object not found');
+        return;
+    }
+    
     // Update page title
     const title = document.querySelector('#bossPage .header-controls h1');
-    if (title) title.textContent = t.title;
+    if (title && t.title) title.textContent = t.title;
     
     // Update labels
     const labels = {
@@ -135,31 +110,45 @@ function updateBossLanguage(language) {
     };
     
     Object.entries(labels).forEach(([inputId, labelText]) => {
-        const label = document.querySelector(`label[for="${inputId}"]`);
-        if (label) label.textContent = labelText;
+        if (labelText) {
+            const label = document.querySelector(`label[for="${inputId}"]`);
+            if (label) label.textContent = labelText;
+        }
     });
     
     // Update placeholders
     const totalNeededInput = document.getElementById('totalNeededInput');
     const rewardPerWinInput = document.getElementById('rewardPerWinInput');
     
-    if (totalNeededInput) totalNeededInput.placeholder = t.totalNeededPlaceholder;
-    if (rewardPerWinInput) rewardPerWinInput.placeholder = t.rewardPerWinPlaceholder;
+    if (totalNeededInput && t.totalNeededPlaceholder) {
+        totalNeededInput.placeholder = t.totalNeededPlaceholder;
+    }
+    if (rewardPerWinInput && t.rewardPerWinPlaceholder) {
+        rewardPerWinInput.placeholder = t.rewardPerWinPlaceholder;
+    }
     
     // Update toggle labels
     const vipToggleLabel = document.querySelector('#bossPage .toggle-label');
     const vipToggleMultiplier = document.querySelector('#bossPage .toggle-multiplier');
     
-    if (vipToggleLabel) vipToggleLabel.textContent = t.vipAutoclicker;
-    if (vipToggleMultiplier) vipToggleMultiplier.textContent = t.vipDescription;
+    if (vipToggleLabel && t.vipAutoclicker) {
+        vipToggleLabel.textContent = t.vipAutoclicker;
+    }
+    if (vipToggleMultiplier && t.vipDescription) {
+        vipToggleMultiplier.textContent = t.vipDescription;
+    }
     
     // Update button
     const calculateBtn = document.querySelector('#bossPage .calculate-btn');
-    if (calculateBtn) calculateBtn.textContent = t.calculateBtn;
+    if (calculateBtn && t.calculateBtn) {
+        calculateBtn.textContent = t.calculateBtn;
+    }
     
     // Update result title
     const resultTitle = document.querySelector('#bossPage .stats-label');
-    if (resultTitle) resultTitle.textContent = t.resultTitle;
+    if (resultTitle && t.resultTitle) {
+        resultTitle.textContent = t.resultTitle;
+    }
     
     console.log(`✅ Boss Calculator language updated to ${language}`);
 }
@@ -178,14 +167,17 @@ function validateBossInputs() {
     let isValid = true;
     let errorText = '';
     
+    const t = bossTranslations[currentBossLanguage];
+    if (!t || !t.errors) return;
+    
     if (totalNeeded.value && (isNaN(totalValue) || totalValue <= 0)) {
         isValid = false;
-        errorText = bossTranslations[currentBossLanguage].errors.invalidInput;
+        errorText = t.errors.invalidInput;
     }
     
     if (rewardPerWin.value && (isNaN(rewardValue) || rewardValue <= 0)) {
         isValid = false;
-        errorText = bossTranslations[currentBossLanguage].errors.invalidInput;
+        errorText = t.errors.invalidInput;
     }
     
     if (errorText) {
@@ -218,6 +210,10 @@ function calculateBossTime() {
     }
     
     const t = bossTranslations[currentBossLanguage];
+    if (!t) {
+        console.error('❌ Translation object not found for current language');
+        return;
+    }
     
     // Get input values
     const totalNeeded = parseFloat(totalNeededInput.value);
@@ -226,14 +222,18 @@ function calculateBossTime() {
     
     // Validate inputs
     if (!totalNeededInput.value || !rewardPerWinInput.value) {
-        errorMessage.textContent = t.errors.missingFields;
+        if (t.errors && t.errors.missingFields) {
+            errorMessage.textContent = t.errors.missingFields;
+        }
         errorMessage.style.display = 'block';
         resultSection.classList.remove('show');
         return;
     }
     
     if (isNaN(totalNeeded) || totalNeeded <= 0 || isNaN(rewardPerWin) || rewardPerWin <= 0) {
-        errorMessage.textContent = t.errors.invalidInput;
+        if (t.errors && t.errors.invalidInput) {
+            errorMessage.textContent = t.errors.invalidInput;
+        }
         errorMessage.style.display = 'block';
         resultSection.classList.remove('show');
         return;
@@ -259,11 +259,13 @@ function calculateBossTime() {
     resultValue.textContent = formattedTime;
     
     // Create details text
-    const vipStatus = hasVipAutoclicker ? t.resultDetails.withVip : t.resultDetails.withoutVip;
-    resultDetails.innerHTML = `
-        ${victoriesNeeded} ${t.resultDetails.victories}<br>
-        ${vipStatus}
-    `;
+    if (t.resultDetails) {
+        const vipStatus = hasVipAutoclicker ? t.resultDetails.withVip : t.resultDetails.withoutVip;
+        resultDetails.innerHTML = `
+            ${victoriesNeeded} ${t.resultDetails.victories}<br>
+            ${vipStatus}
+        `;
+    }
     
     // Show result section with animation
     setTimeout(() => {
