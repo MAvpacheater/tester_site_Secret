@@ -1,0 +1,62 @@
+{
+    "en": {
+        "title": "👹 Boss Calculator",
+        "totalNeeded": "Total Needed to Collect:",
+        "rewardPerWin": "Reward per Victory:",
+        "vipAutoclicker": "VIP + Autoclicker",
+        "vipDescription": "(2.5s vs 4.5s)",
+        "calculateBtn": "Calculate Time",
+        "resultTitle": "Total Time Needed:",
+        "totalNeededPlaceholder": "Enter total amount needed...",
+        "rewardPerWinPlaceholder": "Enter reward per win...",
+        "errors": {
+            "invalidInput": "Please enter valid positive numbers",
+            "missingFields": "Please fill in both fields"
+        },
+        "resultDetails": {
+            "victories": "victories needed",
+            "withVip": "with VIP + Autoclicker",
+            "withoutVip": "without VIP + Autoclicker"
+        }
+    },
+    "uk": {
+        "title": "👹 Калькулятор Босів",
+        "totalNeeded": "Загальна кількість для збору:",
+        "rewardPerWin": "Нагорода за перемогу:",
+        "vipAutoclicker": "VIP + Автоклікер",
+        "vipDescription": "(2.5с проти 4.5с)",
+        "calculateBtn": "Розрахувати Час",
+        "resultTitle": "Загальний необхідний час:",
+        "totalNeededPlaceholder": "Введіть загальну кількість...",
+        "rewardPerWinPlaceholder": "Введіть нагороду за перемогу...",
+        "errors": {
+            "invalidInput": "Будь ласка, введіть коректні додатні числа",
+            "missingFields": "Будь ласка, заповніть обидва поля"
+        },
+        "resultDetails": {
+            "victories": "перемог потрібно",
+            "withVip": "з VIP + Автоклікер",
+            "withoutVip": "без VIP + Автоклікер"
+        }
+    },
+    "ru": {
+        "title": "👹 Калькулятор Боссов",
+        "totalNeeded": "Общее количество для сбора:",
+        "rewardPerWin": "Награда за победу:",
+        "vipAutoclicker": "VIP + Автокликер",
+        "vipDescription": "(2.5с против 4.5с)",
+        "calculateBtn": "Рассчитать Время",
+        "resultTitle": "Общее необходимое время:",
+        "totalNeededPlaceholder": "Введите общее количество...",
+        "rewardPerWinPlaceholder": "Введите награду за победу...",
+        "errors": {
+            "invalidInput": "Пожалуйста, введите корректные положительные числа",
+            "missingFields": "Пожалуйста, заполните оба поля"
+        },
+        "resultDetails": {
+            "victories": "побед нужно",
+            "withVip": "с VIP + Автокликер",
+            "withoutVip": "без VIP + Автокликер"
+        }
+    }
+}
