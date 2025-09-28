@@ -1,4 +1,4 @@
-=// Content loader script - Fixed to work with language system and single menu
+// Content loader script - Fixed to work with language system and single menu
 console.log('🔄 Loading content...');
 
 // Function to load content
