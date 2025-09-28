@@ -201,7 +201,7 @@ function validateBossInputs() {
 
 // Calculate boss time
 function calculateBossTime() {
-    console.log('🎰 Calculating boss time...');
+    console.log('👹 Calculating boss time...');
     
     const totalNeededInput = document.getElementById('totalNeededInput');
     const rewardPerWinInput = document.getElementById('rewardPerWinInput');
@@ -298,13 +298,6 @@ function formatTime(seconds) {
             return `${days}d`;
         }
         return `${days}d ${remainingHours}h`;
-    }
-}
-
-// Global function to update boss language (called from general.js)
-function updateBossLanguage(language) {
-    if (bossInitialized) {
-        updateBossLanguage(language);
     }
 }
 
