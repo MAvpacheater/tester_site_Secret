@@ -19,12 +19,13 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-align: center;
 }
 
 /* Header controls - Clean and simple like Arm Calculator */
 .boss-page .header-controls {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 30px;
 }
@@ -181,6 +182,7 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
+    width: 100%;
 }
 
 .boss-page .calculate-btn::before {
@@ -288,6 +290,7 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: resultGlow 2s ease-in-out infinite alternate;
+    text-align: center;
 }
 
 @keyframes resultGlow {
@@ -301,11 +304,6 @@
 
 /* Hide result details for cleaner design */
 .boss-page .result-details {
-    display: none;
-}
-
-/* Remove bottom border/line from result section */
-.boss-page .result-section::after {
     display: none;
 }
 
