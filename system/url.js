@@ -1,4 +1,4 @@
-// Fixed URL Routing System - Updated for armwrestlerinfopost repository
+// Fixed URL Routing System - Proper GitHub Pages handling
 class URLRouter {
     constructor() {
         this.baseURL = this.getBaseURL();
@@ -18,10 +18,10 @@ class URLRouter {
         
         console.log('🔍 Detecting base URL from:', { protocol, host, pathname });
         
-        // For GitHub Pages - armwrestlerinfopost repository
+        // For GitHub Pages - always include repository path
         if (host.includes('.github.io') && host === 'mavpacheater.github.io') {
-            const baseUrl = `${protocol}//${host}/armwrestlerinfopost/`;
-            console.log('✅ Detected GitHub Pages with armwrestlerinfopost repo:', baseUrl);
+            const baseUrl = `${protocol}//${host}/tester_site_Secret/`;
+            console.log('✅ Detected GitHub Pages with repo:', baseUrl);
             return baseUrl;
         }
         
@@ -43,7 +43,8 @@ class URLRouter {
         const routeMapping = {
             'calculator': '',  // Root page
             'arm': 'arm_calculator',
-            'grind': 'grind_calculator', 
+            'grind': 'grind_calculator',
+            'roulette': 'roulette_calculator',
             'boosts': 'boosts_info',
             'shiny': 'shiny_list',
             'secret': 'secret_pets',
@@ -105,7 +106,7 @@ class URLRouter {
             setTimeout(() => {
                 switchPage(initialPage);
                 console.log(`✅ Switched to page from URL: ${initialPage}`);
-            }, 500);
+            }, 500); // Reduced delay
         }
 
         this.isInitialized = true;
@@ -235,6 +236,7 @@ class URLRouter {
             'calculator': { title: '🐾 Pet Calculator', description: 'Calculate pet upgrades and evolution costs' },
             'arm': { title: '💪 Arm Calculator', description: 'Calculate arm strength upgrades and costs' },
             'grind': { title: '🏋️‍♂️ Grind Calculator', description: 'Calculate grinding efficiency and rewards' },
+            'roulette': { title: '🎰 Roulette Calculator', description: 'Calculate time needed for roulette spins' },
             'boosts': { title: '🚀 Boosts Information', description: 'Complete guide to all boosts and their effects' },
             'shiny': { title: '✨ Shiny Pet Statistics', description: 'Complete list of shiny pets and their stats' },
             'secret': { title: '🔮 Secret Pets Guide', description: 'Discover all secret pets and how to get them' },
