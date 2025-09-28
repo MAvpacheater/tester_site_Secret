@@ -52,6 +52,7 @@ async function loadContent() {
                                 <button class="nav-btn" data-page="arm" onclick="switchPage('arm')"></button>
                                 <button class="nav-btn" data-page="grind" onclick="switchPage('grind')"></button>
                                 <button class="nav-btn" data-page="roulette" onclick="switchPage('roulette')"></button>
+                                <button class="nav-btn" data-page="boss" onclick="switchPage('boss')"></button>
                             </div>
                         </div>
                         
