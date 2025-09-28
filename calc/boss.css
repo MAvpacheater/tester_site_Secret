@@ -1,119 +1,160 @@
 /* Boss Calculator Styles - calc/boss.css */
+/* Updated to match modern arm calculator design */
 
 .boss-page {
     display: none;
     padding: 20px;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
     min-height: 100vh;
-    color: white;
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
 }
 
 .boss-page.active {
     display: block;
 }
 
+/* Header Controls */
 .boss-page .header-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
-    padding: 0 10px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .boss-page .header-controls h1 {
     margin: 0;
     font-size: 2.2em;
-    font-weight: bold;
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    font-weight: 700;
+    background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    letter-spacing: -0.5px;
 }
 
+/* Input Section */
 .boss-page .input-section {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
     padding: 30px;
-    border-radius: 15px;
     margin-bottom: 20px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.boss-page .input-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .boss-page .input-group {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+}
+
+.boss-page .input-group:last-of-type {
+    margin-bottom: 0;
 }
 
 .boss-page .input-label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     font-weight: 600;
     font-size: 1.1em;
-    color: #e0e0e0;
+    color: #e1e5e9;
+    letter-spacing: 0.3px;
 }
 
 .boss-page .number-input {
     width: 100%;
-    padding: 15px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    padding: 16px 20px;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    color: #ffffff;
     font-size: 1.1em;
+    font-weight: 500;
     transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
-}
-
-.boss-page .number-input:focus {
-    border-color: #4ecdc4;
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 15px rgba(78, 205, 196, 0.3);
-    outline: none;
+    box-sizing: border-box;
 }
 
 .boss-page .number-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.5);
 }
 
+.boss-page .number-input:focus {
+    outline: none;
+    border-color: #4ecdc4;
+    background: rgba(78, 205, 196, 0.08);
+    box-shadow: 
+        0 0 0 3px rgba(78, 205, 196, 0.2),
+        0 4px 20px rgba(78, 205, 196, 0.15);
+    transform: translateY(-1px);
+}
+
+.boss-page .number-input:hover:not(:focus) {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Toggle Section */
 .boss-toggle-section {
     margin: 25px 0;
-    padding: 20px;
+    padding: 24px;
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
+    backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
 }
 
 .boss-page .simple-toggle {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 12px 0;
 }
 
 .boss-page .toggle-info {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 6px;
 }
 
 .boss-page .toggle-label {
     font-weight: 600;
     font-size: 1.1em;
-    color: #e0e0e0;
+    color: #e1e5e9;
+    letter-spacing: 0.3px;
 }
 
 .boss-page .toggle-multiplier {
-    font-size: 0.9em;
+    font-size: 0.95em;
     color: #4ecdc4;
     font-weight: 500;
 }
 
+/* Switch Styles */
 .boss-page .switch {
     position: relative;
     display: inline-block;
-    width: 60px;
-    height: 34px;
+    width: 56px;
+    height: 32px;
 }
 
 .boss-page .switch input {
@@ -129,10 +170,11 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.2);
-    transition: 0.3s;
-    border-radius: 34px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    border-radius: 32px;
 }
 
 .boss-page .slider:before {
@@ -140,62 +182,67 @@
     content: "";
     height: 24px;
     width: 24px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: 0.3s;
+    left: 2px;
+    bottom: 2px;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
     border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .boss-page input:checked + .slider {
-    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
     border-color: #4ecdc4;
+    box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
 }
 
 .boss-page input:checked + .slider:before {
-    transform: translateX(26px);
-    box-shadow: 0 2px 10px rgba(78, 205, 196, 0.4);
+    transform: translateX(24px);
+    box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
 }
 
+/* Calculate Button */
 .boss-page .calculate-btn {
     width: 100%;
-    padding: 15px 30px;
-    background: linear-gradient(45deg, #4ecdc4, #44a08d);
-    color: white;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+    color: #ffffff;
     border: none;
-    border-radius: 8px;
-    font-size: 1.2em;
+    border-radius: 12px;
+    font-size: 1.1em;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 20px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    margin-top: 24px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 16px rgba(78, 205, 196, 0.3);
 }
 
 .boss-page .calculate-btn:hover {
-    background: linear-gradient(45deg, #44a08d, #4ecdc4);
+    background: linear-gradient(135deg, #44a08d 0%, #4ecdc4 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+    box-shadow: 0 8px 24px rgba(78, 205, 196, 0.4);
 }
 
 .boss-page .calculate-btn:active {
     transform: translateY(0);
-    box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+    box-shadow: 0 4px 16px rgba(78, 205, 196, 0.3);
 }
 
+/* Result Section */
 .boss-page .result-section {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
     padding: 30px;
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     text-align: center;
     opacity: 0;
     transform: translateY(20px);
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .boss-page .result-section.show {
@@ -206,48 +253,115 @@
 .boss-page .stats-label {
     font-size: 1.2em;
     font-weight: 600;
-    margin-bottom: 15px;
-    color: #e0e0e0;
+    margin-bottom: 16px;
+    color: #e1e5e9;
+    letter-spacing: 0.3px;
 }
 
 .boss-page .result-value {
-    font-size: 2.5em;
-    font-weight: bold;
-    margin: 20px 0;
-    background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+    font-size: 2.8em;
+    font-weight: 700;
+    margin: 24px 0;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 50%, #4ecdc4 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    letter-spacing: -1px;
+    line-height: 1.1;
+    word-break: break-all;
 }
 
 .boss-page .result-details {
     font-size: 1em;
-    color: #b0b0b0;
-    margin-top: 15px;
+    color: #b8bcc2;
+    margin-top: 20px;
     line-height: 1.6;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border-left: 3px solid #4ecdc4;
 }
 
+/* Error Messages */
 .boss-page .error {
     color: #ff6b6b;
     font-size: 0.9em;
-    margin-top: 10px;
+    margin-top: 12px;
     text-align: center;
     font-weight: 500;
+    padding: 12px 16px;
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.2);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+/* Settings Button */
+.boss-page .settings-btn {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    color: #ffffff;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1em;
+}
+
+.boss-page .settings-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .boss-page {
-        padding: 15px;
+        padding: 16px;
+    }
+    
+    .boss-page .header-controls {
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
     }
     
     .boss-page .header-controls h1 {
         font-size: 1.8em;
+    }
+    
+    .boss-page .input-section,
+    .boss-page .result-section {
+        padding: 24px;
+    }
+    
+    .boss-page .result-value {
+        font-size: 2.2em;
+    }
+    
+    .boss-page .simple-toggle {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    
+    .boss-page .number-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+@media (max-width: 480px) {
+    .boss-page {
+        padding: 12px;
+    }
+    
+    .boss-page .header-controls h1 {
+        font-size: 1.6em;
+    }
+    
+    .boss-page .result-value {
+        font-size: 2em;
     }
     
     .boss-page .input-section,
@@ -255,28 +369,8 @@
         padding: 20px;
     }
     
-    .boss-page .result-value {
-        font-size: 2em;
-    }
-    
-    .boss-page .simple-toggle {
-        flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
-    }
-}
-
-@media (max-width: 480px) {
-    .boss-page .header-controls h1 {
-        font-size: 1.5em;
-    }
-    
-    .boss-page .result-value {
-        font-size: 1.8em;
-    }
-    
-    .boss-page .input-section,
-    .boss-page .result-section {
-        padding: 15px;
+    .boss-page .number-input,
+    .boss-page .calculate-btn {
+        padding: 14px 18px;
     }
 }
