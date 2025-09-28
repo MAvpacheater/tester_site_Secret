@@ -79,13 +79,16 @@ async function loadBossTranslations() {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        bossTranslations = await response.json();
+        const data = await response.json();
+        bossTranslations = data;
         console.log('✅ Boss translations loaded successfully');
+        console.log('Loaded translations:', bossTranslations);
         return true;
     } catch (error) {
         console.error('❌ Error loading boss translations:', error);
         // Use default translations as fallback
         bossTranslations = defaultTranslations;
+        console.log('Using default translations:', bossTranslations);
         return false;
     }
 }
@@ -102,12 +105,10 @@ function getCurrentAppLanguage() {
 
 // Initialize Boss Calculator
 async function initializeBoss() {
-    if (bossInitialized) {
-        console.log('⚠️ Boss calculator already initialized');
-        return;
-    }
-
     console.log('🚀 Initializing Boss Calculator...');
+    
+    // Reset initialization flag
+    bossInitialized = false;
     
     // Load translations first
     const translationsLoaded = await loadBossTranslations();
