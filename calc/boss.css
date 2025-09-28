@@ -8,6 +8,22 @@
     display: block !important;
 }
 
+/* Remove any unwanted pseudo-elements */
+.boss-page *::before,
+.boss-page *::after {
+    content: none !important;
+}
+
+.boss-page .result-section::before {
+    content: '⛏️💎' !important;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5em;
+    opacity: 0.6;
+    animation: floatGem 4s ease-in-out infinite;
+}
+
 .boss-page h1 {
     color: #FFD700;
     margin-bottom: 30px;
