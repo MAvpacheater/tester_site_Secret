@@ -83,84 +83,8 @@
     </div>
 </div>
 
-<!-- Arm Calculator Page -->
-<div class="page arm-page" id="armPage">
-    <div class="header-controls">
-        <h1>💪 Arm Stats Calculator</h1>
-        <button class="settings-btn" onclick="toggleArmSettings()">⚙️</button>
-    </div>
-
-    <div class="settings-panel" id="settingsPanelArm">
-        <div class="settings-title">Settings</div>
-        
-        <div class="simple-toggle">
-            <div class="toggle-info">
-                <div class="toggle-label">1/5 golden</div>
-                <div class="toggle-multiplier">(x1.5)</div>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="golden1" onchange="handleGoldenSelection('golden1')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="simple-toggle">
-            <div class="toggle-info">
-                <div class="toggle-label">2/5 golden</div>
-                <div class="toggle-multiplier">(x1.65)</div>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="golden2" onchange="handleGoldenSelection('golden2')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="simple-toggle">
-            <div class="toggle-info">
-                <div class="toggle-label">3/5 golden</div>
-                <div class="toggle-multiplier">(x1.8)</div>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="golden3" onchange="handleGoldenSelection('golden3')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="simple-toggle">
-            <div class="toggle-info">
-                <div class="toggle-label">4/5 golden</div>
-                <div class="toggle-multiplier">(x1.95)</div>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="golden4" onchange="handleGoldenSelection('golden4')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="simple-toggle">
-            <div class="toggle-info">
-                <div class="toggle-label">5/5 golden</div>
-                <div class="toggle-multiplier">(x2.1)</div>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="golden5" checked onchange="handleGoldenSelection('golden5')">
-                <span class="slider"></span>
-            </label>
-        </div>
-    </div>
-    
-    <div class="input-section">
-        <label class="input-label">If arm base</label>
-        <input type="number" class="number-input" id="armNumberInput" placeholder="Enter number..." step="any" oninput="calculateArmStats()">
-        <button class="calculate-btn" onclick="calculateArmStats()">Calculate</button>
-        <div class="error" id="armErrorMessage"></div>
-    </div>
-
-    <div class="result-section" id="armResultSection">
-        <div class="stats-label">Max stats</div>
-        <div class="result-value" id="armResultValue">0</div>
-    </div>
-</div>
+<!-- Arm Calculator - Only connection, all structure in JS -->
+<div class="page arm-page" id="armPage"></div>
 
 <!-- Grind Calculator Page -->
 <div class="page grind-page" id="grindPage">
