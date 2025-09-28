@@ -141,7 +141,6 @@
                 'calc/roulette.js',
                 'calc/boss.js',
 
-
                 // Info modules
                 'info/boosts.js',
                 'info/shiny.js',
@@ -396,6 +395,7 @@
                 'arm_calculator': 'arm',
                 'grind_calculator': 'grind',
                 'roulette_calculator': 'roulette',
+                'boss_calculator': 'boss',
                 'shiny_list': 'shiny',
                 'codes_list': 'codes',
                 'aura_info': 'aura',
@@ -506,6 +506,7 @@
             console.log('URL Router instance:', urlRouter ? urlRouter() : 'None');
             console.log('App content element:', document.getElementById('app-content') ? 'Found' : 'Missing');
             console.log('Current page:', typeof getCurrentPage === 'function' ? getCurrentPage() : 'Unknown');
+            console.log('Boss Calculator loaded:', typeof initializeBoss === 'function');
             console.log('=========================');
         };
     </script>
