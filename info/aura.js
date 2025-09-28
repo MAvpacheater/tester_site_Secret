@@ -73,9 +73,9 @@ async function generateAuraContent() {
             
             // Generate description with proper replacements
             let description = data.description
-                .replace(/%strength%/g, `${aura.strength}%`)
-                .replace(/%luck%/g, `${aura.luck}%`)
-                .replace(/%speed%/g, `${aura.speed}%`);
+                .replace('%strength%', `${aura.strength}%`)
+                .replace('%luck%', `${aura.luck}%`)
+                .replace('%speed%', `${aura.speed}%`);
             
             const photoHtml = aura.image 
                 ? `<img src="${aura.image}" alt="${aura.name}" onerror="this.parentElement.innerHTML='<div class=\\'aura-photo-placeholder\\'>No Image</div>'">`
