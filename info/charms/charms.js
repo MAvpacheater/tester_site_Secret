@@ -1,14 +1,12 @@
-// Fixed Charms functionality - Using same pattern as worlds.js
+// Charms functionality - Creates full page structure with multilingual support
 
-// Language management
 let charmsCurrentLanguage = 'en';
 let charmsTranslations = null;
 let charmsInitialized = false;
 
-// Get language from localStorage or default to English - same as worlds.js
+// Get language from localStorage
 function getCurrentLanguage() {
-    const saved = localStorage.getItem('armHelper_language');
-    return saved || 'en';
+    return localStorage.getItem('armHelper_language') || 'en';
 }
 
 // Load translations with fallback
@@ -19,7 +17,7 @@ async function loadCharmsTranslations() {
         console.log('📥 Loading charms translations...');
         const response = await fetch('languages/charms.json');
         
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
         charmsTranslations = await response.json();
         console.log('✅ Charms translations loaded');
@@ -98,70 +96,77 @@ async function loadCharmsTranslations() {
     }
 }
 
-// Update language when it changes globally - same pattern as worlds.js
+// Create page structure
+function createCharmsStructure() {
+    const page = document.getElementById('charmsPage');
+    if (!page) return console.error('❌ Charms page not found');
+    
+    charmsCurrentLanguage = getCurrentLanguage();
+    
+    // Create title
+    const title = document.createElement('h1');
+    title.className = 'title';
+    title.textContent = charmsTranslations?.[charmsCurrentLanguage]?.title || 'Charms Boosts';
+    
+    // Create container
+    const container = document.createElement('div');
+    container.className = 'charms-container';
+    container.id = 'charmsContainer';
+    
+    // Clear page and add elements
+    page.innerHTML = '';
+    page.appendChild(title);
+    page.appendChild(container);
+    
+    console.log('✅ Charms structure created');
+}
+
+// Update language
 function updateCharmsLanguage(newLanguage) {
-    console.log(`🔮 Charms received language change request: ${charmsCurrentLanguage} → ${newLanguage}`);
+    console.log(`🔮 Charms language: ${charmsCurrentLanguage} → ${newLanguage}`);
     
-    if (newLanguage === charmsCurrentLanguage) {
-        console.log('🔄 Same language, skipping update');
-        return;
-    }
-    
+    if (newLanguage === charmsCurrentLanguage) return;
     charmsCurrentLanguage = newLanguage;
     
-    console.log(`🔮 Updating charms language to: ${newLanguage}`);
-    
-    // Update page title immediately if page is loaded
+    // Update title
     const titleElement = document.querySelector('.charms-page .title');
-    if (titleElement && charmsTranslations && charmsTranslations[newLanguage]) {
+    if (titleElement && charmsTranslations?.[newLanguage]) {
         titleElement.textContent = charmsTranslations[newLanguage].title;
     }
     
-    // Regenerate content if charms are already initialized
+    // Regenerate content
     if (charmsInitialized) {
-        setTimeout(() => {
-            generateCharmsContent();
-        }, 100);
+        setTimeout(generateCharmsContent, 100);
     }
 }
 
-// Generate charms content - same pattern as worlds.js
+// Generate charms content
 async function generateCharmsContent() {
     const container = document.getElementById('charmsContainer');
-    if (!container) {
-        console.error('❌ Charms container not found');
-        return;
-    }
+    if (!container) return console.error('❌ Charms container not found');
     
-    // Get current language
     charmsCurrentLanguage = getCurrentLanguage();
     
-    // Load translations if not already loaded
-    if (!charmsTranslations) {
-        await loadCharmsTranslations();
-    }
-    
-    // Show loading state
-    const loadingText = charmsTranslations[charmsCurrentLanguage]?.loading || 'Loading charms...';
-    container.innerHTML = `<div class="charms-loading">${loadingText}</div>`;
-    
     try {
-        // Small delay to show loading animation
-        await new Promise(resolve => setTimeout(resolve, 500));
+        if (!charmsTranslations) await loadCharmsTranslations();
         
-        const currentLangData = charmsTranslations[charmsCurrentLanguage];
-        if (!currentLangData) {
-            throw new Error(`Language data for ${charmsCurrentLanguage} not found`);
+        const data = charmsTranslations[charmsCurrentLanguage];
+        if (!data) {
+            throw new Error(`No charms data for language: ${charmsCurrentLanguage}`);
         }
         
-        // Clear container
+        // Show loading
+        container.innerHTML = `<div class="charms-loading">${data.loading}</div>`;
+        
+        await new Promise(resolve => setTimeout(resolve, 500));
         container.innerHTML = '';
         
-        // Generate charm items with animation delay
-        currentLangData.charms.forEach((charm, index) => {
+        // Generate charm items
+        data.charms.forEach((charm, index) => {
             const charmItem = document.createElement('div');
             charmItem.className = 'charm-item';
             charmItem.style.animationDelay = `${0.1 + (index * 0.05)}s`;
+            
             charmItem.innerHTML = `
                 <div class="charm-image-container">
                     <img src="${charm.imageUrl}" alt="${charm.title}" class="charm-image" loading="lazy">
@@ -176,110 +181,105 @@ async function generateCharmsContent() {
             container.appendChild(charmItem);
         });
         
-        console.log(`✅ Generated ${currentLangData.charms.length} charms in ${charmsCurrentLanguage}`);
-        
+        console.log(`✅ Generated ${data.charms.length} charms in ${charmsCurrentLanguage}`);
     } catch (error) {
-        console.error('❌ Error generating charms content:', error);
-        
-        // Show error state
+        console.error('❌ Error generating charms:', error);
         const errorText = charmsTranslations[charmsCurrentLanguage]?.error || 'Error loading charms data';
         const retryText = charmsTranslations[charmsCurrentLanguage]?.retry || 'Retry';
         
         container.innerHTML = `
             <div class="charms-error">
-                ⚠️ ${errorText}
-                <br>
+                ⚠️ ${errorText}<br>
                 <button class="retry-btn" onclick="generateCharmsContent()">${retryText}</button>
             </div>
         `;
     }
 }
 
-// Initialize charms page - same pattern as worlds.js
+// Initialize charms
 async function initializeCharms() {
-    console.log('🔮 Initializing charms page...');
-    
-    // Check if already initialized and content exists
-    const container = document.getElementById('charmsContainer');
-    if (charmsInitialized && container && container.querySelector('.charm-item')) {
-        console.log('🔮 Charms already initialized with content');
+    if (charmsInitialized) {
+        console.log('🔄 Charms already initialized');
         return;
     }
     
-    // Get saved language
+    console.log('🔮 Initializing charms...');
+    
     charmsCurrentLanguage = getCurrentLanguage();
     
-    const charmsPage = document.getElementById('charmsPage');
-    if (!charmsPage) {
-        console.error('❌ Charms page not found');
-        return;
-    }
-    
-    // Load translations and generate content
-    await loadCharmsTranslations();
-    
-    // Update page title
-    if (charmsTranslations && charmsTranslations[charmsCurrentLanguage]) {
-        const titleElement = charmsPage.querySelector('.title');
-        if (titleElement) {
-            titleElement.textContent = charmsTranslations[charmsCurrentLanguage].title;
+    try {
+        await loadCharmsTranslations();
+        createCharmsStructure();
+        await generateCharmsContent();
+        
+        charmsInitialized = true;
+        window.charmsInitialized = true;
+        console.log('✅ Charms initialized successfully');
+    } catch (error) {
+        console.error('❌ Failed to initialize charms:', error);
+        const page = document.getElementById('charmsPage');
+        if (page) {
+            page.innerHTML = `
+                <h1 class="title">Charms Boosts</h1>
+                <div class="charms-container">
+                    <div class="charms-error">
+                        ⚠️ Failed to load charms data<br>
+                        <button class="retry-btn" onclick="initializeCharms()">Retry</button>
+                    </div>
+                </div>
+            `;
         }
     }
-    
-    // Generate content
-    await generateCharmsContent();
-    
-    charmsInitialized = true;
-    window.charmsInitialized = true;
-    
-    console.log('✅ Charms page initialized successfully');
 }
 
-// Listen for global language changes - same as worlds.js
-document.addEventListener('languageChanged', function(e) {
-    console.log('🔮 Charms received languageChanged event:', e.detail);
-    if (e.detail && e.detail.language) {
-        updateCharmsLanguage(e.detail.language);
-    }
+// Event listeners
+document.addEventListener('languageChanged', (e) => {
+    if (e.detail?.language) updateCharmsLanguage(e.detail.language);
 });
 
-// Enhanced DOM ready handler - same as worlds.js
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🔮 DOM loaded, setting up charms...');
-    
-    // Initialize immediately if charms page is already active
     setTimeout(() => {
-        const charmsPage = document.getElementById('charmsPage');
-        if (charmsPage && charmsPage.classList.contains('active')) {
-            console.log('🔮 Charms page is active, initializing...');
-            initializeCharms();
-        }
+        const page = document.getElementById('charmsPage');
+        if (page?.classList.contains('active')) initializeCharms();
     }, 100);
 });
 
-// Enhanced click handler for charms page switching - same as worlds.js
-document.addEventListener('click', function(e) {
-    if (e.target && e.target.getAttribute && e.target.getAttribute('data-page') === 'charms') {
-        console.log('🔮 Charms page clicked, will initialize...');
+document.addEventListener('click', (e) => {
+    if (e.target?.getAttribute('data-page') === 'charms') {
         setTimeout(() => {
-            const container = document.getElementById('charmsContainer');
-            if (!charmsInitialized || !container || !container.querySelector('.charm-item')) {
-                console.log('🔮 Page switched to charms, initializing...');
+            if (!charmsInitialized) {
                 initializeCharms();
-            } else {
-                console.log('🔮 Charms already has content, skipping initialization');
             }
         }, 300);
     }
 });
 
-// Alternative legacy function name support - same as worlds.js
-window.switchCharmsLanguage = updateCharmsLanguage;
+// Observer for page activation
+const charmsObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            const charmsPage = document.getElementById('charmsPage');
+            if (charmsPage?.classList.contains('active') && !charmsInitialized) {
+                console.log('🔮 Charms page activated, initializing...');
+                initializeCharms();
+            }
+        }
+    });
+});
 
-// Make functions globally available - same as worlds.js
+// Start observing
+document.addEventListener('DOMContentLoaded', () => {
+    const charmsPage = document.getElementById('charmsPage');
+    if (charmsPage) {
+        charmsObserver.observe(charmsPage, { attributes: true });
+    }
+});
+
+// Global exports
 window.initializeCharms = initializeCharms;
 window.updateCharmsLanguage = updateCharmsLanguage;
+window.switchCharmsLanguage = updateCharmsLanguage;
 window.generateCharmsContent = generateCharmsContent;
 window.charmsInitialized = charmsInitialized;
 
-console.log('✅ Fixed charms.js loaded with enhanced multilingual support');
+console.log('✅ Charms.js loaded');
