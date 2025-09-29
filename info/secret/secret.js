@@ -46,7 +46,7 @@ async function loadSecretTranslations() {
     
     try {
         console.log('📥 Loading secret translations...');
-        const response = await fetch('languages/secret.json');
+        const response = await fetch('info/secret/secret.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -105,7 +105,7 @@ async function loadSecretTranslations() {
     }
 }
 
-// Update language when it changes globally - ENHANCED
+// Update language when it changes globally
 function updateSecretLanguage(newLanguage) {
     console.log(`🔮 Secret received language change request: ${secretCurrentLanguage} → ${newLanguage}`);
     
@@ -115,20 +115,12 @@ function updateSecretLanguage(newLanguage) {
     }
     
     secretCurrentLanguage = newLanguage;
-    
     console.log(`🔮 Updating secret language to: ${newLanguage}`);
     
-    // Update page title immediately if page is loaded
-    const titleElement = document.querySelector('.secret-page .title');
-    if (titleElement && secretTranslations && secretTranslations[newLanguage]) {
-        titleElement.textContent = secretTranslations[newLanguage].title;
-    }
-    
-    // Regenerate content if secret pets are already initialized
+    // Reinitialize if already initialized
     if (secretInitialized) {
-        setTimeout(() => {
-            generateSecretContent();
-        }, 100);
+        secretInitialized = false;
+        setTimeout(initializeSecret, 100);
     }
 }
 
@@ -163,7 +155,7 @@ async function generateSecretContent() {
     
     // Show loading state
     const loadingText = secretTranslations[secretCurrentLanguage]?.loading || 'Loading secret pets...';
-    container.innerHTML = `<div class="secret-loading" style="display: flex; justify-content: center; align-items: center; padding: 60px 40px; color: #667eea; font-size: 1.2em; font-weight: 600; min-height: 200px; background: rgba(102, 126, 234, 0.05); border-radius: 16px; border: 2px solid rgba(102, 126, 234, 0.1); margin: 20px 0;">${loadingText}<span style="margin-left: 15px; width: 24px; height: 24px; border: 3px solid #667eea; border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></span></div>`;
+    container.innerHTML = `<div class="secret-loading">${loadingText}</div>`;
     
     try {
         // Small delay to show loading animation
@@ -281,16 +273,16 @@ async function generateSecretContent() {
         const retryText = secretTranslations[secretCurrentLanguage]?.retry || 'Retry';
         
         container.innerHTML = `
-            <div class="secret-error" style="text-align: center; padding: 50px 30px; color: #e53e3e; font-size: 1.1em; font-weight: 500; background: rgba(239, 68, 68, 0.05); border-radius: 16px; border: 2px solid rgba(239, 68, 68, 0.15); margin: 20px 0; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <div class="secret-error">
                 ⚠️ ${errorText}
                 <br>
-                <button class="retry-btn" onclick="generateSecretContent()" style="margin-top: 20px; padding: 14px 28px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; color: white; border-radius: 12px; cursor: pointer; font-size: 1em; font-weight: 600; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-family: 'Orbitron', monospace; text-transform: uppercase; letter-spacing: 0.5px;">${retryText}</button>
+                <button class="retry-btn" onclick="generateSecretContent()">${retryText}</button>
             </div>
         `;
     }
 }
 
-// Switch between secret types (rewards/names) - ENHANCED
+// Switch between secret types (rewards/names)
 function switchSecretType(type) {
     console.log(`🔄 Switching secret type to: ${type}`);
     currentSecretType = type;
@@ -319,19 +311,9 @@ function switchSecretType(type) {
     }
 }
 
-// Initialize secret pets page - ENHANCED
+// Initialize secret pets page
 async function initializeSecret() {
     console.log('🔮 Initializing Secret Pets...');
-    
-    // Check if already initialized and content exists
-    const container = document.getElementById('secretContainer');
-    if (secretInitialized && container && container.querySelector('.secret-switcher')) {
-        console.log('🔮 Secret already initialized with content');
-        return;
-    }
-    
-    // Get saved language
-    secretCurrentLanguage = getCurrentLanguage();
     
     const secretPage = document.getElementById('secretPage');
     if (!secretPage) {
@@ -339,24 +321,47 @@ async function initializeSecret() {
         return;
     }
     
-    // Load translations and generate content
-    await loadSecretTranslations();
-    
-    // Update page title
-    if (secretTranslations && secretTranslations[secretCurrentLanguage]) {
-        const titleElement = secretPage.querySelector('.title');
-        if (titleElement) {
-            titleElement.textContent = secretTranslations[secretCurrentLanguage].title;
-        }
+    // Check if already initialized
+    if (secretInitialized && secretPage.querySelector('.secret-switcher')) {
+        console.log('🔮 Secret already initialized with content');
+        return;
     }
     
-    // Generate content
-    await generateSecretContent();
+    // Get saved language
+    secretCurrentLanguage = getCurrentLanguage();
     
-    secretInitialized = true;
-    window.secretInitialized = true;
-    
-    console.log('✅ Secret Pets page initialized successfully');
+    try {
+        // Load translations
+        await loadSecretTranslations();
+        
+        const data = secretTranslations[secretCurrentLanguage];
+        if (!data) {
+            throw new Error('Translation data not found');
+        }
+        
+        // Create HTML structure
+        secretPage.innerHTML = `
+            <h1 class="title">${data.title}</h1>
+            <div class="secret-container" id="secretContainer"></div>
+        `;
+        
+        // Generate content
+        await generateSecretContent();
+        
+        secretInitialized = true;
+        window.secretInitialized = true;
+        
+        console.log('✅ Secret Pets page initialized successfully');
+    } catch (error) {
+        console.error('❌ Failed to initialize secret pets:', error);
+        secretPage.innerHTML = `
+            <h1 class="title">Secret Pets</h1>
+            <div class="secret-error">
+                ⚠️ Failed to load secret pets data<br>
+                <button class="retry-btn" onclick="initializeSecret()">Retry</button>
+            </div>
+        `;
+    }
 }
 
 // Force reinitialize secret pets
@@ -394,7 +399,7 @@ function debugSecret() {
     console.log('==========================');
 }
 
-// Listen for global language changes - ENHANCED
+// Listen for global language changes
 document.addEventListener('languageChanged', function(e) {
     console.log('🔮 Secret received languageChanged event:', e.detail);
     if (e.detail && e.detail.language) {
@@ -421,8 +426,8 @@ document.addEventListener('click', function(e) {
     if (e.target && e.target.getAttribute && e.target.getAttribute('data-page') === 'secret') {
         console.log('🔮 Secret page clicked, will initialize...');
         setTimeout(() => {
-            const container = document.getElementById('secretContainer');
-            if (!secretInitialized || !container || !container.querySelector('.secret-switcher')) {
+            const secretPage = document.getElementById('secretPage');
+            if (!secretInitialized || !secretPage || !secretPage.querySelector('.secret-switcher')) {
                 console.log('🔮 Page switched to secret, initializing...');
                 initializeSecret();
             } else {
