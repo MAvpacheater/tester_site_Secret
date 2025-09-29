@@ -1,8 +1,10 @@
-// Pet Stats Calculator - Fixed implementation
+// Pet Stats Calculator - FIXED Implementation with proper initialization
 
 // Global variables for pet calculator
 let petCalculatorInitialized = false;
 let currentPetLanguage = 'en';
+let petMultiplier = 1;
+let currentModalCallback = null;
 
 // Built-in translations - 3 languages
 const petCalculatorTranslations = {
@@ -77,9 +79,6 @@ let selectedMutation = 'mutation_cosmic';
 let selectedEvolution = 'evolution_goliath';
 let selectedType = 'type_pristine';
 
-// Global callback reference
-let currentModalCallback = null;
-
 // Pet modifiers
 const petModifiers = {
     // Slimes
@@ -148,8 +147,6 @@ const typeOptions = {
     type_pristine: { name: "Pristine", multiplier: "2.17x" }
 };
 
-let petMultiplier = 1;
-
 // Get current language from app or default to 'en'
 function getCurrentAppLanguage() {
     // Try to get from global app language if available
@@ -166,7 +163,7 @@ function getCurrentAppLanguage() {
     return 'en';
 }
 
-// Create HTML structure for pet calculator
+// Create HTML structure for pet calculator - FIXED VERSION
 function createPetCalculatorHTML() {
     const calculatorPage = document.getElementById('calculatorPage');
     if (!calculatorPage) {
@@ -175,7 +172,7 @@ function createPetCalculatorHTML() {
     }
 
     const t = petCalculatorTranslations[currentPetLanguage] || petCalculatorTranslations['en'];
-    console.log('Using pet calculator translations for language:', currentPetLanguage);
+    console.log('📝 Creating pet calculator HTML with language:', currentPetLanguage);
 
     calculatorPage.innerHTML = `
         <div class="header-controls">
@@ -259,32 +256,64 @@ function createPetCalculatorHTML() {
         </div>
     `;
 
-    console.log('✅ Pet Calculator HTML structure created');
+    console.log('✅ Pet Calculator HTML structure created successfully');
+    return true;
 }
 
-// Initialize Pet Calculator
-function initializePetCalculator() {
-    console.log('🚀 Initializing Pet Calculator...');
+// Initialize Pet Calculator - ENHANCED VERSION
+function initializePetCalculator(forceInit = false) {
+    console.log('🚀 Initializing Pet Calculator...', { forceInit, initialized: petCalculatorInitialized });
     
+    // Check if already initialized and not forcing
+    if (petCalculatorInitialized && !forceInit) {
+        console.log('✅ Pet Calculator already initialized, skipping...');
+        return true;
+    }
+
+    // Check if calculator page exists
+    const calculatorPage = document.getElementById('calculatorPage');
+    if (!calculatorPage) {
+        console.error('❌ Calculator page element not found');
+        return false;
+    }
+
     // Set current language
     currentPetLanguage = getCurrentAppLanguage();
-    console.log('Current pet calculator language:', currentPetLanguage);
+    console.log('🌍 Current pet calculator language:', currentPetLanguage);
     
     // Create HTML structure
-    createPetCalculatorHTML();
+    const htmlCreated = createPetCalculatorHTML();
+    if (!htmlCreated) {
+        console.error('❌ Failed to create HTML structure');
+        return false;
+    }
     
-    // Add event listeners
-    addPetCalculatorEventListeners();
+    // Wait a bit for DOM to settle, then add event listeners
+    setTimeout(() => {
+        try {
+            addPetCalculatorEventListeners();
+            setDefaultPetCalculatorValues();
+            updateCategoryDisplays();
+            updatePetMultiplier();
+            
+            petCalculatorInitialized = true;
+            console.log('✅ Pet Calculator initialized successfully');
+            
+            // Dispatch initialization event
+            document.dispatchEvent(new CustomEvent('petCalculatorInitialized'));
+            
+        } catch (error) {
+            console.error('❌ Error in pet calculator initialization:', error);
+        }
+    }, 100);
     
-    // Set default values and update multiplier
-    setDefaultPetCalculatorValues();
-    
-    petCalculatorInitialized = true;
-    console.log('✅ Pet Calculator initialized successfully');
+    return true;
 }
 
 // Add event listeners for pet calculator
 function addPetCalculatorEventListeners() {
+    console.log('🔗 Adding pet calculator event listeners...');
+    
     // Listen for language changes
     document.addEventListener('languageChanged', function(event) {
         const newLanguage = event.detail.language;
@@ -292,32 +321,30 @@ function addPetCalculatorEventListeners() {
         updatePetCalculatorLanguage(newLanguage);
     });
     
-    // Add input event listeners after a short delay to ensure elements exist
-    setTimeout(() => {
-        const numberInput = document.getElementById('numberInput');
-        if (numberInput) {
-            numberInput.addEventListener('keypress', e => {
-                if (e.key === 'Enter') {
-                    calculateStats();
-                }
-            });
-
-            numberInput.addEventListener('input', () => {
-                const errorMessage = document.getElementById('errorMessage');
-                if (errorMessage) errorMessage.textContent = '';
-            });
-        }
-
-        // Keyboard support for modals
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                const modal = document.getElementById('categoryModal');
-                if (modal && modal.classList.contains('show')) {
-                    closeModal();
-                }
+    // Add input event listeners
+    const numberInput = document.getElementById('numberInput');
+    if (numberInput) {
+        numberInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                calculateStats();
             }
         });
-    }, 100);
+
+        numberInput.addEventListener('input', () => {
+            const errorMessage = document.getElementById('errorMessage');
+            if (errorMessage) errorMessage.textContent = '';
+        });
+    }
+
+    // Keyboard support for modals
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('categoryModal');
+            if (modal && modal.classList.contains('show')) {
+                closeModal();
+            }
+        }
+    });
     
     console.log('✅ Pet Calculator event listeners added');
 }
@@ -332,20 +359,24 @@ function updatePetCalculatorLanguage(language) {
     currentPetLanguage = language;
     
     // Recreate HTML with new language
-    createPetCalculatorHTML();
-    
-    // Re-add event listeners and restore values
-    setTimeout(() => {
-        addPetCalculatorEventListeners();
-        setDefaultPetCalculatorValues();
-        updateCategoryDisplays();
-    }, 100);
-    
-    console.log(`✅ Pet Calculator language updated to ${language}`);
+    const htmlCreated = createPetCalculatorHTML();
+    if (htmlCreated) {
+        // Re-add event listeners and restore values
+        setTimeout(() => {
+            addPetCalculatorEventListeners();
+            setDefaultPetCalculatorValues();
+            updateCategoryDisplays();
+            updatePetMultiplier();
+        }, 100);
+        
+        console.log(`✅ Pet Calculator language updated to ${language}`);
+    }
 }
 
 // Set default values for pet calculator
 function setDefaultPetCalculatorValues() {
+    console.log('⚙️ Setting default pet calculator values...');
+    
     // Set default selections
     selectedSlime = 'slime_shock';
     selectedMutation = 'mutation_cosmic';
@@ -364,24 +395,33 @@ function setDefaultPetCalculatorValues() {
             maxlvlCheckbox.checked = true;
         }
         
-        updatePetMultiplier();
-        updateCategoryDisplays();
+        console.log('✅ Default values set');
     }, 50);
 }
 
 // Update category displays
 function updateCategoryDisplays() {
     const slimeDisplay = document.getElementById('selectedSlimeDisplay');
-    if (slimeDisplay) slimeDisplay.textContent = slimeOptions[selectedSlime].name;
+    if (slimeDisplay && slimeOptions[selectedSlime]) {
+        slimeDisplay.textContent = slimeOptions[selectedSlime].name;
+    }
     
     const mutationDisplay = document.getElementById('selectedMutationDisplay');
-    if (mutationDisplay) mutationDisplay.textContent = mutationOptions[selectedMutation].name;
+    if (mutationDisplay && mutationOptions[selectedMutation]) {
+        mutationDisplay.textContent = mutationOptions[selectedMutation].name;
+    }
     
     const evolutionDisplay = document.getElementById('selectedEvolutionDisplay');
-    if (evolutionDisplay) evolutionDisplay.textContent = evolutionOptions[selectedEvolution].name;
+    if (evolutionDisplay && evolutionOptions[selectedEvolution]) {
+        evolutionDisplay.textContent = evolutionOptions[selectedEvolution].name;
+    }
     
     const typeDisplay = document.getElementById('selectedTypeDisplay');
-    if (typeDisplay) typeDisplay.textContent = typeOptions[selectedType].name;
+    if (typeDisplay && typeOptions[selectedType]) {
+        typeDisplay.textContent = typeOptions[selectedType].name;
+    }
+    
+    console.log('🔄 Category displays updated');
 }
 
 // Show/hide settings
@@ -389,6 +429,7 @@ function toggleSettings() {
     const panel = document.getElementById('settingsPanel');
     if (panel) {
         panel.classList.toggle('show');
+        console.log('⚙️ Settings panel toggled');
     }
 }
 
@@ -548,7 +589,7 @@ function updatePetMultiplier() {
         petMultiplier *= petModifiers.maxlvl;
     }
     
-    console.log('Pet multiplier updated to:', petMultiplier);
+    console.log('🔢 Pet multiplier updated to:', petMultiplier);
     
     // Auto-calculate if input has value
     calculateStats();
@@ -586,7 +627,7 @@ function calculateStats() {
 
     const finalValue = baseValue * petMultiplier;
     
-    console.log(`Calculating: ${baseValue} * ${petMultiplier} = ${finalValue}`);
+    console.log(`📊 Calculating: ${baseValue} * ${petMultiplier} = ${finalValue}`);
 
     // Format the result
     resultValue.textContent = finalValue.toLocaleString(undefined, {
@@ -602,32 +643,90 @@ function calculateStats() {
     console.log(`✅ Pet calculation completed: ${baseValue} * ${petMultiplier} = ${finalValue}`);
 }
 
-// Auto-initialize when DOM is loaded
+// ENHANCED Auto-initialization with multiple triggers
 document.addEventListener('DOMContentLoaded', function() {
-    // Small delay to ensure the page element exists
+    console.log('📄 DOM loaded, checking for pet calculator...');
     setTimeout(() => {
         if (document.getElementById('calculatorPage')) {
-            console.log('🔄 DOM loaded, initializing pet calculator...');
+            console.log('🔄 Calculator page found, initializing...');
             initializePetCalculator();
         }
     }, 100);
 });
 
-// Also initialize when page becomes active (for navigation)
+// Listen for content loaded event
+document.addEventListener('contentLoaded', function() {
+    console.log('📦 Content loaded, initializing pet calculator...');
+    setTimeout(() => {
+        initializePetCalculator();
+    }, 200);
+});
+
+// Listen for page changes
 document.addEventListener('pageChanged', function(event) {
     if (event.detail && event.detail.pageId === 'calculatorPage') {
         console.log('🔄 Pet calculator page activated, initializing...');
-        if (!petCalculatorInitialized) {
-            initializePetCalculator();
-        }
+        setTimeout(() => {
+            initializePetCalculator(true); // Force initialization
+        }, 100);
     }
 });
+
+// Listen for app initialization
+document.addEventListener('appInitialized', function() {
+    console.log('🚀 App initialized, checking pet calculator...');
+    setTimeout(() => {
+        if (document.getElementById('calculatorPage')) {
+            initializePetCalculator();
+        }
+    }, 300);
+});
+
+// Fallback initialization with observer
+function setupPetCalculatorObserver() {
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList') {
+                const calculatorPage = document.getElementById('calculatorPage');
+                if (calculatorPage && !petCalculatorInitialized) {
+                    console.log('🔍 Pet calculator page detected via observer');
+                    setTimeout(() => initializePetCalculator(), 100);
+                }
+            }
+        });
+    });
+
+    // Start observing
+    if (document.body) {
+        observer.observe(document.body, { 
+            childList: true, 
+            subtree: true 
+        });
+        
+        setTimeout(() => {
+            observer.disconnect();
+            console.log('🔍 Pet calculator observer disconnected after timeout');
+        }, 10000);
+    }
+}
 
 // Manual initialization for debugging
 window.manualInitPetCalculator = function() {
     console.log('🔧 Manual pet calculator initialization');
     petCalculatorInitialized = false;
-    initializePetCalculator();
+    initializePetCalculator(true);
+};
+
+// Debug function
+window.debugPetCalculator = function() {
+    console.log('=== PET CALCULATOR DEBUG ===');
+    console.log('Initialized:', petCalculatorInitialized);
+    console.log('Language:', currentPetLanguage);
+    console.log('Multiplier:', petMultiplier);
+    console.log('Calculator page exists:', !!document.getElementById('calculatorPage'));
+    console.log('Calculator page content:', document.getElementById('calculatorPage')?.innerHTML.length || 0, 'chars');
+    console.log('Selected options:', { selectedSlime, selectedMutation, selectedEvolution, selectedType });
+    console.log('===========================');
 };
 
 // Make functions globally available
@@ -647,10 +746,15 @@ window.updatePetMultiplier = updatePetMultiplier;
 window.closeModal = closeModal;
 window.selectOption = selectOption;
 
-// Force initialize if calculator page already exists
-if (document.getElementById('calculatorPage')) {
-    console.log('🔄 Calculator page found, initializing immediately...');
-    setTimeout(() => initializePetCalculator(), 100);
-}
+// Start observer
+setupPetCalculatorObserver();
 
-console.log('✅ Pet Calculator module loaded and ready');
+// Force check on load
+setTimeout(() => {
+    if (document.getElementById('calculatorPage') && !petCalculatorInitialized) {
+        console.log('🔄 Fallback initialization triggered');
+        initializePetCalculator(true);
+    }
+}, 2000);
+
+console.log('✅ Pet Calculator module loaded and ready with enhanced initialization');
