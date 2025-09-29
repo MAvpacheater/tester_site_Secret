@@ -1,457 +1,647 @@
 {
-  "en": {
-    "title": "Potions & Food",
-    "switcherPotions": "🧪 Potions",
-    "switcherFood": "🍖 Food",
-    "filterAll": "All",
-    "filterCommon": "Common",
-    "filterUncommon": "Uncommon",
-    "filterRare": "Rare",
-    "filterEpic": "Epic",
-    "filterLegendary": "Legendary",
-    "filterMythic": "Mythic",
-    "filterLimited": "Limited",
-    "filterExclusive": "Exclusive",
-    "notificationShowingAll": "Showing all",
-    "notificationShowing": "Showing",
+  "items": {
     "potions": {
       "Luck Potion [1]": {
-        "name": "Luck Potion [1]",
-        "boost": "Doubles your Egg Luck"
+        "rarity": "common",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/DyWfhBk8/2025-09-09-16-36-40.png"
       },
       "Luck Potion [2]": {
-        "name": "Luck Potion [2]",
-        "boost": "+150% Egg Luck"
+        "rarity": "uncommon",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/X7pRBr2z/2025-09-13-21-13-57.png"
       },
       "Wins Potion [1]": {
-        "name": "Wins Potion [1]",
-        "boost": "Doubles your Player wins"
+        "rarity": "common",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/HnLf2nTj/2025-09-13-21-13-53.png"
       },
       "Wins Potion [2]": {
-        "name": "Wins Potion [2]",
-        "boost": "+150% Wins Boost"
+        "rarity": "uncommon",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/MTYS5gR3/2025-09-13-21-14-01.png"
       },
       "Golden Potion": {
-        "name": "Golden Potion",
-        "boost": "Gives a chance of hatching Golden Pets"
+        "rarity": "common",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/ZK218J2K/2025-09-13-21-14-12.png"
       },
       "Void Potion": {
-        "name": "Void Potion",
-        "boost": "Gives a chance of hatching Void Pets"
+        "rarity": "common",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/wjt9zf83/2025-09-13-21-14-06.png"
       },
       "Training Potion [1]": {
-        "name": "Training Potion [1]",
-        "boost": "Increases your training power by 30%"
+        "rarity": "common",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/Jz8tcmbW/2025-09-07-21-47-03.png"
       },
       "Training Potion [2]": {
-        "name": "Training Potion [2]",
-        "boost": "Increases your training power by 60%"
+        "rarity": "uncommon",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/RFt30Sk6/2025-09-07-21-47-05.png"
       },
       "Training Potion [3]": {
-        "name": "Training Potion [3]",
-        "boost": "Increases your training power by 90%"
+        "rarity": "rare",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/v8gRc12S/2025-09-13-21-19-55.png"
       },
       "Pet Xp Potion": {
-        "name": "Pet Xp Potion",
-        "boost": "Increases Pet Xp gained from bosses by 50%"
+        "rarity": "mythic",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/W3d4b4P0/2025-09-07-21-47-10.png"
       },
       "Scavenger Potion": {
-        "name": "Scavenger Potion",
-        "boost": "Increases your chance of getting random loot from bosses by 30%"
+        "rarity": "mythic",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/j51hpSzD/2025-09-13-21-14-20.png"
       },
       "Ticket Potion": {
-        "name": "Ticket Potion",
-        "boost": "Doubles your ticket payout from bosses"
+        "rarity": "mythic",
+        "time": "10 min",
+        "image": "https://i.postimg.cc/3xGz9PQj/2025-09-13-21-14-15.png"
       },
       "Rift Potions [1]": {
-        "name": "Rift Potions [1]",
-        "boost": "+30% On Your Rift Stars"
+        "rarity": "mythic",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/mg767C78/2025-09-13-21-14-23.png"
+      },
+      "Secret Potion": {
+        "rarity": "mythic",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/y6wDx0xx/2025-09-07-21-46-53.png"
       },
       "Event Training Potion": {
-        "name": "Event Training Potion",
-        "boost": "Doubles your event training power"
+        "rarity": "limited",
+        "time": "30 min",
+        "image": "https://i.postimg.cc/VLZz3yh3/2025-09-13-21-14-29.png"
       }
     },
     "food": {
       "Cookie": {
-        "name": "Cookie",
-        "boost": "Treat your pets! Pets give 3% more strength"
+        "rarity": "common",
+        "time": "5 min",
+        "image": "https://i.postimg.cc/3xM3KjKB/2025-09-13-21-25-11.png"
       },
       "Tasty Cookie": {
-        "name": "Tasty Cookie",
-        "boost": "Treat your pets! Pets give 5% more strength"
+        "rarity": "uncommon",
+        "time": "5 min",
+        "image": "https://i.postimg.cc/zf85hJHH/2025-09-13-21-25-34.png"
       },
       "Enchanted Cookie": {
-        "name": "Enchanted Cookie",
-        "boost": "Treat your pets! Pets give 7% more strength"
+        "rarity": "rare",
+        "time": "5 min",
+        "image": "https://i.postimg.cc/Y0QSJKdG/enchanted-cookie.png"
       },
       "Pink Donut": {
-        "name": "Pink Donut",
-        "boost": "Treat your pets! Pets give 5% more strength"
+        "rarity": "uncommon",
+        "time": "5 min",
+        "image": "https://i.postimg.cc/TwDjP6qG/pink-donut.png"
       },
       "Vanila Donut": {
-        "name": "Vanilla Donut",
-        "boost": "Treat your pets! Pets give 10% more strength"
+        "rarity": "rare",
+        "time": "5 min",
+        "image": "https://i.postimg.cc/ZnC7Q4qP/vanilla-donut.png"
       },
       "Chocolate Donut": {
-        "name": "Chocolate Donut",
-        "boost": "Treat your pets! Pets give 15% more strength"
+        "rarity": "epic",
+        "time": "5 min",
+        "image": "https://i.postimg.cc/jSRbdCzP/chocolate-donut.png"
       },
       "Rotten Dragon Fruit": {
-        "name": "Rotten Dragon Fruit",
-        "boost": "Gives You +10% Training Speed"
+        "rarity": "rare",
+        "time": "5 min",
+        "image": "https://i.postimg.cc/s2tWZpyd/rotten-dragon-fruit.png"
       },
       "Fine Dragon Fruit": {
-        "name": "Fine Dragon Fruit",
-        "boost": "Gives You +15% Training Speed"
+        "rarity": "epic",
+        "time": "10 min",
+        "image": "https://i.postimg.cc/9FR4y0dN/fine-dragon-fruit.png"
       },
       "Fresh Dragon Fruit": {
-        "name": "Fresh Dragon Fruit",
-        "boost": "Gives You +25% Training Speed"
+        "rarity": "legendary",
+        "time": "20 min",
+        "image": "https://i.postimg.cc/J4pn5g1w/fresh-dragon-fruit.png"
       },
       "Rotten Banana": {
-        "name": "Rotten Banana",
-        "boost": "Gives You +10% Player Speed"
+        "rarity": "common",
+        "time": "5 min",
+        "image": "https://i.postimg.cc/3JMySGM7/rotten-banana.png"
       },
       "Fresh Banana": {
-        "name": "Fresh Banana",
-        "boost": "Gives You +20% Player Speed"
+        "rarity": "uncommon",
+        "time": "10 min",
+        "image": "https://i.postimg.cc/SQJCVrMD/fresh-banana.png"
       },
       "Rotten Starfruit": {
-        "name": "Rotten Starfruit",
-        "boost": "Gives You +10% Fighting Strength"
+        "rarity": "rare",
+        "time": "10 min",
+        "image": "https://i.postimg.cc/3JKHg8MZ/rotten-starfruit.png"
       },
       "Normall Starfruit": {
-        "name": "Normal Starfruit",
-        "boost": "Gives You +25% Fighting Strength"
+        "rarity": "epic",
+        "time": "25 min",
+        "image": "https://i.postimg.cc/RCMnG7Jn/normal-starfruit.png"
       },
       "Fresh Starfruit": {
-        "name": "Fresh Starfruit",
-        "boost": "Gives You +50% Fighting Strength"
+        "rarity": "legendary",
+        "time": "1 hour",
+        "image": "https://i.postimg.cc/FzHFKpnh/fresh-starfruit.png"
       },
       "Rapberry": {
-        "name": "Raspberry",
-        "boost": "Snack for your equipped Pets! Award your pets with 40xp!"
+        "rarity": "rare",
+        "time": "∞",
+        "image": "https://i.postimg.cc/fWZQrjfL/raspberry.png"
       },
       "Enchanted Rapberry": {
-        "name": "Enchanted Raspberry",
-        "boost": "Snack for your equipped Pets! Award your pets with 130xp!"
+        "rarity": "epic",
+        "time": "∞",
+        "image": "https://i.postimg.cc/05NxMnQQ/enchanted-raspberry.png"
       },
       "Enchanted Pineapple": {
-        "name": "Enchanted Pineapple",
-        "boost": "Snack for your equipped Pets! Award your pets with 250xp!"
+        "rarity": "epic",
+        "time": "∞",
+        "image": "https://i.postimg.cc/W3DzHdTV/enchanted-pineapple.png"
       },
       "Pet Lvl Token": {
-        "name": "Pet Lvl Token",
-        "boost": "Instantly +1 level on all of your equipped pets!"
+        "rarity": "exclusive",
+        "time": "∞",
+        "image": "https://i.postimg.cc/bN8fzXZM/pet-lvl-token.png"
       },
       "Phoenix Fruit": {
-        "name": "Phoenix Fruit",
-        "boost": "Instantly evolve a pet of your choice!"
+        "rarity": "mythic",
+        "time": "∞",
+        "image": "https://i.postimg.cc/1tR6pBdK/phoenix-fruit.png"
       }
     }
   },
-  "uk": {
-    "title": "Зілля та Їжа",
-    "switcherPotions": "🧪 Зілля",
-    "switcherFood": "🍖 Їжа",
-    "filterAll": "Всі",
-    "filterCommon": "Звичайні",
-    "filterUncommon": "Незвичайні",
-    "filterRare": "Рідкісні",
-    "filterEpic": "Епічні",
-    "filterLegendary": "Легендарні",
-    "filterMythic": "Міфічні",
-    "filterLimited": "Обмежені",
-    "filterExclusive": "Ексклюзивні",
-    "notificationShowingAll": "Показано всі",
-    "notificationShowing": "Показано",
-    "potions": {
-      "Luck Potion [1]": {
-        "name": "Зілля Удачі [1]",
-        "boost": "Подвоює вашу Удачу Яєць"
+  "translations": {
+    "en": {
+      "title": "Potions & Food",
+      "switcherPotions": "🧪 Potions",
+      "switcherFood": "🍖 Food",
+      "filterAll": "All",
+      "filterCommon": "Common",
+      "filterUncommon": "Uncommon",
+      "filterRare": "Rare",
+      "filterEpic": "Epic",
+      "filterLegendary": "Legendary",
+      "filterMythic": "Mythic",
+      "filterLimited": "Limited",
+      "filterExclusive": "Exclusive",
+      "notificationShowingAll": "Showing all",
+      "notificationShowing": "Showing",
+      "potions": {
+        "Luck Potion [1]": {
+          "name": "Luck Potion [1]",
+          "boost": "Doubles your Egg Luck"
+        },
+        "Luck Potion [2]": {
+          "name": "Luck Potion [2]",
+          "boost": "+150% Egg Luck"
+        },
+        "Wins Potion [1]": {
+          "name": "Wins Potion [1]",
+          "boost": "Doubles your Player wins"
+        },
+        "Wins Potion [2]": {
+          "name": "Wins Potion [2]",
+          "boost": "+150% Wins Boost"
+        },
+        "Golden Potion": {
+          "name": "Golden Potion",
+          "boost": "Gives a chance of hatching Golden Pets"
+        },
+        "Void Potion": {
+          "name": "Void Potion",
+          "boost": "Gives a chance of hatching Void Pets"
+        },
+        "Training Potion [1]": {
+          "name": "Training Potion [1]",
+          "boost": "Increases your training power by 30%"
+        },
+        "Training Potion [2]": {
+          "name": "Training Potion [2]",
+          "boost": "Increases your training power by 60%"
+        },
+        "Training Potion [3]": {
+          "name": "Training Potion [3]",
+          "boost": "Increases your training power by 90%"
+        },
+        "Pet Xp Potion": {
+          "name": "Pet Xp Potion",
+          "boost": "Increases Pet Xp gained from bosses by 50%"
+        },
+        "Scavenger Potion": {
+          "name": "Scavenger Potion",
+          "boost": "Increases your chance of getting random loot from bosses by 30%"
+        },
+        "Ticket Potion": {
+          "name": "Ticket Potion",
+          "boost": "Doubles your ticket payout from bosses"
+        },
+        "Rift Potions [1]": {
+          "name": "Rift Potions [1]",
+          "boost": "+30% On Your Rift Stars"
+        },
+        "Secret Potion": {
+          "name": "Secret Potion",
+          "boost": "Double chance for hatching secret pets"
+        },
+        "Event Training Potion": {
+          "name": "Event Training Potion",
+          "boost": "Doubles your event training power"
+        }
       },
-      "Luck Potion [2]": {
-        "name": "Зілля Удачі [2]",
-        "boost": "+150% Удачі Яєць"
-      },
-      "Wins Potion [1]": {
-        "name": "Зілля Перемог [1]",
-        "boost": "Подвоює ваші Перемоги Гравця"
-      },
-      "Wins Potion [2]": {
-        "name": "Зілля Перемог [2]",
-        "boost": "+150% Підсилення Перемог"
-      },
-      "Golden Potion": {
-        "name": "Золоте Зілля",
-        "boost": "Дає шанс висидіти Золотих Питомців"
-      },
-      "Void Potion": {
-        "name": "Зілля Порожнечі",
-        "boost": "Дає шанс висидіти Питомців Порожнечі"
-      },
-      "Training Potion [1]": {
-        "name": "Тренувальне Зілля [1]",
-        "boost": "Збільшує вашу силу тренування на 30%"
-      },
-      "Training Potion [2]": {
-        "name": "Тренувальне Зілля [2]",
-        "boost": "Збільшує вашу силу тренування на 60%"
-      },
-      "Training Potion [3]": {
-        "name": "Тренувальне Зілля [3]",
-        "boost": "Збільшує вашу силу тренування на 90%"
-      },
-      "Pet Xp Potion": {
-        "name": "Зілля Досвіду Питомців",
-        "boost": "Збільшує отриманий від босів досвід питомців на 50%"
-      },
-      "Scavenger Potion": {
-        "name": "Зілля Збирача",
-        "boost": "Збільшує ваш шанс отримання випадкової здобичі від босів на 30%"
-      },
-      "Ticket Potion": {
-        "name": "Зілля Квитків",
-        "boost": "Подвоює ваші виплати квитків від босів"
-      },
-      "Rift Potions [1]": {
-        "name": "Зілля Розриву [1]",
-        "boost": "+30% до Ваших Зірок Розриву"
-      },
-      "Event Training Potion": {
-        "name": "Зілля Подійного Тренування",
-        "boost": "Подвоює вашу силу подійного тренування"
+      "food": {
+        "Cookie": {
+          "name": "Cookie",
+          "boost": "Treat your pets! Pets give 3% more strength"
+        },
+        "Tasty Cookie": {
+          "name": "Tasty Cookie",
+          "boost": "Treat your pets! Pets give 5% more strength"
+        },
+        "Enchanted Cookie": {
+          "name": "Enchanted Cookie",
+          "boost": "Treat your pets! Pets give 7% more strength"
+        },
+        "Pink Donut": {
+          "name": "Pink Donut",
+          "boost": "Treat your pets! Pets give 5% more strength"
+        },
+        "Vanila Donut": {
+          "name": "Vanilla Donut",
+          "boost": "Treat your pets! Pets give 10% more strength"
+        },
+        "Chocolate Donut": {
+          "name": "Chocolate Donut",
+          "boost": "Treat your pets! Pets give 15% more strength"
+        },
+        "Rotten Dragon Fruit": {
+          "name": "Rotten Dragon Fruit",
+          "boost": "Gives You +10% Training Speed"
+        },
+        "Fine Dragon Fruit": {
+          "name": "Fine Dragon Fruit",
+          "boost": "Gives You +15% Training Speed"
+        },
+        "Fresh Dragon Fruit": {
+          "name": "Fresh Dragon Fruit",
+          "boost": "Gives You +25% Training Speed"
+        },
+        "Rotten Banana": {
+          "name": "Rotten Banana",
+          "boost": "Gives You +10% Player Speed"
+        },
+        "Fresh Banana": {
+          "name": "Fresh Banana",
+          "boost": "Gives You +20% Player Speed"
+        },
+        "Rotten Starfruit": {
+          "name": "Rotten Starfruit",
+          "boost": "Gives You +10% Fighting Strength"
+        },
+        "Normall Starfruit": {
+          "name": "Normal Starfruit",
+          "boost": "Gives You +25% Fighting Strength"
+        },
+        "Fresh Starfruit": {
+          "name": "Fresh Starfruit",
+          "boost": "Gives You +50% Fighting Strength"
+        },
+        "Rapberry": {
+          "name": "Raspberry",
+          "boost": "Snack for your equipped Pets! Award your pets with 40xp!"
+        },
+        "Enchanted Rapberry": {
+          "name": "Enchanted Raspberry",
+          "boost": "Snack for your equipped Pets! Award your pets with 130xp!"
+        },
+        "Enchanted Pineapple": {
+          "name": "Enchanted Pineapple",
+          "boost": "Snack for your equipped Pets! Award your pets with 250xp!"
+        },
+        "Pet Lvl Token": {
+          "name": "Pet Lvl Token",
+          "boost": "Instantly +1 level on all of your equipped pets!"
+        },
+        "Phoenix Fruit": {
+          "name": "Phoenix Fruit",
+          "boost": "Instantly evolve a pet of your choice!"
+        }
       }
     },
-    "food": {
-      "Cookie": {
-        "name": "Печиво",
-        "boost": "Пригостіть ваших питомців! Питомці дають на 3% більше сили"
+    "uk": {
+      "title": "Зілля та Їжа",
+      "switcherPotions": "🧪 Зілля",
+      "switcherFood": "🍖 Їжа",
+      "filterAll": "Всі",
+      "filterCommon": "Звичайні",
+      "filterUncommon": "Незвичайні",
+      "filterRare": "Рідкісні",
+      "filterEpic": "Епічні",
+      "filterLegendary": "Легендарні",
+      "filterMythic": "Міфічні",
+      "filterLimited": "Обмежені",
+      "filterExclusive": "Ексклюзивні",
+      "notificationShowingAll": "Показано всі",
+      "notificationShowing": "Показано",
+      "potions": {
+        "Luck Potion [1]": {
+          "name": "Зілля Удачі [1]",
+          "boost": "Подвоює вашу Удачу Яєць"
+        },
+        "Luck Potion [2]": {
+          "name": "Зілля Удачі [2]",
+          "boost": "+150% Удачі Яєць"
+        },
+        "Wins Potion [1]": {
+          "name": "Зілля Перемог [1]",
+          "boost": "Подвоює ваші Перемоги Гравця"
+        },
+        "Wins Potion [2]": {
+          "name": "Зілля Перемог [2]",
+          "boost": "+150% Підсилення Перемог"
+        },
+        "Golden Potion": {
+          "name": "Золоте Зілля",
+          "boost": "Дає шанс висидіти Золотих Питомців"
+        },
+        "Void Potion": {
+          "name": "Зілля Порожнечі",
+          "boost": "Дає шанс висидіти Питомців Порожнечі"
+        },
+        "Training Potion [1]": {
+          "name": "Тренувальне Зілля [1]",
+          "boost": "Збільшує вашу силу тренування на 30%"
+        },
+        "Training Potion [2]": {
+          "name": "Тренувальне Зілля [2]",
+          "boost": "Збільшує вашу силу тренування на 60%"
+        },
+        "Training Potion [3]": {
+          "name": "Тренувальне Зілля [3]",
+          "boost": "Збільшує вашу силу тренування на 90%"
+        },
+        "Pet Xp Potion": {
+          "name": "Зілля Досвіду Питомців",
+          "boost": "Збільшує отриманий від босів досвід питомців на 50%"
+        },
+        "Scavenger Potion": {
+          "name": "Зілля Збирача",
+          "boost": "Збільшує ваш шанс отримання випадкової здобичі від босів на 30%"
+        },
+        "Ticket Potion": {
+          "name": "Зілля Квитків",
+          "boost": "Подвоює ваші виплати квитків від босів"
+        },
+        "Rift Potions [1]": {
+          "name": "Зілля Розриву [1]",
+          "boost": "+30% до Ваших Зірок Розриву"
+        },
+        "Secret Potion": {
+          "name": "Зілля Таємниць",
+          "boost": "Подвоює шанс висидіти таємних питомців"
+        },
+        "Event Training Potion": {
+          "name": "Зілля Подійного Тренування",
+          "boost": "Подвоює вашу силу подійного тренування"
+        }
       },
-      "Tasty Cookie": {
-        "name": "Смачне Печиво",
-        "boost": "Пригостіть ваших питомців! Питомці дають на 5% більше сили"
-      },
-      "Enchanted Cookie": {
-        "name": "Зачароване Печиво",
-        "boost": "Пригостіть ваших питомців! Питомці дають на 7% більше сили"
-      },
-      "Pink Donut": {
-        "name": "Рожевий Пончик",
-        "boost": "Пригостіть ваших питомців! Питомці дають на 5% більше сили"
-      },
-      "Vanila Donut": {
-        "name": "Ванільний Пончик",
-        "boost": "Пригостіть ваших питомців! Питомці дають на 10% більше сили"
-      },
-      "Chocolate Donut": {
-        "name": "Шоколадний Пончик",
-        "boost": "Пригостіть ваших питомців! Питомці дають на 15% більше сили"
-      },
-      "Rotten Dragon Fruit": {
-        "name": "Гнилий Драконячий Фрукт",
-        "boost": "Дає вам +10% швидкості тренування"
-      },
-      "Fine Dragon Fruit": {
-        "name": "Гарний Драконячий Фрукт",
-        "boost": "Дає вам +15% швидкості тренування"
-      },
-      "Fresh Dragon Fruit": {
-        "name": "Свіжий Драконячий Фрукт",
-        "boost": "Дає вам +25% швидкості тренування"
-      },
-      "Rotten Banana": {
-        "name": "Гнилий Банан",
-        "boost": "Дає вам +10% швидкості гравця"
-      },
-      "Fresh Banana": {
-        "name": "Свіжий Банан",
-        "boost": "Дає вам +20% швидкості гравця"
-      },
-      "Rotten Starfruit": {
-        "name": "Гнила Зірочка",
-        "boost": "Дає вам +10% сили боротьби"
-      },
-      "Normall Starfruit": {
-        "name": "Звичайна Зірочка",
-        "boost": "Дає вам +25% сили боротьби"
-      },
-      "Fresh Starfruit": {
-        "name": "Свіжа Зірочка",
-        "boost": "Дає вам +50% сили боротьби"
-      },
-      "Rapberry": {
-        "name": "Малина",
-        "boost": "Перекуска для ваших екіпірованих питомців! Нагородіть ваших питомців 40xp!"
-      },
-      "Enchanted Rapberry": {
-        "name": "Зачарована Малина",
-        "boost": "Перекуска для ваших екіпірованих питомців! Нагородіть ваших питомців 130xp!"
-      },
-      "Enchanted Pineapple": {
-        "name": "Зачарований Ананас",
-        "boost": "Перекуска для ваших екіпірованих питомців! Нагородіть ваших питомців 250xp!"
-      },
-      "Pet Lvl Token": {
-        "name": "Токен Рівня Питомця",
-        "boost": "Миттєво +1 рівень всім вашим екіпірованим питомцям!"
-      },
-      "Phoenix Fruit": {
-        "name": "Фрукт Фенікса",
-        "boost": "Миттєво еволюціонує питомця на ваш вибір!"
-      }
-    }
-  },
-  "ru": {
-    "title": "Зелья и Еда",
-    "switcherPotions": "🧪 Зелья",
-    "switcherFood": "🍖 Еда",
-    "filterAll": "Все",
-    "filterCommon": "Обычные",
-    "filterUncommon": "Необычные",
-    "filterRare": "Редкие",
-    "filterEpic": "Эпические",
-    "filterLegendary": "Легендарные",
-    "filterMythic": "Мифические",
-    "filterLimited": "Ограниченные",
-    "filterExclusive": "Эксклюзивные",
-    "notificationShowingAll": "Показаны все",
-    "notificationShowing": "Показаны",
-    "potions": {
-      "Luck Potion [1]": {
-        "name": "Зелье Удачи [1]",
-        "boost": "Удваивает вашу Удачу Яиц"
-      },
-      "Luck Potion [2]": {
-        "name": "Зелье Удачи [2]",
-        "boost": "+150% Удачи Яиц"
-      },
-      "Wins Potion [1]": {
-        "name": "Зелье Побед [1]",
-        "boost": "Удваивает ваши Победы Игрока"
-      },
-      "Wins Potion [2]": {
-        "name": "Зелье Побед [2]",
-        "boost": "+150% Усиления Побед"
-      },
-      "Golden Potion": {
-        "name": "Золотое Зелье",
-        "boost": "Дает шанс высидеть Золотых Питомцев"
-      },
-      "Void Potion": {
-        "name": "Зелье Пустоты",
-        "boost": "Дает шанс высидеть Питомцев Пустоты"
-      },
-      "Training Potion [1]": {
-        "name": "Тренировочное Зелье [1]",
-        "boost": "Увеличивает вашу силу тренировки на 30%"
-      },
-      "Training Potion [2]": {
-        "name": "Тренировочное Зелье [2]",
-        "boost": "Увеличивает вашу силу тренировки на 60%"
-      },
-      "Training Potion [3]": {
-        "name": "Тренировочное Зелье [3]",
-        "boost": "Увеличивает вашу силу тренировки на 90%"
-      },
-      "Pet Xp Potion": {
-        "name": "Зелье Опыта Питомцев",
-        "boost": "Увеличивает полученный от боссов опыт питомцев на 50%"
-      },
-      "Scavenger Potion": {
-        "name": "Зелье Собирателя",
-        "boost": "Увеличивает ваш шанс получения случайной добычи от боссов на 30%"
-      },
-      "Ticket Potion": {
-        "name": "Зелье Билетов",
-        "boost": "Удваивает ваши выплаты билетов от боссов"
-      },
-      "Rift Potions [1]": {
-        "name": "Зелье Разрыва [1]",
-        "boost": "+30% к Вашим Звездам Разрыва"
-      },
-      "Event Training Potion": {
-        "name": "Зелье Событийной Тренировки",
-        "boost": "Удваивает вашу силу событийной тренировки"
+      "food": {
+        "Cookie": {
+          "name": "Печиво",
+          "boost": "Пригостіть ваших питомців! Питомці дають на 3% більше сили"
+        },
+        "Tasty Cookie": {
+          "name": "Смачне Печиво",
+          "boost": "Пригостіть ваших питомців! Питомці дають на 5% більше сили"
+        },
+        "Enchanted Cookie": {
+          "name": "Зачароване Печиво",
+          "boost": "Пригостіть ваших питомців! Питомці дають на 7% більше сили"
+        },
+        "Pink Donut": {
+          "name": "Рожевий Пончик",
+          "boost": "Пригостіть ваших питомців! Питомці дають на 5% більше сили"
+        },
+        "Vanila Donut": {
+          "name": "Ванільний Пончик",
+          "boost": "Пригостіть ваших питомців! Питомці дають на 10% більше сили"
+        },
+        "Chocolate Donut": {
+          "name": "Шоколадний Пончик",
+          "boost": "Пригостіть ваших питомців! Питомці дають на 15% більше сили"
+        },
+        "Rotten Dragon Fruit": {
+          "name": "Гнилий Драконячий Фрукт",
+          "boost": "Дає вам +10% швидкості тренування"
+        },
+        "Fine Dragon Fruit": {
+          "name": "Гарний Драконячий Фрукт",
+          "boost": "Дає вам +15% швидкості тренування"
+        },
+        "Fresh Dragon Fruit": {
+          "name": "Свіжий Драконячий Фрукт",
+          "boost": "Дає вам +25% швидкості тренування"
+        },
+        "Rotten Banana": {
+          "name": "Гнилий Банан",
+          "boost": "Дає вам +10% швидкості гравця"
+        },
+        "Fresh Banana": {
+          "name": "Свіжий Банан",
+          "boost": "Дає вам +20% швидкості гравця"
+        },
+        "Rotten Starfruit": {
+          "name": "Гнила Зірочка",
+          "boost": "Дає вам +10% сили боротьби"
+        },
+        "Normall Starfruit": {
+          "name": "Звичайна Зірочка",
+          "boost": "Дає вам +25% сили боротьби"
+        },
+        "Fresh Starfruit": {
+          "name": "Свіжа Зірочка",
+          "boost": "Дає вам +50% сили боротьби"
+        },
+        "Rapberry": {
+          "name": "Малина",
+          "boost": "Перекуска для ваших екіпірованих питомців! Нагородіть ваших питомців 40xp!"
+        },
+        "Enchanted Rapberry": {
+          "name": "Зачарована Малина",
+          "boost": "Перекуска для ваших екіпірованих питомців! Нагородіть ваших питомців 130xp!"
+        },
+        "Enchanted Pineapple": {
+          "name": "Зачарований Ананас",
+          "boost": "Перекуска для ваших екіпірованих питомців! Нагородіть ваших питомців 250xp!"
+        },
+        "Pet Lvl Token": {
+          "name": "Токен Рівня Питомця",
+          "boost": "Миттєво +1 рівень всім вашим екіпірованим питомцям!"
+        },
+        "Phoenix Fruit": {
+          "name": "Фрукт Фенікса",
+          "boost": "Миттєво еволюціонує питомця на ваш вибір!"
+        }
       }
     },
-    "food": {
-      "Cookie": {
-        "name": "Печенье",
-        "boost": "Угостите ваших питомцев! Питомцы дают на 3% больше силы"
+    "ru": {
+      "title": "Зелья и Еда",
+      "switcherPotions": "🧪 Зелья",
+      "switcherFood": "🍖 Еда",
+      "filterAll": "Все",
+      "filterCommon": "Обычные",
+      "filterUncommon": "Необычные",
+      "filterRare": "Редкие",
+      "filterEpic": "Эпические",
+      "filterLegendary": "Легендарные",
+      "filterMythic": "Мифические",
+      "filterLimited": "Ограниченные",
+      "filterExclusive": "Эксклюзивные",
+      "notificationShowingAll": "Показаны все",
+      "notificationShowing": "Показаны",
+      "potions": {
+        "Luck Potion [1]": {
+          "name": "Зелье Удачи [1]",
+          "boost": "Удваивает вашу Удачу Яиц"
+        },
+        "Luck Potion [2]": {
+          "name": "Зелье Удачи [2]",
+          "boost": "+150% Удачи Яиц"
+        },
+        "Wins Potion [1]": {
+          "name": "Зелье Побед [1]",
+          "boost": "Удваивает ваши Победы Игрока"
+        },
+        "Wins Potion [2]": {
+          "name": "Зелье Побед [2]",
+          "boost": "+150% Усиления Побед"
+        },
+        "Golden Potion": {
+          "name": "Золотое Зелье",
+          "boost": "Дает шанс высидеть Золотых Питомцев"
+        },
+        "Void Potion": {
+          "name": "Зелье Пустоты",
+          "boost": "Дает шанс высидеть Питомцев Пустоты"
+        },
+        "Training Potion [1]": {
+          "name": "Тренировочное Зелье [1]",
+          "boost": "Увеличивает вашу силу тренировки на 30%"
+        },
+        "Training Potion [2]": {
+          "name": "Тренировочное Зелье [2]",
+          "boost": "Увеличивает вашу силу тренировки на 60%"
+        },
+        "Training Potion [3]": {
+          "name": "Тренировочное Зелье [3]",
+          "boost": "Увеличивает вашу силу тренировки на 90%"
+        },
+        "Pet Xp Potion": {
+          "name": "Зелье Опыта Питомцев",
+          "boost": "Увеличивает полученный от боссов опыт питомцев на 50%"
+        },
+        "Scavenger Potion": {
+          "name": "Зелье Собирателя",
+          "boost": "Увеличивает ваш шанс получения случайной добычи от боссов на 30%"
+        },
+        "Ticket Potion": {
+          "name": "Зелье Билетов",
+          "boost": "Удваивает ваши выплаты билетов от боссов"
+        },
+        "Rift Potions [1]": {
+          "name": "Зелье Разрыва [1]",
+          "boost": "+30% к Вашим Звездам Разрыва"
+        },
+        "Secret Potion": {
+          "name": "Зелье Тайн",
+          "boost": "Удваивает шанс высидеть тайных питомцев"
+        },
+        "Event Training Potion": {
+          "name": "Зелье Событийной Тренировки",
+          "boost": "Удваивает вашу силу событийной тренировки"
+        }
       },
-      "Tasty Cookie": {
-        "name": "Вкусное Печенье",
-        "boost": "Угостите ваших питомцев! Питомцы дают на 5% больше силы"
-      },
-      "Enchanted Cookie": {
-        "name": "Зачарованное Печенье",
-        "boost": "Угостите ваших питомцев! Питомцы дают на 7% больше силы"
-      },
-      "Pink Donut": {
-        "name": "Розовый Пончик",
-        "boost": "Угостите ваших питомцев! Питомцы дают на 5% больше силы"
-      },
-      "Vanila Donut": {
-        "name": "Ванильный Пончик",
-        "boost": "Угостите ваших питомцев! Питомцы дают на 10% больше силы"
-      },
-      "Chocolate Donut": {
-        "name": "Шоколадный Пончик",
-        "boost": "Угостите ваших питомцев! Питомцы дают на 15% больше силы"
-      },
-      "Rotten Dragon Fruit": {
-        "name": "Гнилой Драконий Фрукт",
-        "boost": "Дает вам +10% скорости тренировки"
-      },
-      "Fine Dragon Fruit": {
-        "name": "Хороший Драконий Фрукт",
-        "boost": "Дает вам +15% скорости тренировки"
-      },
-      "Fresh Dragon Fruit": {
-        "name": "Свежий Драконий Фрукт",
-        "boost": "Дает вам +25% скорости тренировки"
-      },
-      "Rotten Banana": {
-        "name": "Гнилой Банан",
-        "boost": "Дает вам +10% скорости игрока"
-      },
-      "Fresh Banana": {
-        "name": "Свежий Банан",
-        "boost": "Дает вам +20% скорости игрока"
-      },
-      "Rotten Starfruit": {
-        "name": "Гнилая Звездочка",
-        "boost": "Дает вам +10% силы боя"
-      },
-      "Normall Starfruit": {
-        "name": "Обычная Звездочка",
-        "boost": "Дает вам +25% силы боя"
-      },
-      "Fresh Starfruit": {
-        "name": "Свежая Звездочка",
-        "boost": "Дает вам +50% силы боя"
-      },
-      "Rapberry": {
-        "name": "Малина",
-        "boost": "Перекус для ваших экипированных питомцев! Наградите ваших питомцев 40xp!"
-      },
-      "Enchanted Rapberry": {
-        "name": "Зачарованная Малина",
-        "boost": "Перекус для ваших экипированных питомцев! Наградите ваших питомцев 130xp!"
-      },
-      "Enchanted Pineapple": {
-        "name": "Зачарованный Ананас",
-        "boost": "Перекус для ваших экипированных питомцев! Наградите ваших питомцев 250xp!"
-      },
-      "Pet Lvl Token": {
-        "name": "Токен Уровня Питомца",
-        "boost": "Мгновенно +1 уровень всем вашим экипированным питомцам!"
-      },
-      "Phoenix Fruit": {
-        "name": "Фрукт Феникса",
-        "boost": "Мгновенно эволюционирует питомца на ваш выбор!"
+      "food": {
+        "Cookie": {
+          "name": "Печенье",
+          "boost": "Угостите ваших питомцев! Питомцы дают на 3% больше силы"
+        },
+        "Tasty Cookie": {
+          "name": "Вкусное Печенье",
+          "boost": "Угостите ваших питомцев! Питомцы дают на 5% больше силы"
+        },
+        "Enchanted Cookie": {
+          "name": "Зачарованное Печенье",
+          "boost": "Угостите ваших питомцев! Питомцы дают на 7% больше силы"
+        },
+        "Pink Donut": {
+          "name": "Розовый Пончик",
+          "boost": "Угостите ваших питомцев! Питомцы дают на 5% больше силы"
+        },
+        "Vanila Donut": {
+          "name": "Ванильный Пончик",
+          "boost": "Угостите ваших питомцев! Питомцы дают на 10% больше силы"
+        },
+        "Chocolate Donut": {
+          "name": "Шоколадный Пончик",
+          "boost": "Угостите ваших питомцев! Питомцы дают на 15% больше силы"
+        },
+        "Rotten Dragon Fruit": {
+          "name": "Гнилой Драконий Фрукт",
+          "boost": "Дает вам +10% скорости тренировки"
+        },
+        "Fine Dragon Fruit": {
+          "name": "Хороший Драконий Фрукт",
+          "boost": "Дает вам +15% скорости тренировки"
+        },
+        "Fresh Dragon Fruit": {
+          "name": "Свежий Драконий Фрукт",
+          "boost": "Дает вам +25% скорости тренировки"
+        },
+        "Rotten Banana": {
+          "name": "Гнилой Банан",
+          "boost": "Дает вам +10% скорости игрока"
+        },
+        "Fresh Banana": {
+          "name": "Свежий Банан",
+          "boost": "Дает вам +20% скорости игрока"
+        },
+        "Rotten Starfruit": {
+          "name": "Гнилая Звездочка",
+          "boost": "Дает вам +10% силы боя"
+        },
+        "Normall Starfruit": {
+          "name": "Обычная Звездочка",
+          "boost": "Дает вам +25% силы боя"
+        },
+        "Fresh Starfruit": {
+          "name": "Свежая Звездочка",
+          "boost": "Дает вам +50% силы боя"
+        },
+        "Rapberry": {
+          "name": "Малина",
+          "boost": "Перекус для ваших экипированных питомцев! Наградите ваших питомцев 40xp!"
+        },
+        "Enchanted Rapberry": {
+          "name": "Зачарованная Малина",
+          "boost": "Перекус для ваших экипированных питомцев! Наградите ваших питомцев 130xp!"
+        },
+        "Enchanted Pineapple": {
+          "name": "Зачарованный Ананас",
+          "boost": "Перекус для ваших экипированных питомцев! Наградите ваших питомцев 250xp!"
+        },
+        "Pet Lvl Token": {
+          "name": "Токен Уровня Питомца",
+          "boost": "Мгновенно +1 уровень всем вашим экипированным питомцам!"
+        },
+        "Phoenix Fruit": {
+          "name": "Фрукт Феникса",
+          "boost": "Мгновенно эволюционирует питомца на ваш выбор!"
+        }
       }
     }
   }
