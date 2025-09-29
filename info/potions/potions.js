@@ -1,12 +1,13 @@
-// Potions & Food Module - FIXED with automatic language updates
-console.log('🧪 Loading potions.js with automatic language updates...');
+// Potions & Food Module - All data from JSON
+console.log('🧪 Loading potions.js with JSON-based data...');
 
 // Global variables
 let potionsInitialized = false;
 let currentPotionsType = 'potions';
 let currentRarityFilter = 'all';
 let currentLanguage = 'en';
-let potionsTranslations = null;
+let potionsData = null;
+let allPotionsData = null;
 
 // Get language from localStorage or default to English
 function getCurrentLanguage() {
@@ -14,40 +15,37 @@ function getCurrentLanguage() {
     return saved || 'en';
 }
 
-// Load translations from JSON file
-async function loadPotionsTranslations() {
-    if (potionsTranslations) return potionsTranslations;
+// Load all data from JSON file
+async function loadPotionsData() {
+    if (allPotionsData) return allPotionsData;
     
     try {
-        console.log('📥 Loading potions translations...');
-        const response = await fetch('languages/potions.json');
+        console.log('📥 Loading potions data from JSON...');
+        const response = await fetch('info/potions/potions.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        potionsTranslations = await response.json();
-        console.log('✅ Potions translations loaded successfully');
-        return potionsTranslations;
+        allPotionsData = await response.json();
+        console.log('✅ Potions data loaded successfully');
+        return allPotionsData;
     } catch (error) {
-        console.error('❌ Error loading potions translations:', error);
-        // Fallback to English if translations fail to load
-        potionsTranslations = {
-            en: {
-                title: "Potions & Food",
-                switcherPotions: "🧪 Potions",
-                switcherFood: "🍖 Food"
-            }
+        console.error('❌ Error loading potions data:', error);
+        // Fallback to empty data
+        allPotionsData = {
+            items: { potions: {}, food: {} },
+            translations: { en: { title: "Potions & Food" } }
         };
-        return potionsTranslations;
+        return allPotionsData;
     }
 }
 
 // Get translated text
 function getTranslation(key, fallback = '') {
-    if (!potionsTranslations || !potionsTranslations[currentLanguage]) {
+    if (!allPotionsData || !allPotionsData.translations || !allPotionsData.translations[currentLanguage]) {
         return fallback || key;
     }
     
-    const translation = potionsTranslations[currentLanguage];
+    const translation = allPotionsData.translations[currentLanguage];
     
     // Handle nested keys like 'potions.Luck Potion [1].name'
     const keys = key.split('.');
@@ -64,270 +62,41 @@ function getTranslation(key, fallback = '') {
     return value || fallback || key;
 }
 
-// Potions data - Complete with images
-const potionsData = [
-    { 
-        name: "Luck Potion [1]", 
-        rarity: "common", 
-        boost: "Doubles your Egg Luck", 
-        time: "30 min",
-        image: "https://i.postimg.cc/DyWfhBk8/2025-09-09-16-36-40.png"
-    },
-    { 
-        name: "Luck Potion [2]", 
-        rarity: "uncommon", 
-        boost: "+150% Egg Luck", 
-        time: "30 min",
-        image: "https://i.postimg.cc/X7pRBr2z/2025-09-13-21-13-57.png"
-    },
-    { 
-        name: "Wins Potion [1]", 
-        rarity: "common", 
-        boost: "Doubles your Player wins", 
-        time: "30 min",
-        image: "https://i.postimg.cc/HnLf2nTj/2025-09-13-21-13-53.png"
-    },
-    { 
-        name: "Wins Potion [2]", 
-        rarity: "uncommon", 
-        boost: "+150% Wins Boost", 
-        time: "30 min",
-        image: "https://i.postimg.cc/MTYS5gR3/2025-09-13-21-14-01.png"
-    },
-    { 
-        name: "Golden Potion", 
-        rarity: "common", 
-        boost: "Gives a chance of hatching Golden Pets", 
-        time: "30 min",
-        image: "https://i.postimg.cc/ZK218J2K/2025-09-13-21-14-12.png"
-    },
-    { 
-        name: "Void Potion", 
-        rarity: "common", 
-        boost: "Gives a chance of hatching Void Pets", 
-        time: "30 min",
-        image: "https://i.postimg.cc/wjt9zf83/2025-09-13-21-14-06.png"
-    },
-    { 
-        name: "Training Potion [1]", 
-        rarity: "common", 
-        boost: "Increases your training power by 30%", 
-        time: "30 min",
-        image: "https://i.postimg.cc/Jz8tcmbW/2025-09-07-21-47-03.png"
-    },
-    { 
-        name: "Training Potion [2]", 
-        rarity: "uncommon", 
-        boost: "Increases your training power by 60%", 
-        time: "30 min",
-        image: "https://i.postimg.cc/RFt30Sk6/2025-09-07-21-47-05.png"
-    },
-    { 
-        name: "Training Potion [3]", 
-        rarity: "rare", 
-        boost: "Increases your training power by 90%", 
-        time: "30 min",
-        image: "https://i.postimg.cc/v8gRc12S/2025-09-13-21-19-55.png"
-    },
-    { 
-        name: "Pet Xp Potion", 
-        rarity: "mythic", 
-        boost: "Increases Pet Xp gained from bosses by 50%", 
-        time: "30 min",
-        image: "https://i.postimg.cc/W3d4b4P0/2025-09-07-21-47-10.png"
-    },
-    { 
-        name: "Scavenger Potion", 
-        rarity: "mythic", 
-        boost: "Increases your chance of getting random loot from bosses by 30%", 
-        time: "30 min",
-        image: "https://i.postimg.cc/j51hpSzD/2025-09-13-21-14-20.png"
-    },
-    { 
-        name: "Ticket Potion", 
-        rarity: "mythic", 
-        boost: "Doubles your ticket payout from bosses", 
-        time: "10 min",
-        image: "https://i.postimg.cc/3xGz9PQj/2025-09-13-21-14-15.png"
-    },
-    { 
-        name: "Rift Potions [1]", 
-        rarity: "mythic", 
-        boost: "+30% On Your Rift Stars", 
-        time: "30 min",
-        image: "https://i.postimg.cc/mg767C78/2025-09-13-21-14-23.png"
-    },
-    {
-        name: "Secret Potion", 
-        rarity: "mythic", 
-        boost: "Double chance for hatching secret pets", 
-        time: "30 min",
-        image: "https://i.postimg.cc/y6wDx0xx/2025-09-07-21-46-53.png"
-    },
-    { 
-        name: "Event Training Potion", 
-        rarity: "limited", 
-        boost: "Doubles your event training power", 
-        time: "30 min",
-        image: "https://i.postimg.cc/VLZz3yh3/2025-09-13-21-14-29.png"
+// Convert JSON items to array format
+function getItemsArray(type) {
+    if (!allPotionsData || !allPotionsData.items || !allPotionsData.items[type]) {
+        return [];
     }
-];
-
-// Food data - Complete with images
-const foodData = [
-    { 
-        name: "Cookie", 
-        rarity: "common", 
-        boost: "Treat your pets! Pets give 3% more strength", 
-        time: "5 min",
-        image: "https://i.postimg.cc/3xM3KjKB/2025-09-13-21-25-11.png"
-    },
-    { 
-        name: "Tasty Cookie", 
-        rarity: "uncommon", 
-        boost: "Treat your pets! Pets give 5% more strength", 
-        time: "5 min",
-        image: "https://i.postimg.cc/zf85hJHH/2025-09-13-21-25-34.png"
-    },
-    { 
-        name: "Enchanted Cookie", 
-        rarity: "rare", 
-        boost: "Treat your pets! Pets give 7% more strength", 
-        time: "5 min",
-        image: "https://i.postimg.cc/Y0QSJKdG/enchanted-cookie.png"
-    },
-    { 
-        name: "Pink Donut", 
-        rarity: "uncommon", 
-        boost: "Treat your pets! Pets give 5% more strength", 
-        time: "5 min",
-        image: "https://i.postimg.cc/TwDjP6qG/pink-donut.png"
-    },
-    { 
-        name: "Vanila Donut", 
-        rarity: "rare", 
-        boost: "Treat your pets! Pets give 10% more strength", 
-        time: "5 min",
-        image: "https://i.postimg.cc/ZnC7Q4qP/vanilla-donut.png"
-    },
-    { 
-        name: "Chocolate Donut", 
-        rarity: "epic", 
-        boost: "Treat your pets! Pets give 15% more strength", 
-        time: "5 min",
-        image: "https://i.postimg.cc/jSRbdCzP/chocolate-donut.png"
-    },
-    { 
-        name: "Rotten Dragon Fruit", 
-        rarity: "rare", 
-        boost: "Gives You +10% Training Speed", 
-        time: "5 min",
-        image: "https://i.postimg.cc/s2tWZpyd/rotten-dragon-fruit.png"
-    },
-    { 
-        name: "Fine Dragon Fruit", 
-        rarity: "epic", 
-        boost: "Gives You +15% Training Speed", 
-        time: "10 min",
-        image: "https://i.postimg.cc/9FR4y0dN/fine-dragon-fruit.png"
-    },
-    { 
-        name: "Fresh Dragon Fruit", 
-        rarity: "legendary", 
-        boost: "Gives You +25% Training Speed", 
-        time: "20 min",
-        image: "https://i.postimg.cc/J4pn5g1w/fresh-dragon-fruit.png"
-    },
-    { 
-        name: "Rotten Banana", 
-        rarity: "common", 
-        boost: "Gives You +10% Player Speed", 
-        time: "5 min",
-        image: "https://i.postimg.cc/3JMySGM7/rotten-banana.png"
-    },
-    { 
-        name: "Fresh Banana", 
-        rarity: "uncommon", 
-        boost: "Gives You +20% Player Speed", 
-        time: "10 min",
-        image: "https://i.postimg.cc/SQJCVrMD/fresh-banana.png"
-    },
-    { 
-        name: "Rotten Starfruit", 
-        rarity: "rare", 
-        boost: "Gives You +10% Fighting Strength", 
-        time: "10 min",
-        image: "https://i.postimg.cc/3JKHg8MZ/rotten-starfruit.png"
-    },
-    { 
-        name: "Normall Starfruit", 
-        rarity: "epic", 
-        boost: "Gives You +25% Fighting Strength", 
-        time: "25 min",
-        image: "https://i.postimg.cc/RCMnG7Jn/normal-starfruit.png"
-    },
-    { 
-        name: "Fresh Starfruit", 
-        rarity: "legendary", 
-        boost: "Gives You +50% Fighting Strength", 
-        time: "1 hour",
-        image: "https://i.postimg.cc/FzHFKpnh/fresh-starfruit.png"
-    },
-    { 
-        name: "Rapberry", 
-        rarity: "rare", 
-        boost: "Snack for your equipped Pets! Award your pets with 40xp!", 
-        time: "∞",
-        image: "https://i.postimg.cc/fWZQrjfL/raspberry.png"
-    },
-    { 
-        name: "Enchanted Rapberry", 
-        rarity: "epic", 
-        boost: "Snack for your equipped Pets! Award your pets with 130xp!", 
-        time: "∞",
-        image: "https://i.postimg.cc/05NxMnQQ/enchanted-raspberry.png"
-    },
-    { 
-        name: "Enchanted Pineapple", 
-        rarity: "epic", 
-        boost: "Snack for your equipped Pets! Award your pets with 250xp!", 
-        time: "∞",
-        image: "https://i.postimg.cc/W3DzHdTV/enchanted-pineapple.png"
-    },
-    { 
-        name: "Pet Lvl Token", 
-        rarity: "exclusive", 
-        boost: "Instantly +1 level on all of your equipped pets!", 
-        time: "∞",
-        image: "https://i.postimg.cc/bN8fzXZM/pet-lvl-token.png"
-    },
-    { 
-        name: "Phoenix Fruit", 
-        rarity: "mythic", 
-        boost: "Instantly evolve a pet of your choice!", 
-        time: "∞",
-        image: "https://i.postimg.cc/1tR6pBdK/phoenix-fruit.png"
-    }
-];
+    
+    const items = allPotionsData.items[type];
+    return Object.keys(items).map(name => ({
+        name: name,
+        rarity: items[name].rarity,
+        time: items[name].time,
+        image: items[name].image
+    }));
+}
 
 // Get unique rarities from both datasets
 function getAvailableRarities() {
-    const allItems = [...potionsData, ...foodData];
+    const potions = getItemsArray('potions');
+    const food = getItemsArray('food');
+    const allItems = [...potions, ...food];
     const rarities = [...new Set(allItems.map(item => item.rarity))];
     return rarities.sort();
 }
 
 // Main initialization function
 async function initializePotions() {
-    console.log('🧪 Initializing Potions & Food with automatic language updates...');
+    console.log('🧪 Initializing Potions & Food from JSON...');
     
     potionsInitialized = false;
     
     // Get current language
     currentLanguage = getCurrentLanguage();
     
-    // Load translations
-    await loadPotionsTranslations();
+    // Load data from JSON
+    await loadPotionsData();
     
     const potionsPage = document.getElementById('potionsPage');
     if (!potionsPage) {
@@ -352,8 +121,11 @@ async function initializePotions() {
         potionsInitialized = true;
         window.potionsInitialized = true;
         
+        const potionsCount = getItemsArray('potions').length;
+        const foodCount = getItemsArray('food').length;
+        
         console.log('✅ Potions & Food initialized successfully');
-        console.log(`📊 Loaded: ${potionsData.length} potions, ${foodData.length} foods in ${currentLanguage}`);
+        console.log(`📊 Loaded: ${potionsCount} potions, ${foodCount} foods in ${currentLanguage}`);
         return true;
     } catch (error) {
         console.error('❌ Error initializing Potions & Food:', error);
@@ -511,7 +283,7 @@ function createPotionImage(item) {
 // Get translated item data
 function getTranslatedItemData(item, itemType) {
     const translatedName = getTranslation(`${itemType}.${item.name}.name`, item.name);
-    const translatedBoost = getTranslation(`${itemType}.${item.name}.boost`, item.boost);
+    const translatedBoost = getTranslation(`${itemType}.${item.name}.boost`, item.name);
     
     return {
         ...item,
@@ -528,10 +300,14 @@ async function loadPotionsContent() {
         throw new Error('Container not found');
     }
 
-    console.log('📝 Loading potions content with translations...');
+    console.log('📝 Loading potions content from JSON...');
+
+    // Get items from JSON
+    const potionsArray = getItemsArray('potions');
+    const foodArray = getItemsArray('food');
 
     // Generate potions HTML with translations
-    const potionsHTML = potionsData.map((potion, index) => {
+    const potionsHTML = potionsArray.map((potion, index) => {
         const translatedPotion = getTranslatedItemData(potion, 'potions');
         return `
             <div class="potion-item" data-rarity="${potion.rarity}" style="animation-delay: ${index * 50}ms;">
@@ -549,7 +325,7 @@ async function loadPotionsContent() {
     }).join('');
 
     // Generate food HTML with translations
-    const foodHTML = foodData.map((food, index) => {
+    const foodHTML = foodArray.map((food, index) => {
         const translatedFood = getTranslatedItemData(food, 'food');
         return `
             <div class="potion-item" data-rarity="${food.rarity}" style="animation-delay: ${index * 50}ms;">
@@ -603,7 +379,7 @@ async function loadPotionsContent() {
     console.log(`✅ Potions & Food content loaded successfully in ${currentLanguage}`);
 }
 
-// Update language when it changes globally - ENHANCED
+// Update language when it changes globally
 function updatePotionsLanguage(newLanguage) {
     console.log(`🌍 Potions received language change request: ${currentLanguage} → ${newLanguage}`);
     
@@ -654,7 +430,7 @@ function showPotionsNotification(message, type = 'info') {
 
 // Get filtered data
 function getFilteredData() {
-    const currentData = currentPotionsType === 'potions' ? potionsData : foodData;
+    const currentData = currentPotionsType === 'potions' ? getItemsArray('potions') : getItemsArray('food');
     
     if (currentRarityFilter === 'all') {
         return currentData;
@@ -674,32 +450,35 @@ function debugPotions() {
     console.log('Page exists:', !!document.getElementById('potionsPage'));
     console.log('Available rarities:', getAvailableRarities());
     console.log('Filtered data count:', getFilteredData().length);
-    console.log('Translations loaded:', !!potionsTranslations);
+    console.log('Data loaded:', !!allPotionsData);
     console.log('====================');
 }
 
 // Get statistics
 function getPotionsStats() {
+    const potionsArray = getItemsArray('potions');
+    const foodArray = getItemsArray('food');
+    
     const potionsStats = {};
     const foodStats = {};
     
     // Count potions by rarity
-    potionsData.forEach(potion => {
+    potionsArray.forEach(potion => {
         potionsStats[potion.rarity] = (potionsStats[potion.rarity] || 0) + 1;
     });
     
     // Count food by rarity
-    foodData.forEach(food => {
+    foodArray.forEach(food => {
         foodStats[food.rarity] = (foodStats[food.rarity] || 0) + 1;
     });
     
     return {
         potions: {
-            total: potionsData.length,
+            total: potionsArray.length,
             byRarity: potionsStats
         },
         food: {
-            total: foodData.length,
+            total: foodArray.length,
             byRarity: foodStats
         },
         rarities: getAvailableRarities(),
@@ -707,7 +486,7 @@ function getPotionsStats() {
         currentType: currentPotionsType,
         currentFilter: currentRarityFilter,
         currentLanguage: currentLanguage,
-        translationsLoaded: !!potionsTranslations
+        dataLoaded: !!allPotionsData
     };
 }
 
@@ -721,7 +500,7 @@ window.getPotionsStats = getPotionsStats;
 window.getFilteredData = getFilteredData;
 window.potionsInitialized = potionsInitialized;
 
-// Listen for global language changes - ENHANCED
+// Listen for global language changes
 document.addEventListener('languageChanged', function(e) {
     console.log('🧪 Potions received languageChanged event:', e.detail);
     if (e.detail && e.detail.language) {
@@ -752,4 +531,4 @@ document.addEventListener('click', function(e) {
     }
 });
 
-console.log('✅ potions.js with automatic language updates loaded successfully');
+console.log('✅ potions.js with JSON-based data loaded successfully');
