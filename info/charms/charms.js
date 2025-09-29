@@ -15,7 +15,7 @@ async function loadCharmsTranslations() {
     
     try {
         console.log('📥 Loading charms translations...');
-        const response = await fetch('languages/charms.json');
+        const response = await fetch('info/charms/charms.json');
         
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
