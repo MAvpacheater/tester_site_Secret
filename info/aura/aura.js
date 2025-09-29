@@ -1,4 +1,4 @@
-// Aura functionality with multilingual support - FIXED VERSION
+// Aura functionality with multilingual support - Creates full page structure
 
 let auraCurrentLanguage = 'en';
 let auraTranslations = null;
@@ -25,6 +25,31 @@ async function loadAuraTranslations() {
     return auraTranslations;
 }
 
+// Create page structure
+function createAuraStructure() {
+    const page = document.getElementById('auraPage');
+    if (!page) return console.error('❌ Aura page not found');
+    
+    auraCurrentLanguage = getCurrentLanguage();
+    
+    // Create title
+    const title = document.createElement('h1');
+    title.className = 'title';
+    title.textContent = auraTranslations?.[auraCurrentLanguage]?.title || 'Aura Boosts';
+    
+    // Create container
+    const container = document.createElement('div');
+    container.className = 'aura-container';
+    container.id = 'auraContainer';
+    
+    // Clear page and add elements
+    page.innerHTML = '';
+    page.appendChild(title);
+    page.appendChild(container);
+    
+    console.log('✅ Aura structure created');
+}
+
 // Update language
 function updateAuraLanguage(newLanguage) {
     console.log(`🌟 Aura language: ${auraCurrentLanguage} → ${newLanguage}`);
@@ -44,7 +69,7 @@ function updateAuraLanguage(newLanguage) {
     }
 }
 
-// Generate content - FIXED VERSION
+// Generate content
 async function generateAuraContent() {
     const container = document.getElementById('auraContainer');
     if (!container) return console.error('❌ Aura container not found');
@@ -71,13 +96,11 @@ async function generateAuraContent() {
             item.className = 'aura-item';
             item.style.animationDelay = `${index * 0.05}s`;
             
-            // FIXED: Use individual description for each aura or generate dynamic one
+            // Use individual description if provided, otherwise generate dynamic one
             let description;
             if (aura.description) {
-                // Use individual description if provided
                 description = aura.description;
             } else {
-                // Generate dynamic description using template
                 description = data.description
                     .replace('%strength%', `${aura.strength}%`)
                     .replace('%luck%', `${aura.luck}%`)
@@ -115,37 +138,34 @@ async function generateAuraContent() {
 
 // Initialize aura
 async function initializeAura() {
-    console.log('🌟 Initializing aura...');
-    
-    const container = document.getElementById('auraContainer');
-    if (auraInitialized && container?.querySelector('.aura-item')) {
-        console.log('🌟 Already initialized');
+    if (auraInitialized) {
+        console.log('🔄 Aura already initialized');
         return;
     }
+    
+    console.log('🌟 Initializing aura...');
     
     auraCurrentLanguage = getCurrentLanguage();
     
     try {
         await loadAuraTranslations();
-        
-        // Update title
-        const titleElement = document.querySelector('.aura-page .title');
-        if (titleElement && auraTranslations[auraCurrentLanguage]) {
-            titleElement.textContent = auraTranslations[auraCurrentLanguage].title;
-        }
-        
+        createAuraStructure();
         await generateAuraContent();
+        
         auraInitialized = true;
         window.auraInitialized = true;
-        console.log('✅ Aura initialized');
+        console.log('✅ Aura initialized successfully');
     } catch (error) {
         console.error('❌ Failed to initialize aura:', error);
-        const container = document.getElementById('auraContainer');
-        if (container) {
-            container.innerHTML = `
-                <div class="aura-error">
-                    ⚠️ Failed to load aura data<br>
-                    <button class="retry-btn" onclick="initializeAura()">Retry</button>
+        const page = document.getElementById('auraPage');
+        if (page) {
+            page.innerHTML = `
+                <h1 class="title">Aura Boosts</h1>
+                <div class="aura-container">
+                    <div class="aura-error">
+                        ⚠️ Failed to load aura data<br>
+                        <button class="retry-btn" onclick="initializeAura()">Retry</button>
+                    </div>
                 </div>
             `;
         }
@@ -167,11 +187,31 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('click', (e) => {
     if (e.target?.getAttribute('data-page') === 'aura') {
         setTimeout(() => {
-            const container = document.getElementById('auraContainer');
-            if (!auraInitialized || !container?.querySelector('.aura-item')) {
+            if (!auraInitialized) {
                 initializeAura();
             }
         }, 300);
+    }
+});
+
+// Observer for page activation
+const auraObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            const auraPage = document.getElementById('auraPage');
+            if (auraPage?.classList.contains('active') && !auraInitialized) {
+                console.log('🌟 Aura page activated, initializing...');
+                initializeAura();
+            }
+        }
+    });
+});
+
+// Start observing
+document.addEventListener('DOMContentLoaded', () => {
+    const auraPage = document.getElementById('auraPage');
+    if (auraPage) {
+        auraObserver.observe(auraPage, { attributes: true });
     }
 });
 
@@ -181,4 +221,4 @@ window.updateAuraLanguage = updateAuraLanguage;
 window.generateAuraContent = generateAuraContent;
 window.auraInitialized = auraInitialized;
 
-console.log('✅ Fixed Aura.js loaded and ready');
+console.log('✅ Aura.js loaded');
