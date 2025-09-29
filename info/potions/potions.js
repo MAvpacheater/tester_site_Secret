@@ -1,4 +1,4 @@
-// Potions & Food Module - NEW STRUCTURE
+// Potions & Food Module - FIXED VERSION (No localStorage)
 console.log('🧪 Loading potions.js with new JSON structure...');
 
 // Global variables
@@ -8,10 +8,9 @@ let currentRarityFilter = 'all';
 let currentLanguage = 'en';
 let potionsData = null;
 
-// Get language from localStorage or default to English
+// Get language from memory or default to English
 function getCurrentLanguage() {
-    const saved = localStorage.getItem('armHelper_language');
-    return saved || 'en';
+    return currentLanguage || 'en';
 }
 
 // Load data from JSON file
@@ -240,7 +239,7 @@ function createRarityFilters() {
     
     // Add "all" button first
     let filtersHTML = `
-        <button class="rarity-filter-btn all" 
+        <button class="rarity-filter-btn all active" 
                 data-rarity="all" 
                 onclick="setRarityFilter('all')">
             ${getTranslation('filterAll', 'All')}
