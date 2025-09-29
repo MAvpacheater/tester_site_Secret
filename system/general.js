@@ -1,4 +1,4 @@
-// General JavaScript functions - Enhanced with Boss support
+// General JavaScript functions - Enhanced with Boss support and updated folder structure
 
 // Global language state
 let currentAppLanguage = 'en';
@@ -371,9 +371,9 @@ function getCurrentMenuPosition() {
     return saved || 'left';
 }
 
-// Initialize specific page content when switching - includes boss
+// Initialize specific page content when switching - includes boss - UPDATED FOR NEW FOLDER STRUCTURE
 function initializePageContent(page) {
-    console.log(`🔄 Initializing content for page: ${page}`);
+    console.log(`🔄 Initializing content for page: ${page} (new folder structure)`);
     
     // Check if the page container exists first
     const pageContainer = document.getElementById(page + 'Page');
@@ -386,11 +386,13 @@ function initializePageContent(page) {
         case 'calculator':
             if (typeof initializeCalculator === 'function') {
                 initializeCalculator();
+                console.log('✅ Calculator module initialized from calc/calculator/');
             }
             break;
         case 'arm':
             if (typeof initializeArm === 'function') {
                 initializeArm();
+                console.log('✅ Arm module initialized from calc/arm/');
             }
             break;
         case 'grind':
@@ -399,118 +401,133 @@ function initializePageContent(page) {
                     window.grindInitialized = false;
                 }
                 initializeGrind();
+                console.log('✅ Grind module initialized from calc/grind/');
             }
             break;
         case 'roulette':
-            console.log('🎰 Initializing Roulette Calculator page...');
+            console.log('🎰 Initializing Roulette Calculator page from calc/roulette/...');
             if (typeof initializeRoulette === 'function') {
                 if (typeof window !== 'undefined' && window.rouletteInitialized !== undefined) {
                     window.rouletteInitialized = false;
                 }
                 initializeRoulette();
+                console.log('✅ Roulette module initialized from calc/roulette/');
             } else {
-                console.error('❌ initializeRoulette function not found');
+                console.error('❌ initializeRoulette function not found in calc/roulette/');
             }
             break;
         case 'boss':
-            console.log('👹 Initializing Boss Calculator page...');
+            console.log('👹 Initializing Boss Calculator page from calc/boss/...');
             if (typeof initializeBoss === 'function') {
                 if (typeof window !== 'undefined' && window.bossInitialized !== undefined) {
                     window.bossInitialized = false;
                 }
                 initializeBoss();
+                console.log('✅ Boss module initialized from calc/boss/');
             } else {
-                console.error('❌ initializeBoss function not found');
+                console.error('❌ initializeBoss function not found in calc/boss/');
             }
             break;
         case 'shiny':
             if (typeof initializeShiny === 'function') {
                 initializeShiny();
+                console.log('✅ Shiny module initialized from info/shiny/');
             }
             break;
         case 'boosts':
             if (typeof initializeBoosts === 'function') {
                 initializeBoosts();
+                console.log('✅ Boosts module initialized from info/boosts/');
             }
             break;
         case 'trainer':
             if (typeof initializeTrainer === 'function') {
                 initializeTrainer();
+                console.log('✅ Trainer module initialized from info/trainer/');
             }
             break;
         case 'aura':
             if (typeof initializeAura === 'function') {
                 initializeAura();
+                console.log('✅ Aura module initialized from info/aura/');
             }
             break;
         case 'codes':
             if (typeof initializeCodes === 'function') {
                 initializeCodes();
+                console.log('✅ Codes module initialized from info/codes/');
             }
             break;
         case 'charms':
             if (typeof initializeCharms === 'function') {
                 initializeCharms();
+                console.log('✅ Charms module initialized from info/charms/');
             }
             break;
         case 'secret':
-            console.log('🔮 Initializing Secret Pets page...');
+            console.log('🔮 Initializing Secret Pets page from info/secret/...');
             if (typeof initializeSecret === 'function') {
                 if (typeof window !== 'undefined' && window.secretInitialized !== undefined) {
                     window.secretInitialized = false;
                 }
                 initializeSecret();
+                console.log('✅ Secret module initialized from info/secret/');
             } else {
-                console.error('❌ initializeSecret function not found');
+                console.error('❌ initializeSecret function not found in info/secret/');
             }
             break;
         case 'potions':
-            console.log('🧪 Initializing Potions & Food page...');
+            console.log('🧪 Initializing Potions & Food page from info/potions/...');
             if (typeof initializePotions === 'function') {
                 if (typeof window !== 'undefined' && window.potionsInitialized !== undefined) {
                     window.potionsInitialized = false;
                 }
                 initializePotions();
+                console.log('✅ Potions module initialized from info/potions/');
             } else {
-                console.error('❌ initializePotions function not found');
+                console.error('❌ initializePotions function not found in info/potions/');
             }
             break;
         case 'worlds':
-            console.log('🌍 Initializing Worlds page...');
+            console.log('🌍 Initializing Worlds page from info/worlds/...');
             if (typeof initializeWorlds === 'function') {
                 initializeWorlds();
+                console.log('✅ Worlds module initialized from info/worlds/');
             } else {
-                console.error('❌ initializeWorlds function not found');
+                console.error('❌ initializeWorlds function not found in info/worlds/');
             }
             break;
         case 'settings':
-            console.log('⚙️ Initializing Settings page...');
+            console.log('⚙️ Initializing Settings page from moderation/settings/...');
             if (typeof initializeSettings === 'function') {
                 initializeSettings();
+                console.log('✅ Settings module initialized from moderation/settings/');
             } else {
-                console.error('❌ initializeSettings function not found');
+                console.error('❌ initializeSettings function not found in moderation/settings/');
             }
             break;
         case 'help':
-            console.log('🆘 Initializing Help page...');
+            console.log('🆘 Initializing Help page from other/help/...');
             if (typeof initializeHelp === 'function') {
                 if (typeof window !== 'undefined' && window.helpInitialized !== undefined) {
                     window.helpInitialized = false;
                 }
                 initializeHelp();
+                console.log('✅ Help module initialized from other/help/');
             } else {
-                console.error('❌ initializeHelp function not found');
+                console.error('❌ initializeHelp function not found in other/help/');
             }
             break;
         case 'peoples':
-            console.log('🙏 Initializing Peoples page...');
+            console.log('🙏 Initializing Peoples page from other/peoples/...');
             if (typeof initializePeoples === 'function') {
                 if (typeof window !== 'undefined' && window.peoplesInitialized !== undefined) {
                     window.peoplesInitialized = false;
                 }
                 initializePeoples();
+                console.log('✅ Peoples module initialized from other/peoples/');
             } else {
-                console.error('❌ initializePeoples function not found');
+                console.error('❌ initializePeoples function not found in other/peoples/');
             }
             break;
     }
@@ -542,7 +559,7 @@ function toggleCategory(categoryId) {
 
 // Initialize categories on app start
 function initializeCategories() {
-    console.log('✅ Categories initialized - all closed by default');
+    console.log('✅ Categories initialized - all closed by default (new folder structure)');
 }
 
 // Sidebar functionality
@@ -593,14 +610,14 @@ function loadSettingsFromStorage(key) {
 // Flag to prevent repeated initialization
 let appInitialized = false;
 
-// Enhanced app initialization with boss support
+// Enhanced app initialization with boss support and new folder structure
 async function initializeApp() {
     if (appInitialized) {
         console.log('⚠️ App already initialized');
         return;
     }
     
-    console.log('🚀 Starting app initialization with boss support...');
+    console.log('🚀 Starting app initialization with boss support and new folder structure...');
     
     // Check if content is loaded
     const appContent = document.getElementById('app-content');
@@ -630,7 +647,7 @@ async function initializeApp() {
     // Initialize categories
     initializeCategories();
     
-    // Initialize all modules first (including boss)
+    // Initialize all modules first (including boss) with new folder structure
     initializeAllModules();
     
     // Wait for MenuManager to be available
@@ -699,34 +716,34 @@ async function initializeApp() {
     });
 
     appInitialized = true;
-    console.log('✅ App initialization completed with boss support');
+    console.log('✅ App initialization completed with boss support and new folder structure');
 }
 
-// Initialize all modules with proper DOM readiness checks - includes boss
+// Initialize all modules with proper DOM readiness checks - includes boss - UPDATED FOR NEW FOLDER STRUCTURE
 function initializeAllModules() {
-    console.log('🔧 Initializing all modules...');
+    console.log('🔧 Initializing all modules with new folder structure...');
     
     const modules = [
-        'initializeCalculator',
-        'initializeArm', 
-        'initializeGrind',
-        'initializeRoulette',
-        'initializeBoss',
-        'initializeBoosts',
-        'initializeShiny',
-        'initializeSecret',
-        'initializePotions',
-        'initializeAura',
-        'initializeTrainer',
-        'initializeCharms',
-        'initializeCodes',
-        'initializeWorlds',
-        'initializeSettings',
-        'initializeHelp',
-        'initializePeoples'
+        { name: 'initializeCalculator', path: 'calc/calculator/' },
+        { name: 'initializeArm', path: 'calc/arm/' }, 
+        { name: 'initializeGrind', path: 'calc/grind/' },
+        { name: 'initializeRoulette', path: 'calc/roulette/' },
+        { name: 'initializeBoss', path: 'calc/boss/' },
+        { name: 'initializeBoosts', path: 'info/boosts/' },
+        { name: 'initializeShiny', path: 'info/shiny/' },
+        { name: 'initializeSecret', path: 'info/secret/' },
+        { name: 'initializePotions', path: 'info/potions/' },
+        { name: 'initializeAura', path: 'info/aura/' },
+        { name: 'initializeTrainer', path: 'info/trainer/' },
+        { name: 'initializeCharms', path: 'info/charms/' },
+        { name: 'initializeCodes', path: 'info/codes/' },
+        { name: 'initializeWorlds', path: 'info/worlds/' },
+        { name: 'initializeSettings', path: 'moderation/settings/' },
+        { name: 'initializeHelp', path: 'other/help/' },
+        { name: 'initializePeoples', path: 'other/peoples/' }
     ];
 
-    modules.forEach(moduleName => {
+    modules.forEach(({ name: moduleName, path }) => {
         try {
             if (typeof window[moduleName] === 'function') {
                 // Add delay for DOM-dependent modules
@@ -764,37 +781,58 @@ function initializeAllModules() {
                             }
                             
                             window[moduleName]();
-                            console.log(`✅ ${moduleName} initialized (delayed)`);
+                            console.log(`✅ ${moduleName} initialized (delayed) from ${path}`);
                         } catch (error) {
-                            console.error(`❌ Error initializing ${moduleName}:`, error);
+                            console.error(`❌ Error initializing ${moduleName} from ${path}:`, error);
                         }
                     }, 300);
                 } else {
                     window[moduleName]();
-                    console.log(`✅ ${moduleName} initialized`);
+                    console.log(`✅ ${moduleName} initialized from ${path}`);
                 }
             } else {
-                console.warn(`⚠️ Function ${moduleName} not found`);
+                console.warn(`⚠️ Function ${moduleName} not found (expected from ${path})`);
             }
         } catch (error) {
-            console.error(`❌ Error initializing ${moduleName}:`, error);
+            console.error(`❌ Error initializing ${moduleName} from ${path}:`, error);
         }
     });
 }
 
 // Debug function to check page states
 function debugPageStates() {
-    console.log('=== DEBUG PAGE STATES ===');
+    console.log('=== DEBUG PAGE STATES (New Folder Structure) ===');
     document.querySelectorAll('.page').forEach(page => {
         console.log(`${page.id}: ${page.classList.contains('active') ? 'ACTIVE' : 'INACTIVE'}`);
     });
     console.log(`Current saved page: ${getCurrentPage()}`);
-    console.log('========================');
+    console.log('===============================================');
 }
 
-// Force reinitialization for specific modules - includes boss
+// Force reinitialization for specific modules - includes boss - UPDATED FOR NEW FOLDER STRUCTURE
 function forceReinitializeModule(moduleName) {
-    console.log(`🔄 Force reinitializing ${moduleName}...`);
+    console.log(`🔄 Force reinitializing ${moduleName} with new folder structure...`);
+    
+    // Module path mapping for better debugging
+    const modulePaths = {
+        'secret': 'info/secret/',
+        'potions': 'info/potions/',
+        'grind': 'calc/grind/',
+        'peoples': 'other/peoples/',
+        'help': 'other/help/',
+        'settings': 'moderation/settings/',
+        'roulette': 'calc/roulette/',
+        'boss': 'calc/boss/',
+        'calculator': 'calc/calculator/',
+        'arm': 'calc/arm/',
+        'boosts': 'info/boosts/',
+        'shiny': 'info/shiny/',
+        'codes': 'info/codes/',
+        'aura': 'info/aura/',
+        'trainer': 'info/trainer/',
+        'charms': 'info/charms/',
+        'worlds': 'info/worlds/'
+    };
     
     // Reset initialization flags
     if (moduleName === 'secret' && typeof window !== 'undefined') {
@@ -824,15 +862,19 @@ function forceReinitializeModule(moduleName) {
     
     // Call initialization
     const initFunctionName = `initialize${moduleName.charAt(0).toUpperCase() + moduleName.slice(1)}`;
+    const modulePath = modulePaths[moduleName] || 'unknown/';
+    
     if (typeof window[initFunctionName] === 'function') {
         setTimeout(() => {
             window[initFunctionName]();
-            console.log(`✅ ${initFunctionName} force reinitialized`);
+            console.log(`✅ ${initFunctionName} force reinitialized from ${modulePath}`);
         }, 100);
+    } else {
+        console.error(`❌ ${initFunctionName} function not found (expected from ${modulePath})`);
     }
 }
 
-// Make functions globally available with boss support
+// Make functions globally available with boss support and new folder structure
 window.switchPage = switchPage;
 window.toggleMobileMenu = toggleMobileMenu;
 window.closeSidebar = closeSidebar;
