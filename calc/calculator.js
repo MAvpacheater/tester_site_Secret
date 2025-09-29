@@ -219,7 +219,7 @@ function createPetCalculatorHTML() {
 async function loadPetCalculatorTranslations() {
     try {
         console.log('📥 Loading pet calculator translations...');
-        const response = await fetch('./languages/calculator.json');
+        const response = await fetch('languages/calculator.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
