@@ -3,10 +3,9 @@
 // Global variables for arm calculator
 let armInitialized = false;
 let currentArmLanguage = 'en';
-let armTranslations = {};
 
-// Default translations - fallback (matches arm.json structure)
-const defaultArmTranslations = {
+// Translations stored directly in JS
+const armTranslations = {
     en: {
         title: "💪 Arm Stats Calculator",
         settings: "Settings",
@@ -22,15 +21,47 @@ const defaultArmTranslations = {
         errors: {
             invalidInput: "Please enter a valid number"
         }
+    },
+    uk: {
+        title: "💪 Калькулятор Статів Руки",
+        settings: "Налаштування",
+        inputLabel: "Якщо база руки",
+        inputPlaceholder: "Введіть число...",
+        resultLabel: "Максимальні стати",
+        calculateBtn: "Розрахувати",
+        golden1: "1/5 золота",
+        golden2: "2/5 золота", 
+        golden3: "3/5 золота",
+        golden4: "4/5 золота",
+        golden5: "5/5 золота",
+        errors: {
+            invalidInput: "Будь ласка, введіть дійсне число"
+        }
+    },
+    ru: {
+        title: "💪 Калькулятор Статов Руки",
+        settings: "Настройки",
+        inputLabel: "Если база руки",
+        inputPlaceholder: "Введите число...",
+        resultLabel: "Максимальные статы",
+        calculateBtn: "Рассчитать",
+        golden1: "1/5 золотая",
+        golden2: "2/5 золотая", 
+        golden3: "3/5 золотая",
+        golden4: "4/5 золотая",
+        golden5: "5/5 золотая",
+        errors: {
+            invalidInput: "Пожалуйста, введите действительное число"
+        }
     }
 };
 
 // FIXED: Множники для golden рівнів (правильні значення як в HTML)
 const goldenModifiers = {
     golden1: 1.5,      // 1/5 golden (x1.5)
-    golden2: 1.65,      // 2/5 golden (x1.65) 
+    golden2: 1.65,     // 2/5 golden (x1.65) 
     golden3: 1.8,      // 3/5 golden (x1.8)
-    golden4: 1.95,      // 4/5 golden (x1.95)
+    golden4: 1.95,     // 4/5 golden (x1.95)
     golden5: 2.1       // 5/5 golden (x2.1)
 };
 
@@ -44,7 +75,7 @@ function createArmHTML() {
         return;
     }
 
-    const t = armTranslations[currentArmLanguage] || defaultArmTranslations['en'];
+    const t = armTranslations[currentArmLanguage] || armTranslations['en'];
     console.log('Using arm translations:', t); // Debug log
 
     armPage.innerHTML = `
@@ -128,28 +159,6 @@ function createArmHTML() {
     console.log('✅ Arm HTML structure created');
 }
 
-// Load arm translations from JSON file
-async function loadArmTranslations() {
-    try {
-        console.log('📥 Loading arm translations...');
-        const response = await fetch('./languages/arm.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        armTranslations = data;
-        console.log('✅ Arm translations loaded successfully');
-        console.log('Loaded translations:', armTranslations);
-        return true;
-    } catch (error) {
-        console.error('❌ Error loading arm translations:', error);
-        // Use default translations as fallback
-        armTranslations = defaultArmTranslations;
-        console.log('Using default arm translations:', armTranslations);
-        return false;
-    }
-}
-
 // Get current language from app or default to 'en'
 function getCurrentAppLanguage() {
     // Try to get from global app language if available
@@ -161,16 +170,11 @@ function getCurrentAppLanguage() {
 }
 
 // Initialize Arm Calculator
-async function initializeArm() {
+function initializeArm() {
     console.log('🚀 Initializing Arm Calculator...');
     
     // Reset initialization flag
     armInitialized = false;
-    
-    // Load translations first
-    const translationsLoaded = await loadArmTranslations();
-    console.log('Arm translation load result:', translationsLoaded);
-    console.log('Available arm translations:', Object.keys(armTranslations));
     
     // Set current language
     currentArmLanguage = getCurrentAppLanguage();
@@ -311,7 +315,7 @@ function calculateArmStats() {
         return;
     }
 
-    const t = armTranslations[currentArmLanguage] || defaultArmTranslations['en'];
+    const t = armTranslations[currentArmLanguage] || armTranslations['en'];
     
     // Clear previous errors
     errorMessage.textContent = '';
