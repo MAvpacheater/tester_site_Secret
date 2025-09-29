@@ -9,7 +9,7 @@ async function loadHelpTranslations() {
     
     try {
         console.log('📥 Loading help translations...');
-        const response = await fetch('languages/help.json');
+        const response = await fetch('other/help/help.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
