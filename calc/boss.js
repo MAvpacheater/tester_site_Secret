@@ -3,10 +3,9 @@
 // Global variables for boss calculator
 let bossInitialized = false;
 let currentBossLanguage = 'en';
-let bossTranslations = {};
 
-// Default translations - fallback (matches boss.json structure)
-const defaultTranslations = {
+// Translations stored directly in JS
+const bossTranslations = {
     en: {
         title: "👹 Boss Calculator",
         totalNeeded: "Total Needed to Collect:",
@@ -21,6 +20,36 @@ const defaultTranslations = {
             invalidInput: "Please enter valid positive numbers",
             missingFields: "Please fill in both fields"
         }
+    },
+    uk: {
+        title: "👹 Калькулятор Боса",
+        totalNeeded: "Всього Потрібно Зібрати:",
+        rewardPerWin: "Нагорода за Перемогу:",
+        vipAutoclicker: "VIP + Автоклікер",
+        vipDescription: "(2.5с проти 4.5с)",
+        calculateBtn: "Розрахувати Час",
+        resultTitle: "Загальний Час:",
+        totalNeededPlaceholder: "Введіть загальну кількість...",
+        rewardPerWinPlaceholder: "Введіть нагороду за перемогу...",
+        errors: {
+            invalidInput: "Будь ласка, введіть дійсні позитивні числа",
+            missingFields: "Будь ласка, заповніть обидва поля"
+        }
+    },
+    ru: {
+        title: "👹 Калькулятор Босса",
+        totalNeeded: "Всего Нужно Собрать:",
+        rewardPerWin: "Награда за Победу:",
+        vipAutoclicker: "VIP + Автокликер",
+        vipDescription: "(2.5с против 4.5с)",
+        calculateBtn: "Рассчитать Время",
+        resultTitle: "Общее Время:",
+        totalNeededPlaceholder: "Введите общее количество...",
+        rewardPerWinPlaceholder: "Введите награду за победу...",
+        errors: {
+            invalidInput: "Пожалуйста, введите действительные положительные числа",
+            missingFields: "Пожалуйста, заполните оба поля"
+        }
     }
 };
 
@@ -32,8 +61,8 @@ function createBossHTML() {
         return;
     }
 
-    const t = bossTranslations[currentBossLanguage] || defaultTranslations['en'];
-    console.log('Using translations:', t); // Debug log
+    const t = bossTranslations[currentBossLanguage] || bossTranslations['en'];
+    console.log('Using boss translations:', t); // Debug log
 
     bossPage.innerHTML = `
         <div class="header-controls">
@@ -71,28 +100,6 @@ function createBossHTML() {
     console.log('✅ Boss HTML structure created');
 }
 
-// Load boss translations from JSON file
-async function loadBossTranslations() {
-    try {
-        console.log('📥 Loading boss translations...');
-        const response = await fetch('./languages/boss.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        bossTranslations = data;
-        console.log('✅ Boss translations loaded successfully');
-        console.log('Loaded translations:', bossTranslations);
-        return true;
-    } catch (error) {
-        console.error('❌ Error loading boss translations:', error);
-        // Use default translations as fallback
-        bossTranslations = defaultTranslations;
-        console.log('Using default translations:', bossTranslations);
-        return false;
-    }
-}
-
 // Get current language from app or default to 'en'
 function getCurrentAppLanguage() {
     // Try to get from global app language if available
@@ -104,20 +111,15 @@ function getCurrentAppLanguage() {
 }
 
 // Initialize Boss Calculator
-async function initializeBoss() {
+function initializeBoss() {
     console.log('🚀 Initializing Boss Calculator...');
     
     // Reset initialization flag
     bossInitialized = false;
     
-    // Load translations first
-    const translationsLoaded = await loadBossTranslations();
-    console.log('Translation load result:', translationsLoaded);
-    console.log('Available translations:', Object.keys(bossTranslations));
-    
     // Set current language
     currentBossLanguage = getCurrentAppLanguage();
-    console.log('Current language:', currentBossLanguage);
+    console.log('Current boss language:', currentBossLanguage);
     
     // Create HTML structure
     createBossHTML();
@@ -203,7 +205,7 @@ function calculateBossTime() {
         return;
     }
     
-    const t = bossTranslations[currentBossLanguage] || defaultTranslations['en'];
+    const t = bossTranslations[currentBossLanguage] || bossTranslations['en'];
     
     // Get input values
     const totalNeeded = parseFloat(totalNeededInput.value);
