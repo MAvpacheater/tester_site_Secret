@@ -47,44 +47,44 @@
     <!-- Critical CSS -->
     <link rel="stylesheet" href="system/general.css">
     
-    <!-- Non-critical CSS -->
-    <link rel="stylesheet" href="calc/calculator.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="calc/arms.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="calc/grind.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="calc/roulette.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="calc/boss.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/boosts.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/shiny.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/secret.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/codes.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/aura.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/trainer.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/charms.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/potions.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="info/worlds.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="moderation/settings.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="other/peoples.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="other/help.css" media="print" onload="this.media='all'">
+    <!-- Non-critical CSS - Updated folder structure -->
+    <link rel="stylesheet" href="calc/calculator/calculator.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="calc/arm/arm.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="calc/grind/grind.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="calc/roulette/roulette.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="calc/boss/boss.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/boosts/boosts.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/shiny/shiny.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/secret/secret.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/codes/codes.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/aura/aura.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/trainer/trainer.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/charms/charms.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/potions/potions.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/worlds/worlds.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="moderation/settings/settings.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="other/peoples/peoples.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="other/help/help.css" media="print" onload="this.media='all'">
     
     <!-- Fallback for CSS -->
     <noscript>
-        <link rel="stylesheet" href="calc/calculator.css">
-        <link rel="stylesheet" href="calc/arms.css">
-        <link rel="stylesheet" href="calc/grind.css">
-        <link rel="stylesheet" href="calc/roulette.css">
-        <link rel="stylesheet" href="calc/boss.css">
-        <link rel="stylesheet" href="info/boosts.css">
-        <link rel="stylesheet" href="info/shiny.css">
-        <link rel="stylesheet" href="info/secret.css">
-        <link rel="stylesheet" href="info/codes.css">
-        <link rel="stylesheet" href="info/aura.css">
-        <link rel="stylesheet" href="info/trainer.css">
-        <link rel="stylesheet" href="info/charms.css">
-        <link rel="stylesheet" href="info/potions.css">
-        <link rel="stylesheet" href="info/worlds.css">
-        <link rel="stylesheet" href="moderation/settings.css">
-        <link rel="stylesheet" href="other/peoples.css">
-        <link rel="stylesheet" href="other/help.css">
+        <link rel="stylesheet" href="calc/calculator/calculator.css">
+        <link rel="stylesheet" href="calc/arm/arm.css">
+        <link rel="stylesheet" href="calc/grind/grind.css">
+        <link rel="stylesheet" href="calc/roulette/roulette.css">
+        <link rel="stylesheet" href="calc/boss/boss.css">
+        <link rel="stylesheet" href="info/boosts/boosts.css">
+        <link rel="stylesheet" href="info/shiny/shiny.css">
+        <link rel="stylesheet" href="info/secret/secret.css">
+        <link rel="stylesheet" href="info/codes/codes.css">
+        <link rel="stylesheet" href="info/aura/aura.css">
+        <link rel="stylesheet" href="info/trainer/trainer.css">
+        <link rel="stylesheet" href="info/charms/charms.css">
+        <link rel="stylesheet" href="info/potions/potions.css">
+        <link rel="stylesheet" href="info/worlds/worlds.css">
+        <link rel="stylesheet" href="moderation/settings/settings.css">
+        <link rel="stylesheet" href="other/peoples/peoples.css">
+        <link rel="stylesheet" href="other/help/help.css">
     </noscript>
 </head>
 <body>
@@ -113,7 +113,7 @@
     <script src="system/reload.js" defer></script>
     <script src="system/url.js" defer></script>
     
-    <!-- Non-critical JavaScript loading -->
+    <!-- Non-critical JavaScript loading - Updated folder structure -->
     <script>
         function createScript(src) {
             return new Promise((resolve) => {
@@ -134,39 +134,39 @@
 
         async function loadScriptsDeferred() {
             const scripts = [
-                // Calculator modules
-                'calc/calculator.js',
-                'calc/arm.js', 
-                'calc/grind.js',
-                'calc/roulette.js',
-                'calc/boss.js',
+                // Calculator modules - Updated paths
+                'calc/calculator/calculator.js',
+                'calc/arm/arm.js', 
+                'calc/grind/grind.js',
+                'calc/roulette/roulette.js',
+                'calc/boss/boss.js',
 
-                // Info modules
-                'info/boosts.js',
-                'info/shiny.js',
-                'info/secret.js',
-                'info/codes.js',
-                'info/aura.js',
-                'info/trainer.js',
-                'info/charms.js',
-                'info/potions.js',
-                'info/worlds.js',
+                // Info modules - Updated paths
+                'info/boosts/boosts.js',
+                'info/shiny/shiny.js',
+                'info/secret/secret.js',
+                'info/codes/codes.js',
+                'info/aura/aura.js',
+                'info/trainer/trainer.js',
+                'info/charms/charms.js',
+                'info/potions/potions.js',
+                'info/worlds/worlds.js',
                 
-                // Moderation modules
-                'moderation/settings.js',
+                // Moderation modules - Updated paths
+                'moderation/settings/settings.js',
                 
-                // Other modules
-                'other/peoples.js',
-                'other/help.js'
+                // Other modules - Updated paths
+                'other/peoples/peoples.js',
+                'other/help/help.js'
             ];
             
-            console.log('🔄 Loading scripts...');
+            console.log('🔄 Loading scripts with updated folder structure...');
             updateLoadingText('Loading modules...');
             
             try {
                 // Load all scripts in parallel
                 await Promise.all(scripts.map(createScript));
-                console.log('✅ All scripts loaded');
+                console.log('✅ All scripts loaded with new folder structure');
                 
                 // Load content loader
                 await createScript('index/content_loader.js');
@@ -438,7 +438,7 @@
             
             function waitForCriticalScripts() {
                 if (typeof initializeApp === 'function' || attempts >= maxAttempts) {
-                    console.log('🔄 Starting script loading...');
+                    console.log('🔄 Starting script loading with new folder structure...');
                     loadScriptsDeferred();
                     
                     // Hide loading screen
@@ -497,7 +497,7 @@
         
         // Check modules function
         window.checkLoadedModules = function() {
-            console.log('=== LOADED MODULES CHECK ===');
+            console.log('=== LOADED MODULES CHECK (New Folder Structure) ===');
             console.log('initializeApp:', typeof initializeApp);
             console.log('switchPage:', typeof switchPage);
             console.log('initURLRouting:', typeof initURLRouting);
@@ -507,7 +507,7 @@
             console.log('App content element:', document.getElementById('app-content') ? 'Found' : 'Missing');
             console.log('Current page:', typeof getCurrentPage === 'function' ? getCurrentPage() : 'Unknown');
             console.log('Boss Calculator loaded:', typeof initializeBoss === 'function');
-            console.log('=========================');
+            console.log('===============================================');
         };
     </script>
 </body>
