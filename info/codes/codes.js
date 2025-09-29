@@ -1,4 +1,4 @@
-// Codes functionality with multilingual support - Similar to aura.js structure
+// Codes functionality with multilingual support
 
 let codesCurrentLanguage = 'en';
 let codesTranslations = null;
@@ -14,6 +14,7 @@ async function loadCodesTranslations() {
     if (codesTranslations) return codesTranslations;
     
     try {
+        console.log('📥 Loading codes translations...');
         const response = await fetch('info/codes/codes.json');
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         codesTranslations = await response.json();
@@ -25,31 +26,6 @@ async function loadCodesTranslations() {
     return codesTranslations;
 }
 
-// Create page structure
-function createCodesStructure() {
-    const page = document.getElementById('codesPage');
-    if (!page) return console.error('❌ Codes page not found');
-    
-    codesCurrentLanguage = getCurrentLanguage();
-    
-    // Create title
-    const title = document.createElement('h1');
-    title.className = 'title';
-    title.textContent = codesTranslations?.[codesCurrentLanguage]?.title || 'Codes Collection';
-    
-    // Create container
-    const container = document.createElement('div');
-    container.className = 'codes-container';
-    container.id = 'codesContainer';
-    
-    // Clear page and add elements
-    page.innerHTML = '';
-    page.appendChild(title);
-    page.appendChild(container);
-    
-    console.log('✅ Codes structure created');
-}
-
 // Update language
 function updateCodesLanguage(newLanguage) {
     console.log(`🔑 Codes language: ${codesCurrentLanguage} → ${newLanguage}`);
@@ -57,10 +33,13 @@ function updateCodesLanguage(newLanguage) {
     if (newLanguage === codesCurrentLanguage) return;
     codesCurrentLanguage = newLanguage;
     
-    // Update title
-    const titleElement = document.querySelector('.codes-page .title');
-    if (titleElement && codesTranslations?.[newLanguage]) {
-        titleElement.textContent = codesTranslations[newLanguage].title;
+    // Update title if exists
+    const codesPage = document.getElementById('codesPage');
+    if (codesPage) {
+        const titleElement = codesPage.querySelector('.title');
+        if (titleElement && codesTranslations?.[newLanguage]) {
+            titleElement.textContent = codesTranslations[newLanguage].title;
+        }
     }
     
     // Regenerate content
@@ -69,7 +48,7 @@ function updateCodesLanguage(newLanguage) {
     }
 }
 
-// Load/save code states (using sessionStorage)
+// Load/save code states
 function loadCodeStates() {
     const saved = sessionStorage.getItem('codeStates');
     return saved ? JSON.parse(saved) : {};
@@ -157,8 +136,8 @@ function updateCodesStats() {
 
 // Generate content
 async function generateCodesContent() {
-    const container = document.getElementById('codesContainer');
-    if (!container) return console.error('❌ Codes container not found');
+    const codesPage = document.getElementById('codesPage');
+    if (!codesPage) return console.error('❌ Codes page not found');
     
     codesCurrentLanguage = getCurrentLanguage();
     
@@ -169,7 +148,12 @@ async function generateCodesContent() {
         if (!data) throw new Error(`No codes data for language: ${codesCurrentLanguage}`);
         
         // Show loading
-        container.innerHTML = `<div class="codes-loading">${data.loading}</div>`;
+        codesPage.innerHTML = `
+            <h1 class="title">${data.title}</h1>
+            <div class="codes-container" id="codesContainer">
+                <div class="codes-loading">${data.loading}</div>
+            </div>
+        `;
         
         await new Promise(resolve => setTimeout(resolve, 300));
         
@@ -177,7 +161,7 @@ async function generateCodesContent() {
         const codeStates = loadCodeStates();
         const stats = calculateCodeStats(data.codes, codeStates);
         
-        // Build HTML with stats and codes
+        // Build HTML
         let content = `
             <div class="codes-header">
                 <div class="codes-stats">
@@ -229,15 +213,22 @@ async function generateCodesContent() {
         });
         
         content += '</div>';
-        container.innerHTML = content;
+        
+        const container = document.getElementById('codesContainer');
+        if (container) {
+            container.innerHTML = content;
+        }
         
         console.log(`✅ Generated ${data.codes.length} codes in ${codesCurrentLanguage}`);
     } catch (error) {
         console.error('❌ Error generating codes:', error);
-        container.innerHTML = `
-            <div class="codes-error">
-                ⚠️ Error loading codes data<br>
-                <button class="retry-btn" onclick="generateCodesContent()">Retry</button>
+        codesPage.innerHTML = `
+            <h1 class="title">Codes Collection</h1>
+            <div class="codes-container">
+                <div class="codes-error">
+                    ⚠️ Error loading codes data<br>
+                    <button class="retry-btn" onclick="initializeCodes()">Retry</button>
+                </div>
             </div>
         `;
     }
@@ -256,7 +247,6 @@ async function initializeCodes() {
     
     try {
         await loadCodesTranslations();
-        createCodesStructure();
         await generateCodesContent();
         
         codesInitialized = true;
