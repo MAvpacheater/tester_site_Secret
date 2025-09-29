@@ -157,20 +157,12 @@ function updateWorldsLanguage(newLanguage) {
     }
     
     worldsCurrentLanguage = newLanguage;
-    
     console.log(`🌍 Updating worlds language to: ${newLanguage}`);
     
-    // Update page title immediately if page is loaded
-    const titleElement = document.querySelector('.worlds-page .title');
-    if (titleElement && worldsTranslations && worldsTranslations[newLanguage]) {
-        titleElement.textContent = worldsTranslations[newLanguage].title;
-    }
-    
-    // Regenerate content if worlds are already initialized
+    // Reinitialize if already initialized
     if (worldsInitialized) {
-        setTimeout(() => {
-            generateWorldsContent();
-        }, 100);
+        worldsInitialized = false;
+        setTimeout(initializeWorlds, 100);
     }
 }
 
@@ -245,9 +237,14 @@ async function generateWorldsContent() {
 async function initializeWorlds() {
     console.log('🌍 Initializing worlds page...');
     
+    const worldsPage = document.getElementById('worldsPage');
+    if (!worldsPage) {
+        console.error('❌ Worlds page not found');
+        return;
+    }
+    
     // Check if already initialized and content exists
-    const container = document.getElementById('worldsContainer');
-    if (worldsInitialized && container && container.querySelector('.world-item')) {
+    if (worldsInitialized && worldsPage.querySelector('.world-item')) {
         console.log('🌍 Worlds already initialized with content');
         return;
     }
@@ -255,22 +252,20 @@ async function initializeWorlds() {
     // Get saved language
     worldsCurrentLanguage = getCurrentLanguage();
     
-    const worldsPage = document.getElementById('worldsPage');
-    if (!worldsPage) {
-        console.error('❌ Worlds page not found');
+    // Load translations
+    await loadWorldsTranslations();
+    
+    const data = worldsTranslations[worldsCurrentLanguage];
+    if (!data) {
+        console.error('❌ Translation data not found');
         return;
     }
     
-    // Load translations and generate content
-    await loadWorldsTranslations();
-    
-    // Update page title
-    if (worldsTranslations && worldsTranslations[worldsCurrentLanguage]) {
-        const titleElement = worldsPage.querySelector('.title');
-        if (titleElement) {
-            titleElement.textContent = worldsTranslations[worldsCurrentLanguage].title;
-        }
-    }
+    // Create HTML structure
+    worldsPage.innerHTML = `
+        <h1 class="title">${data.title}</h1>
+        <div class="worlds-container" id="worldsContainer"></div>
+    `;
     
     // Generate content
     await generateWorldsContent();
@@ -339,8 +334,8 @@ document.addEventListener('click', function(e) {
     if (e.target && e.target.getAttribute && e.target.getAttribute('data-page') === 'worlds') {
         console.log('🌍 Worlds page clicked, will initialize...');
         setTimeout(() => {
-            const container = document.getElementById('worldsContainer');
-            if (!worldsInitialized || !container || !container.querySelector('.world-item')) {
+            const worldsPage = document.getElementById('worldsPage');
+            if (!worldsInitialized || !worldsPage || !worldsPage.querySelector('.world-item')) {
                 console.log('🌍 Page switched to worlds, initializing...');
                 initializeWorlds();
             } else {
