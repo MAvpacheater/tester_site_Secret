@@ -1,4 +1,4 @@
-// Boosts functionality
+// Boosts functionality - Creates full page structure
 
 // Boosts data structure
 const boostsData = {
@@ -32,11 +32,36 @@ const boostsData = {
     ]
 };
 
+let boostsInitialized = false;
+
+// Create page structure
+function createBoostsStructure() {
+    const page = document.getElementById('boostsPage');
+    if (!page) return console.error('❌ Boosts page not found');
+    
+    // Create title
+    const title = document.createElement('h1');
+    title.className = 'title';
+    title.textContent = 'Boosts Information';
+    
+    // Create container
+    const container = document.createElement('div');
+    container.className = 'boosts-container';
+    container.id = 'boostsContainer';
+    
+    // Clear page and add elements
+    page.innerHTML = '';
+    page.appendChild(title);
+    page.appendChild(container);
+    
+    console.log('✅ Boosts structure created');
+}
+
 // Generate boosts content
 function generateBoostsContent() {
     const container = document.getElementById('boostsContainer');
     if (!container) {
-        console.error('Element with ID "boostsContainer" not found');
+        console.error('❌ Boosts container not found');
         return;
     }
     
@@ -81,34 +106,72 @@ function generateBoostsContent() {
         container.appendChild(section);
     });
     
-    console.log('Boosts content generated successfully');
+    console.log(`✅ Generated ${Object.keys(boostsData).length} boost categories`);
 }
 
 // Initialize boosts
 function initializeBoosts() {
-    console.log('Initializing boosts...');
+    if (boostsInitialized) {
+        console.log('🔄 Boosts already initialized');
+        return;
+    }
+    
+    console.log('🚀 Initializing boosts...');
+    
+    createBoostsStructure();
     generateBoostsContent();
+    
+    boostsInitialized = true;
+    window.boostsInitialized = true;
+    
+    console.log('✅ Boosts initialized successfully');
 }
 
-// Make sure content is generated when boosts page becomes active
+// Auto-initialize when page becomes active
 document.addEventListener('DOMContentLoaded', () => {
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                const boostsPage = document.getElementById('boostsPage');
-                if (boostsPage && boostsPage.classList.contains('active')) {
-                    console.log('Boosts page became active, generating content...');
-                    generateBoostsContent();
-                }
+    setTimeout(() => {
+        const page = document.getElementById('boostsPage');
+        if (page?.classList.contains('active')) {
+            initializeBoosts();
+        }
+    }, 100);
+});
+
+// Listen for page activation
+document.addEventListener('click', (e) => {
+    if (e.target?.getAttribute('data-page') === 'boosts') {
+        setTimeout(() => {
+            if (!boostsInitialized) {
+                initializeBoosts();
             }
-        });
-    });
-    
-    // Observe changes to pages
-    document.querySelectorAll('.page').forEach(page => {
-        observer.observe(page, { attributes: true });
+        }, 300);
+    }
+});
+
+// Observer for page activation
+const boostsObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            const boostsPage = document.getElementById('boostsPage');
+            if (boostsPage?.classList.contains('active') && !boostsInitialized) {
+                console.log('📊 Boosts page activated, initializing...');
+                initializeBoosts();
+            }
+        }
     });
 });
 
-// Global function for window object (fallback)
+// Start observing
+document.addEventListener('DOMContentLoaded', () => {
+    const boostsPage = document.getElementById('boostsPage');
+    if (boostsPage) {
+        boostsObserver.observe(boostsPage, { attributes: true });
+    }
+});
+
+// Global exports
+window.initializeBoosts = initializeBoosts;
 window.generateBoostsContent = generateBoostsContent;
+window.boostsInitialized = boostsInitialized;
+
+console.log('✅ Boosts.js loaded');
