@@ -1,4 +1,4 @@
-// Potions functionality with multilingual support - Similar to aura.js structure
+// Potions functionality with multilingual support
 
 let potionsCurrentLanguage = 'en';
 let potionsTranslations = null;
@@ -16,6 +16,7 @@ async function loadPotionsTranslations() {
     if (potionsTranslations) return potionsTranslations;
     
     try {
+        console.log('📥 Loading potions translations...');
         const response = await fetch('info/potions/potions.json');
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         potionsTranslations = await response.json();
@@ -27,31 +28,6 @@ async function loadPotionsTranslations() {
     return potionsTranslations;
 }
 
-// Create page structure
-function createPotionsStructure() {
-    const page = document.getElementById('potionsPage');
-    if (!page) return console.error('❌ Potions page not found');
-    
-    potionsCurrentLanguage = getCurrentLanguage();
-    
-    // Create title
-    const title = document.createElement('h1');
-    title.className = 'title';
-    title.textContent = potionsTranslations?.[potionsCurrentLanguage]?.title || 'Potions & Food';
-    
-    // Create container
-    const container = document.createElement('div');
-    container.className = 'potions-container';
-    container.id = 'potionsContainer';
-    
-    // Clear page and add elements
-    page.innerHTML = '';
-    page.appendChild(title);
-    page.appendChild(container);
-    
-    console.log('✅ Potions structure created');
-}
-
 // Update language
 function updatePotionsLanguage(newLanguage) {
     console.log(`🧪 Potions language: ${potionsCurrentLanguage} → ${newLanguage}`);
@@ -59,10 +35,13 @@ function updatePotionsLanguage(newLanguage) {
     if (newLanguage === potionsCurrentLanguage) return;
     potionsCurrentLanguage = newLanguage;
     
-    // Update title
-    const titleElement = document.querySelector('.potions-page .title');
-    if (titleElement && potionsTranslations?.[newLanguage]) {
-        titleElement.textContent = potionsTranslations[newLanguage].title;
+    // Update title if exists
+    const potionsPage = document.getElementById('potionsPage');
+    if (potionsPage) {
+        const titleElement = potionsPage.querySelector('.title');
+        if (titleElement && potionsTranslations?.[newLanguage]) {
+            titleElement.textContent = potionsTranslations[newLanguage].title;
+        }
     }
     
     // Regenerate content
@@ -99,7 +78,7 @@ function createRarityFilters(data) {
     const rarities = getAvailableRarities(data);
     
     let filtersHTML = `
-        <button class="rarity-filter-btn all" 
+        <button class="rarity-filter-btn all active" 
                 data-rarity="all" 
                 onclick="setRarityFilter('all')">
             ${data.filterAll || 'All'}
@@ -188,8 +167,8 @@ function filterByRarity() {
 
 // Generate content
 async function generatePotionsContent() {
-    const container = document.getElementById('potionsContainer');
-    if (!container) return console.error('❌ Potions container not found');
+    const potionsPage = document.getElementById('potionsPage');
+    if (!potionsPage) return console.error('❌ Potions page not found');
     
     potionsCurrentLanguage = getCurrentLanguage();
     
@@ -200,7 +179,12 @@ async function generatePotionsContent() {
         if (!data) throw new Error(`No potions data for language: ${potionsCurrentLanguage}`);
         
         // Show loading
-        container.innerHTML = `<div class="potions-loading">${data.loading}</div>`;
+        potionsPage.innerHTML = `
+            <h1 class="title">${data.title}</h1>
+            <div class="potions-container" id="potionsContainer">
+                <div class="potions-loading">${data.loading}</div>
+            </div>
+        `;
         
         await new Promise(resolve => setTimeout(resolve, 300));
         
@@ -258,7 +242,10 @@ async function generatePotionsContent() {
             </div>
         `;
         
-        container.innerHTML = fullHTML;
+        const container = document.getElementById('potionsContainer');
+        if (container) {
+            container.innerHTML = fullHTML;
+        }
         
         // Reset state
         currentPotionsType = 'potions';
@@ -267,10 +254,13 @@ async function generatePotionsContent() {
         console.log(`✅ Generated ${data.potions?.length || 0} potions and ${data.food?.length || 0} foods in ${potionsCurrentLanguage}`);
     } catch (error) {
         console.error('❌ Error generating potions:', error);
-        container.innerHTML = `
-            <div class="potions-error">
-                ⚠️ Error loading potions data<br>
-                <button class="retry-btn" onclick="generatePotionsContent()">Retry</button>
+        potionsPage.innerHTML = `
+            <h1 class="title">Potions & Food</h1>
+            <div class="potions-container">
+                <div class="potions-error">
+                    ⚠️ Error loading potions data<br>
+                    <button class="retry-btn" onclick="initializePotions()">Retry</button>
+                </div>
             </div>
         `;
     }
@@ -289,7 +279,6 @@ async function initializePotions() {
     
     try {
         await loadPotionsTranslations();
-        createPotionsStructure();
         await generatePotionsContent();
         
         potionsInitialized = true;
