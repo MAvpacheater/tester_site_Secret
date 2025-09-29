@@ -1,12 +1,11 @@
-// Pet Stats Calculator - Full implementation with HTML structure creation
+// Pet Stats Calculator - Fixed implementation
 
 // Global variables for pet calculator
 let petCalculatorInitialized = false;
 let currentPetLanguage = 'en';
-let petCalculatorTranslations = {};
 
-// Default translations - fallback
-const defaultPetTranslations = {
+// Built-in translations - 3 languages
+const petCalculatorTranslations = {
     en: {
         title: "🐾 Pet Calculator",
         settings: "Settings",
@@ -20,8 +19,54 @@ const defaultPetTranslations = {
         type: "Type",
         shiny: "Shiny",
         maxlvl: "Max lvl",
+        selectSlimeType: "Select Slime Type",
+        selectMutation: "Select Mutation",
+        selectEvolutionSize: "Select Evolution/Size",
+        selectType: "Select Type",
         errors: {
             invalidInput: "Please enter a valid number"
+        }
+    },
+    uk: {
+        title: "🐾 Калькулятор Петів",
+        settings: "Налаштування",
+        inputLabel: "Введіть статистику пета:",
+        inputPlaceholder: "Введіть базові характеристики вашого пета...",
+        resultLabel: "Фінальні характеристики пета:",
+        calculateBtn: "Розрахувати",
+        slimes: "Слайми",
+        mutation: "Мутація", 
+        evolutionSize: "Еволюція та розмір",
+        type: "Тип",
+        shiny: "Блискучий",
+        maxlvl: "Макс. рівень",
+        selectSlimeType: "Оберіть тип слайма",
+        selectMutation: "Оберіть мутацію",
+        selectEvolutionSize: "Оберіть еволюцію/розмір",
+        selectType: "Оберіть тип",
+        errors: {
+            invalidInput: "Будь ласка, введіть дійсне число"
+        }
+    },
+    ru: {
+        title: "🐾 Калькулятор Питомцев",
+        settings: "Настройки",
+        inputLabel: "Введите статистику питомца:",
+        inputPlaceholder: "Введите базовые характеристики вашего питомца...",
+        resultLabel: "Финальные характеристики питомца:",
+        calculateBtn: "Рассчитать",
+        slimes: "Слаймы",
+        mutation: "Мутация", 
+        evolutionSize: "Эволюция и размер",
+        type: "Тип",
+        shiny: "Блестящий",
+        maxlvl: "Макс. уровень",
+        selectSlimeType: "Выберите тип слайма",
+        selectMutation: "Выберите мутацию",
+        selectEvolutionSize: "Выберите эволюцию/размер",
+        selectType: "Выберите тип",
+        errors: {
+            invalidInput: "Пожалуйста, введите действительное число"
         }
     }
 };
@@ -105,6 +150,22 @@ const typeOptions = {
 
 let petMultiplier = 1;
 
+// Get current language from app or default to 'en'
+function getCurrentAppLanguage() {
+    // Try to get from global app language if available
+    if (typeof getCurrentLanguage === 'function') {
+        const lang = getCurrentLanguage();
+        if (petCalculatorTranslations[lang]) return lang;
+    }
+    // Try localStorage
+    const savedLang = localStorage.getItem('selectedLanguage');
+    if (savedLang && petCalculatorTranslations[savedLang]) {
+        return savedLang;
+    }
+    // Default fallback
+    return 'en';
+}
+
 // Create HTML structure for pet calculator
 function createPetCalculatorHTML() {
     const calculatorPage = document.getElementById('calculatorPage');
@@ -113,70 +174,56 @@ function createPetCalculatorHTML() {
         return;
     }
 
-    const t = petCalculatorTranslations[currentPetLanguage] || defaultPetTranslations['en'];
-    console.log('Using pet calculator translations:', t); // Debug log
-
-    // Make sure we have fallback values if translations fail
-    const title = t.title || "🐾 Pet Calculator";
-    const settings = t.settings || "Settings";
-    const inputLabel = t.inputLabel || "Enter Pet Stats:";
-    const inputPlaceholder = t.inputPlaceholder || "Enter your pet's base stats...";
-    const calculateBtn = t.calculateBtn || "Calculate";
-    const resultLabel = t.resultLabel || "Final Pet Stats:";
-    const slimes = t.slimes || "Slimes";
-    const mutation = t.mutation || "Mutation";
-    const evolutionSize = t.evolutionSize || "Evolution and Size";
-    const type = t.type || "Type";
-    const shiny = t.shiny || "Shiny";
-    const maxlvl = t.maxlvl || "Max lvl";
+    const t = petCalculatorTranslations[currentPetLanguage] || petCalculatorTranslations['en'];
+    console.log('Using pet calculator translations for language:', currentPetLanguage);
 
     calculatorPage.innerHTML = `
         <div class="header-controls">
-            <h1>${title}</h1>
+            <h1>${t.title}</h1>
             <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
         </div>
 
-        <!-- Settings Panel - MODAL STYLE -->
+        <!-- Settings Panel -->
         <div class="settings-panel" id="settingsPanel">
-            <div class="settings-title">${settings}</div>
+            <div class="settings-title">${t.settings}</div>
             
             <!-- Category buttons with modal opening -->
             <div class="category-button" onclick="openSlimeSettings()">
                 <div class="category-info">
-                    <div class="category-label">${slimes}</div>
-                    <div class="category-selected">Shock</div>
+                    <div class="category-label">${t.slimes}</div>
+                    <div class="category-selected" id="selectedSlimeDisplay">Shock</div>
                 </div>
                 <div class="category-arrow">→</div>
             </div>
 
             <div class="category-button" onclick="openMutationSettings()">
                 <div class="category-info">
-                    <div class="category-label">${mutation}</div>
-                    <div class="category-selected">Cosmic</div>
+                    <div class="category-label">${t.mutation}</div>
+                    <div class="category-selected" id="selectedMutationDisplay">Cosmic</div>
                 </div>
                 <div class="category-arrow">→</div>
             </div>
 
             <div class="category-button" onclick="openEvolutionSettings()">
                 <div class="category-info">
-                    <div class="category-label">${evolutionSize}</div>
-                    <div class="category-selected">Goliath</div>
+                    <div class="category-label">${t.evolutionSize}</div>
+                    <div class="category-selected" id="selectedEvolutionDisplay">Goliath</div>
                 </div>
                 <div class="category-arrow">→</div>
             </div>
 
             <div class="category-button" onclick="openTypeSettings()">
                 <div class="category-info">
-                    <div class="category-label">${type}</div>
-                    <div class="category-selected">Pristine</div>
+                    <div class="category-label">${t.type}</div>
+                    <div class="category-selected" id="selectedTypeDisplay">Pristine</div>
                 </div>
                 <div class="category-arrow">→</div>
             </div>
 
-            <!-- Simple toggles like in photo -->
+            <!-- Simple toggles -->
             <div class="simple-toggle">
                 <div class="toggle-info">
-                    <div class="toggle-label">${shiny}</div>
+                    <div class="toggle-label">${t.shiny}</div>
                     <div class="toggle-multiplier">(x1.15)</div>
                 </div>
                 <label class="switch">
@@ -187,7 +234,7 @@ function createPetCalculatorHTML() {
 
             <div class="simple-toggle">
                 <div class="toggle-info">
-                    <div class="toggle-label">${maxlvl}</div>
+                    <div class="toggle-label">${t.maxlvl}</div>
                     <div class="toggle-multiplier">(x2.2388)</div>
                 </div>
                 <label class="switch">
@@ -199,15 +246,15 @@ function createPetCalculatorHTML() {
 
         <!-- Input Section -->
         <div class="input-section">
-            <label class="input-label" for="numberInput">${inputLabel}</label>
-            <input type="number" class="number-input" id="numberInput" placeholder="${inputPlaceholder}" step="any" oninput="calculateStats()">
-            <button class="calculate-btn" onclick="calculateStats()">${calculateBtn}</button>
+            <label class="input-label" for="numberInput">${t.inputLabel}</label>
+            <input type="number" class="number-input" id="numberInput" placeholder="${t.inputPlaceholder}" step="any" oninput="calculateStats()">
+            <button class="calculate-btn" onclick="calculateStats()">${t.calculateBtn}</button>
             <div class="error" id="errorMessage"></div>
         </div>
 
         <!-- Result Section -->
         <div class="result-section" id="resultSection">
-            <div class="stats-label">${resultLabel}</div>
+            <div class="stats-label">${t.resultLabel}</div>
             <div class="result-value" id="resultValue">0</div>
         </div>
     `;
@@ -215,49 +262,9 @@ function createPetCalculatorHTML() {
     console.log('✅ Pet Calculator HTML structure created');
 }
 
-// Load pet calculator translations from JSON file
-async function loadPetCalculatorTranslations() {
-    try {
-        console.log('📥 Loading pet calculator translations...');
-        const response = await fetch('languages/calculator.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        petCalculatorTranslations = data;
-        console.log('✅ Pet calculator translations loaded successfully');
-        console.log('Loaded pet calculator translations:', petCalculatorTranslations);
-        return true;
-    } catch (error) {
-        console.error('❌ Error loading pet calculator translations:', error);
-        // Use default translations as fallback
-        petCalculatorTranslations = defaultPetTranslations;
-        console.log('Using default pet calculator translations:', petCalculatorTranslations);
-        return false;
-    }
-}
-
-// Get current language from app or default to 'en'
-function getCurrentAppLanguage() {
-    // Try to get from global app language if available
-    if (typeof getCurrentLanguage === 'function') {
-        return getCurrentLanguage();
-    }
-    // Fallback to localStorage or default
-    return localStorage.getItem('selectedLanguage') || 'en';
-}
-
 // Initialize Pet Calculator
-async function initializePetCalculator() {
+function initializePetCalculator() {
     console.log('🚀 Initializing Pet Calculator...');
-    
-    // Reset initialization flag
-    petCalculatorInitialized = false;
-    
-    // Load translations first
-    const translationsLoaded = await loadPetCalculatorTranslations();
-    console.log('Pet calculator translation load result:', translationsLoaded);
-    console.log('Available pet calculator translations:', Object.keys(petCalculatorTranslations));
     
     // Set current language
     currentPetLanguage = getCurrentAppLanguage();
@@ -273,7 +280,7 @@ async function initializePetCalculator() {
     setDefaultPetCalculatorValues();
     
     petCalculatorInitialized = true;
-    console.log('✅ Pet Calculator initialized');
+    console.log('✅ Pet Calculator initialized successfully');
 }
 
 // Add event listeners for pet calculator
@@ -285,7 +292,7 @@ function addPetCalculatorEventListeners() {
         updatePetCalculatorLanguage(newLanguage);
     });
     
-    // Add input event listeners
+    // Add input event listeners after a short delay to ensure elements exist
     setTimeout(() => {
         const numberInput = document.getElementById('numberInput');
         if (numberInput) {
@@ -346,25 +353,35 @@ function setDefaultPetCalculatorValues() {
     selectedType = 'type_pristine';
     
     // Set default checkboxes
-    const shinyCheckbox = document.getElementById('shiny');
-    if (shinyCheckbox) {
-        shinyCheckbox.checked = true;
-    }
-    
-    const maxlvlCheckbox = document.getElementById('maxlvl');
-    if (maxlvlCheckbox) {
-        maxlvlCheckbox.checked = true;
-    }
-    
-    updatePetMultiplier();
+    setTimeout(() => {
+        const shinyCheckbox = document.getElementById('shiny');
+        if (shinyCheckbox) {
+            shinyCheckbox.checked = true;
+        }
+        
+        const maxlvlCheckbox = document.getElementById('maxlvl');
+        if (maxlvlCheckbox) {
+            maxlvlCheckbox.checked = true;
+        }
+        
+        updatePetMultiplier();
+        updateCategoryDisplays();
+    }, 50);
 }
 
 // Update category displays
 function updateCategoryDisplays() {
-    updateCategoryDisplay('slime', slimeOptions[selectedSlime].name);
-    updateCategoryDisplay('mutation', mutationOptions[selectedMutation].name);
-    updateCategoryDisplay('evolution', evolutionOptions[selectedEvolution].name);
-    updateCategoryDisplay('type', typeOptions[selectedType].name);
+    const slimeDisplay = document.getElementById('selectedSlimeDisplay');
+    if (slimeDisplay) slimeDisplay.textContent = slimeOptions[selectedSlime].name;
+    
+    const mutationDisplay = document.getElementById('selectedMutationDisplay');
+    if (mutationDisplay) mutationDisplay.textContent = mutationOptions[selectedMutation].name;
+    
+    const evolutionDisplay = document.getElementById('selectedEvolutionDisplay');
+    if (evolutionDisplay) evolutionDisplay.textContent = evolutionOptions[selectedEvolution].name;
+    
+    const typeDisplay = document.getElementById('selectedTypeDisplay');
+    if (typeDisplay) typeDisplay.textContent = typeOptions[selectedType].name;
 }
 
 // Show/hide settings
@@ -442,25 +459,29 @@ function selectOption(optionId, optionName) {
 
 // Category opening functions with modals
 function openSlimeSettings() {
-    createModal('Select Slime Type', slimeOptions, selectedSlime, (slimeId, slimeName) => {
+    const t = petCalculatorTranslations[currentPetLanguage] || petCalculatorTranslations['en'];
+    createModal(t.selectSlimeType, slimeOptions, selectedSlime, (slimeId, slimeName) => {
         selectSlime(slimeId);
     });
 }
 
 function openMutationSettings() {
-    createModal('Select Mutation', mutationOptions, selectedMutation, (mutationId, mutationName) => {
+    const t = petCalculatorTranslations[currentPetLanguage] || petCalculatorTranslations['en'];
+    createModal(t.selectMutation, mutationOptions, selectedMutation, (mutationId, mutationName) => {
         selectMutation(mutationId);
     });
 }
 
 function openEvolutionSettings() {
-    createModal('Select Evolution/Size', evolutionOptions, selectedEvolution, (evolutionId, evolutionName) => {
+    const t = petCalculatorTranslations[currentPetLanguage] || petCalculatorTranslations['en'];
+    createModal(t.selectEvolutionSize, evolutionOptions, selectedEvolution, (evolutionId, evolutionName) => {
         selectEvolution(evolutionId);
     });
 }
 
 function openTypeSettings() {
-    createModal('Select Type', typeOptions, selectedType, (typeId, typeName) => {
+    const t = petCalculatorTranslations[currentPetLanguage] || petCalculatorTranslations['en'];
+    createModal(t.selectType, typeOptions, selectedType, (typeId, typeName) => {
         selectType(typeId);
     });
 }
@@ -468,60 +489,34 @@ function openTypeSettings() {
 // Selection functions
 function selectSlime(slimeId) {
     selectedSlime = slimeId;
-    updateCategoryDisplay('slime', slimeOptions[slimeId].name);
+    const display = document.getElementById('selectedSlimeDisplay');
+    if (display) display.textContent = slimeOptions[slimeId].name;
     updatePetMultiplier();
     console.log('Selected slime:', slimeId, slimeOptions[slimeId].name);
 }
 
 function selectMutation(mutationId) {
     selectedMutation = mutationId;
-    updateCategoryDisplay('mutation', mutationOptions[mutationId].name);
+    const display = document.getElementById('selectedMutationDisplay');
+    if (display) display.textContent = mutationOptions[mutationId].name;
     updatePetMultiplier();
     console.log('Selected mutation:', mutationId, mutationOptions[mutationId].name);
 }
 
 function selectEvolution(evolutionId) {
     selectedEvolution = evolutionId;
-    updateCategoryDisplay('evolution', evolutionOptions[evolutionId].name);
+    const display = document.getElementById('selectedEvolutionDisplay');
+    if (display) display.textContent = evolutionOptions[evolutionId].name;
     updatePetMultiplier();
     console.log('Selected evolution:', evolutionId, evolutionOptions[evolutionId].name);
 }
 
 function selectType(typeId) {
     selectedType = typeId;
-    updateCategoryDisplay('type', typeOptions[typeId].name);
+    const display = document.getElementById('selectedTypeDisplay');
+    if (display) display.textContent = typeOptions[typeId].name;
     updatePetMultiplier();
     console.log('Selected type:', typeId, typeOptions[typeId].name);
-}
-
-// Update category display
-function updateCategoryDisplay(category, selectedName) {
-    const categoryButtons = document.querySelectorAll('.category-button');
-    categoryButtons.forEach(button => {
-        const label = button.querySelector('.category-label');
-        if (!label) return;
-        
-        const labelText = label.textContent.toLowerCase();
-        
-        let shouldUpdate = false;
-        if (category === 'slime' && labelText.includes('slime')) {
-            shouldUpdate = true;
-        } else if (category === 'mutation' && labelText.includes('mutation')) {
-            shouldUpdate = true;
-        } else if (category === 'evolution' && labelText.includes('evolution')) {
-            shouldUpdate = true;
-        } else if (category === 'type' && labelText.includes('type')) {
-            shouldUpdate = true;
-        }
-        
-        if (shouldUpdate) {
-            const selectedElement = button.querySelector('.category-selected');
-            if (selectedElement) {
-                selectedElement.textContent = selectedName;
-                console.log(`Updated ${category} display to: ${selectedName}`);
-            }
-        }
-    });
 }
 
 // Update pet multiplier
@@ -573,7 +568,7 @@ function calculateStats() {
         return;
     }
 
-    const t = petCalculatorTranslations[currentPetLanguage] || defaultPetTranslations['en'];
+    const t = petCalculatorTranslations[currentPetLanguage] || petCalculatorTranslations['en'];
 
     // Clear previous errors
     errorMessage.textContent = '';
@@ -593,7 +588,8 @@ function calculateStats() {
     
     console.log(`Calculating: ${baseValue} * ${petMultiplier} = ${finalValue}`);
 
-    resultValue.textContent = finalValue.toLocaleString('uk-UA', {
+    // Format the result
+    resultValue.textContent = finalValue.toLocaleString(undefined, {
         minimumFractionDigits: finalValue % 1 === 0 ? 0 : 2,
         maximumFractionDigits: 8
     });
@@ -608,15 +604,18 @@ function calculateStats() {
 
 // Auto-initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Only initialize if pet calculator page exists
-    if (document.getElementById('calculatorPage')) {
-        initializePetCalculator();
-    }
+    // Small delay to ensure the page element exists
+    setTimeout(() => {
+        if (document.getElementById('calculatorPage')) {
+            console.log('🔄 DOM loaded, initializing pet calculator...');
+            initializePetCalculator();
+        }
+    }, 100);
 });
 
 // Also initialize when page becomes active (for navigation)
 document.addEventListener('pageChanged', function(event) {
-    if (event.detail.pageId === 'calculatorPage') {
+    if (event.detail && event.detail.pageId === 'calculatorPage') {
         console.log('🔄 Pet calculator page activated, initializing...');
         if (!petCalculatorInitialized) {
             initializePetCalculator();
@@ -624,108 +623,11 @@ document.addEventListener('pageChanged', function(event) {
     }
 });
 
-// Force initialization function for debugging
-window.debugInitializePetCalculator = function() {
-    console.log('🔧 Debug: Force initializing pet calculator');
+// Manual initialization for debugging
+window.manualInitPetCalculator = function() {
+    console.log('🔧 Manual pet calculator initialization');
     petCalculatorInitialized = false;
     initializePetCalculator();
-};
-
-// Emergency initialization function that uses hardcoded values
-window.emergencyInitializePetCalculator = function() {
-    console.log('🚨 Emergency: Initializing pet calculator with hardcoded values');
-    const calculatorPage = document.getElementById('calculatorPage');
-    if (!calculatorPage) {
-        console.error('❌ Pet calculator page not found');
-        return;
-    }
-
-    calculatorPage.innerHTML = `
-        <div class="header-controls">
-            <h1>🐾 Pet Calculator</h1>
-            <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
-        </div>
-
-        <!-- Settings Panel - MODAL STYLE -->
-        <div class="settings-panel" id="settingsPanel">
-            <div class="settings-title">Settings</div>
-            
-            <!-- Category buttons with modal opening -->
-            <div class="category-button" onclick="openSlimeSettings()">
-                <div class="category-info">
-                    <div class="category-label">Slimes</div>
-                    <div class="category-selected">Shock</div>
-                </div>
-                <div class="category-arrow">→</div>
-            </div>
-
-            <div class="category-button" onclick="openMutationSettings()">
-                <div class="category-info">
-                    <div class="category-label">Mutation</div>
-                    <div class="category-selected">Cosmic</div>
-                </div>
-                <div class="category-arrow">→</div>
-            </div>
-
-            <div class="category-button" onclick="openEvolutionSettings()">
-                <div class="category-info">
-                    <div class="category-label">Evolution and Size</div>
-                    <div class="category-selected">Goliath</div>
-                </div>
-                <div class="category-arrow">→</div>
-            </div>
-
-            <div class="category-button" onclick="openTypeSettings()">
-                <div class="category-info">
-                    <div class="category-label">Type</div>
-                    <div class="category-selected">Pristine</div>
-                </div>
-                <div class="category-arrow">→</div>
-            </div>
-
-            <!-- Simple toggles -->
-            <div class="simple-toggle">
-                <div class="toggle-info">
-                    <div class="toggle-label">Shiny</div>
-                    <div class="toggle-multiplier">(x1.15)</div>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="shiny" checked onchange="updatePetMultiplier()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <div class="simple-toggle">
-                <div class="toggle-info">
-                    <div class="toggle-label">Max lvl</div>
-                    <div class="toggle-multiplier">(x2.2388)</div>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="maxlvl" checked onchange="updatePetMultiplier()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Input Section -->
-        <div class="input-section">
-            <label class="input-label" for="numberInput">Enter Pet Stats:</label>
-            <input type="number" class="number-input" id="numberInput" placeholder="Enter your pet's base stats..." step="any" oninput="calculateStats()">
-            <button class="calculate-btn" onclick="calculateStats()">Calculate</button>
-            <div class="error" id="errorMessage"></div>
-        </div>
-
-        <!-- Result Section -->
-        <div class="result-section" id="resultSection">
-            <div class="stats-label">Final Pet Stats:</div>
-            <div class="result-value" id="resultValue">0</div>
-        </div>
-    `;
-    
-    // Set default values
-    setDefaultPetCalculatorValues();
-    
-    console.log('✅ Emergency pet calculator initialization completed');
 };
 
 // Make functions globally available
@@ -745,4 +647,10 @@ window.updatePetMultiplier = updatePetMultiplier;
 window.closeModal = closeModal;
 window.selectOption = selectOption;
 
-console.log('✅ Pet Calculator module loaded');
+// Force initialize if calculator page already exists
+if (document.getElementById('calculatorPage')) {
+    console.log('🔄 Calculator page found, initializing immediately...');
+    setTimeout(() => initializePetCalculator(), 100);
+}
+
+console.log('✅ Pet Calculator module loaded and ready');
