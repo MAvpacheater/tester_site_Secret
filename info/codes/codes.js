@@ -1,126 +1,85 @@
-// Codes functionality з мультимовною підтримкою
+// Codes functionality with multilingual support - Similar to aura.js structure
 
-// Мовні змінні
 let codesCurrentLanguage = 'en';
 let codesTranslations = null;
 let codesInitialized = false;
 
-// Отримання поточної мови
+// Get language from localStorage
 function getCurrentLanguage() {
-    const saved = localStorage.getItem('armHelper_language');
-    return saved || 'en';
+    return localStorage.getItem('armHelper_language') || 'en';
 }
 
-// Завантаження перекладів
+// Load translations from external file (same folder)
 async function loadCodesTranslations() {
     if (codesTranslations) return codesTranslations;
     
     try {
-        console.log('📥 Loading codes translations...');
-        const response = await fetch('languages/codes.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        const response = await fetch('info/codes/codes.json');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         codesTranslations = await response.json();
-        console.log('✅ Codes translations loaded successfully');
-        return codesTranslations;
+        console.log('✅ Codes translations loaded');
     } catch (error) {
-        console.error('❌ Error loading codes translations:', error);
-        // Fallback до англійської
-        codesTranslations = {
-            en: {
-                title: "Codes Collection",
-                loading: "Loading codes...",
-                error: "Error loading codes data",
-                retry: "Retry",
-                stats: {
-                    total: "Total Codes",
-                    used: "Used",
-                    available: "Available",
-                    progress: "Progress"
-                },
-                codes: []
-            }
-        };
-        return codesTranslations;
+        console.error('❌ Failed to load codes translations:', error);
+        throw error;
     }
+    return codesTranslations;
 }
 
-// Оновлення мови
+// Create page structure
+function createCodesStructure() {
+    const page = document.getElementById('codesPage');
+    if (!page) return console.error('❌ Codes page not found');
+    
+    codesCurrentLanguage = getCurrentLanguage();
+    
+    // Create title
+    const title = document.createElement('h1');
+    title.className = 'title';
+    title.textContent = codesTranslations?.[codesCurrentLanguage]?.title || 'Codes Collection';
+    
+    // Create container
+    const container = document.createElement('div');
+    container.className = 'codes-container';
+    container.id = 'codesContainer';
+    
+    // Clear page and add elements
+    page.innerHTML = '';
+    page.appendChild(title);
+    page.appendChild(container);
+    
+    console.log('✅ Codes structure created');
+}
+
+// Update language
 function updateCodesLanguage(newLanguage) {
-    console.log(`🌍 Codes received language change: ${codesCurrentLanguage} → ${newLanguage}`);
+    console.log(`🔑 Codes language: ${codesCurrentLanguage} → ${newLanguage}`);
     
-    if (newLanguage === codesCurrentLanguage) {
-        console.log('🔄 Same language, skipping update');
-        return;
-    }
-    
+    if (newLanguage === codesCurrentLanguage) return;
     codesCurrentLanguage = newLanguage;
     
-    // Оновлення заголовку
+    // Update title
     const titleElement = document.querySelector('.codes-page .title');
-    if (titleElement && codesTranslations && codesTranslations[newLanguage]) {
+    if (titleElement && codesTranslations?.[newLanguage]) {
         titleElement.textContent = codesTranslations[newLanguage].title;
     }
     
-    // Регенерація контенту якщо вже ініціалізовано
+    // Regenerate content
     if (codesInitialized) {
-        setTimeout(() => {
-            generateCodesContent();
-        }, 100);
+        setTimeout(generateCodesContent, 100);
     }
 }
 
-// Збереження/завантаження стану кодів
+// Load/save code states (using sessionStorage)
 function loadCodeStates() {
-    const savedStates = sessionStorage.getItem('codeStates');
-    if (savedStates) {
-        return JSON.parse(savedStates);
-    }
-    return {};
+    const saved = sessionStorage.getItem('codeStates');
+    return saved ? JSON.parse(saved) : {};
 }
 
 function saveCodeStates(states) {
     sessionStorage.setItem('codeStates', JSON.stringify(states));
 }
 
-// Генерація опису коду
-function generateCodeDescription(code, language) {
-    const langData = codesTranslations[language];
-    if (!langData) return '';
-    
-    let description = '';
-    
-    // Базовий опис з 3x boost
-    if (code.hours > 0) {
-        if (language === 'uk') {
-            description = `3x підсилення на ${code.hours} годин`;
-        } else if (language === 'ru') {
-            description = `3x усиление на ${code.hours} часов`;
-        } else {
-            description = `3x stat boost for ${code.hours} hours`;
-        }
-    }
-    
-    // Додаткові бонуси
-    if (code.extras) {
-        if (description) {
-            if (language === 'uk') {
-                description += ` + ${code.extras}`;
-            } else if (language === 'ru') {
-                description += ` + ${code.extras}`;
-            } else {
-                description += ` + ${code.extras}`;
-            }
-        } else {
-            description = code.extras;
-        }
-    }
-    
-    return description;
-}
-
-// Розрахунок статистики
+// Calculate statistics
 function calculateCodeStats(codes, codeStates) {
     const totalCodes = codes.length;
     const usedCodes = codes.filter(code => codeStates[code.code]).length;
@@ -135,41 +94,32 @@ function calculateCodeStats(codes, codeStates) {
     };
 }
 
-// Копіювання коду
+// Copy code to clipboard
 async function copyCode(code, button) {
     try {
         await navigator.clipboard.writeText(code);
         const originalText = button.innerHTML;
         button.innerHTML = '<span class="copy-icon">✓</span> Copied!';
         button.classList.add('copied');
-        showCopyMessage(`Code "${code}" copied!`);
+        
         setTimeout(() => {
             button.innerHTML = originalText;
             button.classList.remove('copied');
         }, 1500);
     } catch (err) {
-        // Fallback для старих браузерів
-        const textArea = document.createElement('textarea');
-        textArea.value = code;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        showCopyMessage(`Code "${code}" copied!`);
+        console.error('Copy failed:', err);
     }
 }
 
-// Зміна статусу коду
+// Toggle code status
 function toggleCodeStatus(codeIndex, toggleElement) {
-    const currentLangData = codesTranslations[codesCurrentLanguage];
-    const code = currentLangData.codes[codeIndex];
+    const data = codesTranslations[codesCurrentLanguage];
+    const code = data.codes[codeIndex];
     const codeStates = loadCodeStates();
     
     codeStates[code.code] = !codeStates[code.code];
     
-    // Оновлення UI
     const codeItem = toggleElement.closest('.code-item');
-    
     if (codeStates[code.code]) {
         toggleElement.classList.add('used');
         codeItem.classList.add('used');
@@ -178,18 +128,17 @@ function toggleCodeStatus(codeIndex, toggleElement) {
         codeItem.classList.remove('used');
     }
     
-    // Збереження стану та оновлення статистики
     saveCodeStates(codeStates);
     updateCodesStats();
 }
 
-// Оновлення статистики
+// Update statistics display
 function updateCodesStats() {
-    if (!codesTranslations || !codesTranslations[codesCurrentLanguage]) return;
+    if (!codesTranslations?.[codesCurrentLanguage]) return;
     
-    const currentLangData = codesTranslations[codesCurrentLanguage];
+    const data = codesTranslations[codesCurrentLanguage];
     const codeStates = loadCodeStates();
-    const stats = calculateCodeStats(currentLangData.codes, codeStates);
+    const stats = calculateCodeStats(data.codes, codeStates);
     
     const elements = {
         total: document.querySelector('.stat-number.total'),
@@ -206,72 +155,47 @@ function updateCodesStats() {
     if (elements.progressBar) elements.progressBar.style.height = `${stats.progress}%`;
 }
 
-// Показ повідомлення про копіювання
-function showCopyMessage(message) {
-    let messageEl = document.getElementById('copySuccessMessage');
-    if (!messageEl) {
-        messageEl = document.createElement('div');
-        messageEl.id = 'copySuccessMessage';
-        messageEl.className = 'copy-success-message';
-        document.body.appendChild(messageEl);
-    }
-    messageEl.textContent = message;
-    messageEl.classList.add('show');
-    setTimeout(() => messageEl.classList.remove('show'), 2000);
-}
-
-// Генерація контенту кодів
+// Generate content
 async function generateCodesContent() {
     const container = document.getElementById('codesContainer');
-    if (!container) {
-        console.error('❌ Codes container not found');
-        return;
-    }
+    if (!container) return console.error('❌ Codes container not found');
     
-    // Отримання поточної мови
     codesCurrentLanguage = getCurrentLanguage();
     
-    // Завантаження перекладів якщо ще не завантажено
-    if (!codesTranslations) {
-        await loadCodesTranslations();
-    }
-    
-    // Показ стану завантаження
-    const currentLangData = codesTranslations[codesCurrentLanguage];
-    if (!currentLangData) {
-        console.error(`❌ Language data for ${codesCurrentLanguage} not found`);
-        return;
-    }
-    
-    const loadingText = currentLangData.loading || 'Loading codes...';
-    container.innerHTML = `<div class="codes-loading">${loadingText}</div>`;
-    
     try {
-        // Невелика затримка для анімації завантаження
+        if (!codesTranslations) await loadCodesTranslations();
+        
+        const data = codesTranslations[codesCurrentLanguage];
+        if (!data) throw new Error(`No codes data for language: ${codesCurrentLanguage}`);
+        
+        // Show loading
+        container.innerHTML = `<div class="codes-loading">${data.loading}</div>`;
+        
         await new Promise(resolve => setTimeout(resolve, 300));
         
-        // Завантаження збережених станів
+        // Load code states
         const codeStates = loadCodeStates();
-        const stats = calculateCodeStats(currentLangData.codes, codeStates);
+        const stats = calculateCodeStats(data.codes, codeStates);
         
+        // Build HTML with stats and codes
         let content = `
             <div class="codes-header">
                 <div class="codes-stats">
                     <div class="stat-item">
                         <div class="stat-number total">${stats.total}</div>
-                        <div class="stat-label">${currentLangData.stats.total}</div>
+                        <div class="stat-label">${data.stats.total}</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-number used">${stats.used}</div>
-                        <div class="stat-label">${currentLangData.stats.used}</div>
+                        <div class="stat-label">${data.stats.used}</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-number available">${stats.available}</div>
-                        <div class="stat-label">${currentLangData.stats.available}</div>
+                        <div class="stat-label">${data.stats.available}</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-number progress">${stats.progress}%</div>
-                        <div class="stat-label">${currentLangData.stats.progress}</div>
+                        <div class="stat-label">${data.stats.progress}</div>
                     </div>
                 </div>
                 <div class="progress-bar">
@@ -281,14 +205,14 @@ async function generateCodesContent() {
             <div class="codes-list">
         `;
         
-        currentLangData.codes.forEach((code, index) => {
+        data.codes.forEach((code, index) => {
             const isUsed = codeStates[code.code] || false;
-            const description = generateCodeDescription(code, codesCurrentLanguage);
+            const description = code.description || `3x boost for ${code.hours} hours`;
             
             content += `
-                <div class="code-item ${isUsed ? 'used' : ''}">
+                <div class="code-item ${isUsed ? 'used' : ''}" style="animation-delay: ${index * 0.05}s">
                     <div class="code-content">
-                        <div class="code-name">${code.code}${code.isNew ? ` (${code.extras})` : ''}</div>
+                        <div class="code-name">${code.code}</div>
                         <div class="code-description">${description}</div>
                     </div>
                     <div class="code-actions">
@@ -307,147 +231,104 @@ async function generateCodesContent() {
         content += '</div>';
         container.innerHTML = content;
         
-        console.log(`✅ Generated ${currentLangData.codes.length} codes in ${codesCurrentLanguage}`);
-        
+        console.log(`✅ Generated ${data.codes.length} codes in ${codesCurrentLanguage}`);
     } catch (error) {
-        console.error('❌ Error generating codes content:', error);
-        
-        // Показ стану помилки
-        const errorText = currentLangData.error || 'Error loading codes data';
-        const retryText = currentLangData.retry || 'Retry';
-        
+        console.error('❌ Error generating codes:', error);
         container.innerHTML = `
             <div class="codes-error">
-                ⚠️ ${errorText}
-                <br>
-                <button class="retry-btn" onclick="generateCodesContent()">${retryText}</button>
+                ⚠️ Error loading codes data<br>
+                <button class="retry-btn" onclick="generateCodesContent()">Retry</button>
             </div>
         `;
     }
 }
 
-// Ініціалізація сторінки кодів
+// Initialize codes
 async function initializeCodes() {
-    console.log('🔑 Initializing codes page...');
-    
-    // Перевірка чи вже ініціалізовано
-    const container = document.getElementById('codesContainer');
-    if (codesInitialized && container && container.querySelector('.code-item')) {
-        console.log('🔑 Codes already initialized with content');
+    if (codesInitialized) {
+        console.log('🔄 Codes already initialized');
         return;
     }
     
-    // Отримання збереженої мови
+    console.log('🔑 Initializing codes...');
+    
     codesCurrentLanguage = getCurrentLanguage();
     
-    const codesPage = document.getElementById('codesPage');
-    if (!codesPage) {
-        console.error('❌ Codes page not found');
-        return;
-    }
-    
-    // Завантаження перекладів та генерація контенту
-    await loadCodesTranslations();
-    
-    // Оновлення заголовку сторінки
-    if (codesTranslations && codesTranslations[codesCurrentLanguage]) {
-        const titleElement = codesPage.querySelector('.title');
-        if (titleElement) {
-            titleElement.textContent = codesTranslations[codesCurrentLanguage].title;
+    try {
+        await loadCodesTranslations();
+        createCodesStructure();
+        await generateCodesContent();
+        
+        codesInitialized = true;
+        window.codesInitialized = true;
+        console.log('✅ Codes initialized successfully');
+    } catch (error) {
+        console.error('❌ Failed to initialize codes:', error);
+        const page = document.getElementById('codesPage');
+        if (page) {
+            page.innerHTML = `
+                <h1 class="title">Codes Collection</h1>
+                <div class="codes-container">
+                    <div class="codes-error">
+                        ⚠️ Failed to load codes data<br>
+                        <button class="retry-btn" onclick="initializeCodes()">Retry</button>
+                    </div>
+                </div>
+            `;
         }
     }
-    
-    // Генерація контенту
-    await generateCodesContent();
-    
-    codesInitialized = true;
-    window.codesInitialized = true;
-    
-    console.log('✅ Codes page initialized successfully');
 }
 
-// Примусова реініціалізація
-function forceReinitializeCodes() {
-    console.log('🔄 Force reinitializing codes...');
-    codesInitialized = false;
-    window.codesInitialized = false;
-    initializeCodes();
-}
-
-// Функція для налагодження
-function debugCodes() {
-    console.log('=== CODES DEBUG ===');
-    console.log('Initialized:', codesInitialized);
-    console.log('Current language:', codesCurrentLanguage);
-    console.log('Container exists:', !!document.getElementById('codesContainer'));
-    console.log('Page exists:', !!document.getElementById('codesPage'));
-    console.log('Page is active:', document.getElementById('codesPage')?.classList.contains('active'));
-    console.log('Translations loaded:', !!codesTranslations);
-    if (codesTranslations) {
-        console.log('Available languages:', Object.keys(codesTranslations));
-        if (codesTranslations[codesCurrentLanguage]) {
-            console.log(`Codes count for ${codesCurrentLanguage}:`, codesTranslations[codesCurrentLanguage].codes?.length);
-        }
-    }
-    const container = document.getElementById('codesContainer');
-    if (container) {
-        console.log('Container innerHTML length:', container.innerHTML.length);
-        console.log('Has code items:', !!container.querySelector('.code-item'));
-    }
-    console.log('Code states:', loadCodeStates());
-    console.log('====================');
-}
-
-// Слухач зміни мови
-document.addEventListener('languageChanged', function(e) {
-    console.log('🔑 Codes received languageChanged event:', e.detail);
-    if (e.detail && e.detail.language) {
-        updateCodesLanguage(e.detail.language);
-    }
+// Event listeners
+document.addEventListener('languageChanged', (e) => {
+    if (e.detail?.language) updateCodesLanguage(e.detail.language);
 });
 
-// Обробник DOM готовності
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🔑 DOM loaded, setting up codes...');
-    
-    // Ініціалізація якщо сторінка кодів вже активна
     setTimeout(() => {
-        const codesPage = document.getElementById('codesPage');
-        if (codesPage && codesPage.classList.contains('active')) {
-            console.log('🔑 Codes page is active, initializing...');
-            initializeCodes();
-        }
+        const page = document.getElementById('codesPage');
+        if (page?.classList.contains('active')) initializeCodes();
     }, 100);
 });
 
-// Обробник кліку для перемикання сторінок
-document.addEventListener('click', function(e) {
-    if (e.target && e.target.getAttribute && e.target.getAttribute('data-page') === 'codes') {
-        console.log('🔑 Codes page clicked, will initialize...');
+document.addEventListener('click', (e) => {
+    if (e.target?.getAttribute('data-page') === 'codes') {
         setTimeout(() => {
-            const container = document.getElementById('codesContainer');
-            if (!codesInitialized || !container || !container.querySelector('.code-item')) {
-                console.log('🔑 Page switched to codes, initializing...');
+            if (!codesInitialized) {
                 initializeCodes();
-            } else {
-                console.log('🔑 Codes already has content, skipping initialization');
             }
         }, 300);
     }
 });
 
-// Глобальні функції
-window.copyCode = copyCode;
-window.toggleCodeStatus = toggleCodeStatus;
-window.updateCodesStats = updateCodesStats;
+// Observer for page activation
+const codesObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            const codesPage = document.getElementById('codesPage');
+            if (codesPage?.classList.contains('active') && !codesInitialized) {
+                console.log('🔑 Codes page activated, initializing...');
+                initializeCodes();
+            }
+        }
+    });
+});
+
+// Start observing
+document.addEventListener('DOMContentLoaded', () => {
+    const codesPage = document.getElementById('codesPage');
+    if (codesPage) {
+        codesObserver.observe(codesPage, { attributes: true });
+    }
+});
+
+// Global exports
 window.initializeCodes = initializeCodes;
 window.updateCodesLanguage = updateCodesLanguage;
 window.generateCodesContent = generateCodesContent;
-window.debugCodes = debugCodes;
-window.forceReinitializeCodes = forceReinitializeCodes;
+window.copyCode = copyCode;
+window.toggleCodeStatus = toggleCodeStatus;
+window.updateCodesStats = updateCodesStats;
 window.codesInitialized = codesInitialized;
 
-// Підтримка застарілих назв функцій
-window.switchCodesLanguage = updateCodesLanguage;
-
-console.log('✅ Codes.js loaded with multilingual support');
+console.log('✅ Codes.js loaded');
