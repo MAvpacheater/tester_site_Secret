@@ -182,13 +182,13 @@ async function generatePotionsContent() {
         potionsPage.innerHTML = `
             <h1 class="title">${data.title}</h1>
             <div class="potions-container" id="potionsContainer">
-                <div class="potions-loading">${data.loading}</div>
+                <div class="potions-loading">${data.loading || 'Loading...'}</div>
             </div>
         `;
         
         await new Promise(resolve => setTimeout(resolve, 300));
         
-        // Generate potions HTML
+        // Generate potions HTML (without time field)
         const potionsHTML = (data.potions || []).map((item, index) => `
             <div class="potion-item" data-rarity="${item.rarity}" style="animation-delay: ${index * 50}ms;">
                 ${createPotionImage(item)}
@@ -198,12 +198,11 @@ async function generatePotionsContent() {
                 </div>
                 <div class="potion-meta">
                     <div class="potion-rarity ${item.rarity}">${item.rarity.toUpperCase()}</div>
-                    <div class="potion-time">${item.time}</div>
                 </div>
             </div>
         `).join('');
         
-        // Generate food HTML
+        // Generate food HTML (without time field)
         const foodHTML = (data.food || []).map((item, index) => `
             <div class="potion-item" data-rarity="${item.rarity}" style="animation-delay: ${index * 50}ms;">
                 ${createPotionImage(item)}
@@ -213,7 +212,6 @@ async function generatePotionsContent() {
                 </div>
                 <div class="potion-meta">
                     <div class="potion-rarity ${item.rarity}">${item.rarity.toUpperCase()}</div>
-                    <div class="potion-time">${item.time}</div>
                 </div>
             </div>
         `).join('');
@@ -257,9 +255,9 @@ async function generatePotionsContent() {
         potionsPage.innerHTML = `
             <h1 class="title">Potions & Food</h1>
             <div class="potions-container">
-                <div class="potions-error">
-                    ⚠️ Error loading potions data<br>
-                    <button class="retry-btn" onclick="initializePotions()">Retry</button>
+                <div class="potions-error" style="text-align: center; padding: 40px; color: #FFD700;">
+                    ⚠️ Error loading potions data<br><br>
+                    <button class="retry-btn" onclick="initializePotions()" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #2F1B14; border: none; padding: 12px 24px; border-radius: 12px; cursor: pointer; font-weight: 700; margin-top: 10px;">RETRY</button>
                 </div>
             </div>
         `;
@@ -291,9 +289,9 @@ async function initializePotions() {
             page.innerHTML = `
                 <h1 class="title">Potions & Food</h1>
                 <div class="potions-container">
-                    <div class="potions-error">
-                        ⚠️ Failed to load potions data<br>
-                        <button class="retry-btn" onclick="initializePotions()">Retry</button>
+                    <div class="potions-error" style="text-align: center; padding: 40px; color: #FFD700;">
+                        ⚠️ Failed to load potions data<br><br>
+                        <button class="retry-btn" onclick="initializePotions()" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #2F1B14; border: none; padding: 12px 24px; border-radius: 12px; cursor: pointer; font-weight: 700; margin-top: 10px;">RETRY</button>
                     </div>
                 </div>
             `;
