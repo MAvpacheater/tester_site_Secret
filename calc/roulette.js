@@ -3,10 +3,9 @@
 // Global variables for roulette calculator
 let rouletteInitialized = false;
 let currentRouletteLanguage = 'en';
-let rouletteTranslations = {};
 
-// Default translations - fallback
-const defaultRouletteTranslations = {
+// Translations stored directly in JS
+const rouletteTranslations = {
     en: {
         title: "🎰 Roulette Calculator",
         totalSpins: "Total Spins Needed:",
@@ -29,6 +28,52 @@ const defaultRouletteTranslations = {
             missingFields: "Please enter both values",
             zeroSpins: "Spins per turn cannot be zero"
         }
+    },
+    uk: {
+        title: "🎰 Калькулятор Рулетки",
+        totalSpins: "Загальна Кількість Спінів:",
+        spinsPerTurn: "Спінів за Хід:",
+        calculateBtn: "Розрахувати Час",
+        resultTitle: "Загальний Час:",
+        totalSpinsPlaceholder: "Введіть загальну кількість спінів...",
+        spinsPerTurnPlaceholder: "Введіть спінів за хід...",
+        // Short time units
+        second: "с",
+        seconds: "с", 
+        minute: "хв",
+        minutes: "хв",
+        hour: "г",
+        hours: "г",
+        day: "д",
+        days: "д",
+        errors: {
+            invalidInput: "Будь ласка, введіть дійсні позитивні числа",
+            missingFields: "Будь ласка, введіть обидва значення",
+            zeroSpins: "Спінів за хід не може бути нуль"
+        }
+    },
+    ru: {
+        title: "🎰 Калькулятор Рулетки",
+        totalSpins: "Общее Количество Спинов:",
+        spinsPerTurn: "Спинов за Ход:",
+        calculateBtn: "Рассчитать Время",
+        resultTitle: "Общее Время:",
+        totalSpinsPlaceholder: "Введите общее количество спинов...",
+        spinsPerTurnPlaceholder: "Введите спинов за ход...",
+        // Short time units
+        second: "с",
+        seconds: "с", 
+        minute: "м",
+        minutes: "м",
+        hour: "ч",
+        hours: "ч",
+        day: "д",
+        days: "д",
+        errors: {
+            invalidInput: "Пожалуйста, введите действительные положительные числа",
+            missingFields: "Пожалуйста, введите оба значения",
+            zeroSpins: "Спинов за ход не может быть ноль"
+        }
     }
 };
 
@@ -40,70 +85,39 @@ function createRouletteHTML() {
         return;
     }
 
-    const t = rouletteTranslations[currentRouletteLanguage] || defaultRouletteTranslations['en'];
+    const t = rouletteTranslations[currentRouletteLanguage] || rouletteTranslations['en'];
     console.log('Using roulette translations:', t); // Debug log
-
-    // Make sure we have fallback values if translations fail
-    const title = t.title || "🎰 Roulette Calculator";
-    const totalSpins = t.totalSpins || "Total Spins Needed:";
-    const spinsPerTurn = t.spinsPerTurn || "Spins per Turn:";
-    const calculateBtn = t.calculateBtn || "Calculate Time";
-    const resultTitle = t.resultTitle || "Total Time Needed:";
-    const totalSpinsPlaceholder = t.totalSpinsPlaceholder || "Enter total spins needed...";
-    const spinsPerTurnPlaceholder = t.spinsPerTurnPlaceholder || "Enter spins per turn...";
 
     roulettePage.innerHTML = `
         <div class="header-controls">
-            <h1>${title}</h1>
+            <h1>${t.title}</h1>
         </div>
 
         <!-- Input Section -->
         <div class="input-section">
             <div class="input-group">
-                <label class="input-label" for="totalSpinsInput">${totalSpins}</label>
-                <input type="number" class="number-input" id="totalSpinsInput" placeholder="${totalSpinsPlaceholder}" step="1" min="1" oninput="calculateRouletteTime()">
+                <label class="input-label" for="totalSpinsInput">${t.totalSpins}</label>
+                <input type="number" class="number-input" id="totalSpinsInput" placeholder="${t.totalSpinsPlaceholder}" step="1" min="1" oninput="calculateRouletteTime()">
             </div>
             
             <div class="input-group">
-                <label class="input-label" for="spinsPerTurnInput">${spinsPerTurn}</label>
-                <input type="number" class="number-input" id="spinsPerTurnInput" placeholder="${spinsPerTurnPlaceholder}" step="1" min="1" oninput="calculateRouletteTime()">
+                <label class="input-label" for="spinsPerTurnInput">${t.spinsPerTurn}</label>
+                <input type="number" class="number-input" id="spinsPerTurnInput" placeholder="${t.spinsPerTurnPlaceholder}" step="1" min="1" oninput="calculateRouletteTime()">
             </div>
             
-            <button class="calculate-btn" onclick="calculateRouletteTime()">${calculateBtn}</button>
+            <button class="calculate-btn" onclick="calculateRouletteTime()">${t.calculateBtn}</button>
             <div class="error" id="rouletteErrorMessage"></div>
         </div>
 
         <!-- Result Section -->
         <div class="result-section" id="rouletteResultSection">
-            <div class="stats-label">${resultTitle}</div>
+            <div class="stats-label">${t.resultTitle}</div>
             <div class="result-value" id="rouletteResultValue">0</div>
             <div class="result-details" id="rouletteResultDetails"></div>
         </div>
     `;
 
     console.log('✅ Roulette HTML structure created');
-}
-
-// Load roulette translations from JSON file
-async function loadRouletteTranslations() {
-    try {
-        console.log('📥 Loading roulette translations...');
-        const response = await fetch('./languages/roulette.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        rouletteTranslations = data;
-        console.log('✅ Roulette translations loaded successfully');
-        console.log('Loaded roulette translations:', rouletteTranslations);
-        return true;
-    } catch (error) {
-        console.error('❌ Error loading roulette translations:', error);
-        // Use default translations as fallback
-        rouletteTranslations = defaultRouletteTranslations;
-        console.log('Using default roulette translations:', rouletteTranslations);
-        return false;
-    }
 }
 
 // Get current language from app or default to 'en'
@@ -117,16 +131,11 @@ function getCurrentAppLanguage() {
 }
 
 // Initialize Roulette Calculator
-async function initializeRoulette() {
+function initializeRoulette() {
     console.log('🚀 Initializing Roulette Calculator...');
     
     // Reset initialization flag
     rouletteInitialized = false;
-    
-    // Load translations first
-    const translationsLoaded = await loadRouletteTranslations();
-    console.log('Roulette translation load result:', translationsLoaded);
-    console.log('Available roulette translations:', Object.keys(rouletteTranslations));
     
     // Set current language
     currentRouletteLanguage = getCurrentAppLanguage();
@@ -195,7 +204,7 @@ function updateRouletteLanguage(language) {
 // Enhanced time formatting with short units and language support
 function formatTime(seconds) {
     const lang = currentRouletteLanguage;
-    const texts = rouletteTranslations[lang] || defaultRouletteTranslations['en'];
+    const texts = rouletteTranslations[lang] || rouletteTranslations['en'];
     
     // Short time unit names from language file
     const timeUnits = {
@@ -276,7 +285,7 @@ function calculateRouletteTime() {
         return;
     }
     
-    const t = rouletteTranslations[currentRouletteLanguage] || defaultRouletteTranslations['en'];
+    const t = rouletteTranslations[currentRouletteLanguage] || rouletteTranslations['en'];
     
     // Clear previous messages
     if (errorMessage) {
