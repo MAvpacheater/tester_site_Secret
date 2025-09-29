@@ -14,7 +14,7 @@ async function loadAuraTranslations() {
     if (auraTranslations) return auraTranslations;
     
     try {
-        const response = await fetch('languages/aura.json');
+        const response = await fetch('info/aura/aura.json');
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         auraTranslations = await response.json();
         console.log('✅ Aura translations loaded');
