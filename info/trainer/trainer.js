@@ -33,27 +33,10 @@ function updateTrainerLanguage(newLanguage) {
     if (newLanguage === trainerCurrentLanguage) return;
     trainerCurrentLanguage = newLanguage;
     
-    // Update title and button texts
-    if (trainerTranslations?.[newLanguage]) {
-        const data = trainerTranslations[newLanguage];
-        
-        // Update title
-        const titleElement = document.querySelector('.trainer-page .title');
-        if (titleElement) {
-            titleElement.textContent = data.title;
-        }
-        
-        // Update switch buttons
-        const freeBtn = document.querySelector('[data-type="free"]');
-        const donateBtn = document.querySelector('[data-type="donate"]');
-        
-        if (freeBtn) freeBtn.textContent = data.free_button;
-        if (donateBtn) donateBtn.textContent = data.donate_button;
-    }
-    
-    // Regenerate content
+    // Reinitialize if already initialized
     if (trainerInitialized) {
-        setTimeout(generateAllTrainerContent, 100);
+        trainerInitialized = false;
+        setTimeout(initializeTrainer, 100);
     }
 }
 
@@ -155,8 +138,14 @@ async function generateAllTrainerContent() {
 async function initializeTrainer() {
     console.log('👨‍🏫 Initializing trainer...');
     
-    const container = document.getElementById('freeTrainers');
-    if (trainerInitialized && container?.querySelector('.trainer-item')) {
+    const trainerPage = document.getElementById('trainerPage');
+    if (!trainerPage) {
+        console.error('❌ Trainer page not found');
+        return;
+    }
+    
+    // Check if already initialized
+    if (trainerInitialized && trainerPage.querySelector('.trainer-item')) {
         console.log('👨‍🏫 Already initialized');
         return;
     }
@@ -166,22 +155,29 @@ async function initializeTrainer() {
     try {
         await loadTrainerTranslations();
         
-        // Update UI texts
         const data = trainerTranslations[trainerCurrentLanguage];
-        if (data) {
-            // Update title
-            const titleElement = document.querySelector('.trainer-page .title');
-            if (titleElement) {
-                titleElement.textContent = data.title;
-            }
-            
-            // Update switch buttons
-            const freeBtn = document.querySelector('[data-type="free"]');
-            const donateBtn = document.querySelector('[data-type="donate"]');
-            
-            if (freeBtn) freeBtn.textContent = data.free_button;
-            if (donateBtn) donateBtn.textContent = data.donate_button;
+        if (!data) {
+            throw new Error('Translation data not found');
         }
+        
+        // Create HTML structure
+        trainerPage.innerHTML = `
+            <h1 class="title">${data.title}</h1>
+            
+            <div class="trainer-switcher">
+                <button class="trainer-switch-btn active" data-type="free" onclick="switchTrainerType('free')">
+                    ${data.free_button}
+                </button>
+                <button class="trainer-switch-btn" data-type="donate" onclick="switchTrainerType('donate')">
+                    ${data.donate_button}
+                </button>
+            </div>
+            
+            <div class="trainer-container">
+                <div class="trainer-section active" id="freeTrainers"></div>
+                <div class="trainer-section" id="donateTrainers"></div>
+            </div>
+        `;
         
         await generateAllTrainerContent();
         switchTrainerType('free');
@@ -190,15 +186,13 @@ async function initializeTrainer() {
         console.log('✅ Trainer initialized');
     } catch (error) {
         console.error('❌ Failed to initialize trainer:', error);
-        const container = document.getElementById('freeTrainers');
-        if (container) {
-            container.innerHTML = `
-                <div class="trainer-error">
-                    ⚠️ Failed to load trainer data<br>
-                    <button class="retry-btn" onclick="initializeTrainer()">Retry</button>
-                </div>
-            `;
-        }
+        trainerPage.innerHTML = `
+            <h1 class="title">Trainers</h1>
+            <div class="trainer-error">
+                ⚠️ Failed to load trainer data<br>
+                <button class="retry-btn" onclick="initializeTrainer()">Retry</button>
+            </div>
+        `;
     }
 }
 
@@ -217,8 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('click', (e) => {
     if (e.target?.getAttribute('data-page') === 'trainer') {
         setTimeout(() => {
-            const container = document.getElementById('freeTrainers');
-            if (!trainerInitialized || !container?.querySelector('.trainer-item')) {
+            const trainerPage = document.getElementById('trainerPage');
+            if (!trainerInitialized || !trainerPage?.querySelector('.trainer-item')) {
                 initializeTrainer();
             }
         }, 300);
@@ -233,8 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const trainerPage = document.getElementById('trainerPage');
                 if (trainerPage && trainerPage.classList.contains('active')) {
                     console.log('Trainer page became active, checking initialization...');
-                    const container = document.getElementById('freeTrainers');
-                    if (!trainerInitialized || !container?.querySelector('.trainer-item')) {
+                    if (!trainerInitialized || !trainerPage.querySelector('.trainer-item')) {
                         initializeTrainer();
                     }
                 }
