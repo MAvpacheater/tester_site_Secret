@@ -104,18 +104,12 @@ async function initializePotions() {
         return false;
     }
     
-    const container = document.getElementById('potionsContainer');
-    if (!container) {
-        console.error('❌ Potions container not found in DOM');
-        return false;
-    }
-    
     try {
-        // Update page title
-        const titleElement = potionsPage.querySelector('.title');
-        if (titleElement) {
-            titleElement.textContent = getTranslation('title', 'Potions & Food');
-        }
+        // Create full page structure
+        potionsPage.innerHTML = `
+            <h1 class="title">${getTranslation('title', 'Potions & Food')}</h1>
+            <div id="potionsContainer"></div>
+        `;
         
         await loadPotionsContent();
         potionsInitialized = true;
@@ -294,6 +288,9 @@ function getTranslatedItemData(item, itemType) {
 
 // Load potions content into the container
 async function loadPotionsContent() {
+    // Wait a bit for DOM to update
+    await new Promise(resolve => setTimeout(resolve, 50));
+    
     const container = document.getElementById('potionsContainer');
     if (!container) {
         console.error('❌ Potions container not found');
@@ -511,8 +508,8 @@ document.addEventListener('languageChanged', function(e) {
 // Auto-initialization
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
-        const container = document.getElementById('potionsContainer');
-        if (container && !potionsInitialized) {
+        const page = document.getElementById('potionsPage');
+        if (page && !potionsInitialized) {
             console.log('🧪 Auto-initializing potions...');
             initializePotions();
         }
