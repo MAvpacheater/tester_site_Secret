@@ -45,7 +45,7 @@ function initializeSystems() {
         if (typeof initGitHubAutoReload === 'function') {
             initGitHubAutoReload({
                 githubUser: 'MAvpacheater',
-                githubRepo: 'tester_site_Secret',
+                githubRepo: 'armwrestlerinfopost',
                 branch: 'main',
                 checkInterval: 30000
             });
@@ -95,8 +95,8 @@ function handleEnhancedRouting() {
     
     if (!pathMappings[currentPath]) {
         for (const [path, page] of Object.entries(pathMappings)) {
-            if (currentPath.includes(path.replace('/tester_site_Secret', '')) && 
-                path.replace('/tester_site_Secret', '')) {
+            if (currentPath.includes(path.replace('/armwrestlerinfopost', '')) && 
+                path.replace('/armwrestlerinfopost', '')) {
                 targetPage = page;
                 break;
             }
@@ -112,7 +112,7 @@ function parsePathToPage(path) {
     let cleanPath = path.split('?')[0].split('#')[0];
     if (cleanPath.startsWith('/')) cleanPath = cleanPath.substring(1);
     if (cleanPath.endsWith('/')) cleanPath = cleanPath.slice(0, -1);
-    if (cleanPath.startsWith('tester_site_Secret/')) {
+    if (cleanPath.startsWith('armwrestlerinfopost/')) {
         cleanPath = cleanPath.substring('tester_site_Secret/'.length);
     }
     
