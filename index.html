@@ -10,7 +10,7 @@
             const redirect = sessionStorage.pathToRestore;
             if (redirect && redirect !== '/') {
                 const host = window.location.host;
-                const basePath = host === 'mavpacheater.github.io' ? '/tester_site_Secret' : '';
+                const basePath = host === 'mavpacheater.github.io' ? '/armwrestlerinfopost' : '';
                 history.replaceState(null, null, basePath + redirect);
             }
         })();
