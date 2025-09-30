@@ -1,189 +1,357 @@
-// General JavaScript functions - Optimized version
+// General JavaScript functions - Optimized and Fixed
 
 let currentAppLanguage = 'en';
 let menuTranslations = null;
 let appInitialized = false;
 
-// Storage helpers
+// Storage helpers - FIXED: використовуємо localStorage
 const storage = {
     save: (key, value) => {
         const fullKey = `armHelper_${key}`;
         const data = typeof value === 'object' ? JSON.stringify(value) : value;
-        sessionStorage.setItem(fullKey, data);
+        localStorage.setItem(fullKey, data);
         console.log(`Saved: ${key}`);
     },
     load: (key, parse = false) => {
-        const data = sessionStorage.getItem(`armHelper_${key}`);
-        return parse && data ? JSON.parse(data) : data;
+        const data = localStorage.getItem(`armHelper_${key}`);
+        if (!data) return null;
+        return parse ? JSON.parse(data) : data;
     }
 };
 
-const saveCurrentPage = (page) => storage.save('currentPage', page);
-const getCurrentPage = () => storage.load('currentPage') || 'calculator';
-const getCurrentAppLanguage = () => storage.load('language') || 'en';
-const saveAppLanguage = (lang) => storage.save('language', lang);
-const getCurrentMenuPosition = () => storage.load('menuPosition') || 'left';
-const saveSettingsToStorage = (key, settings) => storage.save(`${key}_settings`, settings);
-const loadSettingsFromStorage = (key) => storage.load(`${key}_settings`, true);
+function saveCurrentPage(page) {
+    localStorage.setItem('armHelper_currentPage', page);
+    console.log(`Current page saved: ${page}`);
+}
+
+function getCurrentPage() {
+    return localStorage.getItem('armHelper_currentPage') || 'calculator';
+}
+
+function getCurrentAppLanguage() {
+    const saved = localStorage.getItem('armHelper_language');
+    return saved || 'en';
+}
+
+function saveAppLanguage(lang) {
+    localStorage.setItem('armHelper_language', lang);
+    console.log(`App language saved: ${lang}`);
+}
+
+function getCurrentMenuPosition() {
+    const saved = localStorage.getItem('armHelper_menuPosition');
+    return saved || 'left';
+}
+
+function saveSettingsToStorage(key, settings) {
+    localStorage.setItem(`armHelper_${key}_settings`, JSON.stringify(settings));
+    console.log(`Settings saved to localStorage for ${key}`);
+}
+
+function loadSettingsFromStorage(key) {
+    const localSettings = localStorage.getItem(`armHelper_${key}_settings`);
+    if (localSettings) {
+        try {
+            return JSON.parse(localSettings);
+        } catch (e) {
+            console.warn('Invalid local settings data');
+            return null;
+        }
+    }
+    return null;
+}
 
 // Menu translations
 async function loadMenuTranslations() {
     if (menuTranslations) return menuTranslations;
     
     try {
-        console.log('📥 Loading translations...');
+        console.log('📥 Loading menu translations...');
         const response = await fetch('languages/menu.json');
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         menuTranslations = await response.json();
-        console.log('✅ Translations loaded');
+        console.log('✅ Menu translations loaded successfully');
         return menuTranslations;
     } catch (error) {
-        console.error('❌ Translation error:', error);
-        menuTranslations = getDefaultTranslations();
+        console.error('❌ Error loading menu translations:', error);
+        // Fallback to English
+        menuTranslations = {
+            en: {
+                menu: "Menu",
+                calculator: "Calculator", 
+                info: "Info",
+                others: "Others",
+                pages: {
+                    calculator: "🐾 Pet Calculator",
+                    arm: "💪 Arm Calculator",
+                    grind: "🏋️‍♂️ Grind Calculator",
+                    roulette: "🎰 Roulette Calculator",
+                    boss: "👹 Boss Calculator",
+                    boosts: "🚀 Boosts",
+                    shiny: "✨ Shiny Stats",
+                    secret: "🔮 Secret Pets",
+                    codes: "🎁 Codes",
+                    aura: "🌟 Aura",
+                    trainer: "🏆 Trainer",
+                    charms: "🔮 Charms",
+                    potions: "🧪 Potions & Food",
+                    worlds: "🌍 Worlds",
+                    settings: "⚙️ Settings",
+                    help: "🆘 Help",
+                    peoples: "🙏 Peoples"
+                },
+                auth: {
+                    login: "Login (Soon...)"
+                }
+            }
+        };
         return menuTranslations;
     }
-}
-
-function getDefaultTranslations() {
-    const pages = {
-        calculator: "🐾 Pet Calculator", arm: "💪 Arm Calculator", grind: "🏋️‍♂️ Grind Calculator",
-        roulette: "🎰 Roulette Calculator", boss: "👹 Boss Calculator", boosts: "🚀 Boosts",
-        shiny: "✨ Shiny Stats", secret: "🔮 Secret Pets", codes: "🎁 Codes", aura: "🌟 Aura",
-        trainer: "🏆 Trainer", charms: "🔮 Charms", potions: "🧪 Potions & Food", worlds: "🌍 Worlds",
-        settings: "⚙️ Settings", help: "🆘 Help", peoples: "🙏 Peoples"
-    };
-    
-    return {
-        en: { menu: "Menu", calculator: "Calculator", info: "Info", others: "Others", pages, auth: { login: "Login (Soon...)" }},
-        uk: { menu: "Меню", calculator: "Калькулятори", info: "Інформація", others: "Інше", 
-              pages: { ...pages, calculator: "🐾 Калькулятор Петів", boss: "👹 Калькулятор Босів" }, 
-              auth: { login: "Вхід (Скоро...)" }},
-        ru: { menu: "Меню", calculator: "Калькуляторы", info: "Информация", others: "Другое", 
-              pages: { ...pages, calculator: "🐾 Калькулятор Петов", boss: "👹 Калькулятор Боссов" }, 
-              auth: { login: "Вход (Скоро...)" }}
-    };
 }
 
 function updateMenuTranslations() {
-    if (!menuTranslations?.[currentAppLanguage]) return;
+    if (!menuTranslations || !currentAppLanguage) return;
     
-    const t = menuTranslations[currentAppLanguage];
+    const translations = menuTranslations[currentAppLanguage];
+    if (!translations) return;
     
-    const updateText = (selector, text) => {
-        const el = document.querySelector(selector);
-        if (el) el.textContent = text;
+    // Update sidebar header
+    const sidebarHeader = document.querySelector('.sidebar-header h3');
+    if (sidebarHeader) {
+        sidebarHeader.textContent = translations.menu;
+    }
+    
+    // Update category headers
+    const categoryMappings = {
+        'calculatorButtons': 'calculator',
+        'infoButtons': 'info',
+        'othersButtons': 'others'
     };
     
-    updateText('.sidebar-header h3', t.menu);
+    Object.entries(categoryMappings).forEach(([categoryId, translationKey]) => {
+        const categoryHeader = document.querySelector(`[data-category="${categoryId}"] .category-title span:last-child`);
+        if (categoryHeader && translations[translationKey]) {
+            categoryHeader.textContent = translations[translationKey];
+        }
+    });
     
-    const categories = { calculatorButtons: 'calculator', infoButtons: 'info', othersButtons: 'others' };
-    Object.entries(categories).forEach(([id, key]) => 
-        updateText(`[data-category="${id}"] .category-title span:last-child`, t[key])
-    );
+    // Update page buttons in sidebar
+    Object.entries(translations.pages).forEach(([page, translation]) => {
+        const pageButton = document.querySelector(`[data-page="${page}"]`);
+        if (pageButton) {
+            pageButton.textContent = translation;
+        }
+    });
     
-    Object.entries(t.pages).forEach(([page, text]) => updateText(`[data-page="${page}"]`, text));
-    updateText('#authButton', t.auth.login);
+    // Update auth button
+    const authButton = document.getElementById('authButton');
+    if (authButton && translations.auth.login) {
+        authButton.textContent = translations.auth.login;
+    }
     
-    console.log(`✅ Menu updated: ${currentAppLanguage}`);
+    console.log(`✅ Menu translations updated for ${currentAppLanguage}`);
 }
 
 function updatePageTitles() {
-    if (!menuTranslations?.[currentAppLanguage]?.pages) return;
+    if (!menuTranslations || !currentAppLanguage) return;
     
-    const pages = menuTranslations[currentAppLanguage].pages;
-    const pageMap = {
-        calculatorPage: 'calculator', armPage: 'arm', grindPage: 'grind', roulettePage: 'roulette',
-        bossPage: 'boss', boostsPage: 'boosts', shinyPage: 'shiny', secretPage: 'secret',
-        codesPage: 'codes', auraPage: 'aura', trainerPage: 'trainer', charmsPage: 'charms',
-        potionsPage: 'potions', worldsPage: 'worlds', settingsPage: 'settings', helpPage: 'help',
-        peoplesPage: 'peoples'
+    const translations = menuTranslations[currentAppLanguage];
+    if (!translations || !translations.pages) return;
+    
+    // Page title mappings
+    const pageTitleMappings = {
+        'calculatorPage': 'calculator',
+        'armPage': 'arm',
+        'grindPage': 'grind',
+        'roulettePage': 'roulette',
+        'bossPage': 'boss',
+        'boostsPage': 'boosts',
+        'shinyPage': 'shiny',
+        'secretPage': 'secret',
+        'codesPage': 'codes',
+        'auraPage': 'aura',
+        'trainerPage': 'trainer',
+        'charmsPage': 'charms',
+        'potionsPage': 'potions',
+        'worldsPage': 'worlds',
+        'settingsPage': 'settings',
+        'helpPage': 'help',
+        'peoplesPage': 'peoples'
     };
     
-    Object.entries(pageMap).forEach(([id, key]) => {
-        const page = document.getElementById(id);
-        if (page && pages[key]) {
-            const title = page.querySelector('h1, .title, .header-controls h1');
-            if (title) title.textContent = pages[key];
-        }
-    });
-    
-    console.log(`✅ Titles updated: ${currentAppLanguage}`);
-}
-
-async function switchAppLanguage(lang) {
-    if (!menuTranslations) await loadMenuTranslations();
-    if (!menuTranslations[lang]) lang = 'en';
-    
-    const prevLang = currentAppLanguage;
-    currentAppLanguage = lang;
-    saveAppLanguage(lang);
-    
-    document.querySelectorAll('.lang-flag-btn').forEach(btn => 
-        btn.classList.toggle('active', btn.dataset.lang === lang)
-    );
-    
-    updateMenuTranslations();
-    updatePageTitles();
-    
-    console.log(`🌍 Language: ${prevLang} → ${lang}`);
-    
-    document.dispatchEvent(new CustomEvent('languageChanged', { 
-        detail: { language: lang, previousLanguage: prevLang }
-    }));
-    
-    const modules = ['roulette', 'boss', 'worlds', 'potions', 'secret', 'peoples', 'help', 'settings'];
-    modules.forEach(name => {
-        const func = `update${name.charAt(0).toUpperCase() + name.slice(1)}Language`;
-        if (typeof window[func] === 'function') {
-            try {
-                window[func](lang);
-                console.log(`✅ ${name} updated`);
-            } catch (e) {
-                console.error(`❌ ${name} error:`, e);
+    // Update each page title
+    Object.entries(pageTitleMappings).forEach(([pageId, translationKey]) => {
+        const page = document.getElementById(pageId);
+        if (page && translations.pages[translationKey]) {
+            const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title, .settings-title');
+            if (titleElement) {
+                titleElement.textContent = translations.pages[translationKey];
+            }
+            
+            // Special handling for header-controls h1 elements
+            const headerControlsTitle = page.querySelector('.header-controls h1');
+            if (headerControlsTitle) {
+                headerControlsTitle.textContent = translations.pages[translationKey];
             }
         }
     });
+    
+    console.log(`✅ Page titles updated for ${currentAppLanguage}`);
+}
+
+async function switchAppLanguage(lang) {
+    if (!menuTranslations) {
+        await loadMenuTranslations();
+    }
+    
+    if (!menuTranslations[lang]) {
+        console.error(`❌ Language ${lang} not found, defaulting to English`);
+        lang = 'en';
+    }
+    
+    const previousLanguage = currentAppLanguage;
+    currentAppLanguage = lang;
+    saveAppLanguage(lang);
+    
+    // Update language flag buttons
+    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.lang === lang) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Update menu text AND page titles
+    updateMenuTranslations();
+    updatePageTitles();
+    
+    // Notify ALL modules about language change
+    console.log(`🌍 Broadcasting language change from ${previousLanguage} to ${lang}`);
+    
+    // Dispatch custom event for language change
+    const languageChangeEvent = new CustomEvent('languageChanged', {
+        detail: {
+            language: lang,
+            previousLanguage: previousLanguage
+        }
+    });
+    document.dispatchEvent(languageChangeEvent);
+    
+    // Directly notify specific modules if their functions exist
+    const moduleNotifications = [
+        { name: 'roulette', func: 'updateRouletteLanguage' },
+        { name: 'boss', func: 'updateBossLanguage' },
+        { name: 'worlds', func: 'updateWorldsLanguage' },
+        { name: 'potions', func: 'updatePotionsLanguage' },
+        { name: 'secret', func: 'updateSecretLanguage' },
+        { name: 'peoples', func: 'updatePeoplesLanguage' },
+        { name: 'help', func: 'updateHelpLanguage' },
+        { name: 'settings', func: 'updateSettingsLanguage' }
+    ];
+    
+    moduleNotifications.forEach(({ name, func }) => {
+        if (typeof window[func] === 'function') {
+            try {
+                window[func](lang);
+                console.log(`✅ ${name} language updated via ${func}`);
+            } catch (error) {
+                console.error(`❌ Error updating ${name} language:`, error);
+            }
+        }
+    });
+    
+    console.log(`🌍 App language switched to: ${lang}`);
 }
 
 function switchPage(page) {
-    console.log(`Switching to: ${page}`);
+    console.log(`Switching to page: ${page}`);
+    
+    // Save current page to localStorage
     saveCurrentPage(page);
     
-    document.querySelectorAll('.page, .nav-btn').forEach(el => el.classList.remove('active'));
+    // Remove active class from all pages and nav buttons
+    document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
     
+    // Add active class to selected page
     const targetPage = document.getElementById(page + 'Page');
-    if (targetPage) targetPage.classList.add('active');
-    
-    const targetBtn = document.querySelector(`[data-page="${page}"]`);
-    if (targetBtn) targetBtn.classList.add('active');
-    
-    if (window.menuManager?.updateStaticMenuActiveState) {
-        window.menuManager.updateStaticMenuActiveState(page);
+    if (targetPage) {
+        targetPage.classList.add('active');
+        console.log(`Page ${page}Page activated`);
+    } else {
+        console.error(`Page ${page}Page not found`);
     }
     
-    const menuType = getCurrentMenuPosition();
-    if (menuType === 'left' || menuType === 'right') closeSidebar();
+    // Update active nav button in sidebar
+    const targetButton = document.querySelector(`[data-page="${page}"]`);
+    if (targetButton) {
+        targetButton.classList.add('active');
+        console.log(`Nav button activated for ${page}`);
+    }
     
-    document.dispatchEvent(new CustomEvent('pageChanged', { detail: { page }}));
-    setTimeout(() => initializePageContent(page), 100);
+    // Update static menu active state via MenuManager if available
+    if (typeof window.menuManager !== 'undefined' && window.menuManager.updateStaticMenuActiveState) {
+        window.menuManager.updateStaticMenuActiveState(page);
+    } else if (typeof window.updateStaticMenuActiveState === 'function') {
+        window.updateStaticMenuActiveState(page);
+    }
+    
+    // Close sidebar after selection
+    const currentMenuType = getCurrentMenuPosition();
+    if (currentMenuType === 'left' || currentMenuType === 'right') {
+        closeSidebar();
+    }
+    
+    // Dispatch page change event
+    const pageChangeEvent = new CustomEvent('pageChanged', {
+        detail: {
+            page: page,
+            previousPage: getCurrentPage()
+        }
+    });
+    document.dispatchEvent(pageChangeEvent);
+    
+    // Force re-initialize specific page content when switching
+    setTimeout(() => {
+        initializePageContent(page);
+    }, 100);
 }
 
 function initializePageContent(page) {
-    console.log(`🔄 Initializing: ${page}`);
+    console.log(`🔄 Initializing content for page: ${page}`);
+    
+    const pageContainer = document.getElementById(page + 'Page');
+    if (!pageContainer) {
+        console.error(`❌ Page container ${page}Page not found`);
+        return;
+    }
     
     const modules = {
-        calculator: 'initializeCalculator', arm: 'initializeArm', grind: 'initializeGrind',
-        roulette: 'initializeRoulette', boss: 'initializeBoss', shiny: 'initializeShiny',
-        boosts: 'initializeBoosts', trainer: 'initializeTrainer', aura: 'initializeAura',
-        codes: 'initializeCodes', charms: 'initializeCharms', secret: 'initializeSecret',
-        potions: 'initializePotions', worlds: 'initializeWorlds', settings: 'initializeSettings',
-        help: 'initializeHelp', peoples: 'initializePeoples'
+        calculator: 'initializeCalculator',
+        arm: 'initializeArm',
+        grind: 'initializeGrind',
+        roulette: 'initializeRoulette',
+        boss: 'initializeBoss',
+        shiny: 'initializeShiny',
+        boosts: 'initializeBoosts',
+        trainer: 'initializeTrainer',
+        aura: 'initializeAura',
+        codes: 'initializeCodes',
+        charms: 'initializeCharms',
+        secret: 'initializeSecret',
+        potions: 'initializePotions',
+        worlds: 'initializeWorlds',
+        settings: 'initializeSettings',
+        help: 'initializeHelp',
+        peoples: 'initializePeoples'
     };
     
     const initFunc = modules[page];
     if (initFunc && typeof window[initFunc] === 'function') {
-        const needsReset = ['grind', 'roulette', 'boss', 'secret', 'potions', 'help', 'peoples'];
-        if (needsReset.includes(page)) {
+        const needsReset = ['grind', 'roulette', 'boss', 'secret', 'potions', 'help', 'peoples', 'settings'];
+        if (needsReset.includes(page) && window[`${page}Initialized`] !== undefined) {
             window[`${page}Initialized`] = false;
         }
         window[initFunc]();
@@ -192,7 +360,7 @@ function initializePageContent(page) {
 }
 
 function initializeAllModules() {
-    console.log('🔧 Initializing modules...');
+    console.log('🔧 Initializing all modules...');
     
     const modules = [
         'Calculator', 'Arm', 'Grind', 'Roulette', 'Boss', 'Boosts', 'Shiny', 'Secret',
@@ -220,103 +388,223 @@ function initializeAllModules() {
 }
 
 async function initializeApp() {
-    if (appInitialized) return console.log('⚠️ Already initialized');
+    if (appInitialized) {
+        console.log('⚠️ App already initialized');
+        return;
+    }
     
-    console.log('🚀 Starting app...');
+    console.log('🚀 Starting app initialization...');
     
+    // Check if content is loaded
     const appContent = document.getElementById('app-content');
-    if (!appContent?.innerHTML.trim()) return console.error('❌ Content not loaded');
+    if (!appContent || !appContent.innerHTML.trim()) {
+        console.error('❌ Content not loaded');
+        return;
+    }
     
+    // Load current language
     currentAppLanguage = getCurrentAppLanguage();
+    
+    // Load menu translations
     await loadMenuTranslations();
     
-    document.querySelectorAll('.lang-flag-btn').forEach(btn => 
-        btn.classList.toggle('active', btn.dataset.lang === currentAppLanguage)
-    );
-    
-    updateMenuTranslations();
-    updatePageTitles();
-    initializeCategories();
-    initializeAllModules();
-    
-    setTimeout(() => {
-        if (window.menuManager && typeof window.applyMenuPosition === 'function') {
-            window.applyMenuPosition(getCurrentMenuPosition());
-        }
-        
-        const lastPage = getCurrentPage();
-        setTimeout(() => switchPage(lastPage), 200);
-    }, 300);
-    
-    document.addEventListener('click', handleClickOutside);
-    
-    appInitialized = true;
-    console.log('✅ App initialized');
-}
-
-function handleClickOutside(e) {
-    const panels = [
-        { panel: document.getElementById('settingsPanel'), btn: document.querySelector('#calculatorPage .settings-btn')},
-        { panel: document.getElementById('settingsPanelArm'), btn: document.querySelector('#armPage .settings-btn')},
-        { panel: document.getElementById('settingsPanelGrind'), btn: document.querySelector('#grindPage .settings-btn')}
-    ];
-    
-    panels.forEach(({ panel, btn }) => {
-        if (!panel || !btn || panel.dataset.justOpened === 'true') return;
-        
-        const shouldClose = !panel.contains(e.target) && !btn.contains(e.target) &&
-            !e.target.closest('.category-button, .back-btn, .category-switch, .simple-modifier, .category-header, .lang-flag-btn');
-        
-        if (shouldClose && panel.classList.contains('show')) {
-            panel.classList.remove('show');
+    // Update active state of language flags
+    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.lang === currentAppLanguage) {
+            btn.classList.add('active');
         }
     });
+    
+    // Update menu translations AND page titles
+    updateMenuTranslations();
+    updatePageTitles();
+    
+    // Initialize categories
+    initializeCategories();
+    
+    // Initialize all modules first
+    initializeAllModules();
+    
+    // Wait for MenuManager to be available
+    setTimeout(() => {
+        // Apply menu position via MenuManager if available
+        if (typeof window.menuManager !== 'undefined') {
+            console.log('🎯 Using MenuManager for menu initialization...');
+            const currentMenuPos = getCurrentMenuPosition();
+            if (typeof window.applyMenuPosition === 'function') {
+                window.applyMenuPosition(currentMenuPos);
+            }
+        }
+        
+        // Restore last page or default to calculator
+        const lastPage = getCurrentPage();
+        console.log(`🔄 Restoring last page: ${lastPage}`);
+        
+        setTimeout(() => {
+            switchPage(lastPage);
+            console.log(`✅ Page restored to: ${lastPage}`);
+        }, 200);
+    }, 300);
+    
+    // Click outside settings panel handler
+    document.addEventListener('click', e => {
+        const settingsPanels = [
+            { panel: document.getElementById('settingsPanel'), btn: document.querySelector('#calculatorPage .settings-btn') },
+            { panel: document.getElementById('settingsPanelArm'), btn: document.querySelector('#armPage .settings-btn') },
+            { panel: document.getElementById('settingsPanelGrind'), btn: document.querySelector('#grindPage .settings-btn') }
+        ];
+        
+        settingsPanels.forEach(({ panel, btn }) => {
+            if (panel && btn) {
+                if (panel.dataset.justOpened === 'true') return;
+                
+                const isClickInsidePanel = panel.contains(e.target);
+                const isClickOnSettingsBtn = btn.contains(e.target);
+                const isClickOnCategoryButton = e.target.closest('.category-button');
+                const isClickOnBackButton = e.target.closest('.back-btn');
+                const isClickOnCategorySwitch = e.target.closest('.category-switch');
+                const isClickOnSimpleModifier = e.target.closest('.simple-modifier');
+                const isClickOnCategoryHeader = e.target.closest('.category-header');
+                const isClickOnGrindCategoryHeader = e.target.closest('.category-header-modifier');
+                const isClickOnLanguageFlag = e.target.closest('.lang-flag-btn');
+                
+                const shouldKeepOpen = isClickInsidePanel || isClickOnSettingsBtn || 
+                    isClickOnCategoryButton || isClickOnBackButton || 
+                    isClickOnCategorySwitch || isClickOnSimpleModifier ||
+                    isClickOnCategoryHeader || isClickOnGrindCategoryHeader ||
+                    isClickOnLanguageFlag;
+                
+                if (!shouldKeepOpen && panel.classList.contains('show')) {
+                    panel.classList.remove('show');
+                }
+            }
+        });
+    });
+
+    appInitialized = true;
+    console.log('✅ App initialization completed');
 }
 
 function toggleCategory(categoryId) {
-    const buttons = document.getElementById(categoryId);
-    const icon = document.querySelector(`[data-category="${categoryId}"] .category-toggle`);
+    const categoryButtons = document.getElementById(categoryId);
+    const toggleIcon = document.querySelector(`[data-category="${categoryId}"] .category-toggle`);
     
-    if (buttons && icon) {
-        const isExpanded = buttons.classList.contains('expanded');
+    if (categoryButtons && toggleIcon) {
+        const isExpanded = categoryButtons.classList.contains('expanded');
         
-        document.querySelectorAll('.category-buttons, .category-toggle').forEach(el => 
-            el.classList.remove('expanded')
-        );
+        // Close all categories first
+        document.querySelectorAll('.category-buttons').forEach(el => {
+            el.classList.remove('expanded');
+        });
+        document.querySelectorAll('.category-toggle').forEach(el => {
+            el.classList.remove('expanded');
+        });
         
+        // If this category wasn't expanded, expand it
         if (!isExpanded) {
-            buttons.classList.add('expanded');
-            icon.classList.add('expanded');
+            categoryButtons.classList.add('expanded');
+            toggleIcon.classList.add('expanded');
         }
     }
 }
 
-const initializeCategories = () => console.log('✅ Categories initialized');
-const toggleMobileMenu = () => document.querySelectorAll('#sidebar, #sidebarOverlay').forEach(el => el?.classList.toggle(el.id === 'sidebar' ? 'open' : 'show'));
-const closeSidebar = () => document.querySelectorAll('#sidebar, #sidebarOverlay').forEach(el => el?.classList.remove(el.id === 'sidebar' ? 'open' : 'show'));
-const handleAuthAction = () => console.log('Login coming soon...');
-const debugPageStates = () => {
-    console.log('=== PAGE STATES ===');
-    document.querySelectorAll('.page').forEach(p => console.log(`${p.id}: ${p.classList.contains('active') ? 'ACTIVE' : 'INACTIVE'}`));
-    console.log(`Current: ${getCurrentPage()}`);
-};
+function initializeCategories() {
+    console.log('✅ Categories initialized');
+}
 
-function forceReinitializeModule(name) {
-    console.log(`🔄 Force reinit: ${name}`);
+function toggleMobileMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
     
-    const flagName = `${name}Initialized`;
-    if (window[flagName] !== undefined) window[flagName] = false;
-    
-    const funcName = `initialize${name.charAt(0).toUpperCase() + name.slice(1)}`;
-    if (typeof window[funcName] === 'function') {
-        setTimeout(() => window[funcName](), 100);
+    if (sidebar && overlay) {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
     }
 }
 
-// Exports
-Object.assign(window, {
-    switchPage, toggleMobileMenu, closeSidebar, handleAuthAction, initializeApp, debugPageStates,
-    saveSettingsToStorage, loadSettingsFromStorage, toggleCategory, initializeCategories,
-    forceReinitializeModule, switchAppLanguage, getCurrentAppLanguage, saveAppLanguage,
-    updateMenuTranslations, updatePageTitles, saveCurrentPage, getCurrentPage, getCurrentMenuPosition
-});
+function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    if (sidebar && overlay) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+    }
+}
+
+function handleAuthAction() {
+    console.log('Login feature coming soon...');
+}
+
+function debugPageStates() {
+    console.log('=== DEBUG PAGE STATES ===');
+    document.querySelectorAll('.page').forEach(page => {
+        console.log(`${page.id}: ${page.classList.contains('active') ? 'ACTIVE' : 'INACTIVE'}`);
+    });
+    console.log(`Current saved page: ${getCurrentPage()}`);
+    console.log('========================');
+}
+
+function forceReinitializeModule(moduleName) {
+    console.log(`🔄 Force reinitializing ${moduleName}...`);
+    
+    // Reset initialization flags
+    if (moduleName === 'secret' && typeof window !== 'undefined') {
+        window.secretInitialized = false;
+    }
+    if (moduleName === 'potions' && typeof window !== 'undefined') {
+        window.potionsInitialized = false;
+    }
+    if (moduleName === 'grind' && typeof window !== 'undefined') {
+        window.grindInitialized = false;
+    }
+    if (moduleName === 'peoples' && typeof window !== 'undefined') {
+        window.peoplesInitialized = false;
+    }
+    if (moduleName === 'help' && typeof window !== 'undefined') {
+        window.helpInitialized = false;
+    }
+    if (moduleName === 'settings' && typeof window !== 'undefined') {
+        window.settingsInitialized = false;
+    }
+    if (moduleName === 'roulette' && typeof window !== 'undefined') {
+        window.rouletteInitialized = false;
+    }
+    if (moduleName === 'boss' && typeof window !== 'undefined') {
+        window.bossInitialized = false;
+    }
+    
+    // Call initialization
+    const initFunctionName = `initialize${moduleName.charAt(0).toUpperCase() + moduleName.slice(1)}`;
+    
+    if (typeof window[initFunctionName] === 'function') {
+        setTimeout(() => {
+            window[initFunctionName]();
+            console.log(`✅ ${initFunctionName} force reinitialized`);
+        }, 100);
+    } else {
+        console.error(`❌ ${initFunctionName} function not found`);
+    }
+}
+
+// Make functions globally available
+window.switchPage = switchPage;
+window.toggleMobileMenu = toggleMobileMenu;
+window.closeSidebar = closeSidebar;
+window.handleAuthAction = handleAuthAction;
+window.initializeApp = initializeApp;
+window.debugPageStates = debugPageStates;
+window.saveSettingsToStorage = saveSettingsToStorage;
+window.loadSettingsFromStorage = loadSettingsFromStorage;
+window.toggleCategory = toggleCategory;
+window.initializeCategories = initializeCategories;
+window.forceReinitializeModule = forceReinitializeModule;
+window.switchAppLanguage = switchAppLanguage;
+window.getCurrentAppLanguage = getCurrentAppLanguage;
+window.saveAppLanguage = saveAppLanguage;
+window.updateMenuTranslations = updateMenuTranslations;
+window.updatePageTitles = updatePageTitles;
+window.saveCurrentPage = saveCurrentPage;
+window.getCurrentPage = getCurrentPage;
+window.getCurrentMenuPosition = getCurrentMenuPosition;
