@@ -1,0 +1,667 @@
+/* Покращений Settings Styles - Mining Theme з MenuManager */
+
+.settings-container {
+    width: 100%;
+    padding: 15px 20px;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.settings-title {
+    color: #FFD700;
+    font-size: 2em;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 0.8),
+        0 0 20px rgba(255, 215, 0, 0.3);
+    letter-spacing: 2px;
+}
+
+.settings-section {
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.3) 0%, 
+        rgba(101, 67, 33, 0.4) 50%, 
+        rgba(62, 39, 35, 0.5) 100%);
+    border: 3px solid #8B4513;
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 18px;
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        inset 0 2px 10px rgba(255, 215, 0, 0.1);
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.settings-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 215, 0, 0.5) 50%, 
+        transparent 100%);
+}
+
+/* Заголовок категорії */
+.category-header {
+    color: #FFD700;
+    font-size: 1.4em;
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 12px;
+}
+
+.category-header:hover {
+    background: rgba(255, 215, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.category-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-icon {
+    font-size: 1.3em;
+}
+
+.category-toggle {
+    font-size: 0.8em;
+    transition: transform 0.3s ease;
+    color: #D4AF37;
+}
+
+.category-header.collapsed .category-toggle {
+    transform: rotate(-90deg);
+}
+
+/* Контейнер для кнопок фонів - ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
+.background-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr); /* ЗМІНЕНО З 2 НА 3 РЯДИ */
+    gap: 15px;
+    margin-top: 10px;
+    max-height: 450px; /* ЗБІЛЬШЕНО ВИСОТУ ДЛЯ 3 РЯДІВ */
+    overflow: hidden;
+    transition: all 0.4s ease;
+    opacity: 1;
+    width: 100%;
+}
+
+.menu-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 15px;
+    max-width: 300px;
+    justify-content: center;
+    max-height: 500px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    opacity: 1;
+}
+
+.background-options.collapsed,
+.menu-options.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    gap: 0;
+}
+
+/* Кнопки опцій */
+.background-option, .menu-option {
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.2) 0%, 
+        rgba(62, 39, 35, 0.3) 100%);
+    border: 2px solid rgba(139, 69, 19, 0.5);
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.background-option {
+    min-height: 120px;
+}
+
+.menu-option {
+    min-height: 80px;
+    padding: 15px 8px;
+}
+
+.background-option:hover, .menu-option:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.2) 0%, 
+        rgba(139, 69, 19, 0.4) 100%);
+    border-color: #FFD700;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+}
+
+.menu-option:hover {
+    transform: translateY(-2px) scale(1.05);
+}
+
+.background-option.active, .menu-option.active {
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.3) 0%, 
+        rgba(255, 165, 0, 0.2) 100%);
+    border-color: #FFD700;
+    box-shadow: 
+        0 6px 25px rgba(255, 215, 0, 0.4),
+        inset 0 2px 8px rgba(255, 215, 0, 0.2);
+    transform: translateY(-1px);
+}
+
+.background-option.active::after, .menu-option.active::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    color: #FFD700;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.menu-option.active::after {
+    top: 6px;
+    right: 8px;
+}
+
+/* Grid positioning для menu options */
+.menu-option[data-position="up"] { grid-column: 2; grid-row: 1; }
+.menu-option[data-position="left"] { grid-column: 1; grid-row: 2; }
+.menu-option[data-position="right"] { grid-column: 3; grid-row: 2; }
+.menu-option[data-position="down"] { grid-column: 2; grid-row: 3; }
+
+.option-icon, .menu-option-icon {
+    font-size: 1.8em;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.option-name, .menu-option-name {
+    color: #F5DEB3;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin-bottom: 6px;
+}
+
+.menu-option-name {
+    font-size: 0.85em;
+    margin-bottom: 5px;
+}
+
+.option-description {
+    color: #D4AF37;
+    font-size: 0.75em;
+    opacity: 0.8;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* Прев'ю фону */
+.background-preview {
+    width: 100%;
+    height: 50px;
+    border-radius: 8px;
+    margin: 8px 0 0 0;
+    border: 1px solid rgba(139, 69, 19, 0.3);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.background-preview::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, 
+        rgba(0, 0, 0, 0.3) 0%, 
+        transparent 50%, 
+        rgba(0, 0, 0, 0.3) 100%);
+    border-radius: 8px;
+}
+
+/* ПОКРАЩЕНА СИСТЕМА УПРАВЛІННЯ МЕНЮ */
+
+/* Базові стилі для статичних меню */
+.static-menu {
+    position: fixed;
+    z-index: 1002;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: linear-gradient(135deg, 
+        rgba(41, 39, 35, 0.98) 0%, 
+        rgba(28, 26, 23, 0.99) 50%, 
+        rgba(20, 19, 17, 1) 100%);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+/* Top/Bottom Menu Styles */
+.menu-top {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    border-bottom: 3px solid #8B4513;
+}
+
+.menu-bottom {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    border-top: 3px solid #8B4513;
+}
+
+/* Navigation buttons */
+.static-menu .nav-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    padding: 0;
+    overflow: visible;
+    max-width: none;
+    width: auto;
+    flex: none;
+}
+
+.static-menu .nav-btn,
+.settings-btn-static {
+    flex-shrink: 0;
+    padding: 8px 10px;
+    font-size: 1.8em;
+    width: 50px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.2) 0%, 
+        rgba(62, 39, 35, 0.3) 100%);
+    border: 2px solid rgba(139, 69, 19, 0.5);
+    color: #F5DEB3;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.static-menu .nav-btn:hover,
+.settings-btn-static:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.3) 0%, 
+        rgba(139, 69, 19, 0.6) 100%);
+    border-color: #FFD700;
+    color: #FFD700;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+}
+
+.settings-btn-static:hover {
+    transform: translateY(-2px) scale(1.05) rotate(90deg);
+}
+
+.static-menu .nav-btn.active,
+.settings-btn-static.active {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-color: #8B4513;
+    color: #2F1B14;
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    transform: translateY(-1px);
+}
+
+.settings-btn-static.active {
+    transform: translateY(-1px) rotate(90deg);
+}
+
+/* Settings Container in Static Menu */
+.settings-container-static {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    padding-left: 20px;
+}
+
+/* ПОКРАЩЕНА КНОПКА МЕНЮ - БІЛЬША ТА ЗНИКАЄ ПРИ ВІДКРИТОМУ МЕНЮ */
+
+/* Кнопка меню - за замовчуванням сховано */
+.mobile-menu-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, 
+        rgba(41, 39, 35, 0.95) 0%, 
+        rgba(28, 26, 23, 0.98) 100%);
+    border: 3px solid #8B4513;
+    border-radius: 15px;
+    cursor: pointer;
+    z-index: 1003;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.4),
+        inset 0 2px 10px rgba(255, 215, 0, 0.1);
+    display: none;
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) rotate(0deg);
+}
+
+.mobile-menu-toggle:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.2) 0%, 
+        rgba(139, 69, 19, 0.8) 100%);
+    border-color: #FFD700;
+    box-shadow: 
+        0 12px 35px rgba(255, 215, 0, 0.3),
+        inset 0 2px 10px rgba(255, 215, 0, 0.2);
+    transform: scale(1.05) rotate(0deg);
+}
+
+/* ЗНИКНЕННЯ КНОПКИ ПРИ ВІДКРИТОМУ МЕНЮ */
+.mobile-menu-toggle.menu-open {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8) rotate(180deg);
+    pointer-events: none;
+}
+
+/* Лінії кнопки меню */
+.menu-line {
+    width: 24px;
+    height: 3px;
+    background: #F5DEB3;
+    border-radius: 2px;
+    position: absolute;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+    left: 50%;
+    top: 50%;
+    transform-origin: center;
+}
+
+/* КОНТРОЛЬ ВИДИМОСТІ МЕНЮ */
+.mobile-menu-toggle,
+.sidebar,
+.sidebar-overlay,
+.static-menu {
+    display: none !important;
+}
+
+/* LEFT Menu */
+body.menu-left .mobile-menu-toggle {
+    display: block !important;
+    left: 20px !important;
+    right: auto !important;
+}
+
+body.menu-left .sidebar {
+    display: flex !important;
+    position: fixed !important;
+    left: -320px !important;
+    top: 0 !important;
+    height: 100vh !important;
+    width: 320px !important;
+    z-index: 1002 !important;
+    transition: left 0.3s ease !important;
+}
+
+body.menu-left .sidebar.open {
+    left: 0 !important;
+}
+
+body.menu-left .sidebar-overlay {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1001 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+body.menu-left .sidebar-overlay.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* RIGHT Menu */
+body.menu-right .mobile-menu-toggle {
+    display: block !important;
+    right: 20px !important;
+    left: auto !important;
+}
+
+body.menu-right .sidebar {
+    display: flex !important;
+    position: fixed !important;
+    right: -320px !important;
+    left: auto !important;
+    top: 0 !important;
+    height: 100vh !important;
+    width: 320px !important;
+    z-index: 1002 !important;
+    transition: right 0.3s ease !important;
+    border-left: 3px solid #8B4513;
+    border-right: none;
+    border-radius: 15px 0 0 15px;
+    box-shadow: -2px 0 40px rgba(0, 0, 0, 0.6);
+}
+
+body.menu-right .sidebar.open {
+    right: 0 !important;
+}
+
+body.menu-right .sidebar-overlay {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1001 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+body.menu-right .sidebar-overlay.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* UP/DOWN Menu */
+body.menu-up .static-menu.menu-top {
+    display: flex !important;
+}
+
+body.menu-down .static-menu.menu-bottom {
+    display: flex !important;
+}
+
+/* Body padding adjustments */
+body.menu-up {
+    padding-top: 80px !important;
+    padding-bottom: 0 !important;
+}
+
+body.menu-down {
+    padding-bottom: 80px !important;
+    padding-top: 0 !important;
+}
+
+body.menu-left,
+body.menu-right {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Custom scrollbar */
+.static-menu::-webkit-scrollbar {
+    height: 4px;
+}
+
+.static-menu::-webkit-scrollbar-track {
+    background: rgba(139, 69, 19, 0.2);
+    border-radius: 2px;
+}
+
+.static-menu::-webkit-scrollbar-thumb {
+    background: rgba(255, 215, 0, 0.5);
+    border-radius: 2px;
+}
+
+.static-menu::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 215, 0, 0.8);
+}
+
+/* Mobile Responsiveness - ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        width: 55px;
+        height: 55px;
+        top: 15px;
+    }
+    
+    .menu-line {
+        width: 22px;
+        height: 2.5px;
+    }
+    
+    .settings-container {
+        padding: 12px 15px;
+    }
+    
+    .settings-title {
+        font-size: 1.8em;
+        margin-bottom: 15px;
+    }
+    
+    .background-options {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        max-height: 360px; /* ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
+    }
+    
+    .background-option {
+        min-height: 95px;
+        padding: 10px;
+    }
+    
+    .menu-options {
+        max-width: 250px;
+        gap: 8px;
+    }
+    
+    .menu-option {
+        min-height: 65px;
+        padding: 10px 5px;
+    }
+    
+    .static-menu {
+        height: 55px;
+        padding: 0 15px;
+    }
+    
+    .static-menu .nav-btn,
+    .settings-btn-static {
+        font-size: 1.4em;
+        width: 40px;
+        height: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    .mobile-menu-toggle {
+        width: 50px;
+        height: 50px;
+        top: 12px;
+        left: 12px;
+    }
+    
+    .menu-line {
+        width: 20px;
+        height: 2px;
+    }
+    
+    body.menu-right .mobile-menu-toggle {
+        right: 12px !important;
+        left: auto !important;
+    }
+    
+    .background-options {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        max-height: 260px; /* ОНОВЛЕНО ДЛЯ КОМПАКТНОГО ВІДОБРАЖЕННЯ НА МАЛИХ ЕКРАНАХ */
+    }
+    
+    .background-option {
+        min-height: 80px;
+        flex-direction: row;
+        justify-content: flex-start;
+        text-align: left;
+    }
+    
+    .option-icon {
+        margin-right: 12px;
+        margin-bottom: 0;
+    }
+    
+    .background-preview {
+        height: 30px;
+        width: 50px;
+        margin: 0;
+        flex-shrink: 0;
+    }
+    
+    .static-menu {
+        height: 50px;
+        padding: 0 10px;
+    }
+    
+    .static-menu .nav-btn,
+    .settings-btn-static {
+        font-size: 1.2em;
+        width: 36px;
+        height: 32px;
+    }
+}
