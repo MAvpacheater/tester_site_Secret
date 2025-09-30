@@ -1,421 +1,249 @@
-// Fixed URL Routing System with Enhanced Path Detection - system/url.js
+// URL Routing System - Optimized
 class URLRouter {
     constructor() {
         this.baseURL = this.getBaseURL();
         this.routes = new Map();
         this.isInitialized = false;
         this.debugMode = true;
-        
         this.setupRoutes();
         this.setupListeners();
-        
-        console.log(`🌐 URL Router initialized with base: ${this.baseURL}`);
+        console.log(`🌐 Router initialized: ${this.baseURL}`);
     }
 
     getBaseURL() {
-        const protocol = window.location.protocol;
-        const host = window.location.host;
-        const pathname = window.location.pathname;
+        const { protocol, host, pathname } = window.location;
+        console.log('🔍 Detecting base:', { protocol, host, pathname });
         
-        console.log('🔍 Detecting base URL from:', { protocol, host, pathname });
-        
-        // For GitHub Pages - always include repository path
-        if (host.includes('.github.io') && host === 'mavpacheater.github.io') {
-            const baseUrl = `${protocol}//${host}/tester_site_Secret/`;
-            console.log('✅ Detected GitHub Pages with repo:', baseUrl);
-            return baseUrl;
+        if (host === 'mavpacheater.github.io') {
+            const base = `${protocol}//${host}/tester_site_Secret/`;
+            console.log('✅ GitHub Pages:', base);
+            return base;
         }
         
-        // For other GitHub Pages or local development
-        if (host.includes('.github.io')) {
-            const baseUrl = `${protocol}//${host}/`;
-            console.log('✅ Detected other GitHub Pages:', baseUrl);
-            return baseUrl;
-        }
-        
-        // For other platforms
-        const baseUrl = `${protocol}//${host}/`;
-        console.log('✅ Detected standard hosting:', baseUrl);
-        return baseUrl;
+        const base = `${protocol}//${host}/`;
+        console.log('✅ Standard hosting:', base);
+        return base;
     }
 
     setupRoutes() {
-        // Enhanced route mapping with exact path matching - includes boss
-        const routeMapping = {
-            'calculator': '',  // Root page
-            'arm': 'arm_calculator',
-            'grind': 'grind_calculator', 
-            'roulette': 'roulette_calculator',
-            'boss': 'boss_calculator',
-            'boosts': 'boosts_info',
-            'shiny': 'shiny_list',
-            'secret': 'secret_pets',
-            'codes': 'codes_list',
-            'aura': 'aura_info',
-            'trainer': 'trainer_info',
-            'charms': 'charms_info',
-            'potions': 'potions_food',
-            'worlds': 'worlds_info',
-            'settings': 'settings',
-            'help': 'help_guide',
-            'peoples': 'peoples_thanks'
+        const routes = {
+            calculator: '', arm: 'arm_calculator', grind: 'grind_calculator', 
+            roulette: 'roulette_calculator', boss: 'boss_calculator', boosts: 'boosts_info',
+            shiny: 'shiny_list', secret: 'secret_pets', codes: 'codes_list', aura: 'aura_info',
+            trainer: 'trainer_info', charms: 'charms_info', potions: 'potions_food',
+            worlds: 'worlds_info', settings: 'settings', help: 'help_guide', peoples: 'peoples_thanks'
         };
 
-        // Clear existing routes
         this.routes.clear();
 
-        // Create enhanced bidirectional mapping
-        Object.entries(routeMapping).forEach(([page, path]) => {
-            // Page -> Path mapping
+        Object.entries(routes).forEach(([page, path]) => {
             this.routes.set(page, path);
             
-            // Path -> Page mapping with all possible variations
             if (path === '') {
-                // Root path variations
-                this.routes.set('/', page);
-                this.routes.set('', page);
-                this.routes.set('/tester_site_Secret/', page);
-                this.routes.set('/tester_site_Secret', page);
+                ['/', '', '/tester_site_Secret/', '/tester_site_Secret'].forEach(v => 
+                    this.routes.set(v, page)
+                );
             } else {
-                // Standard path variations
-                const variations = [
-                    path,
-                    '/' + path,
-                    path + '/',
-                    '/' + path + '/',
-                    '/tester_site_Secret/' + path,
-                    '/tester_site_Secret/' + path + '/',
-                    'tester_site_Secret/' + path,
-                    'tester_site_Secret/' + path + '/'
-                ];
-                
-                variations.forEach(variant => {
-                    this.routes.set(variant, page);
-                });
+                [
+                    path, `/${path}`, `${path}/`, `/${path}/`,
+                    `/tester_site_Secret/${path}`, `/tester_site_Secret/${path}/`,
+                    `tester_site_Secret/${path}`, `tester_site_Secret/${path}/`
+                ].forEach(v => this.routes.set(v, page));
             }
         });
 
         if (this.debugMode) {
-            console.log('🗺️ Enhanced routes configured (includes boss):', Array.from(this.routes.entries()).slice(0, 20));
+            console.log('🗺️ Routes configured:', Array.from(this.routes.entries()).slice(0, 10));
         }
     }
 
     setupListeners() {
-        window.addEventListener('popstate', (event) => {
-            console.log('🔙 Browser navigation detected:', event.state);
-            
-            const page = this.getPageFromURL();
-            this.handleBrowserNavigation(page);
+        window.addEventListener('popstate', (e) => {
+            console.log('🔙 Navigation:', e.state);
+            this.handleBrowserNavigation(this.getPageFromURL());
         });
 
-        // Enhanced listener for hash changes
         window.addEventListener('hashchange', () => {
-            console.log('🔗 Hash change detected');
-            const page = this.getPageFromURL();
-            this.handleBrowserNavigation(page);
+            console.log('🔗 Hash change');
+            this.handleBrowserNavigation(this.getPageFromURL());
         });
     }
 
     init() {
-        if (this.isInitialized) {
-            console.log('⚠️ URL Router already initialized');
-            return;
-        }
+        if (this.isInitialized) return console.log('⚠️ Already initialized');
 
-        console.log('🚀 Initializing URL Router...');
+        console.log('🚀 Initializing router...');
         
-        // Check for restored path from 404 redirect
-        const restoredPath = sessionStorage.getItem('pathToRestore');
-        if (restoredPath) {
-            console.log(`🔄 Found restored path from 404: ${restoredPath}`);
-            
-            // Parse the restored path to get the correct page
-            const pageFromRestored = this.parsePathToPage(restoredPath);
-            if (pageFromRestored) {
-                console.log(`✅ Parsed page from restored path: ${pageFromRestored}`);
+        const restored = sessionStorage.getItem('pathToRestore');
+        if (restored) {
+            console.log(`🔄 Restored path: ${restored}`);
+            const page = this.parsePathToPage(restored);
+            if (page) {
                 sessionStorage.removeItem('pathToRestore');
-                
                 setTimeout(() => {
                     if (typeof switchPage === 'function') {
-                        switchPage(pageFromRestored);
-                        console.log(`🎯 Switched to restored page: ${pageFromRestored}`);
+                        switchPage(page);
+                        console.log(`🎯 Switched to: ${page}`);
                     }
                 }, 100);
-                
                 this.isInitialized = true;
                 return;
             }
-            
             sessionStorage.removeItem('pathToRestore');
         }
 
-        // Get initial page from current URL
-        const initialPage = this.getPageFromURL();
-        console.log(`🎯 Initial page from URL: ${initialPage}`);
-        console.log(`🔍 Current pathname: ${window.location.pathname}`);
+        const initial = this.getPageFromURL();
+        console.log(`🎯 Initial page: ${initial}`);
         
-        // Force page switch if we detected a specific page
-        if (initialPage && initialPage !== 'calculator' && typeof switchPage === 'function') {
-            console.log(`🔄 Forcing switch to detected page: ${initialPage}`);
+        if (typeof switchPage === 'function') {
             setTimeout(() => {
-                switchPage(initialPage);
-                console.log(`✅ Successfully switched to: ${initialPage}`);
-            }, 200);
-        } else if (initialPage === 'calculator') {
-            // Even for calculator, ensure it's properly loaded
-            setTimeout(() => {
-                if (typeof switchPage === 'function') {
-                    switchPage('calculator');
-                    console.log(`✅ Loaded default calculator page`);
-                }
+                switchPage(initial);
+                console.log(`✅ Loaded: ${initial}`);
             }, 200);
         }
 
         this.isInitialized = true;
-        console.log('✅ URL Router initialization completed');
+        console.log('✅ Router ready');
     }
 
     parsePathToPage(path) {
-        // Clean the path
-        let cleanPath = path;
-        if (cleanPath.startsWith('/')) cleanPath = cleanPath.substring(1);
-        if (cleanPath.endsWith('/')) cleanPath = cleanPath.slice(0, -1);
+        let clean = path.replace(/^\/|\/$/g, '').replace(/^tester_site_Secret\//, '');
         
-        // Remove tester_site_Secret prefix if present
-        if (cleanPath.startsWith('tester_site_Secret/')) {
-            cleanPath = cleanPath.substring('tester_site_Secret/'.length);
+        for (const test of [clean, `/${clean}`, `${clean}/`, `/${clean}/`]) {
+            if (this.routes.has(test)) return this.routes.get(test);
         }
-        
-        // Check for direct matches
-        const possiblePaths = [
-            cleanPath,
-            '/' + cleanPath,
-            cleanPath + '/',
-            '/' + cleanPath + '/'
-        ];
-        
-        for (const testPath of possiblePaths) {
-            if (this.routes.has(testPath)) {
-                return this.routes.get(testPath);
-            }
-        }
-        
         return null;
     }
 
     getPageFromURL() {
-        const fullPath = window.location.pathname;
-        const search = window.location.search;
-        const hash = window.location.hash;
+        const { pathname } = window.location;
         
-        if (this.debugMode) {
-            console.log(`🔍 Analyzing URL components:`, { fullPath, search, hash });
-        }
+        if (this.debugMode) console.log(`🔍 Analyzing: ${pathname}`);
         
-        // Try direct route lookup first
-        const directMatch = this.routes.get(fullPath);
-        if (directMatch) {
-            console.log(`✅ Direct match found: ${fullPath} -> ${directMatch}`);
-            return directMatch;
+        const direct = this.routes.get(pathname);
+        if (direct) {
+            console.log(`✅ Direct match: ${pathname} → ${direct}`);
+            return direct;
         }
 
-        // Extract relative path from full pathname
-        let relativePath = fullPath;
+        let relative = pathname.includes('/tester_site_Secret/') 
+            ? pathname.split('/tester_site_Secret/')[1] || ''
+            : pathname;
         
-        // Remove repository base path if present
-        if (fullPath.includes('/tester_site_Secret/')) {
-            const parts = fullPath.split('/tester_site_Secret/');
-            if (parts.length > 1) {
-                relativePath = parts[1];
-                if (relativePath.startsWith('/')) {
-                    relativePath = relativePath.substring(1);
-                }
-            }
-        }
+        relative = relative.replace(/^\/|\/$/g, '');
         
-        // Clean up the relative path
-        if (relativePath.endsWith('/')) {
-            relativePath = relativePath.slice(0, -1);
-        }
+        if (this.debugMode) console.log(`🎯 Relative: "${relative}"`);
         
-        if (this.debugMode) {
-            console.log(`🎯 Processed relative path: "${relativePath}"`);
-        }
-        
-        // Test various path combinations
-        const testPaths = [
-            relativePath,
-            '/' + relativePath,
-            relativePath + '/',
-            '/' + relativePath + '/',
-            fullPath,
-            fullPath + '/',
-            fullPath.replace(/\/$/, ''),
-            '/tester_site_Secret/' + relativePath,
-            '/tester_site_Secret/' + relativePath + '/',
-            'tester_site_Secret/' + relativePath,
-            'tester_site_Secret/' + relativePath + '/'
+        const tests = [
+            relative, `/${relative}`, `${relative}/`, `/${relative}/`,
+            pathname, `${pathname}/`, pathname.replace(/\/$/, ''),
+            `/tester_site_Secret/${relative}`, `/tester_site_Secret/${relative}/`
         ];
         
-        // Remove duplicates and empty strings
-        const uniquePaths = [...new Set(testPaths)].filter(path => path !== '');
+        const unique = [...new Set(tests)].filter(Boolean);
         
-        if (this.debugMode) {
-            console.log('🔍 Testing paths:', uniquePaths.slice(0, 8));
-        }
-        
-        // Check each possible path
-        for (const testPath of uniquePaths) {
-            if (this.routes.has(testPath)) {
-                const page = this.routes.get(testPath);
-                console.log(`✅ Match found: "${testPath}" -> ${page}`);
+        for (const test of unique) {
+            if (this.routes.has(test)) {
+                const page = this.routes.get(test);
+                console.log(`✅ Match: "${test}" → ${page}`);
                 return page;
             }
         }
         
-        // Handle root paths
-        if (relativePath === '' || fullPath === '/' || 
-            fullPath === '/tester_site_Secret/' || fullPath === '/tester_site_Secret') {
-            console.log('✅ Root path detected -> calculator');
+        if (!relative || pathname === '/' || pathname.includes('/tester_site_Secret')) {
+            console.log('✅ Root → calculator');
             return 'calculator';
         }
         
-        // Log debugging info if no match found
-        console.log(`❓ No route match found for: "${fullPath}"`);
-        console.log(`📝 Relative path was: "${relativePath}"`);
-        console.log('Available routes sample:', Array.from(this.routes.entries()).slice(0, 10));
-        
-        return 'calculator'; // Default fallback
+        console.log(`❓ No match: "${pathname}"`);
+        return 'calculator';
     }
 
     updateURL(page, pushState = true) {
-        const pathSegment = this.routes.get(page);
-        if (pathSegment === undefined) {
-            console.warn(`⚠️ No route found for page: ${page}`);
-            return;
-        }
+        const segment = this.routes.get(page);
+        if (segment === undefined) return console.warn(`⚠️ No route: ${page}`);
 
-        // Build the complete URL based on current base
-        let newURL = this.baseURL;
+        let url = this.baseURL.replace(/\/$/, '');
+        if (segment) url += `/${segment}`;
+        else url += '/';
         
-        if (pathSegment !== '') {
-            // Remove trailing slash from base and add path
-            if (newURL.endsWith('/')) {
-                newURL = newURL.slice(0, -1);
-            }
-            newURL += '/' + pathSegment;
-        } else {
-            // For root page, ensure proper trailing slash
-            if (!newURL.endsWith('/')) {
-                newURL += '/';
-            }
-        }
+        const current = new URL(window.location.href);
+        if (current.search) url += current.search;
+        if (current.hash) url += current.hash;
         
-        // Preserve search params and hash if they exist
-        const currentURL = new URL(window.location.href);
-        if (currentURL.search) newURL += currentURL.search;
-        if (currentURL.hash) newURL += currentURL.hash;
+        console.log(`🔗 URL: ${page} → ${url}`);
         
-        console.log(`🔗 Building URL: page="${page}", segment="${pathSegment}", result="${newURL}"`);
-        
-        const currentFullURL = window.location.href;
-
-        if (newURL !== currentFullURL) {
-            const stateData = { page: page, timestamp: Date.now() };
-
+        if (url !== window.location.href) {
             try {
-                if (pushState) {
-                    window.history.pushState(stateData, '', newURL);
-                    console.log(`📍 URL updated (push): ${newURL}`);
-                } else {
-                    window.history.replaceState(stateData, '', newURL);
-                    console.log(`🔄 URL updated (replace): ${newURL}`);
-                }
-
+                const state = { page, timestamp: Date.now() };
+                window.history[pushState ? 'pushState' : 'replaceState'](state, '', url);
+                console.log(`📍 URL ${pushState ? 'pushed' : 'replaced'}`);
                 this.updateMetaTags(page);
-            } catch (error) {
-                console.error('❌ Error updating URL:', error);
+            } catch (e) {
+                console.error('❌ URL error:', e);
             }
         }
     }
 
     handleBrowserNavigation(page) {
-        console.log(`🔙 Handling browser navigation to: ${page}`);
-        
+        console.log(`🔙 Navigating to: ${page}`);
         if (typeof switchPage === 'function') {
-            // Small delay to ensure page switching works properly
-            setTimeout(() => {
-                switchPage(page);
-            }, 50);
-        } else {
-            console.error('❌ switchPage function not available');
+            setTimeout(() => switchPage(page), 50);
         }
     }
 
     updateMetaTags(page) {
-        const pageInfo = this.getPageInfo(page);
-        document.title = `${pageInfo.title} - Arm Helper`;
+        const info = this.getPageInfo(page);
+        document.title = `${info.title} - Arm Helper`;
         
-        let metaDescription = document.querySelector('meta[name="description"]');
-        if (!metaDescription) {
-            metaDescription = document.createElement('meta');
-            metaDescription.name = 'description';
-            document.head.appendChild(metaDescription);
+        let meta = document.querySelector('meta[name="description"]');
+        if (!meta) {
+            meta = document.createElement('meta');
+            meta.name = 'description';
+            document.head.appendChild(meta);
         }
-        metaDescription.content = pageInfo.description;
+        meta.content = info.description;
     }
 
     getPageInfo(page) {
-        const pageData = {
-            'calculator': { title: '🐾 Pet Calculator', description: 'Calculate pet upgrades and evolution costs' },
-            'arm': { title: '💪 Arm Calculator', description: 'Calculate arm strength upgrades and costs' },
-            'grind': { title: '🏋️‍♂️ Grind Calculator', description: 'Calculate grinding efficiency and rewards' },
-            'roulette': { title: '🎰 Roulette Calculator', description: 'Calculate time needed for roulette spins and rewards' },
-            'boss': { title: '👹 Boss Calculator', description: 'Calculate time needed for boss battles and rewards' },
-            'boosts': { title: '🚀 Boosts Information', description: 'Complete guide to all boosts and their effects' },
-            'shiny': { title: '✨ Shiny Pet Statistics', description: 'Complete list of shiny pets and their stats' },
-            'secret': { title: '🔮 Secret Pets Guide', description: 'Discover all secret pets and how to get them' },
-            'codes': { title: '🎁 Active Codes', description: 'Latest working codes for rewards' },
-            'aura': { title: '🌟 Aura Information', description: 'Complete guide to auras and their effects' },
-            'trainer': { title: '🏆 Trainer Guide', description: 'Pet training tips and strategies' },
-            'charms': { title: '🔮 Charms Guide', description: 'All charms and their magical effects' },
-            'potions': { title: '🧪 Potions & Food Guide', description: 'Complete guide to potions and food effects' },
-            'worlds': { title: '🌍 Worlds Guide', description: 'Explore all worlds and their unique features' },
-            'settings': { title: '⚙️ Settings', description: 'Customize your Arm Helper experience' },
-            'help': { title: '🆘 Help Guide', description: 'Get help and learn how to use Arm Helper' },
-            'peoples': { title: '🙏 Thanks & Credits', description: 'Special thanks to our community' }
+        const data = {
+            calculator: { title: '🐾 Pet Calculator', description: 'Calculate pet upgrades' },
+            arm: { title: '💪 Arm Calculator', description: 'Calculate arm strength' },
+            grind: { title: '🏋️‍♂️ Grind Calculator', description: 'Calculate grinding efficiency' },
+            roulette: { title: '🎰 Roulette Calculator', description: 'Calculate roulette time' },
+            boss: { title: '👹 Boss Calculator', description: 'Calculate boss battle time' },
+            boosts: { title: '🚀 Boosts', description: 'Complete guide to boosts' },
+            shiny: { title: '✨ Shiny Stats', description: 'Shiny pets list' },
+            secret: { title: '🔮 Secret Pets', description: 'Secret pets guide' },
+            codes: { title: '🎁 Codes', description: 'Latest working codes' },
+            aura: { title: '🌟 Aura', description: 'Aura guide' },
+            trainer: { title: '🏆 Trainer', description: 'Training guide' },
+            charms: { title: '🔮 Charms', description: 'Charms guide' },
+            potions: { title: '🧪 Potions & Food', description: 'Potions guide' },
+            worlds: { title: '🌍 Worlds', description: 'Worlds guide' },
+            settings: { title: '⚙️ Settings', description: 'Customize app' },
+            help: { title: '🆘 Help', description: 'Help guide' },
+            peoples: { title: '🙏 Thanks', description: 'Community credits' }
         };
-
-        return pageData[page] || { title: 'Arm Helper', description: 'Ultimate helper tool for arm wrestling' };
+        return data[page] || { title: 'Arm Helper', description: 'Ultimate helper tool' };
     }
 
-    // Enhanced debug function
     debug() {
-        console.log('=== URL ROUTER DEBUG ===');
-        console.log('Current URL:', window.location.href);
-        console.log('Pathname:', window.location.pathname);
-        console.log('Base URL:', this.baseURL);
-        console.log('Detected page:', this.getPageFromURL());
-        console.log('Is initialized:', this.isInitialized);
-        console.log('Total routes:', this.routes.size);
-        console.log('Sample routes (including boss):');
-        Array.from(this.routes.entries()).slice(0, 20).forEach(([path, page]) => {
-            console.log(`  "${path}" -> ${page}`);
-        });
-        console.log('========================');
+        console.log('=== ROUTER DEBUG ===');
+        console.log('URL:', window.location.href);
+        console.log('Path:', window.location.pathname);
+        console.log('Base:', this.baseURL);
+        console.log('Page:', this.getPageFromURL());
+        console.log('Routes:', this.routes.size);
+        console.log('Sample:', Array.from(this.routes.entries()).slice(0, 10));
+        console.log('===================');
     }
 
-    // Force page detection and switching
     forceRouteCheck() {
-        console.log('🔄 Force checking current route...');
-        const currentPage = this.getPageFromURL();
-        console.log(`🎯 Force detected page: ${currentPage}`);
-        
-        if (typeof switchPage === 'function') {
-            switchPage(currentPage);
-            console.log(`✅ Force switched to: ${currentPage}`);
-        }
-        
-        return currentPage;
+        console.log('🔄 Force route check...');
+        const page = this.getPageFromURL();
+        console.log(`🎯 Detected: ${page}`);
+        if (typeof switchPage === 'function') switchPage(page);
+        return page;
     }
 }
