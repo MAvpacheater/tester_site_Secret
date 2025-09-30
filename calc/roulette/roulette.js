@@ -254,4 +254,47 @@ function calculateRouletteTime() {
         return;
     }
     
-    const totalTurns = totalSpins / spinsPer
+    const totalTurns = totalSpins / spinsPerTurn;
+    const totalSeconds = totalTurns * 6;
+    const formattedTime = formatTime(totalSeconds);
+    
+    if (resultValue) {
+        resultValue.textContent = formattedTime;
+        setTimeout(() => resultSection.classList.add('show-result'), 100);
+    }
+    
+    if (resultDetails) {
+        resultDetails.textContent = '';
+    }
+    
+    console.log(`🎰 Calculated: ${totalSpins} spins ÷ ${spinsPerTurn} per turn = ${totalTurns} turns = ${totalSeconds}s = ${formattedTime}`);
+}
+
+function handleEnterKey(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        calculateRouletteTime();
+    }
+}
+
+// Auto-initialize
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('roulettePage')) initializeRoulette();
+});
+
+document.addEventListener('pageChanged', (e) => {
+    if (e.detail.pageId === 'roulettePage' && !rouletteInitialized) {
+        initializeRoulette();
+    }
+});
+
+// Global exports
+window.initializeRoulette = initializeRoulette;
+window.calculateRouletteTime = calculateRouletteTime;
+window.updateRouletteLanguage = updateRouletteLanguage;
+window.debugInitializeRoulette = () => {
+    rouletteInitialized = false;
+    initializeRoulette();
+};
+
+console.log('✅ Roulette Calculator module loaded');
