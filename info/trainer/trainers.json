@@ -74,6 +74,15 @@
         }
       ],
       "donate": [
+                {
+          "name": "Desert Miner",
+          "strength": "335",
+          "strengthBoost": "502,5",
+          "luck": "132",
+          "luckBoost": "198.5",
+          "wins": "142",
+          "winsBoost": "213"
+        },
         {
           "name": "Pharoah",
           "strength": "320",
@@ -242,6 +251,15 @@
         }
       ],
       "donate": [
+                {
+          "name": "Шахтар пустелі",
+          "strength": "335",
+          "strengthBoost": "502,5",
+          "luck": "132",
+          "luckBoost": "198.5",
+          "wins": "142",
+          "winsBoost": "213"
+        },
         {
           "name": "Фараон",
           "strength": "320",
@@ -410,6 +428,15 @@
         }
       ],
       "donate": [
+        {
+          "name": "Пустынный шахтер",
+          "strength": "335",
+          "strengthBoost": "502,5",
+          "luck": "132",
+          "luckBoost": "198.5",
+          "wins": "142",
+          "winsBoost": "213"
+        },
         {
           "name": "Фараон",
           "strength": "320",
