@@ -15,7 +15,7 @@ class URLRouter {
         console.log('🔍 Detecting base:', { protocol, host, pathname });
         
         if (host === 'mavpacheater.github.io') {
-            const base = `${protocol}//${host}/tester_site_Secret/`;
+            const base = `${protocol}//${host}/armwrestlerinfopost/`;
             console.log('✅ GitHub Pages:', base);
             return base;
         }
