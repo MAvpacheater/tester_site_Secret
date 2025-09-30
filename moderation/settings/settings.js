@@ -17,9 +17,9 @@ const backgroundOptions = {
     dodep: { icon: '🎰', filename: 'dodep.png' },
     prison: { icon: '👮‍♂️', filename: 'prison.png' },
     forest: { icon: '🌲', filename: 'forest.jpg' },
-    space: { icon: '🚀', filename: 'space.png' },
-    ocean: { icon: '🌊', filename: 'ocean.png' },
-    desert: { icon: '🏜️', filename: 'desert.png' }
+    space: { icon: '💰', filename: 'bank.png' },
+    ocean: { icon: '🌊', filename: 'sea.jpeg' },
+    desert: { icon: '🔭', filename: 'earth.jpg' }
 };
 
 Object.keys(backgroundOptions).forEach(key => {
