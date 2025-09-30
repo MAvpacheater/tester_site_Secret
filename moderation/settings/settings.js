@@ -1,9 +1,8 @@
-// Оптимізований Settings - Керування фоном і позицією меню
+// Оптимізований Settings
 let settingsInitialized = false;
 let settingsTranslations = null;
 let categoriesState = { background: false, menu: false };
 
-// GitHub конфігурація для зображень
 const GITHUB_CONFIG = {
     user: 'MAvpacheater',
     repo: 'tester_site_Secret',
@@ -11,7 +10,6 @@ const GITHUB_CONFIG = {
     imagePath: 'image/bg/'
 };
 
-// Конфігурації фонів з GitHub зображеннями
 const backgroundOptions = {
     penguin: { icon: '🐧', filename: 'penguin.png' },
     game: { icon: '🎮', filename: 'game.png' },
@@ -24,122 +22,89 @@ const backgroundOptions = {
     desert: { icon: '🏜️', filename: 'desert.png' }
 };
 
-// Додаємо URL до кожної опції
 Object.keys(backgroundOptions).forEach(key => {
     backgroundOptions[key].url = `https://raw.githubusercontent.com/${GITHUB_CONFIG.user}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${GITHUB_CONFIG.imagePath}${backgroundOptions[key].filename}`;
 });
 
-// Конфігурації позицій меню
 const menuPositions = {
-    left: { icon: '⬅️', description: 'Гамбургер меню ліворуч' },
-    right: { icon: '➡️', description: 'Гамбургер меню праворуч' },
-    up: { icon: '⬆️', description: 'Іконки меню зверху' },
-    down: { icon: '⬇️', description: 'Іконки меню знизу' }
+    left: { icon: '⬅️' },
+    right: { icon: '➡️' },
+    up: { icon: '⬆️' },
+    down: { icon: '⬇️' }
 };
 
-// Конфігурація елементів меню - ДОДАНО РУЛЕТКУ
 const menuItems = [
-    { page: 'calculator', icon: '🐾', title: 'Pet Calculator' },
-    { page: 'arm', icon: '💪', title: 'Arm Calculator' },
-    { page: 'grind', icon: '🏋️‍♂️', title: 'Grind Calculator' },
-    { page: 'roulette', icon: '🎰', title: 'Roulette Calculator' },
-    { page: 'boosts', icon: '🚀', title: 'Boosts' },
-    { page: 'shiny', icon: '✨', title: 'Shiny Stats' },
-    { page: 'secret', icon: '🔮', title: 'Secret Pets' },
-    { page: 'codes', icon: '🎁', title: 'Codes' },
-    { page: 'aura', icon: '🌟', title: 'Aura' },
-    { page: 'trainer', icon: '🏆', title: 'Trainer' },
-    { page: 'charms', icon: '🔮', title: 'Charms' },
-    { page: 'potions', icon: '🧪', title: 'Potions & Food' },
-    { page: 'worlds', icon: '🌍', title: 'Worlds' },
-    { page: 'help', icon: '🆘', title: 'Help' },
-    { page: 'peoples', icon: '🙏', title: 'Peoples' }
+    { page: 'calculator', icon: '🐾' },
+    { page: 'arm', icon: '💪' },
+    { page: 'grind', icon: '🏋️‍♂️' },
+    { page: 'roulette', icon: '🎰' },
+    { page: 'boss', icon: '👹' },
+    { page: 'boosts', icon: '🚀' },
+    { page: 'shiny', icon: '✨' },
+    { page: 'secret', icon: '🔮' },
+    { page: 'codes', icon: '🎁' },
+    { page: 'aura', icon: '🌟' },
+    { page: 'trainer', icon: '🏆' },
+    { page: 'charms', icon: '🔮' },
+    { page: 'potions', icon: '🧪' },
+    { page: 'worlds', icon: '🌍' },
+    { page: 'help', icon: '🆘' },
+    { page: 'peoples', icon: '🙏' }
 ];
 
-// УПРАВЛІННЯ КНОПКОЮ МЕНЮ - ПОКРАЩЕНО
+// MENU BUTTON
 function createMenuButton() {
     const menuToggle = document.querySelector('.mobile-menu-toggle');
     if (!menuToggle) return;
     
     menuToggle.innerHTML = '';
-    
-    // Створити три лінії для більшої кнопки
     for (let i = 0; i < 3; i++) {
         const line = document.createElement('div');
         line.className = 'menu-line';
-        
-        // Позиції для більшої кнопки (60x60px)
-        if (i === 0) {
-            line.style.transform = 'translate(-50%, -50%) translateY(-6px)';
-        } else if (i === 1) {
-            line.style.transform = 'translate(-50%, -50%)';
-        } else {
-            line.style.transform = 'translate(-50%, -50%) translateY(6px)';
-        }
-        
+        line.style.transform = i === 0 ? 'translate(-50%, -50%) translateY(-6px)' :
+                               i === 1 ? 'translate(-50%, -50%)' :
+                               'translate(-50%, -50%) translateY(6px)';
         menuToggle.appendChild(line);
     }
 }
 
-// Показати/сховати кнопку меню залежно від стану сайдбара
 function updateMenuButtonVisibility() {
     const menuToggle = document.querySelector('.mobile-menu-toggle');
     const sidebar = document.getElementById('sidebar');
     
     if (!menuToggle || !sidebar) return;
     
-    const isMenuOpen = sidebar.classList.contains('open');
-    
-    if (isMenuOpen) {
-        menuToggle.classList.add('menu-open');
-        console.log('🔒 Кнопка меню сховано (меню відкрито)');
-    } else {
-        menuToggle.classList.remove('menu-open');
-        console.log('👁️ Кнопка меню показано (меню закрито)');
-    }
+    menuToggle.classList.toggle('menu-open', sidebar.classList.contains('open'));
 }
 
-// СИСТЕМА УПРАВЛІННЯ МЕНЮ - СПРОЩЕНО
+// MENU MANAGER
 class MenuManager {
     constructor() {
         this.currentMenuType = null;
     }
 
     clearAllMenus() {
-        console.log('🧹 Очищення всіх меню...');
-        
-        // Видалити статичні меню
         document.querySelectorAll('.static-menu, #staticMenu').forEach(menu => menu.remove());
-
-        // Закрити сайдбар
+        
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         
         if (sidebar) sidebar.classList.remove('open');
         if (overlay) overlay.classList.remove('show');
         
-        // Оновити видимість кнопки меню
         updateMenuButtonVisibility();
-
-        // Очистити класи позицій з body
-        Object.keys(menuPositions).forEach(pos => {
-            document.body.classList.remove(`menu-${pos}`);
-        });
-        
-        // Очистити padding
+        Object.keys(menuPositions).forEach(pos => document.body.classList.remove(`menu-${pos}`));
         document.body.style.paddingTop = '';
         document.body.style.paddingBottom = '';
     }
 
     showOnlyMenu(menuType) {
-        console.log(`🎯 Показ меню типу: ${menuType}`);
-        
         this.clearAllMenus();
         document.body.classList.add(`menu-${menuType}`);
         
         if (menuType === 'left' || menuType === 'right') {
             this.setupSidebarMenu(menuType);
-        } else if (menuType === 'up' || menuType === 'down') {
+        } else {
             this.createStaticMenu(menuType);
         }
         
@@ -158,7 +123,6 @@ class MenuManager {
         if (mobileToggle) {
             mobileToggle.style.left = position === 'right' ? 'auto' : '20px';
             mobileToggle.style.right = position === 'right' ? '20px' : 'auto';
-            
             setTimeout(createMenuButton, 100);
         }
     }
@@ -169,7 +133,6 @@ class MenuManager {
         staticMenu.className = `static-menu ${menuClass}`;
         staticMenu.id = 'staticMenu';
         
-        // Навігаційні кнопки - ВКЛЮЧАЮЧИ РУЛЕТКУ
         const navButtons = document.createElement('div');
         navButtons.className = 'nav-buttons';
         
@@ -177,26 +140,19 @@ class MenuManager {
             const btn = document.createElement('button');
             btn.className = 'nav-btn';
             btn.dataset.page = item.page;
-            btn.title = item.title;
             btn.textContent = item.icon;
             btn.onclick = () => {
-                if (typeof window.switchPage === 'function') {
-                    window.switchPage(item.page);
-                }
+                if (typeof window.switchPage === 'function') window.switchPage(item.page);
                 this.updateActiveState(item.page);
             };
             navButtons.appendChild(btn);
         });
         
-        // Кнопка налаштувань
         const settingsBtn = document.createElement('button');
         settingsBtn.className = 'nav-btn settings-btn-static';
-        settingsBtn.title = 'Settings';
         settingsBtn.textContent = '⚙️';
         settingsBtn.onclick = () => {
-            if (typeof window.switchPage === 'function') {
-                window.switchPage('settings');
-            }
+            if (typeof window.switchPage === 'function') window.switchPage('settings');
             this.updateActiveState('settings');
         };
         
@@ -208,14 +164,8 @@ class MenuManager {
         staticMenu.appendChild(settingsContainer);
         document.body.appendChild(staticMenu);
         
-        // Встановити padding для body
-        if (position === 'up') {
-            document.body.style.paddingTop = '80px';
-        } else {
-            document.body.style.paddingBottom = '80px';
-        }
+        document.body.style[position === 'up' ? 'paddingTop' : 'paddingBottom'] = '80px';
         
-        // Оновити активний стан
         const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
         this.updateActiveState(currentPage);
     }
@@ -225,19 +175,16 @@ class MenuManager {
         if (!staticMenu) return;
         
         staticMenu.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.dataset.page === activePage || 
-                (activePage === 'settings' && btn.classList.contains('settings-btn-static'))) {
-                btn.classList.add('active');
-            }
+            btn.classList.toggle('active', 
+                btn.dataset.page === activePage || 
+                (activePage === 'settings' && btn.classList.contains('settings-btn-static'))
+            );
         });
     }
 }
 
-// Глобальний екземпляр менеджера меню
 const menuManager = new MenuManager();
 
-// ФУНКЦІЇ УПРАВЛІННЯ МЕНЮ - ПОКРАЩЕНО
 function toggleMobileMenu() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
@@ -245,8 +192,6 @@ function toggleMobileMenu() {
     if (sidebar && overlay) {
         sidebar.classList.toggle('open');
         overlay.classList.toggle('show');
-        
-        // Оновити видимість кнопки меню
         updateMenuButtonVisibility();
     }
 }
@@ -258,13 +203,11 @@ function closeSidebar() {
     if (sidebar && overlay) {
         sidebar.classList.remove('open');
         overlay.classList.remove('show');
-        
-        // Оновити видимість кнопки меню
         updateMenuButtonVisibility();
     }
 }
 
-// РОБОТА З ФОНАМИ
+// BACKGROUNDS
 async function checkImageAvailability(url) {
     try {
         const response = await fetch(url, { method: 'HEAD' });
@@ -274,39 +217,27 @@ async function checkImageAvailability(url) {
     }
 }
 
-async function loadBackgroundImage(background) {
-    const config = backgroundOptions[background];
-    if (!config) return null;
-    
-    const isAvailable = await checkImageAvailability(config.url);
-    return isAvailable ? config.url : null;
-}
-
 async function applyBackground(background) {
     const config = backgroundOptions[background];
     if (!config) return;
-    
-    console.log(`🎨 Застосування фону: ${background}`);
     
     const body = document.body;
     body.classList.add('loading-background');
     
     try {
-        const imageUrl = await loadBackgroundImage(background);
-        if (imageUrl) {
-            const backgroundStyle = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${imageUrl}') center center / cover no-repeat`;
-            body.style.background = backgroundStyle;
+        const isAvailable = await checkImageAvailability(config.url);
+        if (isAvailable) {
+            body.style.background = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${config.url}') center center / cover no-repeat`;
             body.style.backgroundAttachment = window.innerWidth > 768 ? 'fixed' : 'scroll';
-            console.log(`✅ Фон застосовано: ${background}`);
         }
     } catch (error) {
-        console.error(`❌ Помилка застосування фону:`, error);
+        console.error('Background error:', error);
     } finally {
         body.classList.remove('loading-background');
     }
 }
 
-// УПРАВЛІННЯ НАЛАШТУВАННЯМИ - СПРОЩЕНО
+// SETTINGS MANAGEMENT
 function toggleSettingsCategory(categoryName) {
     if (!categoriesState.hasOwnProperty(categoryName)) return;
     
@@ -315,17 +246,11 @@ function toggleSettingsCategory(categoryName) {
     const header = document.querySelector(`#settingsPage [data-category="${categoryName}"] .category-header`);
     const options = document.querySelector(`#settingsPage .${categoryName}-options`);
     
-    if (!header || !options) return;
-    
-    if (categoriesState[categoryName]) {
-        header.classList.remove('collapsed');
-        options.classList.remove('collapsed');
-    } else {
-        header.classList.add('collapsed');
-        options.classList.add('collapsed');
+    if (header && options) {
+        header.classList.toggle('collapsed', !categoriesState[categoryName]);
+        options.classList.toggle('collapsed', !categoriesState[categoryName]);
+        localStorage.setItem('armHelper_categoriesState', JSON.stringify(categoriesState));
     }
-    
-    localStorage.setItem('armHelper_categoriesState', JSON.stringify(categoriesState));
 }
 
 function loadCategoriesState() {
@@ -333,9 +258,7 @@ function loadCategoriesState() {
     if (saved) {
         try {
             categoriesState = { ...categoriesState, ...JSON.parse(saved) };
-        } catch (e) {
-            console.warn('Не вдалося завантажити стан категорій');
-        }
+        } catch (e) {}
     }
 }
 
@@ -344,19 +267,14 @@ function applyCategoriesState() {
         const header = document.querySelector(`#settingsPage [data-category="${category}"] .category-header`);
         const options = document.querySelector(`#settingsPage .${category}-options`);
         
-        if (!header || !options) return;
-        
-        if (categoriesState[category]) {
-            header.classList.remove('collapsed');
-            options.classList.remove('collapsed');
-        } else {
-            header.classList.add('collapsed');
-            options.classList.add('collapsed');
+        if (header && options) {
+            header.classList.toggle('collapsed', !categoriesState[category]);
+            options.classList.toggle('collapsed', !categoriesState[category]);
         }
     });
 }
 
-// ФУНКЦІЇ ЗБЕРЕЖЕННЯ/ЗАВАНТАЖЕННЯ
+// STORAGE
 function getCurrentBackground() {
     return localStorage.getItem('armHelper_background') || 'penguin';
 }
@@ -373,7 +291,7 @@ function saveMenuPosition(position) {
     localStorage.setItem('armHelper_menuPosition', position);
 }
 
-// ОСНОВНІ ФУНКЦІЇ ЗМІНИ НАЛАШТУВАНЬ
+// CHANGE FUNCTIONS
 async function changeBackground(background) {
     if (!backgroundOptions[background]) return;
     
@@ -384,8 +302,6 @@ async function changeBackground(background) {
         saveBackground(background);
         await applyBackground(background);
         updateBackgroundUI();
-    } catch (error) {
-        console.error('❌ Помилка зміни фону:', error);
     } finally {
         if (button) button.classList.remove('loading');
     }
@@ -402,34 +318,28 @@ function changeMenuPosition(position) {
 function updateBackgroundUI() {
     const currentBg = getCurrentBackground();
     document.querySelectorAll('#settingsPage .background-option').forEach(option => {
-        option.classList.remove('active');
-        if (option.dataset.background === currentBg) {
-            option.classList.add('active');
-        }
+        option.classList.toggle('active', option.dataset.background === currentBg);
     });
 }
 
 function updateMenuPositionUI() {
     const currentPos = getCurrentMenuPosition();
     document.querySelectorAll('#settingsPage .menu-option').forEach(option => {
-        option.classList.remove('active');
-        if (option.dataset.position === currentPos) {
-            option.classList.add('active');
-        }
+        option.classList.toggle('active', option.dataset.position === currentPos);
     });
 }
 
-// РОБОТА З ПЕРЕКЛАДАМИ
+// TRANSLATIONS
 async function loadSettingsTranslations() {
     if (settingsTranslations) return settingsTranslations;
     
     try {
-        const response = await fetch('languages/settings.json');
-        if (!response.ok) throw new Error(`HTTP помилка! статус: ${response.status}`);
+        const response = await fetch('settings/menu.json');
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         settingsTranslations = await response.json();
         return settingsTranslations;
     } catch (error) {
-        console.error('❌ Помилка завантаження перекладів:', error);
+        console.error('Translation load error:', error);
         return null;
     }
 }
@@ -441,61 +351,46 @@ async function updateSettingsLanguage(lang = null) {
     
     if (!settingsTranslations || !settingsTranslations[currentLang]) return;
     
-    const translations = settingsTranslations[currentLang];
+    const t = settingsTranslations[currentLang].settings;
     
-    // Оновити елементи UI
-    const updates = [
-        { selector: '#settingsPage .settings-title', key: 'title' },
-        { selector: '#settingsPage [data-category="background"] .category-title span:last-child', key: 'background' },
-        { selector: '#settingsPage [data-category="menu"] .category-title span:last-child', key: 'menu' }
-    ];
+    const updates = {
+        '.settings-title': t.title,
+        '[data-category="background"] .category-title span:last-child': t.background,
+        '[data-category="menu"] .category-title span:last-child': t.menu
+    };
     
-    updates.forEach(({ selector, key }) => {
-        const element = document.querySelector(selector);
-        if (element && translations[key]) {
-            element.textContent = translations[key];
-        }
+    Object.entries(updates).forEach(([selector, text]) => {
+        const el = document.querySelector(`#settingsPage ${selector}`);
+        if (el) el.textContent = text;
     });
     
-    // Оновити опції фону
     Object.keys(backgroundOptions).forEach(bg => {
-        const option = document.querySelector(`#settingsPage [data-background="${bg}"] .option-name`);
-        if (option && translations[bg]) {
-            option.textContent = translations[bg];
-        }
+        const el = document.querySelector(`#settingsPage [data-background="${bg}"] .option-name`);
+        if (el && t[bg]) el.textContent = t[bg];
     });
     
-    // Оновити опції позиції меню
     Object.keys(menuPositions).forEach(pos => {
-        const option = document.querySelector(`#settingsPage [data-position="${pos}"] .menu-option-name`);
-        if (option && translations[pos]) {
-            option.textContent = translations[pos];
-        }
+        const el = document.querySelector(`#settingsPage [data-position="${pos}"] .menu-option-name`);
+        if (el && t[pos]) el.textContent = t[pos];
     });
 }
 
-// HTML ГЕНЕРАЦІЯ
+// HTML GENERATION
 function createSettingsHTML() {
-    const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => {
-        const config = backgroundOptions[bg];
-        return `
-            <div class="background-option" data-background="${bg}" onclick="changeBackground('${bg}')">
-                <div class="option-icon">${config.icon}</div>
-                <div class="option-name"></div>
-                <div class="background-preview" style="background-image: url('${config.url}')"></div>
-            </div>
-        `;
-    }).join('');
+    const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => `
+        <div class="background-option" data-background="${bg}" onclick="changeBackground('${bg}')">
+            <div class="option-icon">${backgroundOptions[bg].icon}</div>
+            <div class="option-name"></div>
+            <div class="background-preview" style="background-image: url('${backgroundOptions[bg].url}')"></div>
+        </div>
+    `).join('');
 
-    const menuOptionsHTML = Object.keys(menuPositions).map(pos => {
-        const config = menuPositions[pos];
-        return `
-            <div class="menu-option" data-position="${pos}" onclick="changeMenuPosition('${pos}')">
-                <div class="menu-option-icon">${config.icon}</div>
-                <div class="menu-option-name"></div>
-            </div>
-        `;
-    }).join('');
+    const menuOptionsHTML = Object.keys(menuPositions).map(pos => `
+        <div class="menu-option" data-position="${pos}" onclick="changeMenuPosition('${pos}')">
+            <div class="menu-option-icon">${menuPositions[pos].icon}</div>
+            <div class="menu-option-name"></div>
+        </div>
+    `).join('');
 
     return `
         <div class="settings-container">
@@ -526,11 +421,9 @@ function createSettingsHTML() {
     `;
 }
 
-// ОСНОВНІ ФУНКЦІЇ ІНІЦІАЛІЗАЦІЇ
+// INITIALIZATION
 async function initializeSettings() {
     if (settingsInitialized) return;
-    
-    console.log('⚙️ Ініціалізація налаштувань...');
     
     const settingsPage = document.getElementById('settingsPage');
     if (!settingsPage) return;
@@ -555,42 +448,32 @@ async function initializeSettings() {
     applyCategoriesState();
     
     settingsInitialized = true;
-    console.log('✅ Налаштування ініціалізовано');
 }
 
 async function initializeSettingsOnStart() {
-    console.log('🚀 Ініціалізація при старті...');
-    
     const currentBg = getCurrentBackground();
     await applyBackground(currentBg);
     
     const currentMenuPos = getCurrentMenuPosition();
-    setTimeout(() => {
-        menuManager.showOnlyMenu(currentMenuPos);
-    }, 100);
+    setTimeout(() => menuManager.showOnlyMenu(currentMenuPos), 100);
 }
 
 // EVENT LISTENERS
-document.addEventListener('languageChanged', (event) => {
-    if (settingsInitialized) {
-        updateSettingsLanguage(event.detail.language);
-    }
+document.addEventListener('languageChanged', (e) => {
+    if (settingsInitialized) updateSettingsLanguage(e.detail.language);
 });
 
-document.addEventListener('pageChanged', (event) => {
-    if (event.detail && event.detail.page) {
-        menuManager.updateActiveState(event.detail.page);
-    }
+document.addEventListener('pageChanged', (e) => {
+    if (e.detail && e.detail.page) menuManager.updateActiveState(e.detail.page);
 });
 
-// Ініціалізація при завантаженні
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeSettingsOnStart);
 } else {
     initializeSettingsOnStart();
 }
 
-// ГЛОБАЛЬНІ ФУНКЦІЇ
+// GLOBAL EXPORTS
 window.initializeSettings = initializeSettings;
 window.changeBackground = changeBackground;
 window.changeMenuPosition = changeMenuPosition;
