@@ -1,27 +1,17 @@
-// Content loader script - Fixed to work with language system and single menu
+// Content loader script - Updated to load single content.html file
 console.log('🔄 Loading content...');
 
 // Function to load content
 async function loadContent() {
     try {
-        // Load calculator, info, moderation, and other content
-        const [calcResponse, infoResponse, moderationResponse, otherResponse] = await Promise.all([
-            fetch('index/content_calc.html'),
-            fetch('index/content_info.html'),
-            fetch('index/content_moderation.html'),
-            fetch('index/content_other.html')
-        ]);
+        // Load single content file
+        const contentResponse = await fetch('index/content.html');
 
-        if (!calcResponse.ok || !infoResponse.ok || !moderationResponse.ok || !otherResponse.ok) {
-            throw new Error(`HTTP error! calc: ${calcResponse.status}, info: ${infoResponse.status}, moderation: ${moderationResponse.status}, other: ${otherResponse.status}`);
+        if (!contentResponse.ok) {
+            throw new Error(`HTTP error! status: ${contentResponse.status}`);
         }
         
-        const [calcContent, infoContent, moderationContent, otherContent] = await Promise.all([
-            calcResponse.text(),
-            infoResponse.text(),
-            moderationResponse.text(),
-            otherResponse.text()
-        ]);
+        const contentHTML = await contentResponse.text();
 
         const appContent = document.getElementById('app-content');
         
@@ -119,10 +109,7 @@ async function loadContent() {
                 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
                    
                 <div class="container">
-                    ${calcContent}
-                    ${infoContent}
-                    ${moderationContent}
-                    ${otherContent}
+                    ${contentHTML}
                 </div>
             `;
 
