@@ -5,43 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arm Helper</title>
     
-    <!-- Handle redirect from 404.html -->
     <script>
         (function() {
-            var redirect = sessionStorage.pathToRestore;
+            const redirect = sessionStorage.pathToRestore;
             if (redirect && redirect !== '/') {
-                console.log('🔄 Restoring path from 404:', redirect);
-                sessionStorage.setItem('pathToRestore', redirect);
-                
-                var protocol = window.location.protocol;
-                var host = window.location.host;
-                var basePath = '';
-                
-                if (host.includes('.github.io') && host === 'mavpacheater.github.io') {
-                    basePath = '/tester_site_Secret';
-                }
-                
-                var fullPath = basePath + redirect;
-                console.log('🎯 Full restored path:', fullPath);
-                history.replaceState(null, null, fullPath);
+                const host = window.location.host;
+                const basePath = host === 'mavpacheater.github.io' ? '/tester_site_Secret' : '';
+                history.replaceState(null, null, basePath + redirect);
             }
         })();
     </script>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="image/bg/peanguin.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="image/bg/peanguin.png">
-    
-    <!-- Preload critical resources -->
     <link rel="preload" href="system/general.css" as="style">
     <link rel="preload" href="system/general.js" as="script">
-    <link rel="preload" href="system/loader.js" as="script">
-
-    <!-- Critical CSS -->
     <link rel="stylesheet" href="system/general.css">
     
-    <!-- Module CSS - Lazy loaded -->
     <link rel="stylesheet" href="calc/calculator/calculator.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="calc/arm/arm.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="calc/grind/grind.css" media="print" onload="this.media='all'">
@@ -61,7 +40,6 @@
     <link rel="stylesheet" href="other/help/help.css" media="print" onload="this.media='all'">
 </head>
 <body>
-    <!-- Loading screen -->
     <div id="loading-screen">
         <div class="loading-content">
             <div class="loading-icon">🚀</div>
@@ -70,18 +48,10 @@
         </div>
     </div>
 
-    <!-- Auto-reload indicator -->
-    <div class="auto-reload-indicator" id="autoReloadIndicator">
-        🔄 Auto-reload active
-    </div>
-
-    <!-- App content container -->
+    <div class="auto-reload-indicator" id="autoReloadIndicator">🔄 Auto-reload active</div>
     <div id="app-content"></div>
-    
-    <!-- Signature -->
     <div class="signature">Completely free</div>
     
-    <!-- Core system scripts -->
     <script src="system/general.js" defer></script>
     <script src="system/reload.js" defer></script>
     <script src="system/url.js" defer></script>
