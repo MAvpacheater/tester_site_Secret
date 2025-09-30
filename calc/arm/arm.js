@@ -1,6 +1,7 @@
-// ARM CALCULATOR - Refactored with CalcLogic
+// ARM CALCULATOR - Optimized Version
 // calc/arm/arm.js
 
+let armInitialized = false;
 let currentArmLanguage = 'en';
 let armMultiplier = 2.1;
 
@@ -59,16 +60,16 @@ const goldenModifiers = {
 
 function createArmHTML() {
     const armPage = document.getElementById('armPage');
-    if (!armPage) return false;
+    if (!armPage) return;
 
-    const t = armTranslations[currentArmLanguage];
+    const t = armTranslations[currentArmLanguage] || armTranslations.en;
     const goldens = ['golden1', 'golden2', 'golden3', 'golden4', 'golden5'];
     const mods = [1.5, 1.65, 1.8, 1.95, 2.1];
 
     armPage.innerHTML = `
         <div class="header-controls">
             <h1>${t.title}</h1>
-            <button class="settings-btn" onclick="CalcLogic.togglePanel('settingsPanelArm')">⚙️</button>
+            <button class="settings-btn" onclick="toggleArmSettings()">⚙️</button>
         </div>
 
         <div class="settings-panel" id="settingsPanelArm">
@@ -89,7 +90,7 @@ function createArmHTML() {
         
         <div class="input-section">
             <label class="input-label" for="armNumberInput">${t.inputLabel}</label>
-            <input type="number" class="number-input" id="armNumberInput" placeholder="${t.inputPlaceholder}" step="any">
+            <input type="number" class="number-input" id="armNumberInput" placeholder="${t.inputPlaceholder}" step="any" oninput="calculateArmStats()">
             <button class="calculate-btn" onclick="calculateArmStats()">${t.calculateBtn}</button>
             <div class="error" id="armErrorMessage"></div>
         </div>
@@ -99,57 +100,119 @@ function createArmHTML() {
             <div class="result-value" id="armResultValue">0</div>
         </div>
     `;
-    return true;
+}
+
+function getCurrentAppLanguage() {
+    return typeof getCurrentLanguage === 'function' 
+        ? getCurrentLanguage() 
+        : localStorage.getItem('selectedLanguage') || 'en';
 }
 
 function initializeArm() {
-    currentArmLanguage = CalcLogic.getCurrentAppLanguage();
-    if (!createArmHTML()) return;
-    
-    CalcLogic.setupLanguageListener((lang) => {
-        currentArmLanguage = armTranslations[lang] ? lang : 'en';
-        createArmHTML();
-        setTimeout(() => {
-            CalcLogic.addEnterKeyListener('armNumberInput', calculateArmStats);
-            CalcLogic.addErrorClearListener('armNumberInput', 'armErrorMessage');
-        }, 50);
+    console.log('🚀 Initializing Arm Calculator...');
+    armInitialized = false;
+    currentArmLanguage = getCurrentAppLanguage();
+    createArmHTML();
+    addArmEventListeners();
+    updateArmMultiplier();
+    armInitialized = true;
+    console.log('✅ Arm Calculator initialized');
+}
+
+function addArmEventListeners() {
+    document.addEventListener('languageChanged', (e) => {
+        updateArmLanguage(e.detail.language);
     });
     
     setTimeout(() => {
-        CalcLogic.addEnterKeyListener('armNumberInput', calculateArmStats);
-        CalcLogic.addErrorClearListener('armNumberInput', 'armErrorMessage');
-    }, 50);
+        const input = document.getElementById('armNumberInput');
+        if (input) {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') calculateArmStats();
+            });
+            input.addEventListener('input', () => {
+                const error = document.getElementById('armErrorMessage');
+                if (error) error.textContent = '';
+            });
+        }
+    }, 100);
+}
+
+function updateArmLanguage(language) {
+    currentArmLanguage = armTranslations[language] ? language : 'en';
+    createArmHTML();
+    setTimeout(() => {
+        const input = document.getElementById('armNumberInput');
+        if (input) {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') calculateArmStats();
+            });
+            input.addEventListener('input', () => {
+                const error = document.getElementById('armErrorMessage');
+                if (error) error.textContent = '';
+            });
+        }
+    }, 100);
+    updateArmMultiplier();
+    console.log(`✅ Arm Calculator language updated to ${language}`);
+}
+
+function toggleArmSettings() {
+    const panel = document.getElementById('settingsPanelArm');
+    if (panel) panel.classList.toggle('show');
 }
 
 function handleGoldenSelection(selectedId) {
-    CalcLogic.handleExclusiveCheckbox(selectedId, Object.keys(goldenModifiers), () => {
-        const checked = CalcLogic.getCheckedCheckbox(Object.keys(goldenModifiers));
-        armMultiplier = checked ? goldenModifiers[checked] : 1;
-        calculateArmStats();
+    Object.keys(goldenModifiers).forEach(id => {
+        if (id !== selectedId) {
+            const checkbox = document.getElementById(id);
+            if (checkbox) checkbox.checked = false;
+        }
     });
+    updateArmMultiplier();
+}
+
+function updateArmMultiplier() {
+    armMultiplier = 1;
+    for (const id in goldenModifiers) {
+        const checkbox = document.getElementById(id);
+        if (checkbox?.checked) {
+            armMultiplier = goldenModifiers[id];
+            break;
+        }
+    }
+    calculateArmStats();
 }
 
 function calculateArmStats() {
     const input = document.getElementById('armNumberInput');
-    if (!input) return;
+    const resultSection = document.getElementById('armResultSection');
+    const resultValue = document.getElementById('armResultValue');
+    const errorMessage = document.getElementById('armErrorMessage');
 
-    CalcLogic.clearError('armErrorMessage');
-    const result = CalcLogic.parseNumericInput(input.value, { allowEmpty: true });
+    if (!input || !resultSection || !resultValue || !errorMessage) return;
 
-    if (!result.valid && input.value.trim()) {
-        CalcLogic.showError('armErrorMessage', armTranslations[currentArmLanguage].errors.invalidInput);
-        CalcLogic.hideResultSection('armResultSection');
+    const t = armTranslations[currentArmLanguage] || armTranslations.en;
+    errorMessage.textContent = '';
+
+    const baseValue = parseFloat(input.value);
+
+    if (isNaN(baseValue) || input.value.trim() === '') {
+        if (input.value.trim() !== '') {
+            errorMessage.textContent = t.errors?.invalidInput || 'Please enter a valid number';
+        }
+        resultSection.classList.remove('show');
         return;
     }
 
-    if (result.value === null) {
-        CalcLogic.hideResultSection('armResultSection');
-        return;
-    }
+    const finalValue = baseValue * armMultiplier;
 
-    const finalValue = result.value * armMultiplier;
-    CalcLogic.updateElementText('armResultValue', CalcLogic.formatNumber(finalValue, { locale: 'uk-UA', maxDecimals: 8 }));
-    CalcLogic.showResultSection('armResultSection');
+    resultValue.textContent = finalValue.toLocaleString('uk-UA', {
+        minimumFractionDigits: finalValue % 1 === 0 ? 0 : 2,
+        maximumFractionDigits: 8
+    });
+
+    setTimeout(() => resultSection.classList.add('show'), 100);
 }
 
 // Auto-initialize
@@ -160,6 +223,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // Global exports
 window.initializeArm = initializeArm;
 window.calculateArmStats = calculateArmStats;
+window.updateArmLanguage = updateArmLanguage;
+window.toggleArmSettings = toggleArmSettings;
 window.handleGoldenSelection = handleGoldenSelection;
+window.updateArmMultiplier = updateArmMultiplier;
 
 console.log('✅ Arm Calculator module loaded');
