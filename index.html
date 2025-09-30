@@ -47,12 +47,15 @@
     <!-- Critical CSS -->
     <link rel="stylesheet" href="system/general.css">
     
-    <!-- Non-critical CSS - Updated folder structure -->
+    <!-- Non-critical CSS - Organized by category -->
+    <!-- Calculator Styles -->
     <link rel="stylesheet" href="calc/calculator/calculator.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="calc/arm/arm.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="calc/grind/grind.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="calc/roulette/roulette.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="calc/boss/boss.css" media="print" onload="this.media='all'">
+    
+    <!-- Info Styles -->
     <link rel="stylesheet" href="info/boosts/boosts.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="info/shiny/shiny.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="info/secret/secret.css" media="print" onload="this.media='all'">
@@ -62,6 +65,8 @@
     <link rel="stylesheet" href="info/charms/charms.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="info/potions/potions.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="info/worlds/worlds.css" media="print" onload="this.media='all'">
+    
+    <!-- Moderation & Other Styles -->
     <link rel="stylesheet" href="moderation/settings/settings.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="other/peoples/peoples.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="other/help/help.css" media="print" onload="this.media='all'">
@@ -102,7 +107,7 @@
         🔄 Auto-reload active
     </div>
 
-    <!-- App content container -->
+    <!-- App content container - Content loaded via content_loader.js from unified content.html -->
     <div id="app-content"></div>
     
     <!-- Signature -->
@@ -113,7 +118,7 @@
     <script src="system/reload.js" defer></script>
     <script src="system/url.js" defer></script>
     
-    <!-- Non-critical JavaScript loading - Updated folder structure -->
+    <!-- Non-critical JavaScript loading -->
     <script>
         function createScript(src) {
             return new Promise((resolve) => {
@@ -134,14 +139,14 @@
 
         async function loadScriptsDeferred() {
             const scripts = [
-                // Calculator modules - Updated paths
+                // Calculator modules
                 'calc/calculator/calculator.js',
                 'calc/arm/arm.js', 
                 'calc/grind/grind.js',
                 'calc/roulette/roulette.js',
                 'calc/boss/boss.js',
 
-                // Info modules - Updated paths
+                // Info modules
                 'info/boosts/boosts.js',
                 'info/shiny/shiny.js',
                 'info/secret/secret.js',
@@ -152,29 +157,29 @@
                 'info/potions/potions.js',
                 'info/worlds/worlds.js',
                 
-                // Moderation modules - Updated paths
+                // Moderation modules
                 'moderation/settings/settings.js',
                 
-                // Other modules - Updated paths
+                // Other modules
                 'other/peoples/peoples.js',
                 'other/help/help.js'
             ];
             
-            console.log('🔄 Loading scripts with updated folder structure...');
+            console.log('🔄 Loading scripts...');
             updateLoadingText('Loading modules...');
             
             try {
                 // Load all scripts in parallel
                 await Promise.all(scripts.map(createScript));
-                console.log('✅ All scripts loaded with new folder structure');
+                console.log('✅ All scripts loaded');
                 
-                // Load content loader
+                // Load unified content loader (loads single content.html)
                 await createScript('index/content_loader.js');
                 console.log('✅ Content loader loaded');
                 
                 updateLoadingText('Ready!');
                 
-                // Initialize systems with enhanced routing
+                // Initialize systems
                 setTimeout(() => {
                     console.log('🚀 Initializing systems...');
                     initializeSystems();
@@ -205,7 +210,7 @@
                     console.error('❌ initURLRouting function not found');
                 }
                 
-                // Initialize GitHub auto-reload with correct repository
+                // Initialize GitHub auto-reload
                 if (typeof initGitHubAutoReload === 'function') {
                     const githubConfig = {
                         githubUser: 'MAvpacheater',
@@ -217,7 +222,7 @@
                     console.log('✅ GitHub auto-reload initialized');
                 }
                 
-                // Enhanced URL routing handling with multiple attempts
+                // Enhanced URL routing handling
                 setTimeout(() => {
                     handleEnhancedRouting();
                 }, 300);
@@ -369,7 +374,6 @@
         }
         
         function parsePathToPage(path) {
-            // Enhanced path parsing function
             console.log(`🔍 Parsing path: ${path}`);
             
             // Remove leading/trailing slashes and query params
@@ -438,7 +442,7 @@
             
             function waitForCriticalScripts() {
                 if (typeof initializeApp === 'function' || attempts >= maxAttempts) {
-                    console.log('🔄 Starting script loading with new folder structure...');
+                    console.log('🔄 Starting script loading...');
                     loadScriptsDeferred();
                     
                     // Hide loading screen
@@ -497,7 +501,7 @@
         
         // Check modules function
         window.checkLoadedModules = function() {
-            console.log('=== LOADED MODULES CHECK (New Folder Structure) ===');
+            console.log('=== LOADED MODULES CHECK ===');
             console.log('initializeApp:', typeof initializeApp);
             console.log('switchPage:', typeof switchPage);
             console.log('initURLRouting:', typeof initURLRouting);
@@ -507,7 +511,7 @@
             console.log('App content element:', document.getElementById('app-content') ? 'Found' : 'Missing');
             console.log('Current page:', typeof getCurrentPage === 'function' ? getCurrentPage() : 'Unknown');
             console.log('Boss Calculator loaded:', typeof initializeBoss === 'function');
-            console.log('===============================================');
+            console.log('===========================');
         };
     </script>
 </body>
