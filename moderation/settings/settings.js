@@ -5,7 +5,7 @@ let categoriesState = { background: false, menu: false };
 
 const GITHUB_CONFIG = {
     user: 'MAvpacheater',
-    repo: 'tester_site_Secret',
+    repo: 'armwrestlerinfopost',
     branch: 'main',
     imagePath: 'image/bg/'
 };
