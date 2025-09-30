@@ -58,7 +58,7 @@ async function loadMenuTranslations() {
     if (menuTranslations) return menuTranslations;
     
     try {
-        const response = await fetch('settings/menu.json');
+        const response = await fetch('moderation/menu.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         menuTranslations = await response.json();
         return menuTranslations;
