@@ -334,7 +334,7 @@ async function loadSettingsTranslations() {
     if (settingsTranslations) return settingsTranslations;
     
     try {
-        const response = await fetch('settings/menu.json');
+        const response = await fetch('moderation/menu.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         settingsTranslations = await response.json();
         return settingsTranslations;
