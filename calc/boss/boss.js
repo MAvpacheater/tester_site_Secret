@@ -1,7 +1,6 @@
 // BOSS CALCULATOR - Refactored with CalcLogic
 // calc/boss/boss.js
 
-let bossInitialized = false;
 let currentBossLanguage = 'en';
 
 const bossTranslations = {
@@ -56,7 +55,7 @@ function createBossHTML() {
     const bossPage = document.getElementById('bossPage');
     if (!bossPage) return false;
 
-    const t = bossTranslations[currentBossLanguage] || bossTranslations.en;
+    const t = bossTranslations[currentBossLanguage];
 
     bossPage.innerHTML = `
         <div class="header-controls">
@@ -90,138 +89,71 @@ function createBossHTML() {
             <div class="result-value" id="bossResultValue">0</div>
         </div>
     `;
-    
     return true;
 }
 
 function initializeBoss() {
-    console.log('🚀 Initializing Boss Calculator...');
+    currentBossLanguage = CalcLogic.getCurrentAppLanguage();
+    if (!createBossHTML()) return;
     
-    const success = CalcLogic.initializeCalculator({
-        pageId: 'bossPage',
-        initFlag: bossInitialized,
-        createHTML: createBossHTML,
-        addListeners: addBossEventListeners,
-        afterInit: () => {
-            bossInitialized = true;
-        }
+    CalcLogic.setupLanguageListener((lang) => {
+        currentBossLanguage = bossTranslations[lang] ? lang : 'en';
+        createBossHTML();
+        setTimeout(() => setupBossInputs(), 50);
     });
     
-    if (success) {
-        console.log('✅ Boss Calculator initialized');
-    }
-    
-    return success;
+    setTimeout(() => setupBossInputs(), 50);
 }
 
-function addBossEventListeners() {
-    // Language change listener
-    CalcLogic.setupLanguageListener(updateBossLanguage);
+function setupBossInputs() {
+    ['totalNeededInput', 'rewardPerWinInput'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', calculateBossTime);
+    });
     
-    // Auto-calculate on input change
-    CalcLogic.setupDelayedListeners([
-        {
-            id: 'totalNeededInput',
-            event: 'input',
-            handler: calculateBossTime
-        },
-        {
-            id: 'rewardPerWinInput',
-            event: 'input',
-            handler: calculateBossTime
-        },
-        {
-            id: 'vipAutoclicker',
-            event: 'change',
-            handler: calculateBossTime
-        }
-    ], 100);
-}
-
-function updateBossLanguage(language) {
-    currentBossLanguage = bossTranslations[language] ? language : 'en';
-    
-    if (createBossHTML()) {
-        setTimeout(() => addBossEventListeners(), 100);
-    }
-    
-    console.log(`✅ Boss Calculator language updated to ${language}`);
+    const vip = document.getElementById('vipAutoclicker');
+    if (vip) vip.addEventListener('change', calculateBossTime);
 }
 
 function calculateBossTime() {
-    const totalNeededInput = document.getElementById('totalNeededInput');
-    const rewardPerWinInput = document.getElementById('rewardPerWinInput');
-    const vipAutoclickerInput = document.getElementById('vipAutoclicker');
+    const totalInput = document.getElementById('totalNeededInput');
+    const rewardInput = document.getElementById('rewardPerWinInput');
+    const vipInput = document.getElementById('vipAutoclicker');
     
-    if (!totalNeededInput || !rewardPerWinInput || !vipAutoclickerInput) return;
+    if (!totalInput || !rewardInput || !vipInput) return;
     
-    const t = bossTranslations[currentBossLanguage] || bossTranslations.en;
-    
-    // Clear error
+    const t = bossTranslations[currentBossLanguage];
     CalcLogic.clearError('bossErrorMessage');
     
-    // Check if fields are empty
-    if (!totalNeededInput.value || !rewardPerWinInput.value) {
-        if (t.errors?.missingFields) {
-            CalcLogic.showError('bossErrorMessage', t.errors.missingFields);
-        }
+    if (!totalInput.value || !rewardInput.value) {
+        CalcLogic.showError('bossErrorMessage', t.errors.missingFields);
         CalcLogic.hideResultSection('bossResultSection');
         return;
     }
     
-    // Parse and validate inputs
-    const totalResult = CalcLogic.parseNumericInput(totalNeededInput.value, {
-        min: 0.001,
-        allowEmpty: false
-    });
+    const total = CalcLogic.parseNumericInput(totalInput.value, { min: 0.001 });
+    const reward = CalcLogic.parseNumericInput(rewardInput.value, { min: 0.001 });
     
-    const rewardResult = CalcLogic.parseNumericInput(rewardPerWinInput.value, {
-        min: 0.001,
-        allowEmpty: false
-    });
-    
-    if (!totalResult.valid || !rewardResult.valid) {
-        if (t.errors?.invalidInput) {
-            CalcLogic.showError('bossErrorMessage', t.errors.invalidInput);
-        }
+    if (!total.valid || !reward.valid) {
+        CalcLogic.showError('bossErrorMessage', t.errors.invalidInput);
         CalcLogic.hideResultSection('bossResultSection');
         return;
     }
     
-    // Calculate time
-    const totalNeeded = totalResult.value;
-    const rewardPerWin = rewardResult.value;
-    const hasVipAutoclicker = vipAutoclickerInput.checked;
+    const victories = Math.ceil(total.value / reward.value);
+    const seconds = victories * (vipInput.checked ? 2.5 : 4.5);
     
-    const victoriesNeeded = Math.ceil(totalNeeded / rewardPerWin);
-    const timePerVictory = hasVipAutoclicker ? 2.5 : 4.5;
-    const totalTimeSeconds = victoriesNeeded * timePerVictory;
-    
-    // Format and display result
-    const formattedTime = CalcLogic.formatTimeDuration(totalTimeSeconds, {
-        s: 's',
-        m: 'm',
-        h: 'h',
-        d: 'd'
-    });
-    
-    CalcLogic.updateElementText('bossResultValue', formattedTime);
-    CalcLogic.showResultSection('bossResultSection', 100);
-    
-    console.log(`✅ Boss calculation: ${victoriesNeeded} victories, ${formattedTime}`);
+    CalcLogic.updateElementText('bossResultValue', CalcLogic.formatTimeDuration(seconds));
+    CalcLogic.showResultSection('bossResultSection');
 }
 
 // Auto-initialize
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('bossPage')) {
-        currentBossLanguage = CalcLogic.getCurrentAppLanguage();
-        initializeBoss();
-    }
+    if (document.getElementById('bossPage')) initializeBoss();
 });
 
 // Global exports
 window.initializeBoss = initializeBoss;
 window.calculateBossTime = calculateBossTime;
-window.updateBossLanguage = updateBossLanguage;
 
 console.log('✅ Boss Calculator module loaded');
