@@ -1,10 +1,10 @@
-// Content loader script - Updated to load single content.html file
+// Content loader script - Optimized to load single content.html file
 console.log('🔄 Loading content...');
 
 // Function to load content
 async function loadContent() {
     try {
-        // Load single content file
+        // Load single unified content file
         const contentResponse = await fetch('index/content.html');
 
         if (!contentResponse.ok) {
