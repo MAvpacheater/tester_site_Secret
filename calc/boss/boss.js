@@ -1,4 +1,4 @@
-// BOSS CALCULATOR - Optimized Version
+// BOSS CALCULATOR - Refactored with CalcLogic
 // calc/boss/boss.js
 
 let bossInitialized = false;
@@ -54,7 +54,7 @@ const bossTranslations = {
 
 function createBossHTML() {
     const bossPage = document.getElementById('bossPage');
-    if (!bossPage) return;
+    if (!bossPage) return false;
 
     const t = bossTranslations[currentBossLanguage] || bossTranslations.en;
 
@@ -90,119 +90,133 @@ function createBossHTML() {
             <div class="result-value" id="bossResultValue">0</div>
         </div>
     `;
-}
-
-function getCurrentAppLanguage() {
-    return typeof getCurrentLanguage === 'function' 
-        ? getCurrentLanguage() 
-        : localStorage.getItem('selectedLanguage') || 'en';
+    
+    return true;
 }
 
 function initializeBoss() {
     console.log('🚀 Initializing Boss Calculator...');
-    bossInitialized = false;
-    currentBossLanguage = getCurrentAppLanguage();
-    createBossHTML();
-    addBossEventListeners();
-    bossInitialized = true;
-    console.log('✅ Boss Calculator initialized');
+    
+    const success = CalcLogic.initializeCalculator({
+        pageId: 'bossPage',
+        initFlag: bossInitialized,
+        createHTML: createBossHTML,
+        addListeners: addBossEventListeners,
+        afterInit: () => {
+            bossInitialized = true;
+        }
+    });
+    
+    if (success) {
+        console.log('✅ Boss Calculator initialized');
+    }
+    
+    return success;
 }
 
 function addBossEventListeners() {
-    document.addEventListener('languageChanged', (e) => {
-        updateBossLanguage(e.detail.language);
-    });
+    // Language change listener
+    CalcLogic.setupLanguageListener(updateBossLanguage);
     
-    setTimeout(() => {
-        ['totalNeededInput', 'rewardPerWinInput', 'vipAutoclicker'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', calculateBossTime);
-            }
-        });
-    }, 100);
+    // Auto-calculate on input change
+    CalcLogic.setupDelayedListeners([
+        {
+            id: 'totalNeededInput',
+            event: 'input',
+            handler: calculateBossTime
+        },
+        {
+            id: 'rewardPerWinInput',
+            event: 'input',
+            handler: calculateBossTime
+        },
+        {
+            id: 'vipAutoclicker',
+            event: 'change',
+            handler: calculateBossTime
+        }
+    ], 100);
 }
 
 function updateBossLanguage(language) {
     currentBossLanguage = bossTranslations[language] ? language : 'en';
-    createBossHTML();
-    setTimeout(() => {
-        ['totalNeededInput', 'rewardPerWinInput', 'vipAutoclicker'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', calculateBossTime);
-            }
-        });
-    }, 100);
-    console.log(`✅ Boss Calculator language updated to ${language}`);
-}
-
-function formatTime(seconds) {
-    if (seconds < 60) {
-        return `${Math.round(seconds * 10) / 10}s`;
-    } else if (seconds < 3600) {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = Math.round(seconds % 60);
-        return remainingSeconds === 0 ? `${minutes}m` : `${minutes}m ${remainingSeconds}s`;
-    } else if (seconds < 86400) {
-        const hours = Math.floor(seconds / 3600);
-        const remainingMinutes = Math.floor((seconds % 3600) / 60);
-        return remainingMinutes === 0 ? `${hours}h` : `${hours}h ${remainingMinutes}m`;
-    } else {
-        const days = Math.floor(seconds / 86400);
-        const remainingHours = Math.floor((seconds % 86400) / 3600);
-        return remainingHours === 0 ? `${days}d` : `${days}d ${remainingHours}h`;
+    
+    if (createBossHTML()) {
+        setTimeout(() => addBossEventListeners(), 100);
     }
+    
+    console.log(`✅ Boss Calculator language updated to ${language}`);
 }
 
 function calculateBossTime() {
     const totalNeededInput = document.getElementById('totalNeededInput');
     const rewardPerWinInput = document.getElementById('rewardPerWinInput');
     const vipAutoclickerInput = document.getElementById('vipAutoclicker');
-    const errorMessage = document.getElementById('bossErrorMessage');
-    const resultSection = document.getElementById('bossResultSection');
-    const resultValue = document.getElementById('bossResultValue');
     
-    if (!totalNeededInput || !rewardPerWinInput || !vipAutoclickerInput || 
-        !errorMessage || !resultSection || !resultValue) return;
+    if (!totalNeededInput || !rewardPerWinInput || !vipAutoclickerInput) return;
     
     const t = bossTranslations[currentBossLanguage] || bossTranslations.en;
-    const totalNeeded = parseFloat(totalNeededInput.value);
-    const rewardPerWin = parseFloat(rewardPerWinInput.value);
-    const hasVipAutoclicker = vipAutoclickerInput.checked;
     
-    errorMessage.textContent = '';
+    // Clear error
+    CalcLogic.clearError('bossErrorMessage');
     
+    // Check if fields are empty
     if (!totalNeededInput.value || !rewardPerWinInput.value) {
         if (t.errors?.missingFields) {
-            errorMessage.textContent = t.errors.missingFields;
+            CalcLogic.showError('bossErrorMessage', t.errors.missingFields);
         }
-        resultSection.classList.remove('show');
+        CalcLogic.hideResultSection('bossResultSection');
         return;
     }
     
-    if (isNaN(totalNeeded) || totalNeeded <= 0 || isNaN(rewardPerWin) || rewardPerWin <= 0) {
+    // Parse and validate inputs
+    const totalResult = CalcLogic.parseNumericInput(totalNeededInput.value, {
+        min: 0.001,
+        allowEmpty: false
+    });
+    
+    const rewardResult = CalcLogic.parseNumericInput(rewardPerWinInput.value, {
+        min: 0.001,
+        allowEmpty: false
+    });
+    
+    if (!totalResult.valid || !rewardResult.valid) {
         if (t.errors?.invalidInput) {
-            errorMessage.textContent = t.errors.invalidInput;
+            CalcLogic.showError('bossErrorMessage', t.errors.invalidInput);
         }
-        resultSection.classList.remove('show');
+        CalcLogic.hideResultSection('bossResultSection');
         return;
     }
+    
+    // Calculate time
+    const totalNeeded = totalResult.value;
+    const rewardPerWin = rewardResult.value;
+    const hasVipAutoclicker = vipAutoclickerInput.checked;
     
     const victoriesNeeded = Math.ceil(totalNeeded / rewardPerWin);
     const timePerVictory = hasVipAutoclicker ? 2.5 : 4.5;
     const totalTimeSeconds = victoriesNeeded * timePerVictory;
-    const formattedTime = formatTime(totalTimeSeconds);
     
-    resultValue.textContent = formattedTime;
-    setTimeout(() => resultSection.classList.add('show'), 100);
+    // Format and display result
+    const formattedTime = CalcLogic.formatTimeDuration(totalTimeSeconds, {
+        s: 's',
+        m: 'm',
+        h: 'h',
+        d: 'd'
+    });
+    
+    CalcLogic.updateElementText('bossResultValue', formattedTime);
+    CalcLogic.showResultSection('bossResultSection', 100);
     
     console.log(`✅ Boss calculation: ${victoriesNeeded} victories, ${formattedTime}`);
 }
 
 // Auto-initialize
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('bossPage')) initializeBoss();
+    if (document.getElementById('bossPage')) {
+        currentBossLanguage = CalcLogic.getCurrentAppLanguage();
+        initializeBoss();
+    }
 });
 
 // Global exports
