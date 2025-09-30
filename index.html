@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arm Helper</title>
+    
+    <script>
+        (function() {
+            const redirect = sessionStorage.pathToRestore;
+            if (redirect && redirect !== '/') {
+                const host = window.location.host;
+                const basePath = host === 'mavpacheater.github.io' ? '/tester_site_Secret' : '';
+                history.replaceState(null, null, basePath + redirect);
+            }
+        })();
+    </script>
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="image/bg/peanguin.png">
+    <link rel="preload" href="system/general.css" as="style">
+    <link rel="preload" href="system/general.js" as="script">
+    <link rel="stylesheet" href="system/general.css">
+    
+    <link rel="stylesheet" href="calc/calculator/calculator.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="calc/arm/arm.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="calc/grind/grind.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="calc/roulette/roulette.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="calc/boss/boss.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/boosts/boosts.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/shiny/shiny.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/secret/secret.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/codes/codes.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/aura/aura.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/trainer/trainer.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/charms/charms.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/potions/potions.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="info/worlds/worlds.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="moderation/settings/settings.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="other/peoples/peoples.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="other/help/help.css" media="print" onload="this.media='all'">
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-icon">🚀</div>
+            <div>Loading Arm Helper...</div>
+            <div class="loading-subtitle">Initializing...</div>
+        </div>
+    </div>
+
+    <div class="auto-reload-indicator" id="autoReloadIndicator">🔄 Auto-reload active</div>
+    <div id="app-content"></div>
+    <div class="signature">Completely free</div>
+    
+    <script src="system/general.js" defer></script>
+    <script src="system/reload.js" defer></script>
+    <script src="system/url.js" defer></script>
+    <script src="system/loader.js" defer></script>
+</body>
+</html>
