@@ -106,6 +106,8 @@
             '/shiny_list': 'Shiny Stats',
             '/arm_calculator': 'Arm Calculator',
             '/grind_calculator': 'Grind Calculator',
+            '/roulette_calculator': 'Roulette Calculator',
+            '/boss_calculator': 'Boss Calculator',
             '/boosts_info': 'Boosts Info',
             '/secret_pets': 'Secret Pets',
             '/codes_list': 'Codes List',
@@ -116,13 +118,9 @@
             '/worlds_info': 'Worlds Info',
             '/settings': 'Settings',
             '/help_guide': 'Help Guide',
-            '/peoples_thanks': 'Thanks & Credits'
+            '/peoples_thanks': 'Thanks & Credits',
+            '/trader_store': 'Trader Store'
         };
-        
-        // Display current path and determine page name
-        var currentPath = window.location.pathname;
-        var pathParts = currentPath.split('/').filter(part => part);
-        var pageName = 'Arm Helper';
         
         // Display current path and determine page name
         var currentPath = window.location.pathname;
@@ -143,8 +141,6 @@
             var pagePath = '/' + pathParts.slice(1).join('/');
             pageName = pageNames[pagePath] || 'Arm Helper';
             
-            // Don't show the path anymore - just update page name
-            // document.getElementById('currentPath').textContent = pagePath;
             document.getElementById('pageName').textContent = pageName;
             
             // Store the page path for restoration
@@ -164,8 +160,6 @@
             var pagePath = '/' + pathParts[0];
             pageName = pageNames[pagePath] || 'Arm Helper';
             
-            // Don't show the path anymore - just update page name
-            // document.getElementById('currentPath').textContent = pagePath;
             document.getElementById('pageName').textContent = pageName;
             
             // Store the page path for restoration
@@ -182,7 +176,6 @@
             
         } else {
             // Fallback for other cases
-            // document.getElementById('currentPath').textContent = currentPath;
             document.getElementById('pageName').textContent = 'Arm Helper';
             
             sessionStorage.setItem('pathToRestore', '/' + search + hash);
