@@ -80,6 +80,7 @@ async function loadContent() {
                             <div class="category-buttons" id="othersButtons">
                                 <button class="nav-btn" data-page="help" onclick="switchPage('help')"></button>
                                 <button class="nav-btn" data-page="peoples" onclick="switchPage('peoples')"></button>
+                                <button class="nav-btn" data-page="trader" onclick="switchPage('trader')"></button>
                             </div>
                         </div>
                     </div>
