@@ -1,8 +1,9 @@
-/* Trader Store Page - Neon Style */
+/* Halloween Trader Store Page */
 .trader-page {
-    padding: 40px 60px;
-    background: #0a0a0a;
+    padding: 40px 20px;
+    background: transparent;
     min-height: 100vh;
+    width: 100%;
     position: relative;
     overflow: hidden;
 }
@@ -15,10 +16,16 @@
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 80% 50%, rgba(255, 0, 255, 0.05) 0%, transparent 50%);
+        radial-gradient(circle at 20% 50%, rgba(255,100,0,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(138,43,226,0.08) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
+    animation: ghostlyFloat 8s ease-in-out infinite;
+}
+
+@keyframes ghostlyFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
 }
 
 .trader-header {
@@ -31,11 +38,11 @@
 .trader-settings-btn {
     position: absolute;
     top: 20px;
-    right: 60px;
+    right: 40px;
     width: 50px;
     height: 50px;
-    background: rgba(0, 0, 0, 0.8);
-    border: 2px solid #00ffff;
+    background: rgba(0,0,0,0.9);
+    border: 2px solid #FF6600;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -44,67 +51,69 @@
     font-size: 24px;
     transition: all 0.3s ease;
     box-shadow: 
-        0 0 20px rgba(0, 255, 255, 0.5),
-        inset 0 0 10px rgba(0, 255, 255, 0.2);
+        0 0 25px rgba(255,100,0,0.6),
+        inset 0 0 15px rgba(255,100,0,0.2);
     z-index: 10;
 }
 
 .trader-settings-btn:hover {
     transform: rotate(90deg) scale(1.1);
     box-shadow: 
-        0 0 30px rgba(0, 255, 255, 0.8),
-        inset 0 0 15px rgba(0, 255, 255, 0.3);
-    border-color: #ff00ff;
+        0 0 40px rgba(255,100,0,0.9),
+        inset 0 0 20px rgba(138,43,226,0.4);
+    border-color: #8B008B;
 }
 
 .trader-title {
     font-size: 3.5em;
-    background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff);
+    background: linear-gradient(90deg, #FF6600, #8B008B, #FF4500, #8B008B, #FF6600);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: neonGlow 3s linear infinite;
+    animation: halloweenGlow 4s linear infinite;
     margin-bottom: 15px;
     letter-spacing: 4px;
     font-weight: 900;
     text-transform: uppercase;
-    filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.7));
+    filter: drop-shadow(0 0 25px rgba(255,100,0,0.8)) drop-shadow(0 0 35px rgba(138,43,226,0.6));
 }
 
-@keyframes neonGlow {
+@keyframes halloweenGlow {
     0%, 100% { background-position: 0% center; }
     50% { background-position: 100% center; }
 }
 
 .trader-subtitle {
     font-size: 1.3em;
-    color: #00ffff;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    color: #FF6600;
+    text-shadow: 0 0 15px rgba(255,100,0,0.9), 0 0 30px rgba(138,43,226,0.5);
     letter-spacing: 2px;
 }
 
 .trader-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 30px;
-    max-width: 100%;
+    max-width: 1800px;
     margin: 0 auto;
+    padding: 0 20px;
     position: relative;
     z-index: 1;
 }
 
 .trader-card {
-    background: rgba(10, 10, 10, 0.9);
-    border: 2px solid #00ffff;
+    background: linear-gradient(135deg, rgba(30,15,45,0.95), rgba(20,10,30,0.98));
+    border: 2px solid rgba(255,100,0,0.5);
     border-radius: 20px;
     padding: 25px;
     transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
     box-shadow: 
-        0 0 20px rgba(0, 255, 255, 0.3),
-        inset 0 0 20px rgba(0, 255, 255, 0.05);
+        0 0 25px rgba(255,100,0,0.4),
+        0 0 40px rgba(138,43,226,0.3),
+        inset 0 0 25px rgba(255,100,0,0.08);
 }
 
 .trader-card::before {
@@ -114,11 +123,18 @@
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(45deg, #00ffff, #ff00ff, #00ffff);
+    background: linear-gradient(45deg, #FF6600, #8B008B, #FF4500, #8B008B, #FF6600);
+    background-size: 300% 300%;
     border-radius: 20px;
     opacity: 0;
     transition: opacity 0.4s ease;
     z-index: -1;
+    animation: borderGlow 3s ease infinite;
+}
+
+@keyframes borderGlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
 
 .trader-card::after {
@@ -128,16 +144,16 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,100,0,0.4), transparent);
     transition: left 0.6s ease;
 }
 
 .trader-card:hover {
-    transform: translateY(-10px) scale(1.02);
+    transform: translateY(-12px) scale(1.03);
     box-shadow: 
-        0 0 40px rgba(0, 255, 255, 0.6),
-        0 0 60px rgba(255, 0, 255, 0.4),
-        inset 0 0 30px rgba(0, 255, 255, 0.1);
+        0 0 50px rgba(255,100,0,0.7),
+        0 0 70px rgba(138,43,226,0.5),
+        inset 0 0 35px rgba(255,100,0,0.15);
 }
 
 .trader-card:hover::before {
@@ -151,44 +167,50 @@
 .trader-card-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     margin-bottom: 20px;
     padding-bottom: 15px;
-    border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+    border-bottom: 2px solid rgba(255,100,0,0.4);
 }
 
 .trader-icon {
-    width: 70px;
-    height: 70px;
-    background: rgba(0, 255, 255, 0.1);
-    border: 2px solid #00ffff;
+    width: 120px;
+    height: 120px;
+    background: rgba(255,100,0,0.15);
+    border: 3px solid #FF6600;
     border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.5em;
+    overflow: hidden;
     box-shadow: 
-        0 0 20px rgba(0, 255, 255, 0.5),
-        inset 0 0 15px rgba(0, 255, 255, 0.2);
-    animation: iconPulse 2s ease-in-out infinite;
+        0 0 25px rgba(255,100,0,0.6),
+        inset 0 0 20px rgba(255,100,0,0.2);
+    animation: iconPulse 3s ease-in-out infinite;
+    position: relative;
+}
+
+.trader-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.trader-icon-placeholder {
+    font-size: 3em;
+    filter: drop-shadow(0 0 10px rgba(255,100,0,0.8));
 }
 
 @keyframes iconPulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 15px rgba(0, 255, 255, 0.2); }
-    50% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.8), inset 0 0 20px rgba(0, 255, 255, 0.4); }
-}
-
-.trader-tier {
-    background: linear-gradient(135deg, #00ffff, #00cccc);
-    color: #000;
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-weight: 900;
-    font-size: 0.95em;
-    text-shadow: none;
-    border: 2px solid #00ffff;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
-    letter-spacing: 1px;
+    0%, 100% { 
+        box-shadow: 0 0 25px rgba(255,100,0,0.6), inset 0 0 20px rgba(255,100,0,0.2);
+        border-color: #FF6600;
+    }
+    50% { 
+        box-shadow: 0 0 40px rgba(138,43,226,0.8), inset 0 0 30px rgba(138,43,226,0.4);
+        border-color: #8B008B;
+    }
 }
 
 .trader-card-body {
@@ -197,18 +219,20 @@
 
 .trader-name {
     font-size: 1.8em;
-    color: #00ffff;
+    color: #FF6600;
     font-weight: 900;
-    text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+    text-shadow: 0 0 20px rgba(255,100,0,0.9), 0 0 35px rgba(138,43,226,0.5);
     margin-bottom: 12px;
     letter-spacing: 1px;
+    text-align: center;
 }
 
 .trader-info {
-    color: #ffffff;
+    color: #DDA0DD;
     font-size: 1em;
     line-height: 1.6;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 10px rgba(221,160,221,0.6);
+    text-align: center;
 }
 
 .trader-price {
@@ -217,104 +241,73 @@
     justify-content: space-between;
     margin-top: 20px;
     padding: 15px;
-    background: rgba(0, 255, 255, 0.05);
-    border: 2px solid #00ffff;
+    background: rgba(255,100,0,0.08);
+    border: 2px solid #FF6600;
     border-radius: 12px;
     box-shadow: 
-        0 0 15px rgba(0, 255, 255, 0.3),
-        inset 0 0 10px rgba(0, 255, 255, 0.1);
+        0 0 20px rgba(255,100,0,0.4),
+        inset 0 0 15px rgba(255,100,0,0.15);
 }
 
 .price-label {
-    color: #00ffff;
+    color: #FF6600;
     font-weight: 700;
     font-size: 1em;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+    text-shadow: 0 0 12px rgba(255,100,0,0.8);
 }
 
 .price-value {
-    color: #ff00ff;
+    color: #8B008B;
     font-weight: 900;
     font-size: 1.5em;
-    text-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+    text-shadow: 0 0 20px rgba(138,43,226,0.9), 0 0 30px rgba(255,100,0,0.5);
 }
 
 .trader-limit {
     text-align: center;
     margin-top: 15px;
     padding: 10px;
-    background: rgba(255, 0, 255, 0.05);
-    border: 1px solid rgba(255, 0, 255, 0.3);
+    background: rgba(138,43,226,0.08);
+    border: 1px solid rgba(138,43,226,0.4);
     border-radius: 10px;
-    color: #ff00ff;
+    color: #DDA0DD;
     font-size: 0.9em;
     font-style: italic;
-    text-shadow: 0 0 8px rgba(255, 0, 255, 0.5);
-}
-
-/* Tier specific colors */
-.tier-vi {
-    background: linear-gradient(135deg, #ff00ff, #cc00ff);
-    box-shadow: 0 0 15px rgba(255, 0, 255, 0.6);
-}
-
-.tier-ii {
-    background: linear-gradient(135deg, #0099ff, #0066ff);
-    box-shadow: 0 0 15px rgba(0, 153, 255, 0.6);
-}
-
-.tier-iii {
-    background: linear-gradient(135deg, #00ff88, #00cc66);
-    box-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
-}
-
-.tier-iv {
-    background: linear-gradient(135deg, #ffff00, #ffcc00);
-    box-shadow: 0 0 15px rgba(255, 255, 0, 0.6);
-}
-
-.tier-v {
-    background: linear-gradient(135deg, #ff6600, #ff3300);
-    box-shadow: 0 0 15px rgba(255, 102, 0, 0.6);
-}
-
-.tier-i {
-    background: linear-gradient(135deg, #ff0066, #cc0044);
-    box-shadow: 0 0 15px rgba(255, 0, 102, 0.6);
+    text-shadow: 0 0 10px rgba(221,160,221,0.6);
 }
 
 /* Edit mode styles */
 .edit-title, .edit-subtitle, .edit-multiplier, .edit-name, .edit-price, .edit-limit {
-    background: rgba(0, 0, 0, 0.8) !important;
-    border: 2px solid #00ffff !important;
-    color: #00ffff !important;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.6) !important;
+    background: rgba(0,0,0,0.9) !important;
+    border: 2px solid #FF6600 !important;
+    color: #FF6600 !important;
+    text-shadow: 0 0 12px rgba(255,100,0,0.8) !important;
     box-shadow: 
-        0 0 15px rgba(0, 255, 255, 0.3),
-        inset 0 0 10px rgba(0, 255, 255, 0.1) !important;
+        0 0 20px rgba(255,100,0,0.4),
+        inset 0 0 15px rgba(255,100,0,0.15) !important;
 }
 
 .edit-title:focus, .edit-subtitle:focus, .edit-multiplier:focus, 
 .edit-name:focus, .edit-price:focus, .edit-limit:focus {
     outline: none;
-    border-color: #ff00ff !important;
+    border-color: #8B008B !important;
     box-shadow: 
-        0 0 25px rgba(255, 0, 255, 0.5),
-        inset 0 0 15px rgba(255, 0, 255, 0.2) !important;
+        0 0 30px rgba(138,43,226,0.6),
+        inset 0 0 20px rgba(138,43,226,0.3) !important;
 }
 
 /* Buttons */
 .trader-btn {
-    background: linear-gradient(135deg, #00ffff, #00cccc);
+    background: linear-gradient(135deg, #FF6600, #FF4500);
     color: #000;
-    border: 2px solid #00ffff;
+    border: 2px solid #FF6600;
     padding: 12px 35px;
     border-radius: 10px;
     font-size: 1.1em;
     font-weight: 900;
     cursor: pointer;
     margin: 0 10px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    box-shadow: 0 0 25px rgba(255,100,0,0.6);
     transition: all 0.3s ease;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -322,53 +315,49 @@
 
 .trader-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+    box-shadow: 0 0 40px rgba(255,100,0,0.9), 0 0 50px rgba(138,43,226,0.5);
 }
 
 .trader-btn-save {
     background: linear-gradient(135deg, #00ff88, #00cc66);
     border-color: #00ff88;
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+    box-shadow: 0 0 25px rgba(0,255,136,0.6);
 }
 
 .trader-btn-save:hover {
-    box-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
+    box-shadow: 0 0 40px rgba(0,255,136,0.9);
 }
 
 .trader-btn-cancel {
     background: linear-gradient(135deg, #ff0066, #cc0044);
     border-color: #ff0066;
-    box-shadow: 0 0 20px rgba(255, 0, 102, 0.5);
+    box-shadow: 0 0 25px rgba(255,0,102,0.6);
 }
 
 .trader-btn-cancel:hover {
-    box-shadow: 0 0 30px rgba(255, 0, 102, 0.8);
+    box-shadow: 0 0 40px rgba(255,0,102,0.9);
 }
 
 /* Responsive Design */
 @media (max-width: 1400px) {
     .trader-container {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     }
 }
 
 @media (max-width: 1024px) {
-    .trader-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
     .trader-page {
-        padding: 30px 40px;
+        padding: 30px 15px;
     }
     
     .trader-settings-btn {
-        right: 40px;
+        right: 30px;
     }
 }
 
 @media (max-width: 768px) {
     .trader-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     }
     
     .trader-title {
@@ -380,7 +369,7 @@
     }
     
     .trader-page {
-        padding: 20px;
+        padding: 20px 10px;
     }
     
     .trader-settings-btn {
@@ -398,12 +387,19 @@
     }
     
     .trader-icon {
-        width: 60px;
-        height: 60px;
-        font-size: 2em;
+        width: 100px;
+        height: 100px;
+    }
+    
+    .trader-icon-placeholder {
+        font-size: 2.5em;
     }
     
     .trader-name {
         font-size: 1.5em;
+    }
+    
+    .trader-container {
+        grid-template-columns: 1fr;
     }
 }
