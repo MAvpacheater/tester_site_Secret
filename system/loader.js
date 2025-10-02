@@ -10,13 +10,25 @@ function createScript(src) {
 }
 
 async function loadScriptsDeferred() {
+    // Updated script paths - removed subdirectories
     const scripts = [
-        'calc/calculator/calculator.js', 'calc/arm/arm.js', 'calc/grind/grind.js',
-        'calc/roulette/roulette.js', 'calc/boss/boss.js', 'info/boosts/boosts.js',
-        'info/shiny/shiny.js', 'info/secret/secret.js', 'info/codes/codes.js',
-        'info/aura/aura.js', 'info/trainer/trainer.js', 'info/charms/charms.js',
-        'info/potions/potions.js', 'info/worlds/worlds.js', 'moderation/settings/settings.js',
-        'other/peoples/peoples.js', 'other/help/help.js'
+        'calc/calculator.js', 
+        'calc/arm.js', 
+        'calc/grind.js',
+        'calc/roulette.js', 
+        'calc/boss.js', 
+        'info/boosts.js',
+        'info/shiny.js', 
+        'info/secret.js', 
+        'info/codes.js',
+        'info/aura.js', 
+        'info/trainer.js', 
+        'info/charms.js',
+        'info/potions.js', 
+        'info/worlds.js', 
+        'moderation/settings.js',
+        'other/peoples.js', 
+        'other/help.js'
     ];
     
     updateLoadingText('Loading modules...');
