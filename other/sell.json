@@ -1,0 +1,100 @@
+{
+    "en": {
+        "title": "TRADER STORE",
+        "subtitle": "Tokens/Offers",
+        "items": [
+            {
+                "tier": "VI",
+                "tierClass": "tier-vi",
+                "icon": "🔮",
+                "multiplier": "x4.7k",
+                "name": "3each",
+                "price": "5k",
+                "limit": "Only 100k per trade"
+            },
+            {
+                "tier": "II",
+                "tierClass": "tier-ii",
+                "icon": "🧪",
+                "multiplier": "x333",
+                "name": "1each",
+                "price": "5k",
+                "limit": "Only 50k per trade"
+            },
+            {
+                "tier": "II",
+                "tierClass": "tier-iii",
+                "icon": "🎯",
+                "multiplier": "x286",
+                "name": "50each",
+                "price": "5k",
+                "limit": "Only 10k per trade"
+            },
+            {
+                "tier": "III",
+                "tierClass": "tier-iii",
+                "icon": "💎",
+                "multiplier": "x169",
+                "name": "50each",
+                "price": "5k",
+                "limit": "Only 10k per trade"
+            },
+            {
+                "tier": "",
+                "tierClass": "",
+                "icon": "⚡",
+                "multiplier": "x1",
+                "name": "Dark Matter",
+                "price": "495",
+                "limit": "1/30m"
+            },
+            {
+                "tier": "IV",
+                "tierClass": "tier-iv",
+                "icon": "🌟",
+                "multiplier": "x500",
+                "name": "10each",
+                "price": "7.5k",
+                "limit": "Only 25k per trade"
+            },
+            {
+                "tier": "V",
+                "tierClass": "tier-v",
+                "icon": "🎪",
+                "multiplier": "x1.2k",
+                "name": "5each",
+                "price": "8k",
+                "limit": "Only 40k per trade"
+            },
+            {
+                "tier": "I",
+                "tierClass": "tier-i",
+                "icon": "🔥",
+                "multiplier": "x250",
+                "name": "25each",
+                "price": "6k",
+                "limit": "Only 15k per trade"
+            }
+        ],
+        "priceLabel": "Price:",
+        "editButton": "Edit Store",
+        "saveButton": "Save Changes",
+        "cancelButton": "Cancel"
+    },
+    "uk": {
+        "title": "МАГАЗИН ТРЕЙДЕРА",
+        "subtitle": "Токени/Пропозиції",
+        "priceLabel": "Ціна:",
+        "editButton": "Редагувати",
+        "saveButton": "Зберегти",
+        "cancelButton": "Скасувати"
+    },
+    "ru": {
+        "title": "МАГАЗИН ТРЕЙДЕРА",
+        "subtitle": "Токены/Предложения",
+        "priceLabel": "Цена:",
+        "editButton": "Редактировать",
+        "saveButton": "Сохранить",
+        "cancelButton": "Отменить"
+    }
+}
