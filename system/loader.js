@@ -10,7 +10,6 @@ function createScript(src) {
 }
 
 async function loadScriptsDeferred() {
-    // Updated script paths - removed subdirectories
     const scripts = [
         'calc/calculator.js', 
         'calc/arm.js', 
@@ -28,9 +27,8 @@ async function loadScriptsDeferred() {
         'info/worlds.js', 
         'moderation/settings.js',
         'other/peoples.js', 
-        'other/help.js'
+        'other/help.js',
         'other/sell.js'
-
     ];
     
     updateLoadingText('Loading modules...');
@@ -134,10 +132,10 @@ function parsePathToPage(path) {
     const pathMap = {
         'boosts_info': 'boosts', 'secret_pets': 'secret', 'potions_food': 'potions',
         'worlds_info': 'worlds', 'help_guide': 'help', 'peoples_thanks': 'peoples',
-        'arm_calculator': 'arm', 'grind_calculator': 'grind', 'roulette_calculator': 'roulette',
-        'boss_calculator': 'boss', 'shiny_list': 'shiny', 'codes_list': 'codes',
-        'aura_info': 'aura', 'trainer_info': 'trainer', 'charms_info': 'charms',
-        'settings': 'settings', '': 'calculator'
+        'trader_store': 'trader', 'arm_calculator': 'arm', 'grind_calculator': 'grind', 
+        'roulette_calculator': 'roulette', 'boss_calculator': 'boss', 'shiny_list': 'shiny', 
+        'codes_list': 'codes', 'aura_info': 'aura', 'trainer_info': 'trainer', 
+        'charms_info': 'charms', 'settings': 'settings', '': 'calculator'
     };
     
     return pathMap[cleanPath] || 'calculator';
@@ -194,7 +192,7 @@ Object.assign(window, {
     },
     checkLoadedModules: () => {
         console.log('=== LOADED MODULES ===');
-        ['initializeApp', 'switchPage', 'initURLRouting', 'initGitHubAutoReload', 'initializeBoss']
+        ['initializeApp', 'switchPage', 'initURLRouting', 'initGitHubAutoReload', 'initializeBoss', 'initializeTrader']
             .forEach(fn => console.log(`${fn}:`, typeof window[fn]));
         console.log('App content:', document.getElementById('app-content') ? 'Found' : 'Missing');
         console.log('Current page:', typeof getCurrentPage === 'function' ? getCurrentPage() : 'Unknown');
