@@ -10,7 +10,7 @@ async function loadPeoplesTranslations() {
     
     try {
         console.log('📥 Loading peoples translations...');
-        const response = await fetch('other/peoples/peoples.json');
+        const response = await fetch('other/peoples.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
