@@ -93,9 +93,9 @@
 
 .trader-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    max-width: 1800px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 0 20px;
     position: relative;
@@ -106,7 +106,7 @@
     background: linear-gradient(135deg, rgba(30,15,45,0.95), rgba(20,10,30,0.98));
     border: 2px solid rgba(255,100,0,0.5);
     border-radius: 20px;
-    padding: 25px;
+    padding: 20px;
     transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
@@ -149,7 +149,7 @@
 }
 
 .trader-card:hover {
-    transform: translateY(-12px) scale(1.03);
+    transform: translateY(-10px) scale(1.03);
     box-shadow: 
         0 0 50px rgba(255,100,0,0.7),
         0 0 70px rgba(138,43,226,0.5),
@@ -164,74 +164,89 @@
     left: 100%;
 }
 
-.trader-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid rgba(255,100,0,0.4);
-}
-
-.trader-icon {
-    width: 120px;
-    height: 120px;
-    background: rgba(255,100,0,0.15);
+.trader-image-container {
+    width: 100%;
+    height: 180px;
+    background: rgba(255,100,0,0.1);
     border: 3px solid #FF6600;
     border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    margin-bottom: 20px;
     box-shadow: 
-        0 0 25px rgba(255,100,0,0.6),
-        inset 0 0 20px rgba(255,100,0,0.2);
+        0 0 25px rgba(255,100,0,0.5),
+        inset 0 0 20px rgba(255,100,0,0.15);
     animation: iconPulse 3s ease-in-out infinite;
     position: relative;
 }
 
-.trader-icon img {
+.trader-image-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 12px;
 }
 
-.trader-icon-placeholder {
+.trader-image-placeholder {
+    font-size: 4em;
+    filter: drop-shadow(0 0 15px rgba(255,100,0,0.8));
+}
+
+.trader-upload-area {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.trader-upload-area:hover {
+    background: rgba(255,100,0,0.15);
+}
+
+.upload-icon {
     font-size: 3em;
-    filter: drop-shadow(0 0 10px rgba(255,100,0,0.8));
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 10px rgba(255,100,0,0.6));
+}
+
+.upload-text {
+    color: #FF6600;
+    font-size: 0.9em;
+    text-shadow: 0 0 10px rgba(255,100,0,0.6);
+}
+
+.trader-file-input {
+    display: none;
 }
 
 @keyframes iconPulse {
     0%, 100% { 
-        box-shadow: 0 0 25px rgba(255,100,0,0.6), inset 0 0 20px rgba(255,100,0,0.2);
+        box-shadow: 0 0 25px rgba(255,100,0,0.5), inset 0 0 20px rgba(255,100,0,0.15);
         border-color: #FF6600;
     }
     50% { 
-        box-shadow: 0 0 40px rgba(138,43,226,0.8), inset 0 0 30px rgba(138,43,226,0.4);
+        box-shadow: 0 0 40px rgba(138,43,226,0.7), inset 0 0 30px rgba(138,43,226,0.3);
         border-color: #8B008B;
     }
 }
 
 .trader-card-body {
-    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .trader-name {
-    font-size: 1.8em;
+    font-size: 1.5em;
     color: #FF6600;
     font-weight: 900;
-    text-shadow: 0 0 20px rgba(255,100,0,0.9), 0 0 35px rgba(138,43,226,0.5);
-    margin-bottom: 12px;
-    letter-spacing: 1px;
-    text-align: center;
-}
-
-.trader-info {
-    color: #DDA0DD;
-    font-size: 1em;
-    line-height: 1.6;
-    text-shadow: 0 0 10px rgba(221,160,221,0.6);
+    text-shadow: 0 0 20px rgba(255,100,0,0.9);
     text-align: center;
 }
 
@@ -239,8 +254,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 20px;
-    padding: 15px;
+    padding: 12px 15px;
     background: rgba(255,100,0,0.08);
     border: 2px solid #FF6600;
     border-radius: 12px;
@@ -259,25 +273,23 @@
 .price-value {
     color: #8B008B;
     font-weight: 900;
-    font-size: 1.5em;
-    text-shadow: 0 0 20px rgba(138,43,226,0.9), 0 0 30px rgba(255,100,0,0.5);
+    font-size: 1.4em;
+    text-shadow: 0 0 20px rgba(138,43,226,0.9);
 }
 
-.trader-limit {
+.trader-quantity {
     text-align: center;
-    margin-top: 15px;
     padding: 10px;
     background: rgba(138,43,226,0.08);
     border: 1px solid rgba(138,43,226,0.4);
     border-radius: 10px;
     color: #DDA0DD;
-    font-size: 0.9em;
-    font-style: italic;
+    font-size: 0.95em;
     text-shadow: 0 0 10px rgba(221,160,221,0.6);
 }
 
 /* Edit mode styles */
-.edit-title, .edit-subtitle, .edit-multiplier, .edit-name, .edit-price, .edit-limit {
+.edit-title, .edit-subtitle, .edit-name, .edit-price, .edit-quantity {
     background: rgba(0,0,0,0.9) !important;
     border: 2px solid #FF6600 !important;
     color: #FF6600 !important;
@@ -285,10 +297,14 @@
     box-shadow: 
         0 0 20px rgba(255,100,0,0.4),
         inset 0 0 15px rgba(255,100,0,0.15) !important;
+    padding: 8px;
+    border-radius: 8px;
+    width: 100%;
+    text-align: center;
 }
 
-.edit-title:focus, .edit-subtitle:focus, .edit-multiplier:focus, 
-.edit-name:focus, .edit-price:focus, .edit-limit:focus {
+.edit-title:focus, .edit-subtitle:focus, .edit-name:focus, 
+.edit-price:focus, .edit-quantity:focus {
     outline: none;
     border-color: #8B008B !important;
     box-shadow: 
@@ -315,7 +331,7 @@
 
 .trader-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 40px rgba(255,100,0,0.9), 0 0 50px rgba(138,43,226,0.5);
+    box-shadow: 0 0 40px rgba(255,100,0,0.9);
 }
 
 .trader-btn-save {
@@ -341,11 +357,15 @@
 /* Responsive Design */
 @media (max-width: 1400px) {
     .trader-container {
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 1024px) {
+    .trader-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
     .trader-page {
         padding: 30px 15px;
     }
@@ -357,7 +377,8 @@
 
 @media (max-width: 768px) {
     .trader-container {
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
     
     .trader-title {
@@ -368,38 +389,21 @@
         font-size: 1.1em;
     }
     
-    .trader-page {
-        padding: 20px 10px;
-    }
-    
-    .trader-settings-btn {
-        top: 10px;
-        right: 20px;
-        width: 45px;
-        height: 45px;
-        font-size: 20px;
+    .trader-image-container {
+        height: 150px;
     }
 }
 
 @media (max-width: 480px) {
-    .trader-card {
-        padding: 20px;
-    }
-    
-    .trader-icon {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .trader-icon-placeholder {
-        font-size: 2.5em;
-    }
-    
-    .trader-name {
-        font-size: 1.5em;
-    }
-    
     .trader-container {
         grid-template-columns: 1fr;
+    }
+    
+    .trader-card {
+        padding: 15px;
+    }
+    
+    .trader-image-container {
+        height: 180px;
     }
 }
