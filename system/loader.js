@@ -29,6 +29,8 @@ async function loadScriptsDeferred() {
         'moderation/settings.js',
         'other/peoples.js', 
         'other/help.js'
+        'other/sell.js'
+
     ];
     
     updateLoadingText('Loading modules...');
@@ -90,6 +92,7 @@ function handleEnhancedRouting() {
         '/tester_site_Secret/worlds_info': 'worlds', '/worlds_info': 'worlds', 'worlds_info': 'worlds',
         '/tester_site_Secret/help_guide': 'help', '/help_guide': 'help', 'help_guide': 'help',
         '/tester_site_Secret/peoples_thanks': 'peoples', '/peoples_thanks': 'peoples', 'peoples_thanks': 'peoples',
+        '/tester_site_Secret/trader_store': 'trader', '/trader_store': 'trader', 'trader_store': 'trader',
         '/tester_site_Secret/arm_calculator': 'arm', '/arm_calculator': 'arm', 'arm_calculator': 'arm',
         '/tester_site_Secret/grind_calculator': 'grind', '/grind_calculator': 'grind', 'grind_calculator': 'grind',
         '/tester_site_Secret/roulette_calculator': 'roulette', '/roulette_calculator': 'roulette', 'roulette_calculator': 'roulette',
