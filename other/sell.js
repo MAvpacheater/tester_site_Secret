@@ -1,7 +1,7 @@
 let traderInitialized = false;
 let isEditMode = false;
 let traderData = {};
-let traderItems = {};
+let itemImages = {};
 
 async function loadTraderJSON() {
     try {
@@ -12,33 +12,6 @@ async function loadTraderJSON() {
         console.error('Error loading trader data:', error);
         return null;
     }
-}
-
-function loadLocalTraderData() {
-    const savedItems = localStorage.getItem('traderStoreItems');
-    if (savedItems) {
-        try {
-            traderItems = JSON.parse(savedItems);
-        } catch (e) {
-            console.error('Error loading local trader items:', e);
-            traderItems = {};
-        }
-    }
-}
-
-function saveTraderItems() {
-    try {
-        localStorage.setItem('traderStoreItems', JSON.stringify(traderItems));
-    } catch (e) {
-        console.error('Error saving trader items:', e);
-    }
-}
-
-function getItems(lang) {
-    if (traderItems[lang] && traderItems[lang].length > 0) {
-        return traderItems[lang];
-    }
-    return traderData[lang]?.items || [];
 }
 
 async function initializeTrader() {
@@ -54,7 +27,6 @@ async function initializeTrader() {
     }
 
     await loadTraderJSON();
-    loadLocalTraderData();
     
     const currentLang = getCurrentAppLanguage() || 'en';
     renderTraderStore(currentLang);
@@ -63,12 +35,24 @@ async function initializeTrader() {
     console.log('✅ Trader store initialized');
 }
 
+function handleImageUpload(event, index, lang) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        itemImages[`${lang}-${index}`] = e.target.result;
+        renderTraderStore(lang);
+    };
+    reader.readAsDataURL(file);
+}
+
 function renderTraderStore(lang = 'en') {
     const traderPage = document.getElementById('traderPage');
     if (!traderPage || !traderData[lang]) return;
 
     const data = traderData[lang];
-    const items = getItems(lang);
+    const items = data.items || [];
     
     const html = `
         ${!isEditMode ? `
@@ -84,15 +68,13 @@ function renderTraderStore(lang = 'en') {
                     value="${data.title}"
                     data-lang="${lang}"
                     data-field="title"
-                    style="font-size: 2.5em; text-align: center; padding: 10px; border-radius: 10px; 
-                           width: 100%; max-width: 600px; margin: 0 auto; display: block;">
+                    style="font-size: 2.5em;">
                 <input type="text" 
                     class="edit-subtitle" 
                     value="${data.subtitle}"
                     data-lang="${lang}"
                     data-field="subtitle"
-                    style="font-size: 1.2em; text-align: center; padding: 8px; border-radius: 8px; 
-                           width: 100%; max-width: 400px; margin: 15px auto 0; display: block;">
+                    style="font-size: 1.2em; margin-top: 15px;">
             ` : `
                 <h1 class="trader-title">${data.title}</h1>
                 <div class="trader-subtitle">${data.subtitle}</div>
@@ -111,49 +93,45 @@ function renderTraderStore(lang = 'en') {
         ` : ''}
         
         <div class="trader-container">
-            ${items.map((item, index) => `
+            ${items.map((item, index) => {
+                const imageKey = `${lang}-${index}`;
+                const hasImage = itemImages[imageKey];
+                
+                return `
                 <div class="trader-card">
-                    <div class="trader-card-header">
-                        <div class="trader-icon">
-                            ${item.image ? `
-                                <img src="${item.image}" alt="${item.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="trader-icon-placeholder" style="display: none;">${item.icon || '🎃'}</div>
-                            ` : `
-                                <div class="trader-icon-placeholder">${item.icon || '🎃'}</div>
-                            `}
-                        </div>
+                    <div class="trader-image-container">
+                        ${isEditMode ? `
+                            <label class="trader-upload-area" for="file-${lang}-${index}">
+                                ${hasImage ? `
+                                    <img src="${itemImages[imageKey]}" alt="${item.name}">
+                                ` : `
+                                    <div class="upload-icon">📸</div>
+                                    <div class="upload-text">Click to upload</div>
+                                `}
+                            </label>
+                            <input type="file" 
+                                id="file-${lang}-${index}" 
+                                class="trader-file-input" 
+                                accept="image/*"
+                                onchange="handleImageUpload(event, ${index}, '${lang}')">
+                        ` : hasImage ? `
+                            <img src="${itemImages[imageKey]}" alt="${item.name}">
+                        ` : `
+                            <div class="trader-image-placeholder">${item.icon || '🎃'}</div>
+                        `}
                     </div>
                     
                     <div class="trader-card-body">
                         ${isEditMode ? `
                             <input type="text" 
-                                class="edit-multiplier" 
-                                value="${item.multiplier}"
-                                data-lang="${lang}"
-                                data-index="${index}"
-                                data-field="multiplier"
-                                style="font-size: 1.4em; font-weight: 700; text-align: center; padding: 8px; 
-                                       border-radius: 8px; width: 100%; margin-bottom: 10px;">
-                            <input type="text" 
                                 class="edit-name" 
-                                value="${item.name}"
+                                value="${item.name || ''}"
                                 data-lang="${lang}"
                                 data-index="${index}"
                                 data-field="name"
-                                style="font-size: 0.95em; text-align: center; padding: 8px; 
-                                       border-radius: 8px; width: 100%; margin-bottom: 10px;">
-                            <input type="text" 
-                                class="edit-image" 
-                                value="${item.image || ''}"
-                                data-lang="${lang}"
-                                data-index="${index}"
-                                data-field="image"
-                                placeholder="Image URL"
-                                style="font-size: 0.85em; text-align: center; padding: 8px; 
-                                       border-radius: 8px; width: 100%; margin-bottom: 15px;">
+                                placeholder="Item Name">
                         ` : `
-                            <div class="trader-name">${item.multiplier}</div>
-                            <div class="trader-info">${item.name}</div>
+                            <div class="trader-name">${item.name || ''}</div>
                         `}
                         
                         <div class="trader-price">
@@ -161,32 +139,31 @@ function renderTraderStore(lang = 'en') {
                             ${isEditMode ? `
                                 <input type="text" 
                                     class="edit-price" 
-                                    value="${item.price}"
+                                    value="${item.price || ''}"
                                     data-lang="${lang}"
                                     data-index="${index}"
                                     data-field="price"
-                                    style="font-size: 1.2em; font-weight: 700; text-align: center; padding: 6px; 
-                                           border-radius: 6px; width: 80px;">
+                                    placeholder="Price"
+                                    style="width: 100px; font-size: 1.2em;">
                             ` : `
-                                <span class="price-value">${item.price}</span>
+                                <span class="price-value">${item.price || ''}</span>
                             `}
                         </div>
                         
                         ${isEditMode ? `
                             <input type="text" 
-                                class="edit-limit" 
-                                value="${item.limit}"
+                                class="edit-quantity" 
+                                value="${item.quantity || ''}"
                                 data-lang="${lang}"
                                 data-index="${index}"
-                                data-field="limit"
-                                style="font-size: 0.85em; text-align: center; padding: 8px; 
-                                       border-radius: 8px; width: 100%; margin-top: 12px; font-style: italic;">
+                                data-field="quantity"
+                                placeholder="Quantity">
                         ` : `
-                            <div class="trader-limit">${item.limit}</div>
+                            <div class="trader-quantity">${item.quantity || ''}</div>
                         `}
                     </div>
                 </div>
-            `).join('')}
+            `}).join('')}
         </div>
     `;
     
@@ -201,26 +178,22 @@ function toggleTraderEdit(lang) {
 function saveTraderChanges(lang) {
     const inputs = document.querySelectorAll('[data-lang]');
     
-    if (!traderItems[lang]) {
-        traderItems[lang] = JSON.parse(JSON.stringify(getItems(lang)));
-    }
-    
     inputs.forEach(input => {
         const field = input.dataset.field;
         const index = input.dataset.index;
         const value = input.value.trim();
         
         if (index !== undefined) {
-            if (!traderItems[lang][index]) {
-                traderItems[lang][index] = {};
+            const idx = parseInt(index);
+            if (!traderData[lang].items[idx]) {
+                traderData[lang].items[idx] = {};
             }
-            traderItems[lang][index][field] = value;
+            traderData[lang].items[idx][field] = value;
         } else {
             traderData[lang][field] = value;
         }
     });
     
-    saveTraderItems();
     isEditMode = false;
     renderTraderStore(lang);
     
@@ -242,6 +215,7 @@ window.updateTraderLanguage = updateTraderLanguage;
 window.toggleTraderEdit = toggleTraderEdit;
 window.saveTraderChanges = saveTraderChanges;
 window.cancelTraderEdit = cancelTraderEdit;
+window.handleImageUpload = handleImageUpload;
 
 document.addEventListener('DOMContentLoaded', () => {
     const traderPage = document.getElementById('traderPage');
