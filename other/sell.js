@@ -114,8 +114,14 @@ function renderTraderStore(lang = 'en') {
             ${items.map((item, index) => `
                 <div class="trader-card">
                     <div class="trader-card-header">
-                        <div class="trader-icon">${item.icon}</div>
-                        ${item.tier ? `<div class="trader-tier ${item.tierClass}">${item.tier}</div>` : ''}
+                        <div class="trader-icon">
+                            ${item.image ? `
+                                <img src="${item.image}" alt="${item.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="trader-icon-placeholder" style="display: none;">${item.icon || '🎃'}</div>
+                            ` : `
+                                <div class="trader-icon-placeholder">${item.icon || '🎃'}</div>
+                            `}
+                        </div>
                     </div>
                     
                     <div class="trader-card-body">
@@ -135,6 +141,15 @@ function renderTraderStore(lang = 'en') {
                                 data-index="${index}"
                                 data-field="name"
                                 style="font-size: 0.95em; text-align: center; padding: 8px; 
+                                       border-radius: 8px; width: 100%; margin-bottom: 10px;">
+                            <input type="text" 
+                                class="edit-image" 
+                                value="${item.image || ''}"
+                                data-lang="${lang}"
+                                data-index="${index}"
+                                data-field="image"
+                                placeholder="Image URL"
+                                style="font-size: 0.85em; text-align: center; padding: 8px; 
                                        border-radius: 8px; width: 100%; margin-bottom: 15px;">
                         ` : `
                             <div class="trader-name">${item.multiplier}</div>
