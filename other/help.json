@@ -1,0 +1,174 @@
+{
+  "en": {
+    "title": "🆘 Help & Support",
+    "subtitle": "Need assistance? Contact our team!",
+    "description": "Get help with calculations, report bugs, or contact our development team for support and information.",
+    "admin": {
+      "name": "Mr dep Dodep",
+      "role": "Project Creator & Developer",
+      "status": "🟢 Active",
+      "telegram": "📱 Contact on Telegram",
+      "discord": "🎮 Contact on Discord"
+    },
+    "infoRequest": {
+      "title": "📋 Information Needed",
+      "subtitle": "Write to me if you have this information:",
+      "items": [
+        "🚀 New boost information",
+        "🔮 Secret pets data",
+        "🎁 New codes and promotions",
+        "🧪 Potion effects and recipes",
+        "💎 Game mechanics and formulas"
+      ]
+    },
+    "recruitment": {
+      "title": "👥 Developer & Tester Recruitment",
+      "status": "🔒 Currently Openeed",
+      "description": "We are always looking for talented developers and dedicated testers to join our team. Currently, recruitment is closed, but we will announce when new positions become available.",
+      "requirements": {
+        "title": "What we're looking for:",
+        "items": [
+          "🔧 CSS developers",
+          "🎮 Game testers and QA specialists",
+          "🎨 UI/UX designers"
+        ]
+      },
+      "note": "Stay tuned to our this page for recruitment announcements!"
+    },
+    "quickActions": {
+      "feedback": "💭 Send Feedback",
+      "bug": "🐛 Report Bug",
+      "feature": "⭐ Request Feature"
+    },
+    "modal": {
+      "feedback": {
+        "title": "💭 Send Feedback",
+        "text": "Please contact the admin directly via Telegram or Discord to send your feedback:",
+        "telegram": "📱 Telegram",
+        "discord": "🎮 Discord"
+      }
+    },
+    "notifications": {
+      "telegramOpening": "📱 Opening Telegram...",
+      "telegramFailed": "❌ Failed to open Telegram",
+      "discordOpening": "🎮 Opening Discord... Tag: {tag}",
+      "discordCopied": "📋 Discord tag copied: {tag}",
+      "discordFailed": "❌ Failed to open Discord",
+      "bugReport": "🐛 Please contact the admin via Telegram or Discord to report bugs",
+      "featureRequest": "⭐ Please contact the admin via Telegram or Discord to request features"
+    }
+  },
+  "uk": {
+    "title": "🆘 Допомога та Підтримка",
+    "subtitle": "Потрібна допомога? Зв'яжіться з нашою командою!",
+    "description": "Отримайте допомогу з розрахунками, повідомте про помилки або зв'яжіться з нашою командою розробників для підтримки та інформації.",
+    "admin": {
+      "name": "Mr dep Dodep",
+      "role": "Творець Проекту та Розробник",
+      "status": "🟢 Активний",
+      "telegram": "📱 Зв'язатися через Telegram",
+      "discord": "🎮 Зв'язатися через Discord"
+    },
+    "infoRequest": {
+      "title": "📋 Потрібна Інформація",
+      "subtitle": "Напишіть мені, якщо у вас є ця інформація:",
+      "items": [
+        "🚀 Інформація про нові прискорення",
+        "🔮 Дані про секретних питомців",
+        "🎁 Нові коди та акції",
+        "🧪 Ефекти та рецепти зілля",
+        "💎 Ігрові механіки та формули"
+      ]
+    },
+    "recruitment": {
+      "title": "👥 Набір Розробників та Тестерів",
+      "status": "🔒 Відкрито набір",
+      "description": "Ми завжди шукаємо талановитих розробників та відданих тестерів для приєднання до нашої команди. Наразі набір закритий, але ми оголосимо, коли з'являться нові позиції.",
+      "requirements": {
+        "title": "Кого ми шукаємо:",
+        "items": [
+          "🔧 Розробники CSS",
+          "🎮 Тестери ігор та спеціалісти QA",
+          "🎨 UI/UX дизайнери"
+        ]
+      },
+      "note": "Слідкуйте за цією сторінкою для оголошень про набір!"
+    },
+    "quickActions": {
+      "feedback": "💭 Надіслати Відгук",
+      "bug": "🐛 Повідомити про Помилку",
+      "feature": "⭐ Запропонувати Функцію"
+    },
+    "modal": {
+      "feedback": {
+        "title": "💭 Надіслати Відгук",
+        "text": "Будь ласка, зв'яжіться з адміністратором напряму через Telegram або Discord для надсилання відгуку:",
+        "telegram": "📱 Telegram",
+        "discord": "🎮 Discord"
+      }
+    },
+    "notifications": {
+      "telegramOpening": "📱 Відкриваю Telegram...",
+      "telegramFailed": "❌ Не вдалося відкрити Telegram",
+      "discordOpening": "🎮 Відкриваю Discord... Тег: {tag}",
+      "discordCopied": "📋 Discord тег скопійовано: {tag}",
+      "discordFailed": "❌ Не вдалося відкрити Discord",
+      "bugReport": "🐛 Будь ласка, зв'яжіться з адміністратором через Telegram або Discord для повідомлення про помилки",
+      "featureRequest": "⭐ Будь ласка, зв'яжіться з адміністратором через Telegram або Discord для пропозицій функцій"
+    }
+  },
+  "ru": {
+    "title": "🆘 Помощь и Поддержка",
+    "subtitle": "Нужна помощь? Свяжитесь с нашей командой!",
+    "description": "Получите помощь с расчетами, сообщите об ошибках или свяжитесь с нашей командой разработчиков для поддержки и информации.",
+    "admin": {
+      "name": "Mr dep Dodep",
+      "role": "Создатель Проекта и Разработчик",
+      "status": "🟢 Активен",
+      "telegram": "📱 Связаться через Telegram",
+      "discord": "🎮 Связаться через Discord"
+    },
+    "infoRequest": {
+      "title": "📋 Нужная Информация",
+      "subtitle": "Напишите мне, если у вас есть эта информация:",
+      "items": [
+        "🚀 Информация о новых ускорениях",
+        "🔮 Данные о секретных питомцах",
+        "🎁 Новые коды и акции",
+        "🧪 Эффекты и рецепты зелий",
+        "💎 Игровые механики и формулы"
+      ]
+    },
+    "recruitment": {
+      "title": "👥 Набор Разработчиков и Тестеров",
+      "status": "🔒 Открыт набор",
+      "description": "Мы всегда ищем талантливых разработчиков и преданных тестеров для присоединения к нашей команде. Сейчас набор закрыт, но мы объявим, когда появятся новые позиции.",
+      "requirements": {
+        "title": "Кого мы ищем:",
+        "items": [
+          "🔧 Разработчики CSS",
+          "🎮 Тестеры игр и специалисты QA",
+          "🎨 UI/UX дизайнеры"
+        ]
+      },
+      "note": "Следите за етой страницей для объявлений о наборе!"
+    },
+    "quickActions": {
+      "feedback": "💭 Отправить Отзыв",
+      "bug": "🐛 Сообщить об Ошибке",
+      "feature": "⭐ Предложить Функцию"
+    },
+    "modal": {
+      "removed": "Modal functionality removed - buttons now scroll to admin contact"
+    },
+    "notifications": {
+      "telegramOpening": "📱 Открываю Telegram...",
+      "telegramFailed": "❌ Не удалось открыть Telegram",
+      "discordOpening": "🎮 Открываю Discord... Тег: {tag}",
+      "discordCopied": "📋 Discord тег скопирован: {tag}",
+      "discordFailed": "❌ Не удалось открыть Discord",
+      "bugReport": "🐛 Пожалуйста, свяжитесь с администратором через Telegram или Discord для сообщения об ошибках",
+      "featureRequest": "⭐ Пожалуйста, свяжитесь с администратором через Telegram или Discord для предложений функций"
+    }
+  }
+}
