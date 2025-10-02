@@ -46,7 +46,7 @@ async function loadSecretTranslations() {
     
     try {
         console.log('📥 Loading secret translations...');
-        const response = await fetch('info/secret/secret.json');
+        const response = await fetch('info/secret.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
