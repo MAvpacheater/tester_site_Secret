@@ -15,7 +15,7 @@ async function loadCodesTranslations() {
     
     try {
         console.log('📥 Loading codes translations...');
-        const response = await fetch('info/codes/codes.json');
+        const response = await fetch('info/codes.json');
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         codesTranslations = await response.json();
         console.log('✅ Codes translations loaded');
