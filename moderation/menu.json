@@ -22,6 +22,7 @@
             "settings": "⚙️ Settings",
             "help": "🆘 Help",
             "peoples": "🙏 Peoples"
+            "trader": "🛒 Ur shop img"
         },
         "auth": {
             "login": "Login (Soon...)"
@@ -70,6 +71,7 @@
             "settings": "⚙️ Налаштування",
             "help": "🆘 Допомога",
             "peoples": "🙏 Люди"
+            "trader": "🛒 Твоє shop фото"
         },
         "auth": {
             "login": "Вхід (Незабаром...)"
@@ -118,6 +120,7 @@
             "settings": "⚙️ Настройки",
             "help": "🆘 Помощь",
             "peoples": "🙏 Люди"
+            "trader": "🛒 Твое shop фото"
         },
         "auth": {
             "login": "Вход (Скоро...)"
