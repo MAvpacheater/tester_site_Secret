@@ -21,7 +21,7 @@ async function loadPotionsData() {
     
     try {
         console.log('📥 Loading potions data from JSON...');
-        const response = await fetch('info/potions/potions.json');
+        const response = await fetch('info/potions.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
