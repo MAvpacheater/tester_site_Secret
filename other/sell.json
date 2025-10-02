@@ -1,75 +1,67 @@
 {
     "en": {
-        "title": "TRADER STORE",
-        "subtitle": "Tokens/Offers",
+        "title": "HALLOWEEN TRADER",
+        "subtitle": "Spooky Tokens & Cursed Offers",
         "items": [
             {
-                "tier": "VI",
-                "tierClass": "tier-vi",
                 "icon": "🔮",
+                "image": "",
                 "multiplier": "x4.7k",
                 "name": "3each",
                 "price": "5k",
                 "limit": "Only 100k per trade"
             },
             {
-                "tier": "II",
-                "tierClass": "tier-ii",
                 "icon": "🧪",
+                "image": "",
                 "multiplier": "x333",
                 "name": "1each",
                 "price": "5k",
                 "limit": "Only 50k per trade"
             },
             {
-                "tier": "II",
-                "tierClass": "tier-iii",
                 "icon": "🎯",
+                "image": "",
                 "multiplier": "x286",
                 "name": "50each",
                 "price": "5k",
                 "limit": "Only 10k per trade"
             },
             {
-                "tier": "III",
-                "tierClass": "tier-iii",
                 "icon": "💎",
+                "image": "",
                 "multiplier": "x169",
                 "name": "50each",
                 "price": "5k",
                 "limit": "Only 10k per trade"
             },
             {
-                "tier": "",
-                "tierClass": "",
-                "icon": "⚡",
+                "icon": "👻",
+                "image": "",
                 "multiplier": "x1",
                 "name": "Dark Matter",
                 "price": "495",
                 "limit": "1/30m"
             },
             {
-                "tier": "IV",
-                "tierClass": "tier-iv",
                 "icon": "🌟",
+                "image": "",
                 "multiplier": "x500",
                 "name": "10each",
                 "price": "7.5k",
                 "limit": "Only 25k per trade"
             },
             {
-                "tier": "V",
-                "tierClass": "tier-v",
-                "icon": "🎪",
+                "icon": "🎃",
+                "image": "",
                 "multiplier": "x1.2k",
                 "name": "5each",
                 "price": "8k",
                 "limit": "Only 40k per trade"
             },
             {
-                "tier": "I",
-                "tierClass": "tier-i",
                 "icon": "🔥",
+                "image": "",
                 "multiplier": "x250",
                 "name": "25each",
                 "price": "6k",
@@ -82,16 +74,148 @@
         "cancelButton": "Cancel"
     },
     "uk": {
-        "title": "МАГАЗИН ТРЕЙДЕРА",
-        "subtitle": "Токени/Пропозиції",
+        "title": "ХЕЛОВІНСЬКИЙ ТРЕЙДЕР",
+        "subtitle": "Моторошні Токени та Прокляті Пропозиції",
+        "items": [
+            {
+                "icon": "🔮",
+                "image": "",
+                "multiplier": "x4.7k",
+                "name": "3 штуки",
+                "price": "5k",
+                "limit": "Максимум 100k за обмін"
+            },
+            {
+                "icon": "🧪",
+                "image": "",
+                "multiplier": "x333",
+                "name": "1 штука",
+                "price": "5k",
+                "limit": "Максимум 50k за обмін"
+            },
+            {
+                "icon": "🎯",
+                "image": "",
+                "multiplier": "x286",
+                "name": "50 штук",
+                "price": "5k",
+                "limit": "Максимум 10k за обмін"
+            },
+            {
+                "icon": "💎",
+                "image": "",
+                "multiplier": "x169",
+                "name": "50 штук",
+                "price": "5k",
+                "limit": "Максимум 10k за обмін"
+            },
+            {
+                "icon": "👻",
+                "image": "",
+                "multiplier": "x1",
+                "name": "Темна Матерія",
+                "price": "495",
+                "limit": "1 на 30 хв"
+            },
+            {
+                "icon": "🌟",
+                "image": "",
+                "multiplier": "x500",
+                "name": "10 штук",
+                "price": "7.5k",
+                "limit": "Максимум 25k за обмін"
+            },
+            {
+                "icon": "🎃",
+                "image": "",
+                "multiplier": "x1.2k",
+                "name": "5 штук",
+                "price": "8k",
+                "limit": "Максимум 40k за обмін"
+            },
+            {
+                "icon": "🔥",
+                "image": "",
+                "multiplier": "x250",
+                "name": "25 штук",
+                "price": "6k",
+                "limit": "Максимум 15k за обмін"
+            }
+        ],
         "priceLabel": "Ціна:",
         "editButton": "Редагувати",
         "saveButton": "Зберегти",
         "cancelButton": "Скасувати"
     },
     "ru": {
-        "title": "МАГАЗИН ТРЕЙДЕРА",
-        "subtitle": "Токены/Предложения",
+        "title": "ХЭЛЛОУИНСКИЙ ТРЕЙДЕР",
+        "subtitle": "Жуткие Токены и Проклятые Предложения",
+        "items": [
+            {
+                "icon": "🔮",
+                "image": "",
+                "multiplier": "x4.7k",
+                "name": "3 штуки",
+                "price": "5k",
+                "limit": "Максимум 100k за обмен"
+            },
+            {
+                "icon": "🧪",
+                "image": "",
+                "multiplier": "x333",
+                "name": "1 штука",
+                "price": "5k",
+                "limit": "Максимум 50k за обмен"
+            },
+            {
+                "icon": "🎯",
+                "image": "",
+                "multiplier": "x286",
+                "name": "50 штук",
+                "price": "5k",
+                "limit": "Максимум 10k за обмен"
+            },
+            {
+                "icon": "💎",
+                "image": "",
+                "multiplier": "x169",
+                "name": "50 штук",
+                "price": "5k",
+                "limit": "Максимум 10k за обмен"
+            },
+            {
+                "icon": "👻",
+                "image": "",
+                "multiplier": "x1",
+                "name": "Темная Материя",
+                "price": "495",
+                "limit": "1 на 30 мин"
+            },
+            {
+                "icon": "🌟",
+                "image": "",
+                "multiplier": "x500",
+                "name": "10 штук",
+                "price": "7.5k",
+                "limit": "Максимум 25k за обмен"
+            },
+            {
+                "icon": "🎃",
+                "image": "",
+                "multiplier": "x1.2k",
+                "name": "5 штук",
+                "price": "8k",
+                "limit": "Максимум 40k за обмен"
+            },
+            {
+                "icon": "🔥",
+                "image": "",
+                "multiplier": "x250",
+                "name": "25 штук",
+                "price": "6k",
+                "limit": "Максимум 15k за обмен"
+            }
+        ],
         "priceLabel": "Цена:",
         "editButton": "Редактировать",
         "saveButton": "Сохранить",
