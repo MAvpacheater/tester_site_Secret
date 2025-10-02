@@ -1,176 +1,47 @@
-// Trader Store JavaScript with Editing
 let traderInitialized = false;
 let isEditMode = false;
+let traderData = {};
+let traderItems = {};
 
-const traderData = {
-    en: {
-        title: "TRADER STORE",
-        subtitle: "Tokens/Offers",
-        items: [
-            {
-                tier: "VI",
-                tierClass: "tier-vi",
-                icon: "🔮",
-                multiplier: "x4.7k",
-                name: "3each",
-                price: "5k",
-                limit: "Only 100k per trade"
-            },
-            {
-                tier: "II",
-                tierClass: "tier-ii",
-                icon: "🧪",
-                multiplier: "x333",
-                name: "1each",
-                price: "5k",
-                limit: "Only 50k per trade"
-            },
-            {
-                tier: "II",
-                tierClass: "tier-iii",
-                icon: "🎯",
-                multiplier: "x286",
-                name: "50each",
-                price: "5k",
-                limit: "Only 10k per trade"
-            },
-            {
-                tier: "III",
-                tierClass: "tier-iii",
-                icon: "💎",
-                multiplier: "x169",
-                name: "50each",
-                price: "5k",
-                limit: "Only 10k per trade"
-            },
-            {
-                tier: "",
-                tierClass: "",
-                icon: "⚡",
-                multiplier: "x1",
-                name: "Dark Matter",
-                price: "495",
-                limit: "1/30m"
-            }
-        ],
-        priceLabel: "Price:",
-        editButton: "Edit Store",
-        saveButton: "Save Changes",
-        cancelButton: "Cancel"
-    },
-    uk: {
-        title: "МАГАЗИН ТРЕЙДЕРА",
-        subtitle: "Токени/Пропозиції",
-        items: [
-            {
-                tier: "VI",
-                tierClass: "tier-vi",
-                icon: "🔮",
-                multiplier: "x4.7k",
-                name: "3each",
-                price: "5k",
-                limit: "Тільки 100k за трейд"
-            },
-            {
-                tier: "II",
-                tierClass: "tier-ii",
-                icon: "🧪",
-                multiplier: "x333",
-                name: "1each",
-                price: "5k",
-                limit: "Тільки 50k за трейд"
-            },
-            {
-                tier: "II",
-                tierClass: "tier-iii",
-                icon: "🎯",
-                multiplier: "x286",
-                name: "50each",
-                price: "5k",
-                limit: "Тільки 10k за трейд"
-            },
-            {
-                tier: "III",
-                tierClass: "tier-iii",
-                icon: "💎",
-                multiplier: "x169",
-                name: "50each",
-                price: "5k",
-                limit: "Тільки 10k за трейд"
-            },
-            {
-                tier: "",
-                tierClass: "",
-                icon: "⚡",
-                multiplier: "x1",
-                name: "Dark Matter",
-                price: "495",
-                limit: "1/30хв"
-            }
-        ],
-        priceLabel: "Ціна:",
-        editButton: "Редагувати",
-        saveButton: "Зберегти",
-        cancelButton: "Скасувати"
-    },
-    ru: {
-        title: "МАГАЗИН ТРЕЙДЕРА",
-        subtitle: "Токены/Предложения",
-        items: [
-            {
-                tier: "VI",
-                tierClass: "tier-vi",
-                icon: "🔮",
-                multiplier: "x4.7k",
-                name: "3each",
-                price: "5k",
-                limit: "Только 100k за трейд"
-            },
-            {
-                tier: "II",
-                tierClass: "tier-ii",
-                icon: "🧪",
-                multiplier: "x333",
-                name: "1each",
-                price: "5k",
-                limit: "Только 50k за трейд"
-            },
-            {
-                tier: "II",
-                tierClass: "tier-iii",
-                icon: "🎯",
-                multiplier: "x286",
-                name: "50each",
-                price: "5k",
-                limit: "Только 10k за трейд"
-            },
-            {
-                tier: "III",
-                tierClass: "tier-iii",
-                icon: "💎",
-                multiplier: "x169",
-                name: "50each",
-                price: "5k",
-                limit: "Только 10k за трейд"
-            },
-            {
-                tier: "",
-                tierClass: "",
-                icon: "⚡",
-                multiplier: "x1",
-                name: "Dark Matter",
-                price: "495",
-                limit: "1/30мин"
-            }
-        ],
-        priceLabel: "Цена:",
-        editButton: "Редактировать",
-        saveButton: "Сохранить",
-        cancelButton: "Отменить"
+async function loadTraderJSON() {
+    try {
+        const response = await fetch('other/sell.json');
+        traderData = await response.json();
+        return traderData;
+    } catch (error) {
+        console.error('Error loading trader data:', error);
+        return null;
     }
-};
+}
 
-function initializeTrader() {
+function loadLocalTraderData() {
+    const savedItems = localStorage.getItem('traderStoreItems');
+    if (savedItems) {
+        try {
+            traderItems = JSON.parse(savedItems);
+        } catch (e) {
+            console.error('Error loading local trader items:', e);
+            traderItems = {};
+        }
+    }
+}
+
+function saveTraderItems() {
+    try {
+        localStorage.setItem('traderStoreItems', JSON.stringify(traderItems));
+    } catch (e) {
+        console.error('Error saving trader items:', e);
+    }
+}
+
+function getItems(lang) {
+    if (traderItems[lang] && traderItems[lang].length > 0) {
+        return traderItems[lang];
+    }
+    return traderData[lang]?.items || [];
+}
+
+async function initializeTrader() {
     if (traderInitialized) {
         console.log('⚠️ Trader already initialized');
         return;
@@ -182,41 +53,30 @@ function initializeTrader() {
         return;
     }
 
+    await loadTraderJSON();
+    loadLocalTraderData();
+    
     const currentLang = getCurrentAppLanguage() || 'en';
-    loadTraderData();
     renderTraderStore(currentLang);
     
     traderInitialized = true;
     console.log('✅ Trader store initialized');
 }
 
-function loadTraderData() {
-    const savedData = localStorage.getItem('traderStoreData');
-    if (savedData) {
-        try {
-            const parsed = JSON.parse(savedData);
-            Object.keys(traderData).forEach(lang => {
-                if (parsed[lang]) {
-                    traderData[lang] = { ...traderData[lang], ...parsed[lang] };
-                }
-            });
-        } catch (e) {
-            console.error('Error loading trader data:', e);
-        }
-    }
-}
-
-function saveTraderData() {
-    localStorage.setItem('traderStoreData', JSON.stringify(traderData));
-}
-
 function renderTraderStore(lang = 'en') {
     const traderPage = document.getElementById('traderPage');
-    if (!traderPage) return;
+    if (!traderPage || !traderData[lang]) return;
 
-    const data = traderData[lang] || traderData.en;
+    const data = traderData[lang];
+    const items = getItems(lang);
     
     const html = `
+        ${!isEditMode ? `
+            <button class="trader-settings-btn" onclick="toggleTraderEdit('${lang}')" title="${data.editButton}">
+                ⚙️
+            </button>
+        ` : ''}
+        
         <div class="trader-header">
             ${isEditMode ? `
                 <input type="text" 
@@ -224,16 +84,14 @@ function renderTraderStore(lang = 'en') {
                     value="${data.title}"
                     data-lang="${lang}"
                     data-field="title"
-                    style="background: rgba(139,69,19,0.3); border: 2px solid #FFD700; color: #FFD700; 
-                           font-size: 2.5em; text-align: center; padding: 10px; border-radius: 10px; 
+                    style="font-size: 2.5em; text-align: center; padding: 10px; border-radius: 10px; 
                            width: 100%; max-width: 600px; margin: 0 auto; display: block;">
                 <input type="text" 
                     class="edit-subtitle" 
                     value="${data.subtitle}"
                     data-lang="${lang}"
                     data-field="subtitle"
-                    style="background: rgba(139,69,19,0.3); border: 2px solid #8B4513; color: #F5DEB3; 
-                           font-size: 1.2em; text-align: center; padding: 8px; border-radius: 8px; 
+                    style="font-size: 1.2em; text-align: center; padding: 8px; border-radius: 8px; 
                            width: 100%; max-width: 400px; margin: 15px auto 0; display: block;">
             ` : `
                 <h1 class="trader-title">${data.title}</h1>
@@ -241,33 +99,20 @@ function renderTraderStore(lang = 'en') {
             `}
         </div>
         
-        <div style="text-align: center; margin: 20px 0;">
-            ${isEditMode ? `
-                <button onclick="saveTraderChanges('${lang}')" 
-                    style="background: linear-gradient(135deg, #2ECC71, #27AE60); color: white; 
-                           border: none; padding: 12px 30px; border-radius: 8px; font-size: 1.1em; 
-                           font-weight: 700; cursor: pointer; margin: 0 10px; box-shadow: 0 4px 15px rgba(46,204,113,0.4);">
-                    ${data.saveButton || 'Save Changes'}
+        ${isEditMode ? `
+            <div style="text-align: center; margin: 30px 0;">
+                <button onclick="saveTraderChanges('${lang}')" class="trader-btn trader-btn-save">
+                    ${data.saveButton}
                 </button>
-                <button onclick="cancelTraderEdit('${lang}')" 
-                    style="background: linear-gradient(135deg, #E74C3C, #C0392B); color: white; 
-                           border: none; padding: 12px 30px; border-radius: 8px; font-size: 1.1em; 
-                           font-weight: 700; cursor: pointer; margin: 0 10px; box-shadow: 0 4px 15px rgba(231,76,60,0.4);">
-                    ${data.cancelButton || 'Cancel'}
+                <button onclick="cancelTraderEdit('${lang}')" class="trader-btn trader-btn-cancel">
+                    ${data.cancelButton}
                 </button>
-            ` : `
-                <button onclick="toggleTraderEdit('${lang}')" 
-                    style="background: linear-gradient(135deg, #3498DB, #2980B9); color: white; 
-                           border: none; padding: 12px 30px; border-radius: 8px; font-size: 1.1em; 
-                           font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(52,152,219,0.4);">
-                    ${data.editButton || 'Edit Store'}
-                </button>
-            `}
-        </div>
+            </div>
+        ` : ''}
         
         <div class="trader-container">
-            ${data.items.map((item, index) => `
-                <div class="trader-card ${index >= 4 ? 'trader-empty' : ''}">
+            ${items.map((item, index) => `
+                <div class="trader-card">
                     <div class="trader-card-header">
                         <div class="trader-icon">${item.icon}</div>
                         ${item.tier ? `<div class="trader-tier ${item.tierClass}">${item.tier}</div>` : ''}
@@ -281,8 +126,7 @@ function renderTraderStore(lang = 'en') {
                                 data-lang="${lang}"
                                 data-index="${index}"
                                 data-field="multiplier"
-                                style="background: rgba(139,69,19,0.3); border: 2px solid #FFD700; color: #FFD700; 
-                                       font-size: 1.4em; font-weight: 700; text-align: center; padding: 8px; 
+                                style="font-size: 1.4em; font-weight: 700; text-align: center; padding: 8px; 
                                        border-radius: 8px; width: 100%; margin-bottom: 10px;">
                             <input type="text" 
                                 class="edit-name" 
@@ -290,8 +134,7 @@ function renderTraderStore(lang = 'en') {
                                 data-lang="${lang}"
                                 data-index="${index}"
                                 data-field="name"
-                                style="background: rgba(139,69,19,0.3); border: 2px solid #8B4513; color: #F5DEB3; 
-                                       font-size: 0.95em; text-align: center; padding: 8px; 
+                                style="font-size: 0.95em; text-align: center; padding: 8px; 
                                        border-radius: 8px; width: 100%; margin-bottom: 15px;">
                         ` : `
                             <div class="trader-name">${item.multiplier}</div>
@@ -307,8 +150,7 @@ function renderTraderStore(lang = 'en') {
                                     data-lang="${lang}"
                                     data-index="${index}"
                                     data-field="price"
-                                    style="background: rgba(139,69,19,0.4); border: 2px solid #FFD700; color: #FFD700; 
-                                           font-size: 1.2em; font-weight: 700; text-align: center; padding: 6px; 
+                                    style="font-size: 1.2em; font-weight: 700; text-align: center; padding: 6px; 
                                            border-radius: 6px; width: 80px;">
                             ` : `
                                 <span class="price-value">${item.price}</span>
@@ -322,8 +164,7 @@ function renderTraderStore(lang = 'en') {
                                 data-lang="${lang}"
                                 data-index="${index}"
                                 data-field="limit"
-                                style="background: rgba(255,215,0,0.1); border: 2px solid #8B4513; color: #F5DEB3; 
-                                       font-size: 0.85em; text-align: center; padding: 8px; 
+                                style="font-size: 0.85em; text-align: center; padding: 8px; 
                                        border-radius: 8px; width: 100%; margin-top: 12px; font-style: italic;">
                         ` : `
                             <div class="trader-limit">${item.limit}</div>
@@ -345,19 +186,26 @@ function toggleTraderEdit(lang) {
 function saveTraderChanges(lang) {
     const inputs = document.querySelectorAll('[data-lang]');
     
+    if (!traderItems[lang]) {
+        traderItems[lang] = JSON.parse(JSON.stringify(getItems(lang)));
+    }
+    
     inputs.forEach(input => {
         const field = input.dataset.field;
         const index = input.dataset.index;
         const value = input.value.trim();
         
         if (index !== undefined) {
-            traderData[lang].items[index][field] = value;
+            if (!traderItems[lang][index]) {
+                traderItems[lang][index] = {};
+            }
+            traderItems[lang][index][field] = value;
         } else {
             traderData[lang][field] = value;
         }
     });
     
-    saveTraderData();
+    saveTraderItems();
     isEditMode = false;
     renderTraderStore(lang);
     
@@ -366,7 +214,6 @@ function saveTraderChanges(lang) {
 
 function cancelTraderEdit(lang) {
     isEditMode = false;
-    loadTraderData();
     renderTraderStore(lang);
 }
 
@@ -375,14 +222,12 @@ function updateTraderLanguage(lang) {
     renderTraderStore(lang);
 }
 
-// Global exports
 window.initializeTrader = initializeTrader;
 window.updateTraderLanguage = updateTraderLanguage;
 window.toggleTraderEdit = toggleTraderEdit;
 window.saveTraderChanges = saveTraderChanges;
 window.cancelTraderEdit = cancelTraderEdit;
 
-// Auto-initialize if page is active
 document.addEventListener('DOMContentLoaded', () => {
     const traderPage = document.getElementById('traderPage');
     if (traderPage && traderPage.classList.contains('active')) {
@@ -390,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Listen for language changes
 document.addEventListener('languageChanged', (e) => {
     updateTraderLanguage(e.detail.language);
 });
