@@ -95,7 +95,7 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 25px;
-    max-width: 1600px;
+    max-width: 2400px;
     margin: 0 auto;
     padding: 0 20px;
     position: relative;
@@ -355,9 +355,22 @@
 }
 
 /* Responsive Design */
+@media (max-width: 2200px) {
+    .trader-container {
+        max-width: 2000px;
+    }
+}
+
+@media (max-width: 1800px) {
+    .trader-container {
+        max-width: 1600px;
+    }
+}
+
 @media (max-width: 1400px) {
     .trader-container {
         grid-template-columns: repeat(3, 1fr);
+        max-width: 1400px;
     }
 }
 
