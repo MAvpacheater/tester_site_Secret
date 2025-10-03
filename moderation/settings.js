@@ -1,4 +1,4 @@
-// Оптимізований Settings
+// Оптимізований Settings з Halloween темою
 let settingsInitialized = false;
 let settingsTranslations = null;
 let categoriesState = { background: false, menu: false };
@@ -222,7 +222,6 @@ async function applyBackground(background) {
     if (!config) return;
     
     const body = document.body;
-    body.classList.add('loading-background');
     
     try {
         const isAvailable = await checkImageAvailability(config.url);
@@ -232,8 +231,6 @@ async function applyBackground(background) {
         }
     } catch (error) {
         console.error('Background error:', error);
-    } finally {
-        body.classList.remove('loading-background');
     }
 }
 
@@ -295,16 +292,9 @@ function saveMenuPosition(position) {
 async function changeBackground(background) {
     if (!backgroundOptions[background]) return;
     
-    const button = document.querySelector(`[data-background="${background}"]`);
-    if (button) button.classList.add('loading');
-    
-    try {
-        saveBackground(background);
-        await applyBackground(background);
-        updateBackgroundUI();
-    } finally {
-        if (button) button.classList.remove('loading');
-    }
+    saveBackground(background);
+    await applyBackground(background);
+    updateBackgroundUI();
 }
 
 function changeMenuPosition(position) {
@@ -329,7 +319,7 @@ function updateMenuPositionUI() {
     });
 }
 
-// TRANSLATIONS
+// TRANSLATIONS - ОПТИМІЗОВАНО
 async function loadSettingsTranslations() {
     if (settingsTranslations) return settingsTranslations;
     
@@ -347,31 +337,37 @@ async function loadSettingsTranslations() {
 async function updateSettingsLanguage(lang = null) {
     const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en');
     
-    await loadSettingsTranslations();
+    if (!settingsTranslations) {
+        await loadSettingsTranslations();
+    }
     
     if (!settingsTranslations || !settingsTranslations[currentLang]) return;
     
     const t = settingsTranslations[currentLang].settings;
+    const pages = settingsTranslations[currentLang].pages;
     
-    const updates = {
-        '.settings-title': t.title,
-        '[data-category="background"] .category-title span:last-child': t.background,
-        '[data-category="menu"] .category-title span:last-child': t.menu
-    };
-    
-    Object.entries(updates).forEach(([selector, text]) => {
-        const el = document.querySelector(`#settingsPage ${selector}`);
-        if (el) el.textContent = text;
-    });
-    
-    Object.keys(backgroundOptions).forEach(bg => {
-        const el = document.querySelector(`#settingsPage [data-background="${bg}"] .option-name`);
-        if (el && t[bg]) el.textContent = t[bg];
-    });
-    
-    Object.keys(menuPositions).forEach(pos => {
-        const el = document.querySelector(`#settingsPage [data-position="${pos}"] .menu-option-name`);
-        if (el && t[pos]) el.textContent = t[pos];
+    // Batch DOM updates
+    requestAnimationFrame(() => {
+        const updates = {
+            '.settings-title': t.title,
+            '[data-category="background"] .category-title span:last-child': t.background,
+            '[data-category="menu"] .category-title span:last-child': t.menu
+        };
+        
+        Object.entries(updates).forEach(([selector, text]) => {
+            const el = document.querySelector(`#settingsPage ${selector}`);
+            if (el) el.textContent = text;
+        });
+        
+        Object.keys(backgroundOptions).forEach(bg => {
+            const el = document.querySelector(`#settingsPage [data-background="${bg}"] .option-name`);
+            if (el && t[bg]) el.textContent = t[bg];
+        });
+        
+        Object.keys(menuPositions).forEach(pos => {
+            const el = document.querySelector(`#settingsPage [data-position="${pos}"] .menu-option-name`);
+            if (el && t[pos]) el.textContent = t[pos];
+        });
     });
 }
 
@@ -394,13 +390,13 @@ function createSettingsHTML() {
 
     return `
         <div class="settings-container">
-            <h1 class="settings-title"></h1>
+            <h1 class="settings-title">⚙️ Settings</h1>
             
             <div class="settings-section" data-category="background">
                 <div class="category-header collapsed" onclick="toggleSettingsCategory('background')">
                     <div class="category-title">
-                        <span class="section-icon">🎨</span>
-                        <span></span>
+                        <span class="section-icon">🎃</span>
+                        <span>Background</span>
                     </div>
                     <span class="category-toggle">▼</span>
                 </div>
@@ -410,8 +406,8 @@ function createSettingsHTML() {
             <div class="settings-section" data-category="menu">
                 <div class="category-header collapsed" onclick="toggleSettingsCategory('menu')">
                     <div class="category-title">
-                        <span class="section-icon">📱</span>
-                        <span></span>
+                        <span class="section-icon">👻</span>
+                        <span>Menu Position</span>
                     </div>
                     <span class="category-toggle">▼</span>
                 </div>
@@ -421,7 +417,7 @@ function createSettingsHTML() {
     `;
 }
 
-// INITIALIZATION
+// INITIALIZATION - ОПТИМІЗОВАНО
 async function initializeSettings() {
     if (settingsInitialized) return;
     
@@ -429,13 +425,15 @@ async function initializeSettings() {
     if (!settingsPage) return;
     
     loadCategoriesState();
-    await loadSettingsTranslations();
+    
+    // Load translations in parallel with HTML generation
+    const translationsPromise = loadSettingsTranslations();
     
     settingsPage.innerHTML = createSettingsHTML();
     
-    setTimeout(async () => {
-        await updateSettingsLanguage();
-    }, 100);
+    // Wait for translations and update
+    await translationsPromise;
+    await updateSettingsLanguage();
     
     const currentBg = getCurrentBackground();
     await applyBackground(currentBg);
@@ -455,7 +453,7 @@ async function initializeSettingsOnStart() {
     await applyBackground(currentBg);
     
     const currentMenuPos = getCurrentMenuPosition();
-    setTimeout(() => menuManager.showOnlyMenu(currentMenuPos), 100);
+    setTimeout(() => menuManager.showOnlyMenu(currentMenuPos), 50);
 }
 
 // EVENT LISTENERS
