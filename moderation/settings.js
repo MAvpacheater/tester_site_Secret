@@ -1,4 +1,4 @@
-// Оптимізований Settings з Halloween темою
+// Максимально оптимізований Settings з Halloween темою
 let settingsInitialized = false;
 let settingsTranslations = null;
 let categoriesState = { background: false, menu: false };
@@ -123,7 +123,7 @@ class MenuManager {
         if (mobileToggle) {
             mobileToggle.style.left = position === 'right' ? 'auto' : '20px';
             mobileToggle.style.right = position === 'right' ? '20px' : 'auto';
-            setTimeout(createMenuButton, 100);
+            setTimeout(createMenuButton, 50);
         }
     }
 
@@ -207,31 +207,14 @@ function closeSidebar() {
     }
 }
 
-// BACKGROUNDS
-async function checkImageAvailability(url) {
-    try {
-        const response = await fetch(url, { method: 'HEAD' });
-        return response.ok;
-    } catch {
-        return false;
-    }
-}
-
-async function applyBackground(background) {
+// BACKGROUNDS - БЕЗ ПЕРЕВІРКИ ДОСТУПНОСТІ
+function applyBackground(background) {
     const config = backgroundOptions[background];
     if (!config) return;
     
     const body = document.body;
-    
-    try {
-        const isAvailable = await checkImageAvailability(config.url);
-        if (isAvailable) {
-            body.style.background = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${config.url}') center center / cover no-repeat`;
-            body.style.backgroundAttachment = window.innerWidth > 768 ? 'fixed' : 'scroll';
-        }
-    } catch (error) {
-        console.error('Background error:', error);
-    }
+    body.style.background = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${config.url}') center center / cover no-repeat`;
+    body.style.backgroundAttachment = 'scroll';
 }
 
 // SETTINGS MANAGEMENT
@@ -289,11 +272,11 @@ function saveMenuPosition(position) {
 }
 
 // CHANGE FUNCTIONS
-async function changeBackground(background) {
+function changeBackground(background) {
     if (!backgroundOptions[background]) return;
     
     saveBackground(background);
-    await applyBackground(background);
+    applyBackground(background);
     updateBackgroundUI();
 }
 
@@ -319,55 +302,44 @@ function updateMenuPositionUI() {
     });
 }
 
-// TRANSLATIONS - ОПТИМІЗОВАНО
+// TRANSLATIONS - МАКСИМАЛЬНО ОПТИМІЗОВАНО
 async function loadSettingsTranslations() {
     if (settingsTranslations) return settingsTranslations;
     
     try {
         const response = await fetch('moderation/menu.json');
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         settingsTranslations = await response.json();
         return settingsTranslations;
     } catch (error) {
-        console.error('Translation load error:', error);
+        console.error('Translation error:', error);
         return null;
     }
 }
 
-async function updateSettingsLanguage(lang = null) {
+function updateSettingsLanguage(lang = null) {
     const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en');
-    
-    if (!settingsTranslations) {
-        await loadSettingsTranslations();
-    }
     
     if (!settingsTranslations || !settingsTranslations[currentLang]) return;
     
     const t = settingsTranslations[currentLang].settings;
-    const pages = settingsTranslations[currentLang].pages;
     
-    // Batch DOM updates
-    requestAnimationFrame(() => {
-        const updates = {
-            '.settings-title': t.title,
-            '[data-category="background"] .category-title span:last-child': t.background,
-            '[data-category="menu"] .category-title span:last-child': t.menu
-        };
-        
-        Object.entries(updates).forEach(([selector, text]) => {
-            const el = document.querySelector(`#settingsPage ${selector}`);
-            if (el) el.textContent = text;
-        });
-        
-        Object.keys(backgroundOptions).forEach(bg => {
-            const el = document.querySelector(`#settingsPage [data-background="${bg}"] .option-name`);
-            if (el && t[bg]) el.textContent = t[bg];
-        });
-        
-        Object.keys(menuPositions).forEach(pos => {
-            const el = document.querySelector(`#settingsPage [data-position="${pos}"] .menu-option-name`);
-            if (el && t[pos]) el.textContent = t[pos];
-        });
+    // Синхронне оновлення без requestAnimationFrame
+    const titleEl = document.querySelector('#settingsPage .settings-title');
+    const bgHeaderEl = document.querySelector('#settingsPage [data-category="background"] .category-title span:last-child');
+    const menuHeaderEl = document.querySelector('#settingsPage [data-category="menu"] .category-title span:last-child');
+    
+    if (titleEl) titleEl.textContent = t.title;
+    if (bgHeaderEl) bgHeaderEl.textContent = t.background;
+    if (menuHeaderEl) menuHeaderEl.textContent = t.menu;
+    
+    Object.keys(backgroundOptions).forEach(bg => {
+        const el = document.querySelector(`#settingsPage [data-background="${bg}"] .option-name`);
+        if (el && t[bg]) el.textContent = t[bg];
+    });
+    
+    Object.keys(menuPositions).forEach(pos => {
+        const el = document.querySelector(`#settingsPage [data-position="${pos}"] .menu-option-name`);
+        if (el && t[pos]) el.textContent = t[pos];
     });
 }
 
@@ -376,7 +348,7 @@ function createSettingsHTML() {
     const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => `
         <div class="background-option" data-background="${bg}" onclick="changeBackground('${bg}')">
             <div class="option-icon">${backgroundOptions[bg].icon}</div>
-            <div class="option-name"></div>
+            <div class="option-name">Loading...</div>
             <div class="background-preview" style="background-image: url('${backgroundOptions[bg].url}')"></div>
         </div>
     `).join('');
@@ -384,7 +356,7 @@ function createSettingsHTML() {
     const menuOptionsHTML = Object.keys(menuPositions).map(pos => `
         <div class="menu-option" data-position="${pos}" onclick="changeMenuPosition('${pos}')">
             <div class="menu-option-icon">${menuPositions[pos].icon}</div>
-            <div class="menu-option-name"></div>
+            <div class="menu-option-name">Loading...</div>
         </div>
     `).join('');
 
@@ -417,7 +389,7 @@ function createSettingsHTML() {
     `;
 }
 
-// INITIALIZATION - ОПТИМІЗОВАНО
+// INITIALIZATION - МАКСИМАЛЬНО ШВИДКО
 async function initializeSettings() {
     if (settingsInitialized) return;
     
@@ -426,19 +398,20 @@ async function initializeSettings() {
     
     loadCategoriesState();
     
-    // Load translations in parallel with HTML generation
-    const translationsPromise = loadSettingsTranslations();
-    
+    // Створюємо HTML одразу
     settingsPage.innerHTML = createSettingsHTML();
     
-    // Wait for translations and update
-    await translationsPromise;
-    await updateSettingsLanguage();
+    // Завантажуємо переклади і оновлюємо
+    loadSettingsTranslations().then(() => {
+        updateSettingsLanguage();
+    });
     
+    // Застосовуємо фон без затримок
     const currentBg = getCurrentBackground();
-    await applyBackground(currentBg);
+    applyBackground(currentBg);
     updateBackgroundUI();
     
+    // Застосовуємо позицію меню
     const currentMenuPos = getCurrentMenuPosition();
     menuManager.showOnlyMenu(currentMenuPos);
     updateMenuPositionUI();
@@ -448,12 +421,12 @@ async function initializeSettings() {
     settingsInitialized = true;
 }
 
-async function initializeSettingsOnStart() {
+function initializeSettingsOnStart() {
     const currentBg = getCurrentBackground();
-    await applyBackground(currentBg);
+    applyBackground(currentBg);
     
     const currentMenuPos = getCurrentMenuPosition();
-    setTimeout(() => menuManager.showOnlyMenu(currentMenuPos), 50);
+    menuManager.showOnlyMenu(currentMenuPos);
 }
 
 // EVENT LISTENERS
