@@ -110,7 +110,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     margin-top: 15px;
-    max-width: 300px;
+    max-width: 500px;
     justify-content: center;
     max-height: 500px;
     overflow: hidden;
@@ -303,7 +303,7 @@
     flex-shrink: 0;
     padding: 8px 10px;
     font-size: 1.8em;
-    width: 50px;
+    width: 75px;
     height: 44px;
     display: flex;
     align-items: center;
