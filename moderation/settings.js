@@ -1,4 +1,4 @@
-// Максимально оптимізований Settings з Halloween темою
+// Оптимізований Settings без лагів
 let settingsInitialized = false;
 let settingsTranslations = null;
 let categoriesState = { background: false, menu: false };
@@ -58,14 +58,14 @@ function createMenuButton() {
     if (!menuToggle) return;
     
     menuToggle.innerHTML = '';
-    for (let i = 0; i < 3; i++) {
+    const positions = [-4, 0, 4];
+    
+    positions.forEach((pos) => {
         const line = document.createElement('div');
         line.className = 'menu-line';
-        line.style.transform = i === 0 ? 'translate(-50%, -50%) translateY(-6px)' :
-                               i === 1 ? 'translate(-50%, -50%)' :
-                               'translate(-50%, -50%) translateY(6px)';
+        line.style.transform = `translate(-50%, -50%) translateY(${pos}px)`;
         menuToggle.appendChild(line);
-    }
+    });
 }
 
 function updateMenuButtonVisibility() {
@@ -84,7 +84,8 @@ class MenuManager {
     }
 
     clearAllMenus() {
-        document.querySelectorAll('.static-menu, #staticMenu').forEach(menu => menu.remove());
+        const existingMenu = document.getElementById('staticMenu');
+        if (existingMenu) existingMenu.remove();
         
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
@@ -93,9 +94,10 @@ class MenuManager {
         if (overlay) overlay.classList.remove('show');
         
         updateMenuButtonVisibility();
-        Object.keys(menuPositions).forEach(pos => document.body.classList.remove(`menu-${pos}`));
-        document.body.style.paddingTop = '';
-        document.body.style.paddingBottom = '';
+        
+        ['left', 'right', 'up', 'down'].forEach(pos => {
+            document.body.classList.remove(`menu-${pos}`);
+        });
     }
 
     showOnlyMenu(menuType) {
@@ -123,12 +125,14 @@ class MenuManager {
         if (mobileToggle) {
             mobileToggle.style.left = position === 'right' ? 'auto' : '20px';
             mobileToggle.style.right = position === 'right' ? '20px' : 'auto';
-            setTimeout(createMenuButton, 50);
+            setTimeout(createMenuButton, 10);
         }
     }
 
     createStaticMenu(position) {
         const menuClass = position === 'up' ? 'menu-top' : 'menu-bottom';
+        const fragment = document.createDocumentFragment();
+        
         const staticMenu = document.createElement('div');
         staticMenu.className = `static-menu ${menuClass}`;
         staticMenu.id = 'staticMenu';
@@ -141,20 +145,14 @@ class MenuManager {
             btn.className = 'nav-btn';
             btn.dataset.page = item.page;
             btn.textContent = item.icon;
-            btn.onclick = () => {
-                if (typeof window.switchPage === 'function') window.switchPage(item.page);
-                this.updateActiveState(item.page);
-            };
+            btn.onclick = () => this.handleNavClick(item.page);
             navButtons.appendChild(btn);
         });
         
         const settingsBtn = document.createElement('button');
         settingsBtn.className = 'nav-btn settings-btn-static';
         settingsBtn.textContent = '⚙️';
-        settingsBtn.onclick = () => {
-            if (typeof window.switchPage === 'function') window.switchPage('settings');
-            this.updateActiveState('settings');
-        };
+        settingsBtn.onclick = () => this.handleNavClick('settings');
         
         const settingsContainer = document.createElement('div');
         settingsContainer.className = 'settings-container-static';
@@ -162,23 +160,29 @@ class MenuManager {
         
         staticMenu.appendChild(navButtons);
         staticMenu.appendChild(settingsContainer);
-        document.body.appendChild(staticMenu);
-        
-        document.body.style[position === 'up' ? 'paddingTop' : 'paddingBottom'] = '80px';
+        fragment.appendChild(staticMenu);
+        document.body.appendChild(fragment);
         
         const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
         this.updateActiveState(currentPage);
+    }
+
+    handleNavClick(page) {
+        if (typeof window.switchPage === 'function') {
+            window.switchPage(page);
+        }
+        this.updateActiveState(page);
     }
 
     updateActiveState(activePage) {
         const staticMenu = document.getElementById('staticMenu');
         if (!staticMenu) return;
         
-        staticMenu.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.toggle('active', 
-                btn.dataset.page === activePage || 
-                (activePage === 'settings' && btn.classList.contains('settings-btn-static'))
-            );
+        const buttons = staticMenu.querySelectorAll('.nav-btn');
+        buttons.forEach(btn => {
+            const isActive = btn.dataset.page === activePage || 
+                           (activePage === 'settings' && btn.classList.contains('settings-btn-static'));
+            btn.classList.toggle('active', isActive);
         });
     }
 }
@@ -207,7 +211,7 @@ function closeSidebar() {
     }
 }
 
-// BACKGROUNDS - БЕЗ ПЕРЕВІРКИ ДОСТУПНОСТІ
+// BACKGROUNDS
 function applyBackground(background) {
     const config = backgroundOptions[background];
     if (!config) return;
@@ -238,7 +242,9 @@ function loadCategoriesState() {
     if (saved) {
         try {
             categoriesState = { ...categoriesState, ...JSON.parse(saved) };
-        } catch (e) {}
+        } catch (e) {
+            console.error('Error loading categories state:', e);
+        }
     }
 }
 
@@ -290,19 +296,23 @@ function changeMenuPosition(position) {
 
 function updateBackgroundUI() {
     const currentBg = getCurrentBackground();
-    document.querySelectorAll('#settingsPage .background-option').forEach(option => {
+    const options = document.querySelectorAll('#settingsPage .background-option');
+    
+    options.forEach(option => {
         option.classList.toggle('active', option.dataset.background === currentBg);
     });
 }
 
 function updateMenuPositionUI() {
     const currentPos = getCurrentMenuPosition();
-    document.querySelectorAll('#settingsPage .menu-option').forEach(option => {
+    const options = document.querySelectorAll('#settingsPage .menu-option');
+    
+    options.forEach(option => {
         option.classList.toggle('active', option.dataset.position === currentPos);
     });
 }
 
-// TRANSLATIONS - МАКСИМАЛЬНО ОПТИМІЗОВАНО
+// TRANSLATIONS
 async function loadSettingsTranslations() {
     if (settingsTranslations) return settingsTranslations;
     
@@ -323,14 +333,16 @@ function updateSettingsLanguage(lang = null) {
     
     const t = settingsTranslations[currentLang].settings;
     
-    // Синхронне оновлення без requestAnimationFrame
-    const titleEl = document.querySelector('#settingsPage .settings-title');
-    const bgHeaderEl = document.querySelector('#settingsPage [data-category="background"] .category-title span:last-child');
-    const menuHeaderEl = document.querySelector('#settingsPage [data-category="menu"] .category-title span:last-child');
+    const updates = [
+        { selector: '#settingsPage .settings-title', text: t.title },
+        { selector: '#settingsPage [data-category="background"] .category-title span:last-child', text: t.background },
+        { selector: '#settingsPage [data-category="menu"] .category-title span:last-child', text: t.menu }
+    ];
     
-    if (titleEl) titleEl.textContent = t.title;
-    if (bgHeaderEl) bgHeaderEl.textContent = t.background;
-    if (menuHeaderEl) menuHeaderEl.textContent = t.menu;
+    updates.forEach(({ selector, text }) => {
+        const el = document.querySelector(selector);
+        if (el) el.textContent = text;
+    });
     
     Object.keys(backgroundOptions).forEach(bg => {
         const el = document.querySelector(`#settingsPage [data-background="${bg}"] .option-name`);
@@ -389,7 +401,7 @@ function createSettingsHTML() {
     `;
 }
 
-// INITIALIZATION - МАКСИМАЛЬНО ШВИДКО
+// INITIALIZATION
 async function initializeSettings() {
     if (settingsInitialized) return;
     
@@ -398,20 +410,16 @@ async function initializeSettings() {
     
     loadCategoriesState();
     
-    // Створюємо HTML одразу
     settingsPage.innerHTML = createSettingsHTML();
     
-    // Завантажуємо переклади і оновлюємо
     loadSettingsTranslations().then(() => {
         updateSettingsLanguage();
     });
     
-    // Застосовуємо фон без затримок
     const currentBg = getCurrentBackground();
     applyBackground(currentBg);
     updateBackgroundUI();
     
-    // Застосовуємо позицію меню
     const currentMenuPos = getCurrentMenuPosition();
     menuManager.showOnlyMenu(currentMenuPos);
     updateMenuPositionUI();
@@ -431,11 +439,15 @@ function initializeSettingsOnStart() {
 
 // EVENT LISTENERS
 document.addEventListener('languageChanged', (e) => {
-    if (settingsInitialized) updateSettingsLanguage(e.detail.language);
+    if (settingsInitialized && e.detail && e.detail.language) {
+        updateSettingsLanguage(e.detail.language);
+    }
 });
 
 document.addEventListener('pageChanged', (e) => {
-    if (e.detail && e.detail.page) menuManager.updateActiveState(e.detail.page);
+    if (e.detail && e.detail.page) {
+        menuManager.updateActiveState(e.detail.page);
+    }
 });
 
 if (document.readyState === 'loading') {
