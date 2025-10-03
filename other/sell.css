@@ -8,6 +8,8 @@
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .trader-page::before {
@@ -32,7 +34,7 @@
 
 .trader-header {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     position: relative;
     z-index: 1;
 }
@@ -67,18 +69,18 @@
 }
 
 .trader-title {
-    font-size: 2.8em;
+    font-size: 2.2em;
     background: linear-gradient(90deg, #FF6600, #8B008B, #FF4500, #8B008B, #FF6600);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: halloweenGlow 4s linear infinite;
-    margin-bottom: 10px;
-    letter-spacing: 4px;
+    margin-bottom: 8px;
+    letter-spacing: 3px;
     font-weight: 900;
     text-transform: uppercase;
-    filter: drop-shadow(0 0 25px rgba(255,100,0,0.8)) drop-shadow(0 0 35px rgba(138,43,226,0.6));
+    filter: drop-shadow(0 0 20px rgba(255,100,0,0.8)) drop-shadow(0 0 30px rgba(138,43,226,0.6));
 }
 
 @keyframes halloweenGlow {
@@ -87,19 +89,21 @@
 }
 
 .trader-subtitle {
-    font-size: 1.1em;
+    font-size: 1em;
     color: #FF6600;
     text-shadow: 0 0 15px rgba(255,100,0,0.9), 0 0 30px rgba(138,43,226,0.5);
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
 }
 
 .trader-container {
     display: grid;
-    grid-template-columns: repeat(4, minmax(220px, 1fr));
-    gap: 20px;
-    max-width: 95%;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 25px;
+    max-width: 1600px;
+    width: 100%;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 30px;
     position: relative;
     z-index: 1;
 }
