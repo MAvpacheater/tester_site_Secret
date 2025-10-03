@@ -1,90 +1,113 @@
-/* Покращений Settings Styles - Mining Theme з MenuManager */
+/* 🎃 Halloween Settings Styles - Spooky Theme з MenuManager 🎃 */
 
 .settings-container {
     width: 100%;
-    padding: 15px 20px;
+    padding: 22.5px 30px;
     margin: 0;
     box-sizing: border-box;
 }
 
 .settings-title {
-    color: #FFD700;
-    font-size: 2em;
+    color: #FF6B00;
+    font-size: 3em;
     font-weight: 800;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     text-shadow: 
-        3px 3px 6px rgba(0, 0, 0, 0.8),
-        0 0 20px rgba(255, 215, 0, 0.3);
-    letter-spacing: 2px;
+        4.5px 4.5px 9px rgba(0, 0, 0, 0.9),
+        0 0 30px rgba(255, 107, 0, 0.6),
+        0 0 45px rgba(138, 43, 226, 0.4);
+    letter-spacing: 3px;
+    animation: spookyGlow 2s ease-in-out infinite;
+}
+
+@keyframes spookyGlow {
+    0%, 100% { text-shadow: 4.5px 4.5px 9px rgba(0, 0, 0, 0.9), 0 0 30px rgba(255, 107, 0, 0.6); }
+    50% { text-shadow: 4.5px 4.5px 9px rgba(0, 0, 0, 0.9), 0 0 45px rgba(138, 43, 226, 0.8); }
 }
 
 .settings-section {
     background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.3) 0%, 
-        rgba(101, 67, 33, 0.4) 50%, 
-        rgba(62, 39, 35, 0.5) 100%);
-    border: 3px solid #8B4513;
-    border-radius: 20px;
-    padding: 18px;
-    margin-bottom: 18px;
-    backdrop-filter: blur(10px);
+        rgba(75, 0, 130, 0.4) 0%, 
+        rgba(25, 25, 112, 0.5) 50%, 
+        rgba(0, 0, 0, 0.7) 100%);
+    border: 4.5px solid #8B008B;
+    border-radius: 30px;
+    padding: 27px;
+    margin-bottom: 27px;
+    backdrop-filter: blur(15px);
     box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.4),
-        inset 0 2px 10px rgba(255, 215, 0, 0.1);
+        0 15px 45px rgba(138, 43, 226, 0.5),
+        inset 0 3px 15px rgba(255, 107, 0, 0.2);
     position: relative;
     width: 100%;
     box-sizing: border-box;
 }
 
 .settings-section::before {
+    content: '🎃';
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.8em;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-10px); }
+}
+
+.settings-section::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
+    height: 4.5px;
     background: linear-gradient(90deg, 
         transparent 0%, 
-        rgba(255, 215, 0, 0.5) 50%, 
+        rgba(255, 107, 0, 0.7) 50%, 
         transparent 100%);
 }
 
 /* Заголовок категорії */
 .category-header {
-    color: #FFD700;
-    font-size: 1.4em;
+    color: #FF6B00;
+    font-size: 2.1em;
     font-weight: 700;
-    margin-bottom: 15px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin-bottom: 22.5px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9), 0 0 15px rgba(138, 43, 226, 0.5);
     display: flex;
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
     transition: all 0.3s ease;
-    padding: 8px 12px;
-    border-radius: 12px;
+    padding: 12px 18px;
+    border-radius: 18px;
 }
 
 .category-header:hover {
-    background: rgba(255, 215, 0, 0.1);
-    transform: translateY(-1px);
+    background: rgba(255, 107, 0, 0.2);
+    transform: translateY(-1.5px);
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
 }
 
 .category-title {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
 }
 
 .section-icon {
-    font-size: 1.3em;
+    font-size: 1.95em;
 }
 
 .category-toggle {
-    font-size: 0.8em;
+    font-size: 1.2em;
     transition: transform 0.3s ease;
-    color: #D4AF37;
+    color: #BA55D3;
 }
 
 .category-header.collapsed .category-toggle {
@@ -95,10 +118,10 @@
 .background-options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr); /* ЗМІНЕНО З 2 НА 3 РЯДИ */
-    gap: 15px;
-    margin-top: 10px;
-    max-height: 450px; /* ЗБІЛЬШЕНО ВИСОТУ ДЛЯ 3 РЯДІВ */
+    grid-template-rows: repeat(3, 1fr);
+    gap: 22.5px;
+    margin-top: 15px;
+    max-height: 675px;
     overflow: hidden;
     transition: all 0.4s ease;
     opacity: 1;
@@ -108,11 +131,11 @@
 .menu-options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: 15px;
-    max-width: 300px;
+    gap: 18px;
+    margin-top: 22.5px;
+    max-width: 450px;
     justify-content: center;
-    max-height: 500px;
+    max-height: 750px;
     overflow: hidden;
     transition: all 0.4s ease;
     opacity: 1;
@@ -129,11 +152,11 @@
 /* Кнопки опцій */
 .background-option, .menu-option {
     background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.2) 0%, 
-        rgba(62, 39, 35, 0.3) 100%);
-    border: 2px solid rgba(139, 69, 19, 0.5);
-    border-radius: 12px;
-    padding: 12px;
+        rgba(75, 0, 130, 0.3) 0%, 
+        rgba(0, 0, 0, 0.5) 100%);
+    border: 3px solid rgba(138, 43, 226, 0.6);
+    border-radius: 18px;
+    padding: 18px;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
@@ -147,52 +170,50 @@
 }
 
 .background-option {
-    min-height: 120px;
+    min-height: 180px;
 }
 
 .menu-option {
-    min-height: 80px;
-    padding: 15px 8px;
+    min-height: 120px;
+    padding: 22.5px 12px;
 }
 
 .background-option:hover, .menu-option:hover {
     background: linear-gradient(135deg, 
-        rgba(255, 215, 0, 0.2) 0%, 
-        rgba(139, 69, 19, 0.4) 100%);
-    border-color: #FFD700;
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+        rgba(255, 107, 0, 0.3) 0%, 
+        rgba(138, 43, 226, 0.5) 100%);
+    border-color: #FF6B00;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 9px 30px rgba(255, 107, 0, 0.5), 0 0 30px rgba(138, 43, 226, 0.4);
 }
 
 .menu-option:hover {
-    transform: translateY(-2px) scale(1.05);
+    transform: translateY(-3px) scale(1.08);
 }
 
 .background-option.active, .menu-option.active {
     background: linear-gradient(135deg, 
-        rgba(255, 215, 0, 0.3) 0%, 
-        rgba(255, 165, 0, 0.2) 100%);
-    border-color: #FFD700;
+        rgba(255, 107, 0, 0.4) 0%, 
+        rgba(138, 43, 226, 0.3) 100%);
+    border-color: #FF6B00;
     box-shadow: 
-        0 6px 25px rgba(255, 215, 0, 0.4),
-        inset 0 2px 8px rgba(255, 215, 0, 0.2);
-    transform: translateY(-1px);
+        0 9px 37.5px rgba(255, 107, 0, 0.6),
+        inset 0 3px 12px rgba(255, 107, 0, 0.3);
+    transform: translateY(-1.5px);
 }
 
 .background-option.active::after, .menu-option.active::after {
-    content: '✓';
+    content: '👻';
     position: absolute;
-    top: 8px;
-    right: 10px;
-    color: #FFD700;
-    font-size: 1.1em;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    top: 12px;
+    right: 15px;
+    font-size: 1.65em;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
 }
 
 .menu-option.active::after {
-    top: 6px;
-    right: 8px;
+    top: 9px;
+    right: 12px;
 }
 
 /* Grid positioning для menu options */
@@ -202,38 +223,39 @@
 .menu-option[data-position="down"] { grid-column: 2; grid-row: 3; }
 
 .option-icon, .menu-option-icon {
-    font-size: 1.8em;
-    margin-bottom: 8px;
+    font-size: 2.7em;
+    margin-bottom: 12px;
     display: block;
+    filter: drop-shadow(0 0 10px rgba(255, 107, 0, 0.6));
 }
 
 .option-name, .menu-option-name {
-    color: #F5DEB3;
-    font-size: 0.9em;
+    color: #FFB347;
+    font-size: 1.35em;
     font-weight: 600;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    margin-bottom: 6px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+    margin-bottom: 9px;
 }
 
 .menu-option-name {
-    font-size: 0.85em;
-    margin-bottom: 5px;
+    font-size: 1.28em;
+    margin-bottom: 7.5px;
 }
 
 .option-description {
-    color: #D4AF37;
-    font-size: 0.75em;
+    color: #BA55D3;
+    font-size: 1.13em;
     opacity: 0.8;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    text-shadow: 1.5px 1.5px 3px rgba(0, 0, 0, 0.7);
 }
 
 /* Прев'ю фону */
 .background-preview {
     width: 100%;
-    height: 50px;
-    border-radius: 8px;
-    margin: 8px 0 0 0;
-    border: 1px solid rgba(139, 69, 19, 0.3);
+    height: 75px;
+    border-radius: 12px;
+    margin: 12px 0 0 0;
+    border: 1.5px solid rgba(138, 43, 226, 0.5);
     background-size: cover;
     background-position: center;
     position: relative;
@@ -244,10 +266,10 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(45deg, 
-        rgba(0, 0, 0, 0.3) 0%, 
+        rgba(0, 0, 0, 0.4) 0%, 
         transparent 50%, 
-        rgba(0, 0, 0, 0.3) 100%);
-    border-radius: 8px;
+        rgba(0, 0, 0, 0.4) 100%);
+    border-radius: 12px;
 }
 
 /* ПОКРАЩЕНА СИСТЕМА УПРАВЛІННЯ МЕНЮ */
@@ -258,13 +280,13 @@
     z-index: 1002;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
+    padding: 0 30px;
     background: linear-gradient(135deg, 
-        rgba(41, 39, 35, 0.98) 0%, 
-        rgba(28, 26, 23, 0.99) 50%, 
-        rgba(20, 19, 17, 1) 100%);
-    backdrop-filter: blur(15px);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+        rgba(25, 0, 50, 0.98) 0%, 
+        rgba(15, 0, 30, 0.99) 50%, 
+        rgba(0, 0, 0, 1) 100%);
+    backdrop-filter: blur(22.5px);
+    box-shadow: 0 3px 30px rgba(138, 43, 226, 0.7);
     overflow-x: auto;
     overflow-y: hidden;
 }
@@ -274,23 +296,23 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 60px;
-    border-bottom: 3px solid #8B4513;
+    height: 90px;
+    border-bottom: 4.5px solid #8B008B;
 }
 
 .menu-bottom {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 60px;
-    border-top: 3px solid #8B4513;
+    height: 90px;
+    border-top: 4.5px solid #8B008B;
 }
 
 /* Navigation buttons */
 .static-menu .nav-buttons {
     display: flex;
     flex-direction: row;
-    gap: 8px;
+    gap: 12px;
     padding: 0;
     overflow: visible;
     max-width: none;
@@ -301,51 +323,51 @@
 .static-menu .nav-btn,
 .settings-btn-static {
     flex-shrink: 0;
-    padding: 8px 10px;
-    font-size: 1.8em;
-    width: 50px;
-    height: 44px;
+    padding: 12px 15px;
+    font-size: 2.7em;
+    width: 75px;
+    height: 66px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
+    border-radius: 18px;
     background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.2) 0%, 
-        rgba(62, 39, 35, 0.3) 100%);
-    border: 2px solid rgba(139, 69, 19, 0.5);
-    color: #F5DEB3;
+        rgba(75, 0, 130, 0.3) 0%, 
+        rgba(0, 0, 0, 0.5) 100%);
+    border: 3px solid rgba(138, 43, 226, 0.6);
+    color: #FFB347;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
 }
 
 .static-menu .nav-btn:hover,
 .settings-btn-static:hover {
     background: linear-gradient(135deg, 
-        rgba(255, 215, 0, 0.3) 0%, 
-        rgba(139, 69, 19, 0.6) 100%);
-    border-color: #FFD700;
-    color: #FFD700;
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+        rgba(255, 107, 0, 0.4) 0%, 
+        rgba(138, 43, 226, 0.7) 100%);
+    border-color: #FF6B00;
+    color: #FF6B00;
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 0 9px 30px rgba(255, 107, 0, 0.5);
 }
 
 .settings-btn-static:hover {
-    transform: translateY(-2px) scale(1.05) rotate(90deg);
+    transform: translateY(-3px) scale(1.08) rotate(90deg);
 }
 
 .static-menu .nav-btn.active,
 .settings-btn-static.active {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
-    border-color: #8B4513;
-    color: #2F1B14;
-    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, #FF6B00, #8B008B);
+    border-color: #8B008B;
+    color: #FFB347;
+    box-shadow: 0 12px 37.5px rgba(255, 107, 0, 0.6);
+    transform: translateY(-1.5px);
 }
 
 .settings-btn-static.active {
-    transform: translateY(-1px) rotate(90deg);
+    transform: translateY(-1.5px) rotate(90deg);
 }
 
 /* Settings Container in Static Menu */
@@ -353,7 +375,7 @@
     display: flex;
     align-items: center;
     margin-left: auto;
-    padding-left: 20px;
+    padding-left: 30px;
 }
 
 /* ПОКРАЩЕНА КНОПКА МЕНЮ - БІЛЬША ТА ЗНИКАЄ ПРИ ВІДКРИТОМУ МЕНЮ */
@@ -361,22 +383,22 @@
 /* Кнопка меню - за замовчуванням сховано */
 .mobile-menu-toggle {
     position: fixed;
-    top: 20px;
-    left: 20px;
-    width: 60px;
-    height: 60px;
+    top: 30px;
+    left: 30px;
+    width: 90px;
+    height: 90px;
     background: linear-gradient(135deg, 
-        rgba(41, 39, 35, 0.95) 0%, 
-        rgba(28, 26, 23, 0.98) 100%);
-    border: 3px solid #8B4513;
-    border-radius: 15px;
+        rgba(25, 0, 50, 0.95) 0%, 
+        rgba(15, 0, 30, 0.98) 100%);
+    border: 4.5px solid #8B008B;
+    border-radius: 22.5px;
     cursor: pointer;
     z-index: 1003;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
     box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.4),
-        inset 0 2px 10px rgba(255, 215, 0, 0.1);
+        0 12px 37.5px rgba(138, 43, 226, 0.6),
+        inset 0 3px 15px rgba(255, 107, 0, 0.2);
     display: none;
     opacity: 1;
     visibility: visible;
@@ -385,13 +407,13 @@
 
 .mobile-menu-toggle:hover {
     background: linear-gradient(135deg, 
-        rgba(255, 215, 0, 0.2) 0%, 
-        rgba(139, 69, 19, 0.8) 100%);
-    border-color: #FFD700;
+        rgba(255, 107, 0, 0.3) 0%, 
+        rgba(138, 43, 226, 0.9) 100%);
+    border-color: #FF6B00;
     box-shadow: 
-        0 12px 35px rgba(255, 215, 0, 0.3),
-        inset 0 2px 10px rgba(255, 215, 0, 0.2);
-    transform: scale(1.05) rotate(0deg);
+        0 18px 52.5px rgba(255, 107, 0, 0.5),
+        inset 0 3px 15px rgba(255, 107, 0, 0.3);
+    transform: scale(1.08) rotate(0deg);
 }
 
 /* ЗНИКНЕННЯ КНОПКИ ПРИ ВІДКРИТОМУ МЕНЮ */
@@ -404,13 +426,13 @@
 
 /* Лінії кнопки меню */
 .menu-line {
-    width: 24px;
-    height: 3px;
-    background: #F5DEB3;
-    border-radius: 2px;
+    width: 36px;
+    height: 4.5px;
+    background: #FFB347;
+    border-radius: 3px;
     position: absolute;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+    box-shadow: 0 0 9px rgba(255, 107, 0, 0.7);
     left: 50%;
     top: 50%;
     transform-origin: center;
@@ -427,17 +449,17 @@
 /* LEFT Menu */
 body.menu-left .mobile-menu-toggle {
     display: block !important;
-    left: 20px !important;
+    left: 30px !important;
     right: auto !important;
 }
 
 body.menu-left .sidebar {
     display: flex !important;
     position: fixed !important;
-    left: -320px !important;
+    left: -480px !important;
     top: 0 !important;
     height: 100vh !important;
-    width: 320px !important;
+    width: 480px !important;
     z-index: 1002 !important;
     transition: left 0.3s ease !important;
 }
@@ -467,24 +489,24 @@ body.menu-left .sidebar-overlay.show {
 /* RIGHT Menu */
 body.menu-right .mobile-menu-toggle {
     display: block !important;
-    right: 20px !important;
+    right: 30px !important;
     left: auto !important;
 }
 
 body.menu-right .sidebar {
     display: flex !important;
     position: fixed !important;
-    right: -320px !important;
+    right: -480px !important;
     left: auto !important;
     top: 0 !important;
     height: 100vh !important;
-    width: 320px !important;
+    width: 480px !important;
     z-index: 1002 !important;
     transition: right 0.3s ease !important;
-    border-left: 3px solid #8B4513;
+    border-left: 4.5px solid #8B008B;
     border-right: none;
-    border-radius: 15px 0 0 15px;
-    box-shadow: -2px 0 40px rgba(0, 0, 0, 0.6);
+    border-radius: 22.5px 0 0 22.5px;
+    box-shadow: -3px 0 60px rgba(138, 43, 226, 0.7);
 }
 
 body.menu-right .sidebar.open {
@@ -520,12 +542,12 @@ body.menu-down .static-menu.menu-bottom {
 
 /* Body padding adjustments */
 body.menu-up {
-    padding-top: 80px !important;
+    padding-top: 120px !important;
     padding-bottom: 0 !important;
 }
 
 body.menu-down {
-    padding-bottom: 80px !important;
+    padding-bottom: 120px !important;
     padding-top: 0 !important;
 }
 
@@ -537,131 +559,184 @@ body.menu-right {
 
 /* Custom scrollbar */
 .static-menu::-webkit-scrollbar {
-    height: 4px;
+    height: 6px;
 }
 
 .static-menu::-webkit-scrollbar-track {
-    background: rgba(139, 69, 19, 0.2);
-    border-radius: 2px;
+    background: rgba(138, 43, 226, 0.3);
+    border-radius: 3px;
 }
 
 .static-menu::-webkit-scrollbar-thumb {
-    background: rgba(255, 215, 0, 0.5);
-    border-radius: 2px;
+    background: rgba(255, 107, 0, 0.6);
+    border-radius: 3px;
 }
 
 .static-menu::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 215, 0, 0.8);
+    background: rgba(255, 107, 0, 0.9);
 }
 
 /* Mobile Responsiveness - ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
 @media (max-width: 768px) {
     .mobile-menu-toggle {
-        width: 55px;
-        height: 55px;
-        top: 15px;
+        width: 82.5px;
+        height: 82.5px;
+        top: 22.5px;
     }
     
     .menu-line {
-        width: 22px;
-        height: 2.5px;
+        width: 33px;
+        height: 3.75px;
     }
     
     .settings-container {
-        padding: 12px 15px;
+        padding: 18px 22.5px;
     }
     
     .settings-title {
-        font-size: 1.8em;
-        margin-bottom: 15px;
+        font-size: 2.7em;
+        margin-bottom: 22.5px;
     }
     
     .background-options {
         grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        max-height: 360px; /* ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
+        gap: 15px;
+        max-height: 540px;
     }
     
     .background-option {
-        min-height: 95px;
-        padding: 10px;
+        min-height: 142.5px;
+        padding: 15px;
     }
     
     .menu-options {
-        max-width: 250px;
-        gap: 8px;
+        max-width: 375px;
+        gap: 12px;
     }
     
     .menu-option {
-        min-height: 65px;
-        padding: 10px 5px;
+        min-height: 97.5px;
+        padding: 15px 7.5px;
     }
     
     .static-menu {
-        height: 55px;
-        padding: 0 15px;
+        height: 82.5px;
+        padding: 0 22.5px;
     }
     
     .static-menu .nav-btn,
     .settings-btn-static {
-        font-size: 1.4em;
-        width: 40px;
-        height: 36px;
+        font-size: 2.1em;
+        width: 60px;
+        height: 54px;
     }
 }
 
 @media (max-width: 480px) {
     .mobile-menu-toggle {
-        width: 50px;
-        height: 50px;
-        top: 12px;
-        left: 12px;
+        width: 75px;
+        height: 75px;
+        top: 18px;
+        left: 18px;
     }
     
     .menu-line {
-        width: 20px;
-        height: 2px;
+        width: 30px;
+        height: 3px;
     }
     
     body.menu-right .mobile-menu-toggle {
-        right: 12px !important;
+        right: 18px !important;
         left: auto !important;
     }
     
     .background-options {
         grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-        max-height: 260px; /* ОНОВЛЕНО ДЛЯ КОМПАКТНОГО ВІДОБРАЖЕННЯ НА МАЛИХ ЕКРАНАХ */
+        gap: 12px;
+        max-height: 390px;
     }
     
     .background-option {
-        min-height: 80px;
+        min-height: 120px;
         flex-direction: row;
         justify-content: flex-start;
         text-align: left;
     }
     
     .option-icon {
-        margin-right: 12px;
+        margin-right: 18px;
         margin-bottom: 0;
     }
     
     .background-preview {
-        height: 30px;
-        width: 50px;
+        height: 45px;
+        width: 75px;
         margin: 0;
         flex-shrink: 0;
     }
     
     .static-menu {
-        height: 50px;
-        padding: 0 10px;
+        height: 75px;
+        padding: 0 15px;
     }
     
     .static-menu .nav-btn,
     .settings-btn-static {
-        font-size: 1.2em;
-        width: 36px;
-        height: 32px;
+        font-size: 1.8em;
+        width: 54px;
+        height: 48px;
     }
+}
+
+/* 🎃 Spooky Sidebar Styles 🎃 */
+.sidebar {
+    background: linear-gradient(135deg, 
+        rgba(25, 0, 50, 0.98) 0%, 
+        rgba(15, 0, 30, 0.99) 50%, 
+        rgba(0, 0, 0, 1) 100%);
+    backdrop-filter: blur(22.5px);
+    border-right: 4.5px solid #8B008B;
+    border-radius: 0 22.5px 22.5px 0;
+    box-shadow: 3px 0 60px rgba(138, 43, 226, 0.7);
+}
+
+.sidebar-overlay {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Spooky Navigation Buttons */
+.sidebar .nav-btn {
+    background: linear-gradient(135deg, 
+        rgba(75, 0, 130, 0.3) 0%, 
+        rgba(0, 0, 0, 0.5) 100%);
+    border: 3px solid rgba(138, 43, 226, 0.6);
+    color: #FFB347;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+}
+
+.sidebar .nav-btn:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 107, 0, 0.4) 0%, 
+        rgba(138, 43, 226, 0.7) 100%);
+    border-color: #FF6B00;
+    color: #FF6B00;
+    box-shadow: 0 9px 30px rgba(255, 107, 0, 0.5);
+}
+
+.sidebar .nav-btn.active {
+    background: linear-gradient(135deg, #FF6B00, #8B008B);
+    border-color: #8B008B;
+    color: #FFB347;
+    box-shadow: 0 12px 37.5px rgba(255, 107, 0, 0.6);
+}
+
+/* Spooky effects */
+@keyframes ghostFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-7.5px); }
+}
+
+.background-option:hover .option-icon,
+.menu-option:hover .menu-option-icon {
+    animation: ghostFloat 1s ease-in-out infinite;
 }
