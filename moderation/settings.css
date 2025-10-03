@@ -1,484 +1,795 @@
-// Оптимізований Settings з Halloween темою
-let settingsInitialized = false;
-let settingsTranslations = null;
-let categoriesState = { background: false, menu: false };
+/* 🎃 Halloween Settings Styles - Збільшена ширина 1.5x */
 
-const GITHUB_CONFIG = {
-    user: 'MAvpacheater',
-    repo: 'tester_site_Secret',
-    branch: 'main',
-    imagePath: 'image/bg/'
-};
+.settings-container {
+    width: 100%;
+    max-width: 1800px; /* ЗБІЛЬШЕНО З 1200px */
+    padding: 15px 30px; /* ЗБІЛЬШЕНО padding */
+    margin: 0 auto;
+    box-sizing: border-box;
+}
 
-const backgroundOptions = {
-    penguin: { icon: '🐧', filename: 'penguin.png' },
-    game: { icon: '🎮', filename: 'game.png' },
-    code: { icon: '💻', filename: 'code.png' },
-    dodep: { icon: '🎰', filename: 'dodep.png' },
-    prison: { icon: '👮‍♂️', filename: 'prison.png' },
-    forest: { icon: '🌲', filename: 'forest.jpg' },
-    space: { icon: '💰', filename: 'bank.png' },
-    ocean: { icon: '🌊', filename: 'sea.jpeg' },
-    desert: { icon: '🔭', filename: 'earth.jpg' }
-};
+.settings-title {
+    color: #FF6B00;
+    font-size: 2.5em; /* ЗБІЛЬШЕНО з 2em */
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 30px; /* ЗБІЛЬШЕНО з 20px */
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(255, 107, 0, 0.6),
+        0 0 40px rgba(138, 43, 226, 0.4);
+    letter-spacing: 3px;
+    animation: spookyGlow 3s ease-in-out infinite;
+}
 
-Object.keys(backgroundOptions).forEach(key => {
-    backgroundOptions[key].url = `https://raw.githubusercontent.com/${GITHUB_CONFIG.user}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${GITHUB_CONFIG.imagePath}${backgroundOptions[key].filename}`;
-});
-
-const menuPositions = {
-    left: { icon: '⬅️' },
-    right: { icon: '➡️' },
-    up: { icon: '⬆️' },
-    down: { icon: '⬇️' }
-};
-
-const menuItems = [
-    { page: 'calculator', icon: '🐾' },
-    { page: 'arm', icon: '💪' },
-    { page: 'grind', icon: '🏋️‍♂️' },
-    { page: 'roulette', icon: '🎰' },
-    { page: 'boss', icon: '👹' },
-    { page: 'boosts', icon: '🚀' },
-    { page: 'shiny', icon: '✨' },
-    { page: 'secret', icon: '🔮' },
-    { page: 'codes', icon: '🎁' },
-    { page: 'aura', icon: '🌟' },
-    { page: 'trainer', icon: '🏆' },
-    { page: 'charms', icon: '🔮' },
-    { page: 'potions', icon: '🧪' },
-    { page: 'worlds', icon: '🌍' },
-    { page: 'help', icon: '🆘' },
-    { page: 'peoples', icon: '🙏' }
-];
-
-// MENU BUTTON
-function createMenuButton() {
-    const menuToggle = document.querySelector('.mobile-menu-toggle');
-    if (!menuToggle) return;
-    
-    menuToggle.innerHTML = '';
-    for (let i = 0; i < 3; i++) {
-        const line = document.createElement('div');
-        line.className = 'menu-line';
-        line.style.transform = i === 0 ? 'translate(-50%, -50%) translateY(-6px)' :
-                               i === 1 ? 'translate(-50%, -50%)' :
-                               'translate(-50%, -50%) translateY(6px)';
-        menuToggle.appendChild(line);
+@keyframes spookyGlow {
+    0%, 100% { 
+        text-shadow: 
+            3px 3px 6px rgba(0, 0, 0, 0.9),
+            0 0 20px rgba(255, 107, 0, 0.6),
+            0 0 40px rgba(138, 43, 226, 0.4);
+    }
+    50% { 
+        text-shadow: 
+            3px 3px 6px rgba(0, 0, 0, 0.9),
+            0 0 30px rgba(255, 107, 0, 0.8),
+            0 0 60px rgba(138, 43, 226, 0.6);
     }
 }
 
-function updateMenuButtonVisibility() {
-    const menuToggle = document.querySelector('.mobile-menu-toggle');
-    const sidebar = document.getElementById('sidebar');
-    
-    if (!menuToggle || !sidebar) return;
-    
-    menuToggle.classList.toggle('menu-open', sidebar.classList.contains('open'));
+.settings-section {
+    background: linear-gradient(135deg, 
+        rgba(25, 5, 45, 0.8) 0%, 
+        rgba(50, 10, 70, 0.7) 50%, 
+        rgba(20, 0, 40, 0.85) 100%);
+    border: 3px solid #8B00FF;
+    border-radius: 20px;
+    padding: 25px; /* ЗБІЛЬШЕНО з 18px */
+    margin-bottom: 25px; /* ЗБІЛЬШЕНО з 18px */
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 10px 40px rgba(138, 43, 226, 0.4),
+        inset 0 2px 10px rgba(255, 107, 0, 0.2),
+        0 0 30px rgba(138, 43, 226, 0.3);
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    animation: sectionPulse 4s ease-in-out infinite;
 }
 
-// MENU MANAGER
-class MenuManager {
-    constructor() {
-        this.currentMenuType = null;
+@keyframes sectionPulse {
+    0%, 100% { 
+        box-shadow: 
+            0 10px 40px rgba(138, 43, 226, 0.4),
+            inset 0 2px 10px rgba(255, 107, 0, 0.2),
+            0 0 30px rgba(138, 43, 226, 0.3);
     }
-
-    clearAllMenus() {
-        document.querySelectorAll('.static-menu, #staticMenu').forEach(menu => menu.remove());
-        
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        
-        if (sidebar) sidebar.classList.remove('open');
-        if (overlay) overlay.classList.remove('show');
-        
-        updateMenuButtonVisibility();
-        Object.keys(menuPositions).forEach(pos => document.body.classList.remove(`menu-${pos}`));
-        document.body.style.paddingTop = '';
-        document.body.style.paddingBottom = '';
-    }
-
-    showOnlyMenu(menuType) {
-        this.clearAllMenus();
-        document.body.classList.add(`menu-${menuType}`);
-        
-        if (menuType === 'left' || menuType === 'right') {
-            this.setupSidebarMenu(menuType);
-        } else {
-            this.createStaticMenu(menuType);
-        }
-        
-        this.currentMenuType = menuType;
-    }
-
-    setupSidebarMenu(position) {
-        const sidebar = document.getElementById('sidebar');
-        const mobileToggle = document.querySelector('.mobile-menu-toggle');
-        
-        if (sidebar) {
-            sidebar.style.left = position === 'right' ? 'auto' : '-320px';
-            sidebar.style.right = position === 'right' ? '-320px' : 'auto';
-        }
-        
-        if (mobileToggle) {
-            mobileToggle.style.left = position === 'right' ? 'auto' : '20px';
-            mobileToggle.style.right = position === 'right' ? '20px' : 'auto';
-            setTimeout(createMenuButton, 100);
-        }
-    }
-
-    createStaticMenu(position) {
-        const menuClass = position === 'up' ? 'menu-top' : 'menu-bottom';
-        const staticMenu = document.createElement('div');
-        staticMenu.className = `static-menu ${menuClass}`;
-        staticMenu.id = 'staticMenu';
-        
-        const navButtons = document.createElement('div');
-        navButtons.className = 'nav-buttons';
-        
-        menuItems.forEach(item => {
-            const btn = document.createElement('button');
-            btn.className = 'nav-btn';
-            btn.dataset.page = item.page;
-            btn.textContent = item.icon;
-            btn.onclick = () => {
-                if (typeof window.switchPage === 'function') window.switchPage(item.page);
-                this.updateActiveState(item.page);
-            };
-            navButtons.appendChild(btn);
-        });
-        
-        const settingsBtn = document.createElement('button');
-        settingsBtn.className = 'nav-btn settings-btn-static';
-        settingsBtn.textContent = '⚙️';
-        settingsBtn.onclick = () => {
-            if (typeof window.switchPage === 'function') window.switchPage('settings');
-            this.updateActiveState('settings');
-        };
-        
-        const settingsContainer = document.createElement('div');
-        settingsContainer.className = 'settings-container-static';
-        settingsContainer.appendChild(settingsBtn);
-        
-        staticMenu.appendChild(navButtons);
-        staticMenu.appendChild(settingsContainer);
-        document.body.appendChild(staticMenu);
-        
-        document.body.style[position === 'up' ? 'paddingTop' : 'paddingBottom'] = '80px';
-        
-        const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
-        this.updateActiveState(currentPage);
-    }
-
-    updateActiveState(activePage) {
-        const staticMenu = document.getElementById('staticMenu');
-        if (!staticMenu) return;
-        
-        staticMenu.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.toggle('active', 
-                btn.dataset.page === activePage || 
-                (activePage === 'settings' && btn.classList.contains('settings-btn-static'))
-            );
-        });
+    50% { 
+        box-shadow: 
+            0 10px 40px rgba(138, 43, 226, 0.6),
+            inset 0 2px 10px rgba(255, 107, 0, 0.3),
+            0 0 40px rgba(138, 43, 226, 0.5);
     }
 }
 
-const menuManager = new MenuManager();
+.settings-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 107, 0, 0.7) 50%, 
+        transparent 100%);
+    animation: borderGlow 2s ease-in-out infinite;
+}
 
-function toggleMobileMenu() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    
-    if (sidebar && overlay) {
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('show');
-        updateMenuButtonVisibility();
+@keyframes borderGlow {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+/* Заголовок категорії */
+.category-header {
+    color: #FF6B00;
+    font-size: 1.6em; /* ЗБІЛЬШЕНО з 1.4em */
+    font-weight: 700;
+    margin-bottom: 20px; /* ЗБІЛЬШЕНО з 15px */
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 15px rgba(255, 107, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 12px 15px; /* ЗБІЛЬШЕНО з 8px 12px */
+    border-radius: 12px;
+}
+
+.category-header:hover {
+    background: rgba(255, 107, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(138, 43, 226, 0.3);
+}
+
+.category-title {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* ЗБІЛЬШЕНО з 10px */
+}
+
+.section-icon {
+    font-size: 1.5em; /* ЗБІЛЬШЕНО з 1.3em */
+    animation: iconFloat 2s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+.category-toggle {
+    font-size: 1em; /* ЗБІЛЬШЕНО з 0.8em */
+    transition: transform 0.3s ease;
+    color: #8B00FF;
+}
+
+.category-header.collapsed .category-toggle {
+    transform: rotate(-90deg);
+}
+
+/* Контейнер для кнопок фонів - 3 ряди, ЗБІЛЬШЕНА ШИРИНА */
+.background-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 20px; /* ЗБІЛЬШЕНО з 15px */
+    margin-top: 15px; /* ЗБІЛЬШЕНО з 10px */
+    max-height: 550px; /* ЗБІЛЬШЕНО з 450px */
+    overflow: hidden;
+    transition: all 0.4s ease;
+    opacity: 1;
+    width: 100%;
+}
+
+.menu-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px; /* ЗБІЛЬШЕНО з 12px */
+    margin-top: 20px; /* ЗБІЛЬШЕНО з 15px */
+    max-width: 450px; /* ЗБІЛЬШЕНО з 300px */
+    justify-content: center;
+    max-height: 600px; /* ЗБІЛЬШЕНО з 500px */
+    overflow: hidden;
+    transition: all 0.4s ease;
+    opacity: 1;
+}
+
+.background-options.collapsed,
+.menu-options.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    gap: 0;
+}
+
+/* Кнопки опцій - HALLOWEEN СТИЛЬ */
+.background-option, .menu-option {
+    background: linear-gradient(135deg, 
+        rgba(25, 5, 45, 0.6) 0%, 
+        rgba(50, 10, 70, 0.5) 100%);
+    border: 2px solid rgba(138, 43, 226, 0.6);
+    border-radius: 15px; /* ЗБІЛЬШЕНО з 12px */
+    padding: 18px; /* ЗБІЛЬШЕНО з 12px */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2);
+}
+
+.background-option {
+    min-height: 150px; /* ЗБІЛЬШЕНО з 120px */
+}
+
+.menu-option {
+    min-height: 100px; /* ЗБІЛЬШЕНО з 80px */
+    padding: 20px 12px; /* ЗБІЛЬШЕНО */
+}
+
+.background-option:hover, .menu-option:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 107, 0, 0.3) 0%, 
+        rgba(138, 43, 226, 0.4) 100%);
+    border-color: #FF6B00;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 
+        0 8px 30px rgba(255, 107, 0, 0.4),
+        0 0 30px rgba(138, 43, 226, 0.5);
+}
+
+.menu-option:hover {
+    transform: translateY(-3px) scale(1.08);
+}
+
+.background-option.active, .menu-option.active {
+    background: linear-gradient(135deg, 
+        rgba(255, 107, 0, 0.4) 0%, 
+        rgba(138, 43, 226, 0.3) 100%);
+    border-color: #FF6B00;
+    box-shadow: 
+        0 8px 35px rgba(255, 107, 0, 0.5),
+        inset 0 2px 10px rgba(138, 43, 226, 0.3),
+        0 0 40px rgba(138, 43, 226, 0.4);
+    transform: translateY(-2px);
+    animation: activeGlow 2s ease-in-out infinite;
+}
+
+@keyframes activeGlow {
+    0%, 100% { 
+        box-shadow: 
+            0 8px 35px rgba(255, 107, 0, 0.5),
+            inset 0 2px 10px rgba(138, 43, 226, 0.3),
+            0 0 40px rgba(138, 43, 226, 0.4);
+    }
+    50% { 
+        box-shadow: 
+            0 8px 35px rgba(255, 107, 0, 0.7),
+            inset 0 2px 10px rgba(138, 43, 226, 0.5),
+            0 0 50px rgba(138, 43, 226, 0.6);
     }
 }
 
-function closeSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    
-    if (sidebar && overlay) {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('show');
-        updateMenuButtonVisibility();
+.background-option.active::after, .menu-option.active::after {
+    content: '✓';
+    position: absolute;
+    top: 12px; /* ЗБІЛЬШЕНО з 8px */
+    right: 15px; /* ЗБІЛЬШЕНО з 10px */
+    color: #FF6B00;
+    font-size: 1.4em; /* ЗБІЛЬШЕНО з 1.1em */
+    font-weight: bold;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 10px rgba(255, 107, 0, 0.8);
+    animation: checkBounce 0.5s ease;
+}
+
+@keyframes checkBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.menu-option.active::after {
+    top: 10px; /* ЗБІЛЬШЕНО з 6px */
+    right: 12px; /* ЗБІЛЬШЕНО з 8px */
+}
+
+/* Grid positioning для menu options */
+.menu-option[data-position="up"] { grid-column: 2; grid-row: 1; }
+.menu-option[data-position="left"] { grid-column: 1; grid-row: 2; }
+.menu-option[data-position="right"] { grid-column: 3; grid-row: 2; }
+.menu-option[data-position="down"] { grid-column: 2; grid-row: 3; }
+
+.option-icon, .menu-option-icon {
+    font-size: 2.4em; /* ЗБІЛЬШЕНО з 1.8em */
+    margin-bottom: 12px; /* ЗБІЛЬШЕНО з 8px */
+    display: block;
+    filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.6));
+}
+
+.option-name, .menu-option-name {
+    color: #FFB84D;
+    font-size: 1.1em; /* ЗБІЛЬШЕНО з 0.9em */
+    font-weight: 600;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 10px rgba(255, 107, 0, 0.5);
+    margin-bottom: 8px; /* ЗБІЛЬШЕНО з 6px */
+}
+
+.menu-option-name {
+    font-size: 1em; /* ЗБІЛЬШЕНО з 0.85em */
+    margin-bottom: 6px;
+}
+
+.option-description {
+    color: #B794F4;
+    font-size: 0.9em; /* ЗБІЛЬШЕНО з 0.75em */
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Прев'ю фону - HALLOWEEN СТИЛЬ */
+.background-preview {
+    width: 100%;
+    height: 70px; /* ЗБІЛЬШЕНО з 50px */
+    border-radius: 10px; /* ЗБІЛЬШЕНО з 8px */
+    margin: 12px 0 0 0; /* ЗБІЛЬШЕНО з 8px */
+    border: 2px solid rgba(138, 43, 226, 0.5); /* ЗБІЛЬШЕНО з 1px */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
+}
+
+.background-preview::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, 
+        rgba(138, 43, 226, 0.3) 0%, 
+        transparent 50%, 
+        rgba(255, 107, 0, 0.3) 100%);
+    border-radius: 10px;
+}
+
+/* СТАТИЧНІ МЕНЮ - HALLOWEEN */
+
+.static-menu {
+    position: fixed;
+    z-index: 1002;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px; /* ЗБІЛЬШЕНО з 20px */
+    background: linear-gradient(135deg, 
+        rgba(25, 5, 45, 0.98) 0%, 
+        rgba(50, 10, 70, 0.99) 50%, 
+        rgba(20, 0, 40, 1) 100%);
+    backdrop-filter: blur(15px);
+    box-shadow: 
+        0 2px 25px rgba(138, 43, 226, 0.6),
+        0 0 30px rgba(255, 107, 0, 0.3);
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+/* Top/Bottom Menu Styles */
+.menu-top {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px; /* ЗБІЛЬШЕНО з 60px */
+    border-bottom: 3px solid #8B00FF;
+}
+
+.menu-bottom {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px; /* ЗБІЛЬШЕНО з 60px */
+    border-top: 3px solid #8B00FF;
+}
+
+/* Navigation buttons - HALLOWEEN СТИЛЬ */
+.static-menu .nav-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 12px; /* ЗБІЛЬШЕНО з 8px */
+    padding: 0;
+    overflow: visible;
+    max-width: none;
+    width: auto;
+    flex: none;
+}
+
+.static-menu .nav-btn,
+.settings-btn-static {
+    flex-shrink: 0;
+    padding: 12px 15px; /* ЗБІЛЬШЕНО з 8px 10px */
+    font-size: 2.4em; /* ЗБІЛЬШЕНО з 1.8em */
+    width: 65px; /* ЗБІЛЬШЕНО з 50px */
+    height: 56px; /* ЗБІЛЬШЕНО з 44px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px; /* ЗБІЛЬШЕНО з 12px */
+    background: linear-gradient(135deg, 
+        rgba(25, 5, 45, 0.6) 0%, 
+        rgba(50, 10, 70, 0.5) 100%);
+    border: 2px solid rgba(138, 43, 226, 0.6);
+    color: #FFB84D;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 10px rgba(255, 107, 0, 0.5);
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2);
+}
+
+.static-menu .nav-btn:hover,
+.settings-btn-static:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 107, 0, 0.4) 0%, 
+        rgba(138, 43, 226, 0.5) 100%);
+    border-color: #FF6B00;
+    color: #FF6B00;
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 
+        0 8px 25px rgba(255, 107, 0, 0.4),
+        0 0 20px rgba(138, 43, 226, 0.5);
+}
+
+.settings-btn-static:hover {
+    transform: translateY(-3px) scale(1.08) rotate(90deg);
+}
+
+.static-menu .nav-btn.active,
+.settings-btn-static.active {
+    background: linear-gradient(135deg, #FF6B00, #8B00FF);
+    border-color: #FFB84D;
+    color: #FFF;
+    box-shadow: 
+        0 8px 30px rgba(255, 107, 0, 0.5),
+        0 0 30px rgba(138, 43, 226, 0.6);
+    transform: translateY(-2px);
+}
+
+.settings-btn-static.active {
+    transform: translateY(-2px) rotate(90deg);
+}
+
+/* Settings Container in Static Menu */
+.settings-container-static {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    padding-left: 30px; /* ЗБІЛЬШЕНО з 20px */
+}
+
+/* КНОПКА МЕНЮ - HALLOWEEN, ЗБІЛЬШЕНА */
+
+.mobile-menu-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 75px; /* ЗБІЛЬШЕНО з 60px */
+    height: 75px; /* ЗБІЛЬШЕНО з 60px */
+    background: linear-gradient(135deg, 
+        rgba(25, 5, 45, 0.95) 0%, 
+        rgba(50, 10, 70, 0.98) 100%);
+    border: 3px solid #8B00FF;
+    border-radius: 18px; /* ЗБІЛЬШЕНО з 15px */
+    cursor: pointer;
+    z-index: 1003;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 8px 30px rgba(138, 43, 226, 0.5),
+        inset 0 2px 10px rgba(255, 107, 0, 0.2),
+        0 0 25px rgba(138, 43, 226, 0.4);
+    display: none;
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) rotate(0deg);
+}
+
+.mobile-menu-toggle:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 107, 0, 0.3) 0%, 
+        rgba(138, 43, 226, 0.8) 100%);
+    border-color: #FF6B00;
+    box-shadow: 
+        0 12px 40px rgba(255, 107, 0, 0.4),
+        inset 0 2px 10px rgba(138, 43, 226, 0.3),
+        0 0 35px rgba(138, 43, 226, 0.6);
+    transform: scale(1.1) rotate(0deg);
+}
+
+.mobile-menu-toggle.menu-open {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8) rotate(180deg);
+    pointer-events: none;
+}
+
+/* Лінії кнопки меню - HALLOWEEN */
+.menu-line {
+    width: 32px; /* ЗБІЛЬШЕНО з 24px */
+    height: 4px; /* ЗБІЛЬШЕНО з 3px */
+    background: linear-gradient(90deg, #FF6B00, #8B00FF);
+    border-radius: 3px; /* ЗБІЛЬШЕНО з 2px */
+    position: absolute;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 0 10px rgba(255, 107, 0, 0.7),
+        0 0 20px rgba(138, 43, 226, 0.5);
+    left: 50%;
+    top: 50%;
+    transform-origin: center;
+}
+
+/* КОНТРОЛЬ ВИДИМОСТІ МЕНЮ */
+.mobile-menu-toggle,
+.sidebar,
+.sidebar-overlay,
+.static-menu {
+    display: none !important;
+}
+
+/* LEFT Menu */
+body.menu-left .mobile-menu-toggle {
+    display: block !important;
+    left: 20px !important;
+    right: auto !important;
+}
+
+body.menu-left .sidebar {
+    display: flex !important;
+    position: fixed !important;
+    left: -480px !important; /* ЗБІЛЬШЕНО з -320px */
+    top: 0 !important;
+    height: 100vh !important;
+    width: 480px !important; /* ЗБІЛЬШЕНО з 320px */
+    z-index: 1002 !important;
+    transition: left 0.3s ease !important;
+}
+
+body.menu-left .sidebar.open {
+    left: 0 !important;
+}
+
+body.menu-left .sidebar-overlay {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1001 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+body.menu-left .sidebar-overlay.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* RIGHT Menu */
+body.menu-right .mobile-menu-toggle {
+    display: block !important;
+    right: 20px !important;
+    left: auto !important;
+}
+
+body.menu-right .sidebar {
+    display: flex !important;
+    position: fixed !important;
+    right: -480px !important; /* ЗБІЛЬШЕНО з -320px */
+    left: auto !important;
+    top: 0 !important;
+    height: 100vh !important;
+    width: 480px !important; /* ЗБІЛЬШЕНО з 320px */
+    z-index: 1002 !important;
+    transition: right 0.3s ease !important;
+    border-left: 3px solid #8B00FF;
+    border-right: none;
+    border-radius: 15px 0 0 15px;
+    box-shadow: -2px 0 40px rgba(138, 43, 226, 0.6);
+}
+
+body.menu-right .sidebar.open {
+    right: 0 !important;
+}
+
+body.menu-right .sidebar-overlay {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1001 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+body.menu-right .sidebar-overlay.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* UP/DOWN Menu */
+body.menu-up .static-menu.menu-top {
+    display: flex !important;
+}
+
+body.menu-down .static-menu.menu-bottom {
+    display: flex !important;
+}
+
+/* Body padding adjustments */
+body.menu-up {
+    padding-top: 90px !important; /* ЗБІЛЬШЕНО з 80px */
+    padding-bottom: 0 !important;
+}
+
+body.menu-down {
+    padding-bottom: 90px !important; /* ЗБІЛЬШЕНО з 80px */
+    padding-top: 0 !important;
+}
+
+body.menu-left,
+body.menu-right {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Custom scrollbar - HALLOWEEN */
+.static-menu::-webkit-scrollbar {
+    height: 6px; /* ЗБІЛЬШЕНО з 4px */
+}
+
+.static-menu::-webkit-scrollbar-track {
+    background: rgba(25, 5, 45, 0.5);
+    border-radius: 3px;
+}
+
+.static-menu::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #FF6B00, #8B00FF);
+    border-radius: 3px;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+}
+
+.static-menu::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(90deg, #FF8C00, #9B30FF);
+}
+
+/* Mobile Responsiveness - ОПТИМІЗОВАНО */
+@media (max-width: 1024px) {
+    .settings-container {
+        max-width: 1200px;
+        padding: 15px 25px;
     }
 }
 
-// BACKGROUNDS
-async function checkImageAvailability(url) {
-    try {
-        const response = await fetch(url, { method: 'HEAD' });
-        return response.ok;
-    } catch {
-        return false;
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        width: 68px; /* ЗБІЛЬШЕНО з 55px */
+        height: 68px;
+        top: 15px;
+    }
+    
+    .menu-line {
+        width: 28px;
+        height: 3.5px;
+    }
+    
+    .settings-container {
+        padding: 12px 15px;
+        max-width: 100%;
+    }
+    
+    .settings-title {
+        font-size: 2.2em;
+        margin-bottom: 20px;
+    }
+    
+    .background-options {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        max-height: 450px;
+    }
+    
+    .background-option {
+        min-height: 115px;
+        padding: 12px;
+    }
+    
+    .menu-options {
+        max-width: 350px;
+        gap: 10px;
+    }
+    
+    .menu-option {
+        min-height: 80px;
+        padding: 12px 8px;
+    }
+    
+    .static-menu {
+        height: 65px;
+        padding: 0 20px;
+    }
+    
+    .static-menu .nav-btn,
+    .settings-btn-static {
+        font-size: 1.8em;
+        width: 52px;
+        height: 46px;
+    }
+    
+    body.menu-left .sidebar,
+    body.menu-right .sidebar {
+        width: 380px !important;
+    }
+    
+    body.menu-left .sidebar {
+        left: -380px !important;
+    }
+    
+    body.menu-right .sidebar {
+        right: -380px !important;
     }
 }
 
-async function applyBackground(background) {
-    const config = backgroundOptions[background];
-    if (!config) return;
-    
-    const body = document.body;
-    
-    try {
-        const isAvailable = await checkImageAvailability(config.url);
-        if (isAvailable) {
-            body.style.background = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${config.url}') center center / cover no-repeat`;
-            body.style.backgroundAttachment = window.innerWidth > 768 ? 'fixed' : 'scroll';
-        }
-    } catch (error) {
-        console.error('Background error:', error);
-    }
-}
-
-// SETTINGS MANAGEMENT
-function toggleSettingsCategory(categoryName) {
-    if (!categoriesState.hasOwnProperty(categoryName)) return;
-    
-    categoriesState[categoryName] = !categoriesState[categoryName];
-    
-    const header = document.querySelector(`#settingsPage [data-category="${categoryName}"] .category-header`);
-    const options = document.querySelector(`#settingsPage .${categoryName}-options`);
-    
-    if (header && options) {
-        header.classList.toggle('collapsed', !categoriesState[categoryName]);
-        options.classList.toggle('collapsed', !categoriesState[categoryName]);
-        localStorage.setItem('armHelper_categoriesState', JSON.stringify(categoriesState));
-    }
-}
-
-function loadCategoriesState() {
-    const saved = localStorage.getItem('armHelper_categoriesState');
-    if (saved) {
-        try {
-            categoriesState = { ...categoriesState, ...JSON.parse(saved) };
-        } catch (e) {}
-    }
-}
-
-function applyCategoriesState() {
-    Object.keys(categoriesState).forEach(category => {
-        const header = document.querySelector(`#settingsPage [data-category="${category}"] .category-header`);
-        const options = document.querySelector(`#settingsPage .${category}-options`);
-        
-        if (header && options) {
-            header.classList.toggle('collapsed', !categoriesState[category]);
-            options.classList.toggle('collapsed', !categoriesState[category]);
-        }
-    });
-}
-
-// STORAGE
-function getCurrentBackground() {
-    return localStorage.getItem('armHelper_background') || 'penguin';
-}
-
-function saveBackground(background) {
-    localStorage.setItem('armHelper_background', background);
-}
-
-function getCurrentMenuPosition() {
-    return localStorage.getItem('armHelper_menuPosition') || 'left';
-}
-
-function saveMenuPosition(position) {
-    localStorage.setItem('armHelper_menuPosition', position);
-}
-
-// CHANGE FUNCTIONS
-async function changeBackground(background) {
-    if (!backgroundOptions[background]) return;
-    
-    saveBackground(background);
-    await applyBackground(background);
-    updateBackgroundUI();
-}
-
-function changeMenuPosition(position) {
-    if (!menuPositions[position]) return;
-    
-    saveMenuPosition(position);
-    menuManager.showOnlyMenu(position);
-    updateMenuPositionUI();
-}
-
-function updateBackgroundUI() {
-    const currentBg = getCurrentBackground();
-    document.querySelectorAll('#settingsPage .background-option').forEach(option => {
-        option.classList.toggle('active', option.dataset.background === currentBg);
-    });
-}
-
-function updateMenuPositionUI() {
-    const currentPos = getCurrentMenuPosition();
-    document.querySelectorAll('#settingsPage .menu-option').forEach(option => {
-        option.classList.toggle('active', option.dataset.position === currentPos);
-    });
-}
-
-// TRANSLATIONS - ОПТИМІЗОВАНО
-async function loadSettingsTranslations() {
-    if (settingsTranslations) return settingsTranslations;
-    
-    try {
-        const response = await fetch('moderation/menu.json');
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        settingsTranslations = await response.json();
-        return settingsTranslations;
-    } catch (error) {
-        console.error('Translation load error:', error);
-        return null;
-    }
-}
-
-async function updateSettingsLanguage(lang = null) {
-    const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en');
-    
-    if (!settingsTranslations) {
-        await loadSettingsTranslations();
+@media (max-width: 480px) {
+    .mobile-menu-toggle {
+        width: 60px;
+        height: 60px;
+        top: 12px;
+        left: 12px;
     }
     
-    if (!settingsTranslations || !settingsTranslations[currentLang]) return;
+    .menu-line {
+        width: 26px;
+        height: 3px;
+    }
     
-    const t = settingsTranslations[currentLang].settings;
-    const pages = settingsTranslations[currentLang].pages;
+    body.menu-right .mobile-menu-toggle {
+        right: 12px !important;
+        left: auto !important;
+    }
     
-    // Batch DOM updates
-    requestAnimationFrame(() => {
-        const updates = {
-            '.settings-title': t.title,
-            '[data-category="background"] .category-title span:last-child': t.background,
-            '[data-category="menu"] .category-title span:last-child': t.menu
-        };
-        
-        Object.entries(updates).forEach(([selector, text]) => {
-            const el = document.querySelector(`#settingsPage ${selector}`);
-            if (el) el.textContent = text;
-        });
-        
-        Object.keys(backgroundOptions).forEach(bg => {
-            const el = document.querySelector(`#settingsPage [data-background="${bg}"] .option-name`);
-            if (el && t[bg]) el.textContent = t[bg];
-        });
-        
-        Object.keys(menuPositions).forEach(pos => {
-            const el = document.querySelector(`#settingsPage [data-position="${pos}"] .menu-option-name`);
-            if (el && t[pos]) el.textContent = t[pos];
-        });
-    });
+    .background-options {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        max-height: 320px;
+    }
+    
+    .background-option {
+        min-height: 95px;
+        flex-direction: row;
+        justify-content: flex-start;
+        text-align: left;
+    }
+    
+    .option-icon {
+        margin-right: 12px;
+        margin-bottom: 0;
+        font-size: 2em;
+    }
+    
+    .background-preview {
+        height: 40px;
+        width: 60px;
+        margin: 0;
+        flex-shrink: 0;
+    }
+    
+    .static-menu {
+        height: 58px;
+        padding: 0 12px;
+    }
+    
+    .static-menu .nav-btn,
+    .settings-btn-static {
+        font-size: 1.5em;
+        width: 45px;
+        height: 40px;
+    }
+    
+    body.menu-left .sidebar,
+    body.menu-right .sidebar {
+        width: 320px !important;
+    }
+    
+    body.menu-left .sidebar {
+        left: -320px !important;
+    }
+    
+    body.menu-right .sidebar {
+        right: -320px !important;
+    }
 }
-
-// HTML GENERATION
-function createSettingsHTML() {
-    const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => `
-        <div class="background-option" data-background="${bg}" onclick="changeBackground('${bg}')">
-            <div class="option-icon">${backgroundOptions[bg].icon}</div>
-            <div class="option-name"></div>
-            <div class="background-preview" style="background-image: url('${backgroundOptions[bg].url}')"></div>
-        </div>
-    `).join('');
-
-    const menuOptionsHTML = Object.keys(menuPositions).map(pos => `
-        <div class="menu-option" data-position="${pos}" onclick="changeMenuPosition('${pos}')">
-            <div class="menu-option-icon">${menuPositions[pos].icon}</div>
-            <div class="menu-option-name"></div>
-        </div>
-    `).join('');
-
-    return `
-        <div class="settings-container">
-            <h1 class="settings-title">⚙️ Settings</h1>
-            
-            <div class="settings-section" data-category="background">
-                <div class="category-header collapsed" onclick="toggleSettingsCategory('background')">
-                    <div class="category-title">
-                        <span class="section-icon">🎃</span>
-                        <span>Background</span>
-                    </div>
-                    <span class="category-toggle">▼</span>
-                </div>
-                <div class="background-options collapsed">${backgroundOptionsHTML}</div>
-            </div>
-            
-            <div class="settings-section" data-category="menu">
-                <div class="category-header collapsed" onclick="toggleSettingsCategory('menu')">
-                    <div class="category-title">
-                        <span class="section-icon">👻</span>
-                        <span>Menu Position</span>
-                    </div>
-                    <span class="category-toggle">▼</span>
-                </div>
-                <div class="menu-options collapsed">${menuOptionsHTML}</div>
-            </div>
-        </div>
-    `;
-}
-
-// INITIALIZATION - ОПТИМІЗОВАНО
-async function initializeSettings() {
-    if (settingsInitialized) return;
-    
-    const settingsPage = document.getElementById('settingsPage');
-    if (!settingsPage) return;
-    
-    loadCategoriesState();
-    
-    // Load translations in parallel with HTML generation
-    const translationsPromise = loadSettingsTranslations();
-    
-    settingsPage.innerHTML = createSettingsHTML();
-    
-    // Wait for translations and update
-    await translationsPromise;
-    await updateSettingsLanguage();
-    
-    const currentBg = getCurrentBackground();
-    await applyBackground(currentBg);
-    updateBackgroundUI();
-    
-    const currentMenuPos = getCurrentMenuPosition();
-    menuManager.showOnlyMenu(currentMenuPos);
-    updateMenuPositionUI();
-    
-    applyCategoriesState();
-    
-    settingsInitialized = true;
-}
-
-async function initializeSettingsOnStart() {
-    const currentBg = getCurrentBackground();
-    await applyBackground(currentBg);
-    
-    const currentMenuPos = getCurrentMenuPosition();
-    setTimeout(() => menuManager.showOnlyMenu(currentMenuPos), 50);
-}
-
-// EVENT LISTENERS
-document.addEventListener('languageChanged', (e) => {
-    if (settingsInitialized) updateSettingsLanguage(e.detail.language);
-});
-
-document.addEventListener('pageChanged', (e) => {
-    if (e.detail && e.detail.page) menuManager.updateActiveState(e.detail.page);
-});
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeSettingsOnStart);
-} else {
-    initializeSettingsOnStart();
-}
-
-// GLOBAL EXPORTS
-window.initializeSettings = initializeSettings;
-window.changeBackground = changeBackground;
-window.changeMenuPosition = changeMenuPosition;
-window.toggleSettingsCategory = toggleSettingsCategory;
-window.updateSettingsLanguage = updateSettingsLanguage;
-window.menuManager = menuManager;
-window.toggleMobileMenu = toggleMobileMenu;
-window.closeSidebar = closeSidebar;
-window.updateMenuButtonVisibility = updateMenuButtonVisibility;
-window.createMenuButton = createMenuButton;
