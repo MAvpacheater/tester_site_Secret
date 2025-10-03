@@ -110,7 +110,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     margin-top: 15px;
-    max-width: 500px;
+    max-width: 300px;
     justify-content: center;
     max-height: 500px;
     overflow: hidden;
@@ -303,7 +303,7 @@
     flex-shrink: 0;
     padding: 8px 10px;
     font-size: 1.8em;
-    width: 75px;
+    width: 50px;
     height: 44px;
     display: flex;
     align-items: center;
@@ -555,15 +555,15 @@ body.menu-right {
 }
 
 /* Mobile Responsiveness - ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
-@media (max-width: 800px) {
+@media (max-width: 768px) {
     .mobile-menu-toggle {
-        width: 75px;
+        width: 55px;
         height: 55px;
         top: 15px;
     }
     
     .menu-line {
-        width: 30px;
+        width: 22px;
         height: 2.5px;
     }
     
@@ -588,7 +588,7 @@ body.menu-right {
     }
     
     .menu-options {
-        max-width: 275px;
+        max-width: 250px;
         gap: 8px;
     }
     
@@ -605,21 +605,21 @@ body.menu-right {
     .static-menu .nav-btn,
     .settings-btn-static {
         font-size: 1.4em;
-        width: 50px;
+        width: 40px;
         height: 36px;
     }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 480px) {
     .mobile-menu-toggle {
-        width: 75px;
+        width: 50px;
         height: 50px;
         top: 12px;
         left: 12px;
     }
     
     .menu-line {
-        width: 35px;
+        width: 20px;
         height: 2px;
     }
     
@@ -648,7 +648,7 @@ body.menu-right {
     
     .background-preview {
         height: 30px;
-        width: 75px;
+        width: 50px;
         margin: 0;
         flex-shrink: 0;
     }
@@ -661,7 +661,7 @@ body.menu-right {
     .static-menu .nav-btn,
     .settings-btn-static {
         font-size: 1.2em;
-        width: 45px;
+        width: 36px;
         height: 32px;
     }
 }
