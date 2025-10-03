@@ -96,11 +96,11 @@ async function loadContent() {
                             <!-- Settings Button -->
                             <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">⚙️</button>
                             
-                            <!-- Language Flags -->
+                            <!-- Language Flags - NO inline onclick, handled by setupLanguageButtons() -->
                             <div class="language-flags">
-                                <button class="lang-flag-btn active" data-lang="en" onclick="switchAppLanguage('en')" title="English">🇺🇸</button>
-                                <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="Українська">🇺🇦</button>
-                                <button class="lang-flag-btn" data-lang="ru" onclick="switchAppLanguage('ru')" title="Русский">🇷🇺</button>
+                                <button class="lang-flag-btn active" data-lang="en" title="English">🇺🇸</button>
+                                <button class="lang-flag-btn" data-lang="uk" title="Українська">🇺🇦</button>
+                                <button class="lang-flag-btn" data-lang="ru" title="Русский">🇷🇺</button>
                             </div>
                         </div>
                     </div>
@@ -123,7 +123,18 @@ async function loadContent() {
             // Wait a bit for DOM to be ready, then initialize
             setTimeout(() => {
                 if (typeof initializeApp === 'function') {
+                    console.log('🚀 Calling initializeApp...');
                     initializeApp();
+                    
+                    // Setup language buttons after a short delay to ensure DOM is ready
+                    setTimeout(() => {
+                        if (typeof setupLanguageButtons === 'function') {
+                            console.log('🔧 Setting up language buttons from content_loader...');
+                            setupLanguageButtons();
+                        } else {
+                            console.warn('⚠️ setupLanguageButtons not found');
+                        }
+                    }, 200);
                 } else {
                     console.error('❌ initializeApp function not found');
                 }
