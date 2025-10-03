@@ -1,4 +1,4 @@
-// General JavaScript functions - Updated with language fix
+// General JavaScript functions - Fixed language button handling
 
 let currentAppLanguage = 'en';
 let menuTranslations = null;
@@ -31,6 +31,7 @@ function getCurrentAppLanguage() {
 
 function saveAppLanguage(lang) {
     localStorage.setItem('armHelper_language', lang);
+    console.log(`💾 Language saved to localStorage: ${lang}`);
 }
 
 function getCurrentMenuPosition() {
@@ -53,7 +54,7 @@ function loadSettingsFromStorage(key) {
     return null;
 }
 
-// Menu translations - UPDATED PATH
+// Menu translations
 async function loadMenuTranslations() {
     if (menuTranslations) return menuTranslations;
     
@@ -61,9 +62,10 @@ async function loadMenuTranslations() {
         const response = await fetch('moderation/menu.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         menuTranslations = await response.json();
+        console.log('✅ Menu translations loaded');
         return menuTranslations;
     } catch (error) {
-        console.error('Error loading menu translations:', error);
+        console.error('❌ Error loading menu translations:', error);
         menuTranslations = {
             en: {
                 menu: "Menu",
@@ -170,17 +172,16 @@ function updatePageTitles() {
 }
 
 async function switchAppLanguage(lang) {
-    console.log('=== SWITCH LANGUAGE START ===');
-    console.log('Requested language:', lang);
-    console.log('Current language:', currentAppLanguage);
+    console.log('=== LANGUAGE SWITCH START ===');
+    console.log('🌐 Switching from', currentAppLanguage, 'to', lang);
     
     if (!menuTranslations) {
-        console.log('Loading translations...');
+        console.log('📥 Loading translations...');
         await loadMenuTranslations();
     }
     
     if (!menuTranslations[lang]) {
-        console.error(`Language ${lang} not found, defaulting to English`);
+        console.error(`❌ Language ${lang} not found, defaulting to English`);
         lang = 'en';
     }
     
@@ -188,21 +189,22 @@ async function switchAppLanguage(lang) {
     currentAppLanguage = lang;
     saveAppLanguage(lang);
     
-    console.log(`✅ Language saved: ${lang}`);
+    console.log(`✅ Language changed: ${previousLanguage} → ${lang}`);
     
-    // Update all language buttons
+    // Update button states
     updateLanguageButtonStates();
     
+    // Update UI
     updateMenuTranslations();
     updatePageTitles();
     
-    console.log('=== SWITCH LANGUAGE END ===');
-    
+    // Dispatch event for modules
     const languageChangeEvent = new CustomEvent('languageChanged', {
         detail: { language: lang, previousLanguage: previousLanguage }
     });
     document.dispatchEvent(languageChangeEvent);
     
+    // Notify specific modules
     const moduleNotifications = [
         { name: 'roulette', func: 'updateRouletteLanguage' },
         { name: 'boss', func: 'updateBossLanguage' },
@@ -215,58 +217,77 @@ async function switchAppLanguage(lang) {
         { name: 'trader', func: 'updateTraderLanguage' }
     ];
     
-    moduleNotifications.forEach(({ func }) => {
+    moduleNotifications.forEach(({ name, func }) => {
         if (typeof window[func] === 'function') {
             try {
                 window[func](lang);
+                console.log(`✅ Updated ${name} module`);
             } catch (error) {
-                console.error(`Error updating language:`, error);
+                console.error(`❌ Error updating ${name}:`, error);
             }
         }
     });
+    
+    console.log('=== LANGUAGE SWITCH END ===');
 }
 
 function setupLanguageButtons() {
     console.log('🔧 Setting up language buttons...');
     
-    // Remove old event listeners by replacing with clones
     const langButtons = document.querySelectorAll('.lang-flag-btn');
-    console.log(`Found ${langButtons.length} language buttons`);
+    console.log(`📍 Found ${langButtons.length} language buttons`);
     
-    langButtons.forEach(btn => {
-        const newBtn = btn.cloneNode(true);
-        if (btn.parentNode) {
-            btn.parentNode.replaceChild(newBtn, btn);
-        }
+    langButtons.forEach((btn, index) => {
+        const lang = btn.getAttribute('data-lang');
+        console.log(`🔘 Button ${index}: lang="${lang}"`);
         
-        // Add click handler
+        // Remove all existing event listeners by cloning
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        // Add new click handler
         newBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            const lang = this.dataset.lang;
-            console.log('🖱️ Language button clicked:', lang);
-            console.log('Current language:', currentAppLanguage);
             
-            if (lang && lang !== currentAppLanguage) {
-                console.log('Switching language...');
-                switchAppLanguage(lang);
+            const targetLang = this.getAttribute('data-lang');
+            console.log('🖱️ Language button clicked:', targetLang);
+            
+            if (targetLang && targetLang !== currentAppLanguage) {
+                console.log(`🔄 Switching language: ${currentAppLanguage} → ${targetLang}`);
+                switchAppLanguage(targetLang);
             } else {
-                console.log('Same language or invalid, skipping');
+                console.log('⏭️ Same language or invalid, skipping');
             }
         });
         
-        console.log(`✅ Button setup: ${newBtn.dataset.lang}, element:`, newBtn);
+        // Add visual feedback
+        newBtn.style.cursor = 'pointer';
+        newBtn.style.userSelect = 'none';
+        
+        console.log(`✅ Button "${lang}" setup complete`);
     });
     
-    // Also set up active states
+    // Set initial active state
     updateLanguageButtonStates();
+    console.log('✅ Language buttons setup complete');
 }
 
 function updateLanguageButtonStates() {
-    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
-        const isActive = btn.dataset.lang === currentAppLanguage;
-        btn.classList.toggle('active', isActive);
-        console.log(`Button ${btn.dataset.lang}: ${isActive ? 'ACTIVE' : 'inactive'}`);
+    const buttons = document.querySelectorAll('.lang-flag-btn');
+    console.log(`🔄 Updating ${buttons.length} button states (current: ${currentAppLanguage})`);
+    
+    buttons.forEach(btn => {
+        const btnLang = btn.getAttribute('data-lang');
+        const isActive = btnLang === currentAppLanguage;
+        
+        if (isActive) {
+            btn.classList.add('active');
+            console.log(`✅ ${btnLang}: ACTIVE`);
+        } else {
+            btn.classList.remove('active');
+            console.log(`⚪ ${btnLang}: inactive`);
+        }
     });
 }
 
@@ -361,43 +382,43 @@ function initializeAllModules() {
 }
 
 async function initializeApp() {
-    if (appInitialized) return;
+    if (appInitialized) {
+        console.log('⚠️ App already initialized');
+        return;
+    }
     
     const appContent = document.getElementById('app-content');
-    if (!appContent || !appContent.innerHTML.trim()) return;
+    if (!appContent || !appContent.innerHTML.trim()) {
+        console.log('⏳ Waiting for app content...');
+        return;
+    }
     
     console.log('🚀 Initializing app...');
     
+    // Load saved language
     currentAppLanguage = getCurrentAppLanguage();
+    console.log(`📝 Loaded language: ${currentAppLanguage}`);
+    
+    // Load translations
     await loadMenuTranslations();
     
-    console.log(`📝 Current language: ${currentAppLanguage}`);
+    // Setup language buttons with delay to ensure DOM is ready
+    setTimeout(() => {
+        setupLanguageButtons();
+        console.log('✅ Language buttons initialized');
+    }, 500);
     
-    // Use event delegation for language buttons
-    document.body.addEventListener('click', function(e) {
-        const langBtn = e.target.closest('.lang-flag-btn');
-        if (langBtn && langBtn.dataset.lang) {
-            e.preventDefault();
-            e.stopPropagation();
-            const lang = langBtn.dataset.lang;
-            console.log('🖱️ Language button clicked:', lang);
-            if (lang !== currentAppLanguage) {
-                switchAppLanguage(lang);
-            }
-        }
-    });
-    
-    // Set active language button
-    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === currentAppLanguage);
-    });
-    
+    // Update UI with current language
     updateMenuTranslations();
     updatePageTitles();
     
+    // Initialize categories
     initializeCategories();
+    
+    // Initialize all modules
     initializeAllModules();
     
+    // Apply menu position and restore page
     setTimeout(() => {
         if (typeof window.menuManager !== 'undefined') {
             const currentMenuPos = getCurrentMenuPosition();
@@ -406,13 +427,11 @@ async function initializeApp() {
             }
         }
         
-        // Re-setup language buttons after content is loaded
-        setupLanguageButtons();
-        
         const lastPage = getCurrentPage();
         setTimeout(() => switchPage(lastPage), 200);
     }, 300);
     
+    // Close panels on outside click
     document.addEventListener('click', e => {
         const settingsPanels = [
             { panel: document.getElementById('settingsPanel'), btn: document.querySelector('#calculatorPage .settings-btn') },
@@ -454,8 +473,8 @@ function toggleCategory(categoryId) {
 }
 
 function initializeCategories() {
-    // Setup language button handlers
-    setupLanguageButtons();
+    console.log('🔧 Initializing categories...');
+    // Setup language buttons will be called after DOM is ready
 }
 
 function toggleMobileMenu() {
@@ -526,18 +545,22 @@ window.getCurrentMenuPosition = getCurrentMenuPosition;
 window.setupLanguageButtons = setupLanguageButtons;
 window.updateLanguageButtonStates = updateLanguageButtonStates;
 
-// Debug helper
+// Debug helpers
 window.debugLanguageButtons = function() {
     console.log('=== LANGUAGE BUTTONS DEBUG ===');
     const buttons = document.querySelectorAll('.lang-flag-btn');
-    console.log('Found buttons:', buttons.length);
+    console.log('Total buttons:', buttons.length);
     buttons.forEach((btn, i) => {
-        console.log(`Button ${i}:`, {
-            lang: btn.dataset.lang,
-            active: btn.classList.contains('active'),
-            element: btn
-        });
+        const lang = btn.getAttribute('data-lang');
+        const isActive = btn.classList.contains('active');
+        console.log(`Button ${i}: lang="${lang}", active=${isActive}`, btn);
     });
     console.log('Current language:', currentAppLanguage);
     console.log('Saved language:', getCurrentAppLanguage());
+    console.log('===========================');
+};
+
+window.testLanguageSwitch = function(lang) {
+    console.log(`🧪 Testing language switch to: ${lang}`);
+    switchAppLanguage(lang);
 };
