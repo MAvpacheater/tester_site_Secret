@@ -1,4 +1,4 @@
-/* Boss Calculator Styles - Matching Arm Calculator Design */
+/* Boss Calculator Styles - Halloween Theme (1.3x Scale) */
 
 .boss-page {
     display: none !important;
@@ -15,48 +15,48 @@
 }
 
 .boss-page .result-section::before {
-    content: '⛏️💎' !important;
+    content: '🎃👻' !important;
     position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 1.5em;
+    top: 13px;
+    right: 20px;
+    font-size: 1.95em;
     opacity: 0.6;
-    animation: floatGem 4s ease-in-out infinite;
+    animation: floatGhost 4s ease-in-out infinite;
 }
 
 .boss-page h1 {
-    color: #FFD700;
-    margin-bottom: 30px;
-    font-size: 2.2em;
+    color: #FF6B00;
+    margin-bottom: 39px;
+    font-size: 2.86em;
     font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 107, 0, 0.5);
     font-family: 'Orbitron', 'Arial Black', sans-serif;
-    background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
+    background: linear-gradient(135deg, #FF6B00, #FF8C00, #FFA500);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-align: center;
 }
 
-/* Header controls - Clean and simple like Arm Calculator */
+/* Header controls - Clean and simple */
 .boss-page .header-controls {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 39px;
 }
 
-/* Input Section - Matching Arm Calculator Style */
+/* Input Section - Halloween Style (1.3x) */
 .boss-page .input-section { 
-    margin-bottom: 30px; 
+    margin-bottom: 39px;
 }
 
 .boss-page .input-label {
     display: block;
     color: #F5DEB3;
-    font-size: 1.1em;
-    margin-bottom: 10px;
-    margin-top: 15px;
+    font-size: 1.43em;
+    margin-bottom: 13px;
+    margin-top: 19.5px;
     font-weight: 600;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
@@ -67,15 +67,15 @@
 
 .boss-page .number-input {
     width: 100%;
-    padding: 15px 20px;
-    font-size: 1.2em;
-    border: 3px solid #8B4513;
-    border-radius: 12px;
+    padding: 19.5px 26px;
+    font-size: 1.56em;
+    border: 3.9px solid #8B008B;
+    border-radius: 15.6px;
     outline: none;
     transition: all 0.3s ease;
     background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.2), 
-        rgba(62, 39, 35, 0.3));
+        rgba(139, 0, 139, 0.2), 
+        rgba(75, 0, 130, 0.3));
     color: #F5DEB3;
     font-weight: 600;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
@@ -89,52 +89,52 @@
 }
 
 .boss-page .number-input:focus {
-    border-color: #FFD700;
+    border-color: #FF6B00;
     box-shadow: 
-        0 0 0 3px rgba(255, 215, 0, 0.3),
-        0 8px 20px rgba(255, 215, 0, 0.2);
+        0 0 0 3.9px rgba(255, 107, 0, 0.3),
+        0 10.4px 26px rgba(255, 107, 0, 0.4);
     transform: translateY(-2px);
     background: linear-gradient(135deg, 
-        rgba(255, 215, 0, 0.1), 
-        rgba(139, 69, 19, 0.3));
+        rgba(255, 107, 0, 0.1), 
+        rgba(139, 0, 139, 0.3));
 }
 
-/* Simple toggles like in Arm Calculator */
+/* Simple toggles (1.3x) */
 .boss-page .simple-toggle {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
-    margin-top: 20px;
-    border-top: 2px solid rgba(139, 69, 19, 0.5);
+    padding: 19.5px 0;
+    margin-top: 26px;
+    border-top: 2.6px solid rgba(139, 0, 139, 0.5);
 }
 
 .boss-page .toggle-info {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 5.2px;
 }
 
 .boss-page .toggle-label {
     color: #F5DEB3;
-    font-size: 1.1em;
+    font-size: 1.43em;
     font-weight: 600;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .boss-page .toggle-multiplier {
-    color: rgba(255, 215, 0, 0.8);
-    font-size: 0.9em;
+    color: rgba(255, 107, 0, 0.9);
+    font-size: 1.17em;
     font-weight: 500;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 107, 0, 0.3);
 }
 
-/* Toggle Switches - Mining Style */
+/* Toggle Switches - Halloween Style (1.3x) */
 .boss-page .switch {
     position: relative;
     display: inline-block;
-    width: 50px;
-    height: 25px;
+    width: 65px;
+    height: 32.5px;
 }
 
 .boss-page .switch input { 
@@ -151,51 +151,52 @@
     right: 0; 
     bottom: 0;
     background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.8), 
-        rgba(101, 67, 33, 0.9));
+        rgba(75, 0, 130, 0.8), 
+        rgba(139, 0, 139, 0.9));
     transition: .4s;
-    border-radius: 25px;
-    border: 2px solid #8B4513;
+    border-radius: 32.5px;
+    border: 2.6px solid #8B008B;
 }
 
 .boss-page .slider:before {
     position: absolute;
     content: "";
-    height: 19px; 
-    width: 19px;
-    left: 2px; 
-    bottom: 2px;
-    background: linear-gradient(135deg, #F5DEB3, #D4AF37);
+    height: 24.7px; 
+    width: 24.7px;
+    left: 2.6px; 
+    bottom: 2.6px;
+    background: linear-gradient(135deg, #1a0a0a, #2a1a1a);
     transition: .4s;
     border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2.6px 6.5px rgba(255, 107, 0, 0.3);
 }
 
 .boss-page input:checked + .slider { 
-    background: linear-gradient(135deg, #FFD700, #FFA500);
-    border-color: #FFD700;
+    background: linear-gradient(135deg, #FF6B00, #FF8C00);
+    border-color: #FF6B00;
+    box-shadow: 0 0 19.5px rgba(255, 107, 0, 0.5);
 }
 
 .boss-page input:checked + .slider:before { 
-    transform: translateX(21px);
-    background: linear-gradient(135deg, #2F1B14, #1A0F0A);
-    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+    transform: translateX(27.3px);
+    background: linear-gradient(135deg, #1a0a0a, #0a0a0a);
+    box-shadow: 0 2.6px 10.4px rgba(255, 107, 0, 0.6);
 }
 
 .boss-page .calculate-btn {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
-    color: #2F1B14;
-    border: 3px solid #8B4513;
-    padding: 15px 30px;
-    font-size: 1.1em;
-    border-radius: 12px;
+    background: linear-gradient(135deg, #FF6B00, #FF8C00);
+    color: #1a0a0a;
+    border: 3.9px solid #8B008B;
+    padding: 19.5px 39px;
+    font-size: 1.43em;
+    border-radius: 15.6px;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 20px;
+    margin-top: 26px;
     font-weight: 700;
-    min-width: 150px;
+    min-width: 195px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10.4px 26px rgba(255, 107, 0, 0.4);
     position: relative;
     overflow: hidden;
     width: 100%;
@@ -228,58 +229,58 @@
 }
 
 .boss-page .calculate-btn:hover {
-    transform: translateY(-3px);
+    transform: translateY(-3.9px);
     box-shadow: 
-        0 15px 35px rgba(255, 215, 0, 0.4),
-        inset 0 2px 10px rgba(255, 255, 255, 0.2);
-    border-color: #FFD700;
+        0 19.5px 45.5px rgba(255, 107, 0, 0.6),
+        inset 0 2.6px 13px rgba(255, 255, 255, 0.2);
+    border-color: #FF6B00;
 }
 
 .boss-page .calculate-btn:active { 
-    transform: translateY(-1px); 
+    transform: translateY(-1.3px); 
 }
 
-/* Error Messages - Matching Arm Calculator */
+/* Error Messages - Halloween */
 .boss-page .error {
     color: #FF6347;
-    font-size: 0.9em;
-    margin-top: 10px;
+    font-size: 1.17em;
+    margin-top: 13px;
     font-weight: 600;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-/* Result Section - Clean style like Arm Calculator */
+/* Result Section - Halloween Style (1.3x) */
 .boss-page .result-section {
-    margin-top: 30px;
-    padding: 25px;
+    margin-top: 39px;
+    padding: 32.5px;
     background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.8) 0%, 
-        rgba(101, 67, 33, 0.9) 50%, 
-        rgba(62, 39, 35, 0.95) 100%);
-    border-radius: 15px;
-    border: 3px solid #8B4513;
+        rgba(26, 10, 10, 0.9) 0%, 
+        rgba(75, 0, 130, 0.85) 50%, 
+        rgba(139, 0, 139, 0.9) 100%);
+    border-radius: 19.5px;
+    border: 3.9px solid #8B008B;
     display: none;
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(19.5px);
     box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.5),
-        inset 0 2px 10px rgba(255, 215, 0, 0.1);
+        0 19.5px 45.5px rgba(255, 107, 0, 0.3),
+        inset 0 2.6px 13px rgba(255, 107, 0, 0.1);
     position: relative;
     overflow: hidden;
 }
 
 .boss-page .result-section::before {
-    content: '⛏️💎';
+    content: '🎃👻';
     position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 1.5em;
+    top: 13px;
+    right: 19.5px;
+    font-size: 1.95em;
     opacity: 0.6;
-    animation: floatGem 4s ease-in-out infinite;
+    animation: floatGhost 4s ease-in-out infinite;
 }
 
-@keyframes floatGem {
+@keyframes floatGhost {
     0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-5px) rotate(10deg); }
+    50% { transform: translateY(-6.5px) rotate(10deg); }
 }
 
 .boss-page .result-section.show {
@@ -288,20 +289,20 @@
 }
 
 .boss-page .stats-label {
-    color: #FFD700;
-    font-size: 1.2em;
-    margin-bottom: 15px;
+    color: #FF6B00;
+    font-size: 1.56em;
+    margin-bottom: 19.5px;
     font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 107, 0, 0.4);
     font-family: 'Orbitron', Arial, sans-serif;
 }
 
 .boss-page .result-value {
-    font-size: 2em;
-    color: #FFD700;
+    font-size: 2.6em;
+    color: #FF6B00;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
+    background: linear-gradient(135deg, #FF6B00, #FF8C00, #FFA500);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -311,10 +312,10 @@
 
 @keyframes resultGlow {
     0% { 
-        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7));
+        filter: drop-shadow(0 0 13px rgba(255, 107, 0, 0.7));
     }
     100% { 
-        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 1));
+        filter: drop-shadow(0 0 26px rgba(255, 107, 0, 1));
     }
 }
 
@@ -326,7 +327,7 @@
 @keyframes slideIn {
     from { 
         opacity: 0; 
-        transform: translateY(20px); 
+        transform: translateY(26px); 
     }
     to { 
         opacity: 1; 
@@ -334,32 +335,46 @@
     }
 }
 
-/* Mobile Styles - Mining Theme */
+/* Mobile Styles - Halloween Theme */
 @media (max-width: 480px) {
     .boss-page h1 { 
-        font-size: 1.8em; 
+        font-size: 2.34em; 
     }
     
     .boss-page .result-value { 
-        font-size: 1.6em; 
+        font-size: 2.08em; 
     }
     
     .boss-page .header-controls { 
         flex-direction: column; 
-        gap: 15px; 
+        gap: 19.5px; 
     }
     
     .boss-page .simple-toggle {
-        padding: 12px 0;
+        padding: 15.6px 0;
     }
     
     .boss-page .number-input {
-        font-size: 1.1em;
-        padding: 12px 15px;
+        font-size: 1.43em;
+        padding: 15.6px 19.5px;
     }
     
     .boss-page .calculate-btn {
-        padding: 12px 25px;
-        font-size: 1em;
+        padding: 15.6px 32.5px;
+        font-size: 1.3em;
+    }
+    
+    .boss-page .switch {
+        width: 58.5px;
+        height: 29.25px;
+    }
+    
+    .boss-page .slider:before {
+        height: 22.23px;
+        width: 22.23px;
+    }
+    
+    .boss-page input:checked + .slider:before {
+        transform: translateX(24.57px);
     }
 }
