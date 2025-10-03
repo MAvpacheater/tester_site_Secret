@@ -1,4 +1,4 @@
-// Content loader script - Optimized to load single content.html file
+// Content loader script - Fixed language button initialization
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -96,7 +96,7 @@ async function loadContent() {
                             <!-- Settings Button -->
                             <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">⚙️</button>
                             
-                            <!-- Language Flags - NO inline onclick, handled by setupLanguageButtons() -->
+                            <!-- Language Flags - NO inline handlers -->
                             <div class="language-flags">
                                 <button class="lang-flag-btn active" data-lang="en" title="English">🇺🇸</button>
                                 <button class="lang-flag-btn" data-lang="uk" title="Українська">🇺🇦</button>
@@ -120,21 +120,11 @@ async function loadContent() {
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
             
-            // Wait a bit for DOM to be ready, then initialize
+            // Wait for DOM to be ready, then initialize
             setTimeout(() => {
                 if (typeof initializeApp === 'function') {
                     console.log('🚀 Calling initializeApp...');
                     initializeApp();
-                    
-                    // Setup language buttons after a short delay to ensure DOM is ready
-                    setTimeout(() => {
-                        if (typeof setupLanguageButtons === 'function') {
-                            console.log('🔧 Setting up language buttons from content_loader...');
-                            setupLanguageButtons();
-                        } else {
-                            console.warn('⚠️ setupLanguageButtons not found');
-                        }
-                    }, 200);
                 } else {
                     console.error('❌ initializeApp function not found');
                 }
