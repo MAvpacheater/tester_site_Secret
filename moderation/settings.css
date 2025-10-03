@@ -1,40 +1,75 @@
-/* Покращений Settings Styles - Mining Theme з MenuManager */
+/* 🎃 Halloween Settings Styles - Збільшена ширина 1.5x */
 
 .settings-container {
     width: 100%;
-    padding: 15px 20px;
-    margin: 0;
+    max-width: 1800px; /* ЗБІЛЬШЕНО З 1200px */
+    padding: 15px 30px; /* ЗБІЛЬШЕНО padding */
+    margin: 0 auto;
     box-sizing: border-box;
 }
 
 .settings-title {
-    color: #FFD700;
-    font-size: 2em;
+    color: #FF6B00;
+    font-size: 2.5em; /* ЗБІЛЬШЕНО з 2em */
     font-weight: 800;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px; /* ЗБІЛЬШЕНО з 20px */
     text-shadow: 
-        3px 3px 6px rgba(0, 0, 0, 0.8),
-        0 0 20px rgba(255, 215, 0, 0.3);
-    letter-spacing: 2px;
+        3px 3px 6px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(255, 107, 0, 0.6),
+        0 0 40px rgba(138, 43, 226, 0.4);
+    letter-spacing: 3px;
+    animation: spookyGlow 3s ease-in-out infinite;
+}
+
+@keyframes spookyGlow {
+    0%, 100% { 
+        text-shadow: 
+            3px 3px 6px rgba(0, 0, 0, 0.9),
+            0 0 20px rgba(255, 107, 0, 0.6),
+            0 0 40px rgba(138, 43, 226, 0.4);
+    }
+    50% { 
+        text-shadow: 
+            3px 3px 6px rgba(0, 0, 0, 0.9),
+            0 0 30px rgba(255, 107, 0, 0.8),
+            0 0 60px rgba(138, 43, 226, 0.6);
+    }
 }
 
 .settings-section {
     background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.3) 0%, 
-        rgba(101, 67, 33, 0.4) 50%, 
-        rgba(62, 39, 35, 0.5) 100%);
-    border: 3px solid #8B4513;
+        rgba(25, 5, 45, 0.8) 0%, 
+        rgba(50, 10, 70, 0.7) 50%, 
+        rgba(20, 0, 40, 0.85) 100%);
+    border: 3px solid #8B00FF;
     border-radius: 20px;
-    padding: 18px;
-    margin-bottom: 18px;
+    padding: 25px; /* ЗБІЛЬШЕНО з 18px */
+    margin-bottom: 25px; /* ЗБІЛЬШЕНО з 18px */
     backdrop-filter: blur(10px);
     box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.4),
-        inset 0 2px 10px rgba(255, 215, 0, 0.1);
+        0 10px 40px rgba(138, 43, 226, 0.4),
+        inset 0 2px 10px rgba(255, 107, 0, 0.2),
+        0 0 30px rgba(138, 43, 226, 0.3);
     position: relative;
     width: 100%;
     box-sizing: border-box;
+    animation: sectionPulse 4s ease-in-out infinite;
+}
+
+@keyframes sectionPulse {
+    0%, 100% { 
+        box-shadow: 
+            0 10px 40px rgba(138, 43, 226, 0.4),
+            inset 0 2px 10px rgba(255, 107, 0, 0.2),
+            0 0 30px rgba(138, 43, 226, 0.3);
+    }
+    50% { 
+        box-shadow: 
+            0 10px 40px rgba(138, 43, 226, 0.6),
+            inset 0 2px 10px rgba(255, 107, 0, 0.3),
+            0 0 40px rgba(138, 43, 226, 0.5);
+    }
 }
 
 .settings-section::before {
@@ -46,59 +81,74 @@
     height: 3px;
     background: linear-gradient(90deg, 
         transparent 0%, 
-        rgba(255, 215, 0, 0.5) 50%, 
+        rgba(255, 107, 0, 0.7) 50%, 
         transparent 100%);
+    animation: borderGlow 2s ease-in-out infinite;
+}
+
+@keyframes borderGlow {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
 }
 
 /* Заголовок категорії */
 .category-header {
-    color: #FFD700;
-    font-size: 1.4em;
+    color: #FF6B00;
+    font-size: 1.6em; /* ЗБІЛЬШЕНО з 1.4em */
     font-weight: 700;
-    margin-bottom: 15px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin-bottom: 20px; /* ЗБІЛЬШЕНО з 15px */
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 15px rgba(255, 107, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
     transition: all 0.3s ease;
-    padding: 8px 12px;
+    padding: 12px 15px; /* ЗБІЛЬШЕНО з 8px 12px */
     border-radius: 12px;
 }
 
 .category-header:hover {
-    background: rgba(255, 215, 0, 0.1);
-    transform: translateY(-1px);
+    background: rgba(255, 107, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(138, 43, 226, 0.3);
 }
 
 .category-title {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px; /* ЗБІЛЬШЕНО з 10px */
 }
 
 .section-icon {
-    font-size: 1.3em;
+    font-size: 1.5em; /* ЗБІЛЬШЕНО з 1.3em */
+    animation: iconFloat 2s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
 }
 
 .category-toggle {
-    font-size: 0.8em;
+    font-size: 1em; /* ЗБІЛЬШЕНО з 0.8em */
     transition: transform 0.3s ease;
-    color: #D4AF37;
+    color: #8B00FF;
 }
 
 .category-header.collapsed .category-toggle {
     transform: rotate(-90deg);
 }
 
-/* Контейнер для кнопок фонів - ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
+/* Контейнер для кнопок фонів - 3 ряди, ЗБІЛЬШЕНА ШИРИНА */
 .background-options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr); /* ЗМІНЕНО З 2 НА 3 РЯДИ */
-    gap: 15px;
-    margin-top: 10px;
-    max-height: 450px; /* ЗБІЛЬШЕНО ВИСОТУ ДЛЯ 3 РЯДІВ */
+    grid-template-rows: repeat(3, 1fr);
+    gap: 20px; /* ЗБІЛЬШЕНО з 15px */
+    margin-top: 15px; /* ЗБІЛЬШЕНО з 10px */
+    max-height: 550px; /* ЗБІЛЬШЕНО з 450px */
     overflow: hidden;
     transition: all 0.4s ease;
     opacity: 1;
@@ -108,11 +158,11 @@
 .menu-options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: 15px;
-    max-width: 300px;
+    gap: 18px; /* ЗБІЛЬШЕНО з 12px */
+    margin-top: 20px; /* ЗБІЛЬШЕНО з 15px */
+    max-width: 450px; /* ЗБІЛЬШЕНО з 300px */
     justify-content: center;
-    max-height: 500px;
+    max-height: 600px; /* ЗБІЛЬШЕНО з 500px */
     overflow: hidden;
     transition: all 0.4s ease;
     opacity: 1;
@@ -126,14 +176,14 @@
     gap: 0;
 }
 
-/* Кнопки опцій */
+/* Кнопки опцій - HALLOWEEN СТИЛЬ */
 .background-option, .menu-option {
     background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.2) 0%, 
-        rgba(62, 39, 35, 0.3) 100%);
-    border: 2px solid rgba(139, 69, 19, 0.5);
-    border-radius: 12px;
-    padding: 12px;
+        rgba(25, 5, 45, 0.6) 0%, 
+        rgba(50, 10, 70, 0.5) 100%);
+    border: 2px solid rgba(138, 43, 226, 0.6);
+    border-radius: 15px; /* ЗБІЛЬШЕНО з 12px */
+    padding: 18px; /* ЗБІЛЬШЕНО з 12px */
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
@@ -144,55 +194,83 @@
     align-items: center;
     box-sizing: border-box;
     width: 100%;
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2);
 }
 
 .background-option {
-    min-height: 120px;
+    min-height: 150px; /* ЗБІЛЬШЕНО з 120px */
 }
 
 .menu-option {
-    min-height: 80px;
-    padding: 15px 8px;
+    min-height: 100px; /* ЗБІЛЬШЕНО з 80px */
+    padding: 20px 12px; /* ЗБІЛЬШЕНО */
 }
 
 .background-option:hover, .menu-option:hover {
     background: linear-gradient(135deg, 
-        rgba(255, 215, 0, 0.2) 0%, 
-        rgba(139, 69, 19, 0.4) 100%);
-    border-color: #FFD700;
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+        rgba(255, 107, 0, 0.3) 0%, 
+        rgba(138, 43, 226, 0.4) 100%);
+    border-color: #FF6B00;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 
+        0 8px 30px rgba(255, 107, 0, 0.4),
+        0 0 30px rgba(138, 43, 226, 0.5);
 }
 
 .menu-option:hover {
-    transform: translateY(-2px) scale(1.05);
+    transform: translateY(-3px) scale(1.08);
 }
 
 .background-option.active, .menu-option.active {
     background: linear-gradient(135deg, 
-        rgba(255, 215, 0, 0.3) 0%, 
-        rgba(255, 165, 0, 0.2) 100%);
-    border-color: #FFD700;
+        rgba(255, 107, 0, 0.4) 0%, 
+        rgba(138, 43, 226, 0.3) 100%);
+    border-color: #FF6B00;
     box-shadow: 
-        0 6px 25px rgba(255, 215, 0, 0.4),
-        inset 0 2px 8px rgba(255, 215, 0, 0.2);
-    transform: translateY(-1px);
+        0 8px 35px rgba(255, 107, 0, 0.5),
+        inset 0 2px 10px rgba(138, 43, 226, 0.3),
+        0 0 40px rgba(138, 43, 226, 0.4);
+    transform: translateY(-2px);
+    animation: activeGlow 2s ease-in-out infinite;
+}
+
+@keyframes activeGlow {
+    0%, 100% { 
+        box-shadow: 
+            0 8px 35px rgba(255, 107, 0, 0.5),
+            inset 0 2px 10px rgba(138, 43, 226, 0.3),
+            0 0 40px rgba(138, 43, 226, 0.4);
+    }
+    50% { 
+        box-shadow: 
+            0 8px 35px rgba(255, 107, 0, 0.7),
+            inset 0 2px 10px rgba(138, 43, 226, 0.5),
+            0 0 50px rgba(138, 43, 226, 0.6);
+    }
 }
 
 .background-option.active::after, .menu-option.active::after {
     content: '✓';
     position: absolute;
-    top: 8px;
-    right: 10px;
-    color: #FFD700;
-    font-size: 1.1em;
+    top: 12px; /* ЗБІЛЬШЕНО з 8px */
+    right: 15px; /* ЗБІЛЬШЕНО з 10px */
+    color: #FF6B00;
+    font-size: 1.4em; /* ЗБІЛЬШЕНО з 1.1em */
     font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 10px rgba(255, 107, 0, 0.8);
+    animation: checkBounce 0.5s ease;
+}
+
+@keyframes checkBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
 }
 
 .menu-option.active::after {
-    top: 6px;
-    right: 8px;
+    top: 10px; /* ЗБІЛЬШЕНО з 6px */
+    right: 12px; /* ЗБІЛЬШЕНО з 8px */
 }
 
 /* Grid positioning для menu options */
@@ -202,41 +280,45 @@
 .menu-option[data-position="down"] { grid-column: 2; grid-row: 3; }
 
 .option-icon, .menu-option-icon {
-    font-size: 1.8em;
-    margin-bottom: 8px;
+    font-size: 2.4em; /* ЗБІЛЬШЕНО з 1.8em */
+    margin-bottom: 12px; /* ЗБІЛЬШЕНО з 8px */
     display: block;
+    filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.6));
 }
 
 .option-name, .menu-option-name {
-    color: #F5DEB3;
-    font-size: 0.9em;
+    color: #FFB84D;
+    font-size: 1.1em; /* ЗБІЛЬШЕНО з 0.9em */
     font-weight: 600;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    margin-bottom: 6px;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 10px rgba(255, 107, 0, 0.5);
+    margin-bottom: 8px; /* ЗБІЛЬШЕНО з 6px */
 }
 
 .menu-option-name {
-    font-size: 0.85em;
-    margin-bottom: 5px;
+    font-size: 1em; /* ЗБІЛЬШЕНО з 0.85em */
+    margin-bottom: 6px;
 }
 
 .option-description {
-    color: #D4AF37;
-    font-size: 0.75em;
-    opacity: 0.8;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    color: #B794F4;
+    font-size: 0.9em; /* ЗБІЛЬШЕНО з 0.75em */
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-/* Прев'ю фону */
+/* Прев'ю фону - HALLOWEEN СТИЛЬ */
 .background-preview {
     width: 100%;
-    height: 50px;
-    border-radius: 8px;
-    margin: 8px 0 0 0;
-    border: 1px solid rgba(139, 69, 19, 0.3);
+    height: 70px; /* ЗБІЛЬШЕНО з 50px */
+    border-radius: 10px; /* ЗБІЛЬШЕНО з 8px */
+    margin: 12px 0 0 0; /* ЗБІЛЬШЕНО з 8px */
+    border: 2px solid rgba(138, 43, 226, 0.5); /* ЗБІЛЬШЕНО з 1px */
     background-size: cover;
     background-position: center;
     position: relative;
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
 }
 
 .background-preview::after {
@@ -244,27 +326,28 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(45deg, 
-        rgba(0, 0, 0, 0.3) 0%, 
+        rgba(138, 43, 226, 0.3) 0%, 
         transparent 50%, 
-        rgba(0, 0, 0, 0.3) 100%);
-    border-radius: 8px;
+        rgba(255, 107, 0, 0.3) 100%);
+    border-radius: 10px;
 }
 
-/* ПОКРАЩЕНА СИСТЕМА УПРАВЛІННЯ МЕНЮ */
+/* СТАТИЧНІ МЕНЮ - HALLOWEEN */
 
-/* Базові стилі для статичних меню */
 .static-menu {
     position: fixed;
     z-index: 1002;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
+    padding: 0 30px; /* ЗБІЛЬШЕНО з 20px */
     background: linear-gradient(135deg, 
-        rgba(41, 39, 35, 0.98) 0%, 
-        rgba(28, 26, 23, 0.99) 50%, 
-        rgba(20, 19, 17, 1) 100%);
+        rgba(25, 5, 45, 0.98) 0%, 
+        rgba(50, 10, 70, 0.99) 50%, 
+        rgba(20, 0, 40, 1) 100%);
     backdrop-filter: blur(15px);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+    box-shadow: 
+        0 2px 25px rgba(138, 43, 226, 0.6),
+        0 0 30px rgba(255, 107, 0, 0.3);
     overflow-x: auto;
     overflow-y: hidden;
 }
@@ -274,23 +357,23 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 60px;
-    border-bottom: 3px solid #8B4513;
+    height: 70px; /* ЗБІЛЬШЕНО з 60px */
+    border-bottom: 3px solid #8B00FF;
 }
 
 .menu-bottom {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 60px;
-    border-top: 3px solid #8B4513;
+    height: 70px; /* ЗБІЛЬШЕНО з 60px */
+    border-top: 3px solid #8B00FF;
 }
 
-/* Navigation buttons */
+/* Navigation buttons - HALLOWEEN СТИЛЬ */
 .static-menu .nav-buttons {
     display: flex;
     flex-direction: row;
-    gap: 8px;
+    gap: 12px; /* ЗБІЛЬШЕНО з 8px */
     padding: 0;
     overflow: visible;
     max-width: none;
@@ -301,51 +384,58 @@
 .static-menu .nav-btn,
 .settings-btn-static {
     flex-shrink: 0;
-    padding: 8px 10px;
-    font-size: 1.8em;
-    width: 50px;
-    height: 44px;
+    padding: 12px 15px; /* ЗБІЛЬШЕНО з 8px 10px */
+    font-size: 2.4em; /* ЗБІЛЬШЕНО з 1.8em */
+    width: 65px; /* ЗБІЛЬШЕНО з 50px */
+    height: 56px; /* ЗБІЛЬШЕНО з 44px */
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
+    border-radius: 15px; /* ЗБІЛЬШЕНО з 12px */
     background: linear-gradient(135deg, 
-        rgba(139, 69, 19, 0.2) 0%, 
-        rgba(62, 39, 35, 0.3) 100%);
-    border: 2px solid rgba(139, 69, 19, 0.5);
-    color: #F5DEB3;
+        rgba(25, 5, 45, 0.6) 0%, 
+        rgba(50, 10, 70, 0.5) 100%);
+    border: 2px solid rgba(138, 43, 226, 0.6);
+    color: #FFB84D;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 10px rgba(255, 107, 0, 0.5);
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2);
 }
 
 .static-menu .nav-btn:hover,
 .settings-btn-static:hover {
     background: linear-gradient(135deg, 
-        rgba(255, 215, 0, 0.3) 0%, 
-        rgba(139, 69, 19, 0.6) 100%);
-    border-color: #FFD700;
-    color: #FFD700;
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+        rgba(255, 107, 0, 0.4) 0%, 
+        rgba(138, 43, 226, 0.5) 100%);
+    border-color: #FF6B00;
+    color: #FF6B00;
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 
+        0 8px 25px rgba(255, 107, 0, 0.4),
+        0 0 20px rgba(138, 43, 226, 0.5);
 }
 
 .settings-btn-static:hover {
-    transform: translateY(-2px) scale(1.05) rotate(90deg);
+    transform: translateY(-3px) scale(1.08) rotate(90deg);
 }
 
 .static-menu .nav-btn.active,
 .settings-btn-static.active {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
-    border-color: #8B4513;
-    color: #2F1B14;
-    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, #FF6B00, #8B00FF);
+    border-color: #FFB84D;
+    color: #FFF;
+    box-shadow: 
+        0 8px 30px rgba(255, 107, 0, 0.5),
+        0 0 30px rgba(138, 43, 226, 0.6);
+    transform: translateY(-2px);
 }
 
 .settings-btn-static.active {
-    transform: translateY(-1px) rotate(90deg);
+    transform: translateY(-2px) rotate(90deg);
 }
 
 /* Settings Container in Static Menu */
@@ -353,30 +443,30 @@
     display: flex;
     align-items: center;
     margin-left: auto;
-    padding-left: 20px;
+    padding-left: 30px; /* ЗБІЛЬШЕНО з 20px */
 }
 
-/* ПОКРАЩЕНА КНОПКА МЕНЮ - БІЛЬША ТА ЗНИКАЄ ПРИ ВІДКРИТОМУ МЕНЮ */
+/* КНОПКА МЕНЮ - HALLOWEEN, ЗБІЛЬШЕНА */
 
-/* Кнопка меню - за замовчуванням сховано */
 .mobile-menu-toggle {
     position: fixed;
     top: 20px;
     left: 20px;
-    width: 60px;
-    height: 60px;
+    width: 75px; /* ЗБІЛЬШЕНО з 60px */
+    height: 75px; /* ЗБІЛЬШЕНО з 60px */
     background: linear-gradient(135deg, 
-        rgba(41, 39, 35, 0.95) 0%, 
-        rgba(28, 26, 23, 0.98) 100%);
-    border: 3px solid #8B4513;
-    border-radius: 15px;
+        rgba(25, 5, 45, 0.95) 0%, 
+        rgba(50, 10, 70, 0.98) 100%);
+    border: 3px solid #8B00FF;
+    border-radius: 18px; /* ЗБІЛЬШЕНО з 15px */
     cursor: pointer;
     z-index: 1003;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(10px);
     box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.4),
-        inset 0 2px 10px rgba(255, 215, 0, 0.1);
+        0 8px 30px rgba(138, 43, 226, 0.5),
+        inset 0 2px 10px rgba(255, 107, 0, 0.2),
+        0 0 25px rgba(138, 43, 226, 0.4);
     display: none;
     opacity: 1;
     visibility: visible;
@@ -385,16 +475,16 @@
 
 .mobile-menu-toggle:hover {
     background: linear-gradient(135deg, 
-        rgba(255, 215, 0, 0.2) 0%, 
-        rgba(139, 69, 19, 0.8) 100%);
-    border-color: #FFD700;
+        rgba(255, 107, 0, 0.3) 0%, 
+        rgba(138, 43, 226, 0.8) 100%);
+    border-color: #FF6B00;
     box-shadow: 
-        0 12px 35px rgba(255, 215, 0, 0.3),
-        inset 0 2px 10px rgba(255, 215, 0, 0.2);
-    transform: scale(1.05) rotate(0deg);
+        0 12px 40px rgba(255, 107, 0, 0.4),
+        inset 0 2px 10px rgba(138, 43, 226, 0.3),
+        0 0 35px rgba(138, 43, 226, 0.6);
+    transform: scale(1.1) rotate(0deg);
 }
 
-/* ЗНИКНЕННЯ КНОПКИ ПРИ ВІДКРИТОМУ МЕНЮ */
 .mobile-menu-toggle.menu-open {
     opacity: 0;
     visibility: hidden;
@@ -402,15 +492,17 @@
     pointer-events: none;
 }
 
-/* Лінії кнопки меню */
+/* Лінії кнопки меню - HALLOWEEN */
 .menu-line {
-    width: 24px;
-    height: 3px;
-    background: #F5DEB3;
-    border-radius: 2px;
+    width: 32px; /* ЗБІЛЬШЕНО з 24px */
+    height: 4px; /* ЗБІЛЬШЕНО з 3px */
+    background: linear-gradient(90deg, #FF6B00, #8B00FF);
+    border-radius: 3px; /* ЗБІЛЬШЕНО з 2px */
     position: absolute;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+    box-shadow: 
+        0 0 10px rgba(255, 107, 0, 0.7),
+        0 0 20px rgba(138, 43, 226, 0.5);
     left: 50%;
     top: 50%;
     transform-origin: center;
@@ -434,10 +526,10 @@ body.menu-left .mobile-menu-toggle {
 body.menu-left .sidebar {
     display: flex !important;
     position: fixed !important;
-    left: -320px !important;
+    left: -480px !important; /* ЗБІЛЬШЕНО з -320px */
     top: 0 !important;
     height: 100vh !important;
-    width: 320px !important;
+    width: 480px !important; /* ЗБІЛЬШЕНО з 320px */
     z-index: 1002 !important;
     transition: left 0.3s ease !important;
 }
@@ -474,17 +566,17 @@ body.menu-right .mobile-menu-toggle {
 body.menu-right .sidebar {
     display: flex !important;
     position: fixed !important;
-    right: -320px !important;
+    right: -480px !important; /* ЗБІЛЬШЕНО з -320px */
     left: auto !important;
     top: 0 !important;
     height: 100vh !important;
-    width: 320px !important;
+    width: 480px !important; /* ЗБІЛЬШЕНО з 320px */
     z-index: 1002 !important;
     transition: right 0.3s ease !important;
-    border-left: 3px solid #8B4513;
+    border-left: 3px solid #8B00FF;
     border-right: none;
     border-radius: 15px 0 0 15px;
-    box-shadow: -2px 0 40px rgba(0, 0, 0, 0.6);
+    box-shadow: -2px 0 40px rgba(138, 43, 226, 0.6);
 }
 
 body.menu-right .sidebar.open {
@@ -520,12 +612,12 @@ body.menu-down .static-menu.menu-bottom {
 
 /* Body padding adjustments */
 body.menu-up {
-    padding-top: 80px !important;
+    padding-top: 90px !important; /* ЗБІЛЬШЕНО з 80px */
     padding-bottom: 0 !important;
 }
 
 body.menu-down {
-    padding-bottom: 80px !important;
+    padding-bottom: 90px !important; /* ЗБІЛЬШЕНО з 80px */
     padding-top: 0 !important;
 }
 
@@ -535,92 +627,114 @@ body.menu-right {
     padding-bottom: 0 !important;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - HALLOWEEN */
 .static-menu::-webkit-scrollbar {
-    height: 4px;
+    height: 6px; /* ЗБІЛЬШЕНО з 4px */
 }
 
 .static-menu::-webkit-scrollbar-track {
-    background: rgba(139, 69, 19, 0.2);
-    border-radius: 2px;
+    background: rgba(25, 5, 45, 0.5);
+    border-radius: 3px;
 }
 
 .static-menu::-webkit-scrollbar-thumb {
-    background: rgba(255, 215, 0, 0.5);
-    border-radius: 2px;
+    background: linear-gradient(90deg, #FF6B00, #8B00FF);
+    border-radius: 3px;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
 }
 
 .static-menu::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 215, 0, 0.8);
+    background: linear-gradient(90deg, #FF8C00, #9B30FF);
 }
 
-/* Mobile Responsiveness - ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
+/* Mobile Responsiveness - ОПТИМІЗОВАНО */
+@media (max-width: 1024px) {
+    .settings-container {
+        max-width: 1200px;
+        padding: 15px 25px;
+    }
+}
+
 @media (max-width: 768px) {
     .mobile-menu-toggle {
-        width: 55px;
-        height: 55px;
+        width: 68px; /* ЗБІЛЬШЕНО з 55px */
+        height: 68px;
         top: 15px;
     }
     
     .menu-line {
-        width: 22px;
-        height: 2.5px;
+        width: 28px;
+        height: 3.5px;
     }
     
     .settings-container {
         padding: 12px 15px;
+        max-width: 100%;
     }
     
     .settings-title {
-        font-size: 1.8em;
-        margin-bottom: 15px;
+        font-size: 2.2em;
+        margin-bottom: 20px;
     }
     
     .background-options {
         grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        max-height: 360px; /* ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
+        gap: 12px;
+        max-height: 450px;
     }
     
     .background-option {
-        min-height: 95px;
-        padding: 10px;
+        min-height: 115px;
+        padding: 12px;
     }
     
     .menu-options {
-        max-width: 250px;
-        gap: 8px;
+        max-width: 350px;
+        gap: 10px;
     }
     
     .menu-option {
-        min-height: 65px;
-        padding: 10px 5px;
+        min-height: 80px;
+        padding: 12px 8px;
     }
     
     .static-menu {
-        height: 55px;
-        padding: 0 15px;
+        height: 65px;
+        padding: 0 20px;
     }
     
     .static-menu .nav-btn,
     .settings-btn-static {
-        font-size: 1.4em;
-        width: 40px;
-        height: 36px;
+        font-size: 1.8em;
+        width: 52px;
+        height: 46px;
+    }
+    
+    body.menu-left .sidebar,
+    body.menu-right .sidebar {
+        width: 380px !important;
+    }
+    
+    body.menu-left .sidebar {
+        left: -380px !important;
+    }
+    
+    body.menu-right .sidebar {
+        right: -380px !important;
     }
 }
 
 @media (max-width: 480px) {
     .mobile-menu-toggle {
-        width: 50px;
-        height: 50px;
+        width: 60px;
+        height: 60px;
         top: 12px;
         left: 12px;
     }
     
     .menu-line {
-        width: 20px;
-        height: 2px;
+        width: 26px;
+        height: 3px;
     }
     
     body.menu-right .mobile-menu-toggle {
@@ -630,12 +744,12 @@ body.menu-right {
     
     .background-options {
         grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-        max-height: 260px; /* ОНОВЛЕНО ДЛЯ КОМПАКТНОГО ВІДОБРАЖЕННЯ НА МАЛИХ ЕКРАНАХ */
+        gap: 10px;
+        max-height: 320px;
     }
     
     .background-option {
-        min-height: 80px;
+        min-height: 95px;
         flex-direction: row;
         justify-content: flex-start;
         text-align: left;
@@ -644,24 +758,38 @@ body.menu-right {
     .option-icon {
         margin-right: 12px;
         margin-bottom: 0;
+        font-size: 2em;
     }
     
     .background-preview {
-        height: 30px;
-        width: 50px;
+        height: 40px;
+        width: 60px;
         margin: 0;
         flex-shrink: 0;
     }
     
     .static-menu {
-        height: 50px;
-        padding: 0 10px;
+        height: 58px;
+        padding: 0 12px;
     }
     
     .static-menu .nav-btn,
     .settings-btn-static {
-        font-size: 1.2em;
-        width: 36px;
-        height: 32px;
+        font-size: 1.5em;
+        width: 45px;
+        height: 40px;
+    }
+    
+    body.menu-left .sidebar,
+    body.menu-right .sidebar {
+        width: 320px !important;
+    }
+    
+    body.menu-left .sidebar {
+        left: -320px !important;
+    }
+    
+    body.menu-right .sidebar {
+        right: -320px !important;
     }
 }
