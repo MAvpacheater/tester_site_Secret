@@ -15,7 +15,7 @@ async function loadTrainerTranslations() {
     if (trainerTranslations) return trainerTranslations;
     
     try {
-        const response = await fetch('info/trainer/trainers.json');
+        const response = await fetch('info/trainers.json');
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         trainerTranslations = await response.json();
         console.log('✅ Trainer translations loaded');
