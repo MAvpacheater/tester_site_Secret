@@ -48,6 +48,7 @@ const menuItems = [
     { page: 'charms', icon: '🔮' },
     { page: 'potions', icon: '🧪' },
     { page: 'worlds', icon: '🌍' },
+    { page: 'trader', icon: '🛒' },
     { page: 'help', icon: '🆘' },
     { page: 'peoples', icon: '🙏' }
 ];
