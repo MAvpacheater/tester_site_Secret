@@ -1,6 +1,6 @@
 /* Halloween Trader Store Page */
 .trader-page {
-    padding: 20px 30px;
+    padding: 15px 40px;
     background: transparent;
     min-height: 100vh;
     width: 100%;
@@ -34,17 +34,17 @@
 
 .trader-header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     position: relative;
     z-index: 1;
 }
 
 .trader-settings-btn {
     position: absolute;
-    top: 20px;
-    right: 40px;
-    width: 50px;
-    height: 50px;
+    top: 15px;
+    right: 30px;
+    width: 45px;
+    height: 45px;
     background: rgba(0,0,0,0.9);
     border: 2px solid #FF6600;
     border-radius: 50%;
@@ -52,7 +52,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 22px;
     transition: all 0.3s ease;
     box-shadow: 
         0 0 25px rgba(255,100,0,0.6),
@@ -69,14 +69,14 @@
 }
 
 .trader-title {
-    font-size: 2.2em;
+    font-size: 2em;
     background: linear-gradient(90deg, #FF6600, #8B008B, #FF4500, #8B008B, #FF6600);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: halloweenGlow 4s linear infinite;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     letter-spacing: 3px;
     font-weight: 900;
     text-transform: uppercase;
@@ -89,7 +89,7 @@
 }
 
 .trader-subtitle {
-    font-size: 1em;
+    font-size: 0.95em;
     color: #FF6600;
     text-shadow: 0 0 15px rgba(255,100,0,0.9), 0 0 30px rgba(138,43,226,0.5);
     letter-spacing: 1.5px;
@@ -98,12 +98,11 @@
 .trader-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 25px;
-    max-width: 1600px;
+    gap: 20px;
+    max-width: 1800px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 30px;
+    padding: 0 20px;
     position: relative;
     z-index: 1;
 }
@@ -112,11 +111,10 @@
     background: linear-gradient(135deg, rgba(30,15,45,0.95), rgba(20,10,30,0.98));
     border: 2px solid rgba(255,100,0,0.5);
     border-radius: 15px;
-    padding: 18px;
+    padding: 15px;
     transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
-    min-width: 220px;
     box-shadow: 
         0 0 25px rgba(255,100,0,0.4),
         0 0 40px rgba(138,43,226,0.3),
@@ -173,7 +171,7 @@
 
 .trader-image-container {
     width: 100%;
-    height: 160px;
+    height: 140px;
     background: rgba(255,100,0,0.1);
     border: 3px solid #FF6600;
     border-radius: 12px;
@@ -181,7 +179,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     box-shadow: 
         0 0 25px rgba(255,100,0,0.5),
         inset 0 0 20px rgba(255,100,0,0.15);
@@ -197,7 +195,7 @@
 }
 
 .trader-image-placeholder {
-    font-size: 4em;
+    font-size: 3.5em;
     filter: drop-shadow(0 0 15px rgba(255,100,0,0.8));
 }
 
@@ -217,14 +215,14 @@
 }
 
 .upload-icon {
-    font-size: 3em;
-    margin-bottom: 10px;
+    font-size: 2.5em;
+    margin-bottom: 8px;
     filter: drop-shadow(0 0 10px rgba(255,100,0,0.6));
 }
 
 .upload-text {
     color: #FF6600;
-    font-size: 0.9em;
+    font-size: 0.85em;
     text-shadow: 0 0 10px rgba(255,100,0,0.6);
 }
 
@@ -246,11 +244,11 @@
 .trader-card-body {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .trader-name {
-    font-size: 1.3em;
+    font-size: 1.2em;
     color: #FF6600;
     font-weight: 900;
     text-shadow: 0 0 20px rgba(255,100,0,0.9);
@@ -261,7 +259,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 15px;
+    padding: 10px 12px;
     background: rgba(255,100,0,0.08);
     border: 2px solid #FF6600;
     border-radius: 12px;
@@ -273,25 +271,25 @@
 .price-label {
     color: #FF6600;
     font-weight: 700;
-    font-size: 1em;
+    font-size: 0.95em;
     text-shadow: 0 0 12px rgba(255,100,0,0.8);
 }
 
 .price-value {
     color: #8B008B;
     font-weight: 900;
-    font-size: 1.4em;
+    font-size: 1.3em;
     text-shadow: 0 0 20px rgba(138,43,226,0.9);
 }
 
 .trader-quantity {
     text-align: center;
-    padding: 10px;
+    padding: 8px;
     background: rgba(138,43,226,0.08);
     border: 1px solid rgba(138,43,226,0.4);
     border-radius: 10px;
     color: #DDA0DD;
-    font-size: 0.95em;
+    font-size: 0.9em;
     text-shadow: 0 0 10px rgba(221,160,221,0.6);
 }
 
@@ -324,9 +322,9 @@
     background: linear-gradient(135deg, #FF6600, #FF4500);
     color: #000;
     border: 2px solid #FF6600;
-    padding: 12px 35px;
+    padding: 10px 30px;
     border-radius: 10px;
-    font-size: 1.1em;
+    font-size: 1em;
     font-weight: 900;
     cursor: pointer;
     margin: 0 10px;
@@ -362,43 +360,50 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1600px) {
+    .trader-container {
+        max-width: 1400px;
+    }
+}
+
 @media (max-width: 1400px) {
     .trader-container {
-        grid-template-columns: repeat(3, minmax(250px, 1fr));
-        width: 85%;
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 1200px;
     }
 }
 
 @media (max-width: 1024px) {
     .trader-container {
         grid-template-columns: repeat(2, 1fr);
+        max-width: 900px;
     }
     
     .trader-page {
-        padding: 30px 15px;
+        padding: 20px 15px;
     }
     
     .trader-settings-btn {
-        right: 30px;
+        right: 25px;
     }
 }
 
 @media (max-width: 768px) {
     .trader-container {
         grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
+        gap: 15px;
     }
     
     .trader-title {
-        font-size: 2.5em;
+        font-size: 1.8em;
     }
     
     .trader-subtitle {
-        font-size: 1.1em;
+        font-size: 0.9em;
     }
     
     .trader-image-container {
-        height: 150px;
+        height: 130px;
     }
 }
 
@@ -408,10 +413,10 @@
     }
     
     .trader-card {
-        padding: 15px;
+        padding: 12px;
     }
     
     .trader-image-container {
-        height: 180px;
+        height: 150px;
     }
 }
