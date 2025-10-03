@@ -17,7 +17,7 @@ async function loadWorldsTranslations() {
     
     try {
         console.log('📥 Loading worlds translations...');
-        const response = await fetch('info/worlds/worlds.json');
+        const response = await fetch('info/worlds.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
