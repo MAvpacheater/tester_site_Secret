@@ -1,4 +1,4 @@
-/* 🎃 Halloween Settings Styles - Spooky Theme з MenuManager 🎃 */
+/* Покращений Settings Styles - Mining Theme з MenuManager */
 
 .settings-container {
     width: 100%;
@@ -8,30 +8,30 @@
 }
 
 .settings-title {
-    color: #FF6B00;
+    color: #FFD700;
     font-size: 2em;
     font-weight: 800;
     text-align: center;
     margin-bottom: 20px;
     text-shadow: 
         3px 3px 6px rgba(0, 0, 0, 0.8),
-        0 0 20px rgba(255, 107, 0, 0.5);
+        0 0 20px rgba(255, 215, 0, 0.3);
     letter-spacing: 2px;
 }
 
 .settings-section {
     background: linear-gradient(135deg, 
-        rgba(75, 0, 130, 0.3) 0%, 
-        rgba(25, 25, 112, 0.4) 50%, 
-        rgba(0, 0, 0, 0.5) 100%);
-    border: 3px solid #8B008B;
+        rgba(139, 69, 19, 0.3) 0%, 
+        rgba(101, 67, 33, 0.4) 50%, 
+        rgba(62, 39, 35, 0.5) 100%);
+    border: 3px solid #8B4513;
     border-radius: 20px;
     padding: 18px;
     margin-bottom: 18px;
     backdrop-filter: blur(10px);
     box-shadow: 
-        0 10px 30px rgba(138, 43, 226, 0.4),
-        inset 0 2px 10px rgba(255, 107, 0, 0.1);
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        inset 0 2px 10px rgba(255, 215, 0, 0.1);
     position: relative;
     width: 100%;
     box-sizing: border-box;
@@ -46,13 +46,13 @@
     height: 3px;
     background: linear-gradient(90deg, 
         transparent 0%, 
-        rgba(255, 107, 0, 0.5) 50%, 
+        rgba(255, 215, 0, 0.5) 50%, 
         transparent 100%);
 }
 
 /* Заголовок категорії */
 .category-header {
-    color: #FF6B00;
+    color: #FFD700;
     font-size: 1.4em;
     font-weight: 700;
     margin-bottom: 15px;
@@ -67,7 +67,7 @@
 }
 
 .category-header:hover {
-    background: rgba(255, 107, 0, 0.1);
+    background: rgba(255, 215, 0, 0.1);
     transform: translateY(-1px);
 }
 
@@ -84,21 +84,21 @@
 .category-toggle {
     font-size: 0.8em;
     transition: transform 0.3s ease;
-    color: #BA55D3;
+    color: #D4AF37;
 }
 
 .category-header.collapsed .category-toggle {
     transform: rotate(-90deg);
 }
 
-/* Контейнер для кнопок фонів - ШИРИНА ×1.5 */
+/* Контейнер для кнопок фонів - ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
 .background-options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr); /* ЗМІНЕНО З 2 НА 3 РЯДИ */
     gap: 15px;
     margin-top: 10px;
-    max-height: 450px;
+    max-height: 450px; /* ЗБІЛЬШЕНО ВИСОТУ ДЛЯ 3 РЯДІВ */
     overflow: hidden;
     transition: all 0.4s ease;
     opacity: 1;
@@ -110,7 +110,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     margin-top: 15px;
-    max-width: 450px; /* ×1.5 від 300px */
+    max-width: 300px;
     justify-content: center;
     max-height: 500px;
     overflow: hidden;
@@ -129,9 +129,9 @@
 /* Кнопки опцій */
 .background-option, .menu-option {
     background: linear-gradient(135deg, 
-        rgba(75, 0, 130, 0.2) 0%, 
-        rgba(0, 0, 0, 0.3) 100%);
-    border: 2px solid rgba(138, 43, 226, 0.5);
+        rgba(139, 69, 19, 0.2) 0%, 
+        rgba(62, 39, 35, 0.3) 100%);
+    border: 2px solid rgba(139, 69, 19, 0.5);
     border-radius: 12px;
     padding: 12px;
     cursor: pointer;
@@ -157,11 +157,11 @@
 
 .background-option:hover, .menu-option:hover {
     background: linear-gradient(135deg, 
-        rgba(255, 107, 0, 0.2) 0%, 
-        rgba(138, 43, 226, 0.4) 100%);
-    border-color: #FF6B00;
+        rgba(255, 215, 0, 0.2) 0%, 
+        rgba(139, 69, 19, 0.4) 100%);
+    border-color: #FFD700;
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(255, 107, 0, 0.3);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
 }
 
 .menu-option:hover {
@@ -170,12 +170,12 @@
 
 .background-option.active, .menu-option.active {
     background: linear-gradient(135deg, 
-        rgba(255, 107, 0, 0.3) 0%, 
-        rgba(138, 43, 226, 0.2) 100%);
-    border-color: #FF6B00;
+        rgba(255, 215, 0, 0.3) 0%, 
+        rgba(255, 165, 0, 0.2) 100%);
+    border-color: #FFD700;
     box-shadow: 
-        0 6px 25px rgba(255, 107, 0, 0.4),
-        inset 0 2px 8px rgba(255, 107, 0, 0.2);
+        0 6px 25px rgba(255, 215, 0, 0.4),
+        inset 0 2px 8px rgba(255, 215, 0, 0.2);
     transform: translateY(-1px);
 }
 
@@ -184,7 +184,7 @@
     position: absolute;
     top: 8px;
     right: 10px;
-    color: #FF6B00;
+    color: #FFD700;
     font-size: 1.1em;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -208,7 +208,7 @@
 }
 
 .option-name, .menu-option-name {
-    color: #FFB347;
+    color: #F5DEB3;
     font-size: 0.9em;
     font-weight: 600;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -221,7 +221,7 @@
 }
 
 .option-description {
-    color: #BA55D3;
+    color: #D4AF37;
     font-size: 0.75em;
     opacity: 0.8;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
@@ -233,7 +233,7 @@
     height: 50px;
     border-radius: 8px;
     margin: 8px 0 0 0;
-    border: 1px solid rgba(138, 43, 226, 0.3);
+    border: 1px solid rgba(139, 69, 19, 0.3);
     background-size: cover;
     background-position: center;
     position: relative;
@@ -434,10 +434,10 @@ body.menu-left .mobile-menu-toggle {
 body.menu-left .sidebar {
     display: flex !important;
     position: fixed !important;
-    left: -480px !important; /* ×1.5 від 320px */
+    left: -320px !important;
     top: 0 !important;
     height: 100vh !important;
-    width: 480px !important; /* ×1.5 від 320px */
+    width: 320px !important;
     z-index: 1002 !important;
     transition: left 0.3s ease !important;
 }
@@ -474,11 +474,11 @@ body.menu-right .mobile-menu-toggle {
 body.menu-right .sidebar {
     display: flex !important;
     position: fixed !important;
-    right: -480px !important; /* ×1.5 від 320px */
+    right: -320px !important;
     left: auto !important;
     top: 0 !important;
     height: 100vh !important;
-    width: 480px !important; /* ×1.5 від 320px */
+    width: 320px !important;
     z-index: 1002 !important;
     transition: right 0.3s ease !important;
     border-left: 3px solid #8B4513;
@@ -554,7 +554,7 @@ body.menu-right {
     background: rgba(255, 215, 0, 0.8);
 }
 
-/* Mobile Responsiveness */
+/* Mobile Responsiveness - ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
 @media (max-width: 768px) {
     .mobile-menu-toggle {
         width: 55px;
@@ -579,7 +579,7 @@ body.menu-right {
     .background-options {
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
-        max-height: 360px;
+        max-height: 360px; /* ОНОВЛЕНО ДЛЯ 3 РЯДІВ */
     }
     
     .background-option {
@@ -588,7 +588,7 @@ body.menu-right {
     }
     
     .menu-options {
-        max-width: 375px; /* ×1.5 від 250px */
+        max-width: 250px;
         gap: 8px;
     }
     
@@ -631,7 +631,7 @@ body.menu-right {
     .background-options {
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
-        max-height: 260px;
+        max-height: 260px; /* ОНОВЛЕНО ДЛЯ КОМПАКТНОГО ВІДОБРАЖЕННЯ НА МАЛИХ ЕКРАНАХ */
     }
     
     .background-option {
