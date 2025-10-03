@@ -1,4 +1,4 @@
-// General JavaScript functions - Updated with new path
+// General JavaScript functions - Updated with language fix
 
 let currentAppLanguage = 'en';
 let menuTranslations = null;
@@ -181,8 +181,13 @@ async function switchAppLanguage(lang) {
     currentAppLanguage = lang;
     saveAppLanguage(lang);
     
+    console.log(`🌐 Switching language from ${previousLanguage} to ${lang}`);
+    
+    // Update all language buttons
     document.querySelectorAll('.lang-flag-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
+        const isActive = btn.dataset.lang === lang;
+        btn.classList.toggle('active', isActive);
+        console.log(`🚩 Button ${btn.dataset.lang}: ${isActive ? 'active' : 'inactive'}`);
     });
     
     updateMenuTranslations();
@@ -213,6 +218,28 @@ async function switchAppLanguage(lang) {
                 console.error(`Error updating language:`, error);
             }
         }
+    });
+}
+
+function setupLanguageButtons() {
+    console.log('🔧 Setting up language buttons...');
+    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
+        // Remove any existing listeners by cloning
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        // Add fresh click handler
+        newBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const lang = this.dataset.lang;
+            console.log('🖱️ Language button clicked:', lang);
+            if (lang && lang !== currentAppLanguage) {
+                switchAppLanguage(lang);
+            }
+        });
+        
+        console.log(`✅ Language button setup: ${newBtn.dataset.lang}`);
     });
 }
 
@@ -312,9 +339,17 @@ async function initializeApp() {
     const appContent = document.getElementById('app-content');
     if (!appContent || !appContent.innerHTML.trim()) return;
     
+    console.log('🚀 Initializing app...');
+    
     currentAppLanguage = getCurrentAppLanguage();
     await loadMenuTranslations();
     
+    console.log(`📝 Current language: ${currentAppLanguage}`);
+    
+    // Initialize language buttons first
+    setupLanguageButtons();
+    
+    // Set active language button
     document.querySelectorAll('.lang-flag-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === currentAppLanguage);
     });
@@ -357,6 +392,7 @@ async function initializeApp() {
     });
 
     appInitialized = true;
+    console.log('✅ App initialized successfully');
 }
 
 function toggleCategory(categoryId) {
@@ -376,7 +412,10 @@ function toggleCategory(categoryId) {
     }
 }
 
-function initializeCategories() {}
+function initializeCategories() {
+    // Setup language button handlers
+    setupLanguageButtons();
+}
 
 function toggleMobileMenu() {
     const sidebar = document.getElementById('sidebar');
@@ -443,3 +482,4 @@ window.updatePageTitles = updatePageTitles;
 window.saveCurrentPage = saveCurrentPage;
 window.getCurrentPage = getCurrentPage;
 window.getCurrentMenuPosition = getCurrentMenuPosition;
+window.setupLanguageButtons = setupLanguageButtons;
