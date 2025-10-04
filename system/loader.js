@@ -58,7 +58,7 @@ function initializeSystems() {
         if (typeof initGitHubAutoReload === 'function') {
             initGitHubAutoReload({
                 githubUser: 'MAvpacheater',
-                githubRepo: 'tester_site_Secret',
+                githubRepo: 'armwrestlerinfopost',
                 branch: 'main',
                 checkInterval: 30000
             });
@@ -85,23 +85,23 @@ function handleEnhancedRouting() {
     }
     
     const pathMappings = {
-        '/tester_site_Secret/boosts_info': 'boosts', '/boosts_info': 'boosts', 'boosts_info': 'boosts',
-        '/tester_site_Secret/secret_pets': 'secret', '/secret_pets': 'secret', 'secret_pets': 'secret',
-        '/tester_site_Secret/potions_food': 'potions', '/potions_food': 'potions', 'potions_food': 'potions',
-        '/tester_site_Secret/worlds_info': 'worlds', '/worlds_info': 'worlds', 'worlds_info': 'worlds',
-        '/tester_site_Secret/help_guide': 'help', '/help_guide': 'help', 'help_guide': 'help',
-        '/tester_site_Secret/peoples_thanks': 'peoples', '/peoples_thanks': 'peoples', 'peoples_thanks': 'peoples',
-        '/tester_site_Secret/arm_calculator': 'arm', '/arm_calculator': 'arm', 'arm_calculator': 'arm',
-        '/tester_site_Secret/grind_calculator': 'grind', '/grind_calculator': 'grind', 'grind_calculator': 'grind',
-        '/tester_site_Secret/roulette_calculator': 'roulette', '/roulette_calculator': 'roulette', 'roulette_calculator': 'roulette',
-        '/tester_site_Secret/boss_calculator': 'boss', '/boss_calculator': 'boss', 'boss_calculator': 'boss',
-        '/tester_site_Secret/shiny_list': 'shiny', '/shiny_list': 'shiny', 'shiny_list': 'shiny',
-        '/tester_site_Secret/codes_list': 'codes', '/codes_list': 'codes', 'codes_list': 'codes',
-        '/tester_site_Secret/aura_info': 'aura', '/aura_info': 'aura', 'aura_info': 'aura',
-        '/tester_site_Secret/trainer_info': 'trainer', '/trainer_info': 'trainer', 'trainer_info': 'trainer',
-        '/tester_site_Secret/charms_info': 'charms', '/charms_info': 'charms', 'charms_info': 'charms',
-        '/tester_site_Secret/settings': 'settings', '/settings': 'settings', 'settings': 'settings',
-        '/tester_site_Secret/trader_store': 'trader', '/trader_store': 'trader', 'trader_store': 'trader'
+        '/armwrestlerinfopost/boosts_info': 'boosts', '/boosts_info': 'boosts', 'boosts_info': 'boosts',
+        '/armwrestlerinfopost/secret_pets': 'secret', '/secret_pets': 'secret', 'secret_pets': 'secret',
+        '/armwrestlerinfopost/potions_food': 'potions', '/potions_food': 'potions', 'potions_food': 'potions',
+        '/armwrestlerinfopost/worlds_info': 'worlds', '/worlds_info': 'worlds', 'worlds_info': 'worlds',
+        '/armwrestlerinfopost/help_guide': 'help', '/help_guide': 'help', 'help_guide': 'help',
+        '/armwrestlerinfopost/peoples_thanks': 'peoples', '/peoples_thanks': 'peoples', 'peoples_thanks': 'peoples',
+        '/armwrestlerinfopost/arm_calculator': 'arm', '/arm_calculator': 'arm', 'arm_calculator': 'arm',
+        '/armwrestlerinfopost/grind_calculator': 'grind', '/grind_calculator': 'grind', 'grind_calculator': 'grind',
+        '/armwrestlerinfopost/roulette_calculator': 'roulette', '/roulette_calculator': 'roulette', 'roulette_calculator': 'roulette',
+        '/armwrestlerinfopost/boss_calculator': 'boss', '/boss_calculator': 'boss', 'boss_calculator': 'boss',
+        '/armwrestlerinfopost/shiny_list': 'shiny', '/shiny_list': 'shiny', 'shiny_list': 'shiny',
+        '/armwrestlerinfopost/codes_list': 'codes', '/codes_list': 'codes', 'codes_list': 'codes',
+        '/armwrestlerinfopost/aura_info': 'aura', '/aura_info': 'aura', 'aura_info': 'aura',
+        '/armwrestlerinfopost/trainer_info': 'trainer', '/trainer_info': 'trainer', 'trainer_info': 'trainer',
+        '/armwrestlerinfopost/charms_info': 'charms', '/charms_info': 'charms', 'charms_info': 'charms',
+        '/armwrestlerinfopost/settings': 'settings', '/settings': 'settings', 'settings': 'settings',
+        '/armwrestlerinfopost/trader_store': 'trader', '/trader_store': 'trader', 'trader_store': 'trader'
     };
     
     const currentPath = window.location.pathname;
@@ -109,8 +109,8 @@ function handleEnhancedRouting() {
     
     if (!pathMappings[currentPath]) {
         for (const [path, page] of Object.entries(pathMappings)) {
-            if (currentPath.includes(path.replace('/tester_site_Secret', '')) && 
-                path.replace('/tester_site_Secret', '')) {
+            if (currentPath.includes(path.replace('/armwrestlerinfopost', '')) && 
+                path.replace('/м', '')) {
                 targetPage = page;
                 break;
             }
@@ -126,8 +126,8 @@ function parsePathToPage(path) {
     let cleanPath = path.split('?')[0].split('#')[0];
     if (cleanPath.startsWith('/')) cleanPath = cleanPath.substring(1);
     if (cleanPath.endsWith('/')) cleanPath = cleanPath.slice(0, -1);
-    if (cleanPath.startsWith('tester_site_Secret/')) {
-        cleanPath = cleanPath.substring('tester_site_Secret/'.length);
+    if (cleanPath.startsWith('armwrestlerinfopost/')) {
+        cleanPath = cleanPath.substring('armwrestlerinfopost/'.length);
     }
     
     const pathMap = {
