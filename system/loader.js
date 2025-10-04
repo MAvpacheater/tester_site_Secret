@@ -29,7 +29,7 @@ async function loadScriptsDeferred() {
         'moderation/settings.js',
         'other/peoples.js', 
         'other/help.js',
-        'other/sell.js'  // ДОДАНО
+        'other/sell.js'
     ];
     
     updateLoadingText('Loading modules...');
