@@ -2,7 +2,7 @@ class GitHubAutoReload {
     constructor(options = {}) {
         Object.assign(this, {
             githubUser: options.githubUser || 'MAvpacheater',
-            githubRepo: options.githubRepo || 'tester_site_Secret',
+            githubRepo: options.githubRepo || 'armwrestlerinfopost',
             branch: options.branch || 'main',
             checkInterval: options.checkInterval || 30000,
             lastCommitSha: null,
