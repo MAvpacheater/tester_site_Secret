@@ -1,6 +1,6 @@
-// General JavaScript functions - Fixed language switching
+// General JavaScript functions - FINAL FIX for language switching
 
-let currentAppLanguage = 'en';
+let currentAppLanguage = null; // Почнемо з null, а не 'en'
 let menuTranslations = null;
 let appInitialized = false;
 
@@ -9,9 +9,11 @@ const storage = {
         const fullKey = `armHelper_${key}`;
         const data = typeof value === 'object' ? JSON.stringify(value) : value;
         localStorage.setItem(fullKey, data);
+        console.log(`💾 Storage.save: ${fullKey} = ${data}`);
     },
     load: (key, parse = false) => {
         const data = localStorage.getItem(`armHelper_${key}`);
+        console.log(`📖 Storage.load: armHelper_${key} = ${data}`);
         if (!data) return null;
         return parse ? JSON.parse(data) : data;
     }
@@ -27,16 +29,25 @@ function getCurrentPage() {
 
 function getCurrentAppLanguage() {
     const saved = localStorage.getItem('armHelper_language');
-    console.log('📖 Getting current language:', saved || 'en (default)');
+    console.log('📖 getCurrentAppLanguage:', saved || 'null (will use en)');
     return saved || 'en';
 }
 
 function saveAppLanguage(lang) {
-    console.log('💾 Saving language:', lang);
+    console.log('💾 saveAppLanguage called with:', lang);
+    console.log('📍 Before save - localStorage:', localStorage.getItem('armHelper_language'));
+    
     localStorage.setItem('armHelper_language', lang);
-    // Додаткова перевірка
-    const saved = localStorage.getItem('armHelper_language');
-    console.log('✅ Language saved, verification:', saved);
+    
+    // КРИТИЧНА ПЕРЕВІРКА
+    const verification = localStorage.getItem('armHelper_language');
+    console.log('📍 After save - localStorage:', verification);
+    
+    if (verification !== lang) {
+        console.error(`❌ SAVE FAILED! Tried to save '${lang}' but got '${verification}'`);
+    } else {
+        console.log(`✅ SAVE SUCCESS! Language '${lang}' confirmed in localStorage`);
+    }
 }
 
 function getCurrentMenuPosition() {
@@ -108,7 +119,7 @@ async function loadMenuTranslations() {
 }
 
 function updateMenuTranslations() {
-    console.log('🔄 Updating menu translations for:', currentAppLanguage);
+    console.log('🔄 updateMenuTranslations for:', currentAppLanguage);
     
     if (!menuTranslations || !currentAppLanguage) {
         console.warn('⚠️ No translations or language');
@@ -189,8 +200,10 @@ function updatePageTitles() {
 }
 
 async function switchAppLanguage(lang) {
-    console.log('🌍 switchAppLanguage called with:', lang);
-    console.log('📍 Current language before switch:', currentAppLanguage);
+    console.log('🌍 ========== switchAppLanguage START ==========');
+    console.log('🎯 Target language:', lang);
+    console.log('📍 Current language:', currentAppLanguage);
+    console.log('📍 localStorage BEFORE:', localStorage.getItem('armHelper_language'));
     
     if (!menuTranslations) {
         console.log('📥 Loading translations first...');
@@ -203,12 +216,25 @@ async function switchAppLanguage(lang) {
     }
     
     const previousLanguage = currentAppLanguage;
-    currentAppLanguage = lang;
     
-    // ВАЖЛИВО: спочатку зберігаємо, потім оновлюємо UI
+    // КРИТИЧНО: Спочатку зберігаємо в localStorage
     saveAppLanguage(lang);
     
-    console.log('🔄 Updating UI for language:', lang);
+    // Перевіряємо чи справді збереглося
+    const savedCheck = localStorage.getItem('armHelper_language');
+    console.log('🔍 Verification after save:', savedCheck);
+    
+    if (savedCheck !== lang) {
+        console.error('❌ CRITICAL: localStorage was not updated correctly!');
+        console.error('❌ Attempting to save again...');
+        localStorage.setItem('armHelper_language', lang);
+        const secondCheck = localStorage.getItem('armHelper_language');
+        console.log('🔍 Second save attempt result:', secondCheck);
+    }
+    
+    // Тепер змінюємо глобальну змінну
+    currentAppLanguage = lang;
+    console.log('✅ currentAppLanguage updated to:', currentAppLanguage);
     
     // Оновлюємо активну кнопку
     document.querySelectorAll('.lang-flag-btn').forEach(btn => {
@@ -247,8 +273,8 @@ async function switchAppLanguage(lang) {
         }
     });
     
-    console.log('✅ Language switched to:', lang);
-    console.log('💾 Saved in localStorage:', localStorage.getItem('armHelper_language'));
+    console.log('📍 localStorage AFTER:', localStorage.getItem('armHelper_language'));
+    console.log('✅ ========== switchAppLanguage END ==========');
 }
 
 function switchPage(page) {
@@ -342,11 +368,11 @@ function initializeAllModules() {
 
 async function initializeApp() {
     if (appInitialized) {
-        console.log('⚠️ App already initialized');
+        console.log('⚠️ App already initialized, skipping');
         return;
     }
     
-    console.log('🚀 Initializing app...');
+    console.log('🚀 ========== initializeApp START ==========');
     
     const appContent = document.getElementById('app-content');
     if (!appContent || !appContent.innerHTML.trim()) {
@@ -354,9 +380,13 @@ async function initializeApp() {
         return;
     }
     
-    // КРИТИЧНО: завантажуємо збережену мову ПЕРЕД будь-якими оновленнями
-    currentAppLanguage = getCurrentAppLanguage();
-    console.log('🌍 Initial language:', currentAppLanguage);
+    // КРИТИЧНО: Завантажуємо мову ТІЛЬКИ якщо currentAppLanguage ще null
+    if (currentAppLanguage === null) {
+        currentAppLanguage = getCurrentAppLanguage();
+        console.log('🌍 Initial language loaded from storage:', currentAppLanguage);
+    } else {
+        console.log('🌍 Language already set (not overriding):', currentAppLanguage);
+    }
     
     await loadMenuTranslations();
     
@@ -406,6 +436,8 @@ async function initializeApp() {
 
     appInitialized = true;
     console.log('✅ App initialized with language:', currentAppLanguage);
+    console.log('📍 Final localStorage check:', localStorage.getItem('armHelper_language'));
+    console.log('✅ ========== initializeApp END ==========');
 }
 
 function toggleCategory(categoryId) {
@@ -493,6 +525,6 @@ window.saveCurrentPage = saveCurrentPage;
 window.getCurrentPage = getCurrentPage;
 window.getCurrentMenuPosition = getCurrentMenuPosition;
 
-// Debug info
 console.log('✅ General.js loaded');
 console.log('🔍 switchAppLanguage available:', typeof window.switchAppLanguage);
+console.log('📍 Initial localStorage language:', localStorage.getItem('armHelper_language'));
