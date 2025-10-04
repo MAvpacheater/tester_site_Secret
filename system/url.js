@@ -32,7 +32,7 @@ class URLRouter {
             shiny: 'shiny_list', secret: 'secret_pets', codes: 'codes_list', aura: 'aura_info',
             trainer: 'trainer_info', charms: 'charms_info', potions: 'potions_food',
             worlds: 'worlds_info', settings: 'settings', help: 'help_guide', 
-            peoples: 'peoples_thanks'
+            peoples: 'peoples_thanks', trader: 'trader_store'
         };
 
         this.routes.clear();
