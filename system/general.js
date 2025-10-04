@@ -1,6 +1,6 @@
-// General JavaScript functions - FINAL FIX for language switching
+// General JavaScript functions - FIXED language switching
 
-let currentAppLanguage = null; // Почнемо з null, а не 'en'
+let currentAppLanguage = null;
 let menuTranslations = null;
 let appInitialized = false;
 
@@ -31,23 +31,6 @@ function getCurrentAppLanguage() {
     const saved = localStorage.getItem('armHelper_language');
     console.log('📖 getCurrentAppLanguage:', saved || 'null (will use en)');
     return saved || 'en';
-}
-
-function saveAppLanguage(lang) {
-    console.log('💾 saveAppLanguage called with:', lang);
-    console.log('📍 Before save - localStorage:', localStorage.getItem('armHelper_language'));
-    
-    localStorage.setItem('armHelper_language', lang);
-    
-    // КРИТИЧНА ПЕРЕВІРКА
-    const verification = localStorage.getItem('armHelper_language');
-    console.log('📍 After save - localStorage:', verification);
-    
-    if (verification !== lang) {
-        console.error(`❌ SAVE FAILED! Tried to save '${lang}' but got '${verification}'`);
-    } else {
-        console.log(`✅ SAVE SUCCESS! Language '${lang}' confirmed in localStorage`);
-    }
 }
 
 function getCurrentMenuPosition() {
@@ -203,7 +186,12 @@ async function switchAppLanguage(lang) {
     console.log('🌍 ========== switchAppLanguage START ==========');
     console.log('🎯 Target language:', lang);
     console.log('📍 Current language:', currentAppLanguage);
-    console.log('📍 localStorage BEFORE:', localStorage.getItem('armHelper_language'));
+    
+    // Якщо вже перемикаємось на цю мову - виходимо
+    if (currentAppLanguage === lang) {
+        console.log('⚠️ Already on this language, skipping');
+        return;
+    }
     
     if (!menuTranslations) {
         console.log('📥 Loading translations first...');
@@ -217,24 +205,13 @@ async function switchAppLanguage(lang) {
     
     const previousLanguage = currentAppLanguage;
     
-    // КРИТИЧНО: Спочатку зберігаємо в localStorage
-    saveAppLanguage(lang);
+    // Зберігаємо в localStorage
+    localStorage.setItem('armHelper_language', lang);
+    console.log('💾 Saved to localStorage:', lang);
     
-    // Перевіряємо чи справді збереглося
-    const savedCheck = localStorage.getItem('armHelper_language');
-    console.log('🔍 Verification after save:', savedCheck);
-    
-    if (savedCheck !== lang) {
-        console.error('❌ CRITICAL: localStorage was not updated correctly!');
-        console.error('❌ Attempting to save again...');
-        localStorage.setItem('armHelper_language', lang);
-        const secondCheck = localStorage.getItem('armHelper_language');
-        console.log('🔍 Second save attempt result:', secondCheck);
-    }
-    
-    // Тепер змінюємо глобальну змінну
+    // Оновлюємо глобальну змінну
     currentAppLanguage = lang;
-    console.log('✅ currentAppLanguage updated to:', currentAppLanguage);
+    console.log('✅ Updated currentAppLanguage to:', currentAppLanguage);
     
     // Оновлюємо активну кнопку
     document.querySelectorAll('.lang-flag-btn').forEach(btn => {
@@ -273,7 +250,7 @@ async function switchAppLanguage(lang) {
         }
     });
     
-    console.log('📍 localStorage AFTER:', localStorage.getItem('armHelper_language'));
+    console.log('📍 Final localStorage:', localStorage.getItem('armHelper_language'));
     console.log('✅ ========== switchAppLanguage END ==========');
 }
 
@@ -380,12 +357,12 @@ async function initializeApp() {
         return;
     }
     
-    // КРИТИЧНО: Завантажуємо мову ТІЛЬКИ якщо currentAppLanguage ще null
+    // Завантажуємо мову ТІЛЬКИ якщо currentAppLanguage ще null
     if (currentAppLanguage === null) {
         currentAppLanguage = getCurrentAppLanguage();
         console.log('🌍 Initial language loaded from storage:', currentAppLanguage);
     } else {
-        console.log('🌍 Language already set (not overriding):', currentAppLanguage);
+        console.log('🌍 Language already set:', currentAppLanguage);
     }
     
     await loadMenuTranslations();
@@ -518,7 +495,6 @@ window.initializeCategories = initializeCategories;
 window.forceReinitializeModule = forceReinitializeModule;
 window.switchAppLanguage = switchAppLanguage;
 window.getCurrentAppLanguage = getCurrentAppLanguage;
-window.saveAppLanguage = saveAppLanguage;
 window.updateMenuTranslations = updateMenuTranslations;
 window.updatePageTitles = updatePageTitles;
 window.saveCurrentPage = saveCurrentPage;
