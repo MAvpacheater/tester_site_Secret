@@ -6,10 +6,6 @@ let itemImages = {};
 async function loadTraderJSON() {
     try {
         const response = await fetch('other/sell.json');
-        if (!response.ok) {
-            console.warn('Could not load trader data');
-            return null;
-        }
         traderData = await response.json();
         return traderData;
     } catch (error) {
@@ -19,22 +15,10 @@ async function loadTraderJSON() {
 }
 
 async function initializeTrader() {
-    if (traderInitialized) {
-        console.log('⚠️ Trader already initialized');
-        return;
-    }
+    if (traderInitialized) return;
 
     const traderPage = document.getElementById('traderPage');
-    if (!traderPage) {
-        console.error('❌ Trader page element not found');
-        return;
-    }
-
-    // Не завантажуємо дані, якки сторінка не активна
-    if (!traderPage.classList.contains('active')) {
-        console.log('⏸️ Trader page not active, skipping initialization');
-        return;
-    }
+    if (!traderPage) return;
 
     await loadTraderJSON();
     
@@ -42,18 +26,12 @@ async function initializeTrader() {
     renderTraderStore(currentLang);
     
     traderInitialized = true;
-    console.log('✅ Trader store initialized');
+    console.log('✅ Trader initialized');
 }
 
 function handleImageUpload(event, index, lang) {
     const file = event.target.files[0];
     if (!file) return;
-
-    // Обмеження розміру файлу (2MB)
-    if (file.size > 2 * 1024 * 1024) {
-        alert('File too large! Maximum size is 2MB');
-        return;
-    }
 
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -72,25 +50,13 @@ function renderTraderStore(lang = 'en') {
     
     const html = `
         ${!isEditMode ? `
-            <button class="trader-settings-btn" onclick="toggleTraderEdit('${lang}')" title="${data.editButton}">
-                ⚙️
-            </button>
+            <button class="trader-settings-btn" onclick="toggleTraderEdit('${lang}')" title="${data.editButton}">⚙️</button>
         ` : ''}
         
         <div class="trader-header">
             ${isEditMode ? `
-                <input type="text" 
-                    class="edit-title" 
-                    value="${data.title}"
-                    data-lang="${lang}"
-                    data-field="title"
-                    style="font-size: 2.5em;">
-                <input type="text" 
-                    class="edit-subtitle" 
-                    value="${data.subtitle}"
-                    data-lang="${lang}"
-                    data-field="subtitle"
-                    style="font-size: 1.2em; margin-top: 15px;">
+                <input type="text" class="edit-title" value="${data.title}" data-lang="${lang}" data-field="title" style="font-size: 2.5em;">
+                <input type="text" class="edit-subtitle" value="${data.subtitle}" data-lang="${lang}" data-field="subtitle" style="font-size: 1.2em; margin-top: 15px;">
             ` : `
                 <h1 class="trader-title">${data.title}</h1>
                 <div class="trader-subtitle">${data.subtitle}</div>
@@ -99,12 +65,8 @@ function renderTraderStore(lang = 'en') {
         
         ${isEditMode ? `
             <div style="text-align: center; margin: 30px 0;">
-                <button onclick="saveTraderChanges('${lang}')" class="trader-btn trader-btn-save">
-                    ${data.saveButton}
-                </button>
-                <button onclick="cancelTraderEdit('${lang}')" class="trader-btn trader-btn-cancel">
-                    ${data.cancelButton}
-                </button>
+                <button onclick="saveTraderChanges('${lang}')" class="trader-btn trader-btn-save">${data.saveButton}</button>
+                <button onclick="cancelTraderEdit('${lang}')" class="trader-btn trader-btn-cancel">${data.cancelButton}</button>
             </div>
         ` : ''}
         
@@ -118,18 +80,12 @@ function renderTraderStore(lang = 'en') {
                     <div class="trader-image-container">
                         ${isEditMode ? `
                             <label class="trader-upload-area" for="file-${lang}-${index}">
-                                ${hasImage ? `
-                                    <img src="${itemImages[imageKey]}" alt="${item.name}">
-                                ` : `
+                                ${hasImage ? `<img src="${itemImages[imageKey]}" alt="${item.name}">` : `
                                     <div class="upload-icon">📸</div>
                                     <div class="upload-text">Click to upload</div>
                                 `}
                             </label>
-                            <input type="file" 
-                                id="file-${lang}-${index}" 
-                                class="trader-file-input" 
-                                accept="image/*"
-                                onchange="handleImageUpload(event, ${index}, '${lang}')">
+                            <input type="file" id="file-${lang}-${index}" class="trader-file-input" accept="image/*" onchange="handleImageUpload(event, ${index}, '${lang}')">
                         ` : hasImage ? `
                             <img src="${itemImages[imageKey]}" alt="${item.name}">
                         ` : `
@@ -139,13 +95,7 @@ function renderTraderStore(lang = 'en') {
                     
                     <div class="trader-card-body">
                         ${isEditMode ? `
-                            <input type="text" 
-                                class="edit-name" 
-                                value="${item.name || ''}"
-                                data-lang="${lang}"
-                                data-index="${index}"
-                                data-field="name"
-                                placeholder="Item Name">
+                            <input type="text" class="edit-name" value="${item.name || ''}" data-lang="${lang}" data-index="${index}" data-field="name" placeholder="Item Name">
                         ` : `
                             <div class="trader-name">${item.name || ''}</div>
                         `}
@@ -153,27 +103,14 @@ function renderTraderStore(lang = 'en') {
                         <div class="trader-price">
                             <span class="price-label">${data.priceLabel}</span>
                             ${isEditMode ? `
-                                <input type="text" 
-                                    class="edit-price" 
-                                    value="${item.price || ''}"
-                                    data-lang="${lang}"
-                                    data-index="${index}"
-                                    data-field="price"
-                                    placeholder="Price"
-                                    style="width: 100px; font-size: 1.2em;">
+                                <input type="text" class="edit-price" value="${item.price || ''}" data-lang="${lang}" data-index="${index}" data-field="price" placeholder="Price" style="width: 100px; font-size: 1.2em;">
                             ` : `
                                 <span class="price-value">${item.price || ''}</span>
                             `}
                         </div>
                         
                         ${isEditMode ? `
-                            <input type="text" 
-                                class="edit-quantity" 
-                                value="${item.quantity || ''}"
-                                data-lang="${lang}"
-                                data-index="${index}"
-                                data-field="quantity"
-                                placeholder="Quantity">
+                            <input type="text" class="edit-quantity" value="${item.quantity || ''}" data-lang="${lang}" data-index="${index}" data-field="quantity" placeholder="Quantity">
                         ` : `
                             <div class="trader-quantity">${item.quantity || ''}</div>
                         `}
@@ -212,8 +149,6 @@ function saveTraderChanges(lang) {
     
     isEditMode = false;
     renderTraderStore(lang);
-    
-    console.log('✅ Trader store data saved');
 }
 
 function cancelTraderEdit(lang) {
@@ -226,7 +161,6 @@ function updateTraderLanguage(lang) {
     renderTraderStore(lang);
 }
 
-// Експортуємо функції
 window.initializeTrader = initializeTrader;
 window.updateTraderLanguage = updateTraderLanguage;
 window.toggleTraderEdit = toggleTraderEdit;
@@ -234,18 +168,8 @@ window.saveTraderChanges = saveTraderChanges;
 window.cancelTraderEdit = cancelTraderEdit;
 window.handleImageUpload = handleImageUpload;
 
-// Ініціалізація лише при активній сторінці
-document.addEventListener('pageChanged', (e) => {
-    if (e.detail.page === 'trader' && !traderInitialized) {
-        setTimeout(() => initializeTrader(), 100);
-    }
-});
-
-// Оновлення мови
 document.addEventListener('languageChanged', (e) => {
-    if (traderInitialized) {
-        updateTraderLanguage(e.detail.language);
-    }
+    updateTraderLanguage(e.detail.language);
 });
 
-console.log('✅ Trader store module loaded');
+console.log('✅ Trader module loaded');
