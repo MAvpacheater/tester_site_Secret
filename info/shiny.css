@@ -1,4 +1,4 @@
-/* Shiny Stats Page Styles - Mining Theme */
+/* Shiny Stats Page Styles - Halloween Theme */
 .shiny-page {
     display: none;
 }
@@ -8,14 +8,14 @@
 }
 
 .shiny-page .title {
-    font-family: 'Orbitron', monospace;
+    font-family: 'Creepster', 'Orbitron', monospace;
     font-size: 2.5em;
     font-weight: 900;
-    color: #FFD700;
+    color: #FF6B00;
     text-align: center;
     margin-bottom: 30px;
-    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
-    background: linear-gradient(45deg, #FFD700, #FFA500, #FF8C00);
+    text-shadow: 0 0 25px rgba(255, 107, 0, 0.8), 3px 3px 6px rgba(0, 0, 0, 0.9);
+    background: linear-gradient(45deg, #FF6B00, #8B00FF, #FF4500);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -38,27 +38,27 @@
 }
 
 .stats-grid::-webkit-scrollbar-track { 
-    background: rgba(139, 69, 19, 0.2); 
+    background: rgba(26, 0, 51, 0.3); 
     border-radius: 10px; 
 }
 
 .stats-grid::-webkit-scrollbar-thumb { 
-    background: linear-gradient(135deg, #FFD700, #FFA500); 
+    background: linear-gradient(135deg, #FF6B00, #8B00FF); 
     border-radius: 10px;
-    border: 1px solid #8B4513;
+    border: 1px solid #8B00FF;
 }
 
 .stat-row {
     display: flex;
     justify-content: space-between;
     padding: 8px 12px;
-    background: linear-gradient(135deg, rgba(139, 69, 19, 0.2), rgba(101, 67, 33, 0.3));
+    background: linear-gradient(135deg, rgba(139, 0, 255, 0.3), rgba(75, 0, 130, 0.4));
     border-radius: 8px;
     transition: all 0.3s ease;
     border-left: 4px solid transparent;
-    border: 1px solid rgba(139, 69, 19, 0.3);
+    border: 1px solid rgba(139, 0, 255, 0.4);
     backdrop-filter: blur(5px);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(139, 0, 255, 0.2);
     position: relative;
     overflow: hidden;
 }
@@ -70,7 +70,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 107, 0, 0.2), transparent);
     transition: left 0.5s ease;
 }
 
@@ -79,27 +79,27 @@
 }
 
 .stat-row:hover {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(139, 69, 19, 0.3));
-    border-left-color: #FFD700;
-    border-color: rgba(255, 215, 0, 0.5);
+    background: linear-gradient(135deg, rgba(255, 107, 0, 0.3), rgba(139, 0, 255, 0.4));
+    border-left-color: #FF6B00;
+    border-color: rgba(255, 107, 0, 0.6);
     transform: translateX(5px);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 6px 20px rgba(255, 107, 0, 0.4), 0 0 25px rgba(139, 0, 255, 0.3);
 }
 
 .stat-row:nth-child(odd) { 
-    background: linear-gradient(135deg, rgba(101, 67, 33, 0.2), rgba(62, 39, 35, 0.3));
+    background: linear-gradient(135deg, rgba(75, 0, 130, 0.3), rgba(51, 0, 102, 0.4));
 }
 
 .stat-row:nth-child(odd):hover {
-    background: linear-gradient(135deg, rgba(255, 165, 0, 0.25), rgba(101, 67, 33, 0.3));
-    border-left-color: #FFA500;
-    border-color: rgba(255, 165, 0, 0.5);
+    background: linear-gradient(135deg, rgba(255, 69, 0, 0.3), rgba(75, 0, 130, 0.4));
+    border-left-color: #FF4500;
+    border-color: rgba(255, 69, 0, 0.6);
 }
 
 .left-value { 
     font-weight: 700; 
-    color: #FFD700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    color: #FF6B00;
+    text-shadow: 0 0 15px rgba(255, 107, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.8);
     font-family: 'Orbitron', monospace;
     position: relative;
     z-index: 1;
@@ -107,7 +107,7 @@
 
 .right-value { 
     font-weight: 500; 
-    color: #F5DEB3;
+    color: #E6E6FA;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
     position: relative;
     z-index: 1;
