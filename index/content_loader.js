@@ -1,4 +1,4 @@
-// Content loader script - Full debug version
+// Content loader script - Fixed version
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -95,11 +95,11 @@ async function loadContent() {
                             <!-- Settings Button -->
                             <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">⚙️</button>
                             
-                            <!-- Language Flags with detailed debugging -->
+                            <!-- Language Flags -->
                             <div class="language-flags" id="languageFlags">
-                                <button class="lang-flag-btn" data-lang="en" onclick="event.preventDefault(); event.stopPropagation(); console.log('🇺🇸 EN button clicked'); window.switchAppLanguage('en');" title="English">🇺🇸</button>
-                                <button class="lang-flag-btn" data-lang="uk" onclick="event.preventDefault(); event.stopPropagation(); console.log('🇺🇦 UK button clicked'); window.switchAppLanguage('uk');" title="Українська">🇺🇦</button>
-                                <button class="lang-flag-btn" data-lang="ru" onclick="event.preventDefault(); event.stopPropagation(); console.log('🇷🇺 RU button clicked'); window.switchAppLanguage('ru');" title="Русский">🇷🇺</button>
+                                <button class="lang-flag-btn" data-lang="en" title="English">🇺🇸</button>
+                                <button class="lang-flag-btn" data-lang="uk" title="Українська">🇺🇦</button>
+                                <button class="lang-flag-btn" data-lang="ru" title="Русский">🇷🇺</button>
                             </div>
                         </div>
                     </div>
@@ -120,51 +120,36 @@ async function loadContent() {
             const savedLang = localStorage.getItem('armHelper_language');
             console.log('🔍 Saved language in localStorage:', savedLang);
             
-            // Set active button based on saved language
+            // Set active button and attach event listeners
             setTimeout(() => {
                 const langButtons = document.querySelectorAll('.lang-flag-btn');
                 console.log(`🔍 Found ${langButtons.length} language buttons`);
                 
-                langButtons.forEach((btn, index) => {
+                langButtons.forEach((btn) => {
                     const lang = btn.getAttribute('data-lang');
                     const isActive = lang === savedLang;
                     
                     if (isActive) {
                         btn.classList.add('active');
-                        console.log(`✅ Button ${lang} set to ACTIVE (matches saved: ${savedLang})`);
+                        console.log(`✅ Button ${lang} set to ACTIVE`);
                     } else {
                         btn.classList.remove('active');
                     }
                     
-                    // Add additional event listener as backup
+                    // Single event listener with proper handling
                     btn.addEventListener('click', function(e) {
                         e.preventDefault();
                         e.stopPropagation();
                         
                         const targetLang = this.getAttribute('data-lang');
-                        console.log(`🖱️ addEventListener: Click on ${targetLang} button`);
-                        console.log(`📍 Before switch - localStorage:`, localStorage.getItem('armHelper_language'));
+                        console.log(`🖱️ Click: ${targetLang}`);
                         
                         if (typeof window.switchAppLanguage === 'function') {
-                            console.log(`✅ Calling switchAppLanguage('${targetLang}')`);
                             window.switchAppLanguage(targetLang);
-                            
-                            // Verify after switch
-                            setTimeout(() => {
-                                const newSavedLang = localStorage.getItem('armHelper_language');
-                                console.log(`📍 After switch - localStorage:`, newSavedLang);
-                                if (newSavedLang !== targetLang) {
-                                    console.error(`❌ PROBLEM: Tried to switch to ${targetLang} but localStorage shows ${newSavedLang}`);
-                                } else {
-                                    console.log(`✅ SUCCESS: Language correctly saved as ${targetLang}`);
-                                }
-                            }, 100);
-                        } else {
-                            console.error('❌ switchAppLanguage function not found on window!');
                         }
-                    }, true);
+                    }, { capture: true, once: false });
                     
-                    console.log(`✅ Listeners added for ${lang}`);
+                    console.log(`✅ Listener added for ${lang}`);
                 });
             }, 200);
             
