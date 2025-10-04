@@ -1,4 +1,4 @@
-// General JavaScript functions - Fixed language button handling
+// General JavaScript functions - Complete with trader support
 
 let currentAppLanguage = 'en';
 let menuTranslations = null;
@@ -54,7 +54,7 @@ function loadSettingsFromStorage(key) {
     return null;
 }
 
-// Menu translations
+// Menu translations with fallback for UK and RU
 async function loadMenuTranslations() {
     if (menuTranslations) return menuTranslations;
     
@@ -62,10 +62,76 @@ async function loadMenuTranslations() {
         const response = await fetch('moderation/menu.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         menuTranslations = await response.json();
-        console.log('✅ Menu translations loaded');
+        console.log('✅ Translations loaded from menu.json');
+        
+        // Add fallback translations if missing
+        if (!menuTranslations.uk) {
+            console.log('➕ Adding Ukrainian fallback');
+            menuTranslations.uk = {
+                menu: "Меню",
+                calculator: "Калькулятори", 
+                info: "Інформація",
+                others: "Інше",
+                pages: {
+                    calculator: "🐾 Калькулятор Петів",
+                    arm: "💪 Калькулятор Руки",
+                    grind: "🏋️‍♂️ Калькулятор Грайнду",
+                    roulette: "🎰 Калькулятор Рулетки",
+                    boss: "👹 Калькулятор Босів",
+                    boosts: "🚀 Бусти",
+                    shiny: "✨ Шайні Статистика",
+                    secret: "🔮 Секретні Пети",
+                    codes: "🎁 Коди",
+                    aura: "🌟 Аура",
+                    trainer: "🏆 Тренер",
+                    charms: "🔮 Чарівники",
+                    potions: "🧪 Зілля та Їжа",
+                    worlds: "🌍 Світи",
+                    settings: "⚙️ Налаштування",
+                    help: "🆘 Допомога",
+                    peoples: "🙏 Подяки",
+                    trader: "🛒 Магазин Трейдера"
+                },
+                auth: { login: "Вхід (Скоро...)" }
+            };
+        }
+        
+        if (!menuTranslations.ru) {
+            console.log('➕ Adding Russian fallback');
+            menuTranslations.ru = {
+                menu: "Меню",
+                calculator: "Калькуляторы", 
+                info: "Информация",
+                others: "Другое",
+                pages: {
+                    calculator: "🐾 Калькулятор Питомцев",
+                    arm: "💪 Калькулятор Руки",
+                    grind: "🏋️‍♂️ Калькулятор Грайнда",
+                    roulette: "🎰 Калькулятор Рулетки",
+                    boss: "👹 Калькулятор Боссов",
+                    boosts: "🚀 Бусты",
+                    shiny: "✨ Шайни Статистика",
+                    secret: "🔮 Секретные Петы",
+                    codes: "🎁 Коды",
+                    aura: "🌟 Аура",
+                    trainer: "🏆 Тренер",
+                    charms: "🔮 Чары",
+                    potions: "🧪 Зелья и Еда",
+                    worlds: "🌍 Миры",
+                    settings: "⚙️ Настройки",
+                    help: "🆘 Помощь",
+                    peoples: "🙏 Благодарности",
+                    trader: "🛒 Магазин Трейдера"
+                },
+                auth: { login: "Вход (Скоро...)" }
+            };
+        }
+        
         return menuTranslations;
     } catch (error) {
-        console.error('❌ Error loading menu translations:', error);
+        console.error('❌ Error loading translations:', error);
+        console.log('📝 Using complete fallback translations');
+        
         menuTranslations = {
             en: {
                 menu: "Menu",
@@ -93,8 +159,63 @@ async function loadMenuTranslations() {
                     trader: "🛒 Trader Store"
                 },
                 auth: { login: "Login (Soon...)" }
+            },
+            uk: {
+                menu: "Меню",
+                calculator: "Калькулятори", 
+                info: "Інформація",
+                others: "Інше",
+                pages: {
+                    calculator: "🐾 Калькулятор Петів",
+                    arm: "💪 Калькулятор Руки",
+                    grind: "🏋️‍♂️ Калькулятор Грайнду",
+                    roulette: "🎰 Калькулятор Рулетки",
+                    boss: "👹 Калькулятор Босів",
+                    boosts: "🚀 Бусти",
+                    shiny: "✨ Шайні Статистика",
+                    secret: "🔮 Секретні Пети",
+                    codes: "🎁 Коди",
+                    aura: "🌟 Аура",
+                    trainer: "🏆 Тренер",
+                    charms: "🔮 Чарівники",
+                    potions: "🧪 Зілля та Їжа",
+                    worlds: "🌍 Світи",
+                    settings: "⚙️ Налаштування",
+                    help: "🆘 Допомога",
+                    peoples: "🙏 Подяки",
+                    trader: "🛒 Магазин Трейдера"
+                },
+                auth: { login: "Вхід (Скоро...)" }
+            },
+            ru: {
+                menu: "Меню",
+                calculator: "Калькуляторы", 
+                info: "Информация",
+                others: "Другое",
+                pages: {
+                    calculator: "🐾 Калькулятор Питомцев",
+                    arm: "💪 Калькулятор Руки",
+                    grind: "🏋️‍♂️ Калькулятор Грайнда",
+                    roulette: "🎰 Калькулятор Рулетки",
+                    boss: "👹 Калькулятор Боссов",
+                    boosts: "🚀 Бусты",
+                    shiny: "✨ Шайни Статистика",
+                    secret: "🔮 Секретные Петы",
+                    codes: "🎁 Коды",
+                    aura: "🌟 Аура",
+                    trainer: "🏆 Тренер",
+                    charms: "🔮 Чары",
+                    potions: "🧪 Зелья и Еда",
+                    worlds: "🌍 Миры",
+                    settings: "⚙️ Настройки",
+                    help: "🆘 Помощь",
+                    peoples: "🙏 Благодарности",
+                    trader: "🛒 Магазин Трейдера"
+                },
+                auth: { login: "Вход (Скоро...)" }
             }
         };
+        
         return menuTranslations;
     }
 }
@@ -103,7 +224,10 @@ function updateMenuTranslations() {
     if (!menuTranslations || !currentAppLanguage) return;
     
     const translations = menuTranslations[currentAppLanguage];
-    if (!translations) return;
+    if (!translations) {
+        console.error(`Translation not found for language: ${currentAppLanguage}`);
+        return;
+    }
     
     const sidebarHeader = document.querySelector('.sidebar-header h3');
     if (sidebarHeader) sidebarHeader.textContent = translations.menu;
@@ -172,8 +296,8 @@ function updatePageTitles() {
 }
 
 async function switchAppLanguage(lang) {
-    console.log('=== LANGUAGE SWITCH START ===');
-    console.log('🌐 Switching from', currentAppLanguage, 'to', lang);
+    console.log('=== SWITCH APP LANGUAGE ===');
+    console.log(`🌐 Switching from ${currentAppLanguage} to ${lang}`);
     
     if (!menuTranslations) {
         console.log('📥 Loading translations...');
@@ -181,7 +305,8 @@ async function switchAppLanguage(lang) {
     }
     
     if (!menuTranslations[lang]) {
-        console.error(`❌ Language ${lang} not found, defaulting to English`);
+        console.error(`❌ Language ${lang} not found! Available:`, Object.keys(menuTranslations));
+        console.log('⚠️ Falling back to English');
         lang = 'en';
     }
     
@@ -189,106 +314,55 @@ async function switchAppLanguage(lang) {
     currentAppLanguage = lang;
     saveAppLanguage(lang);
     
-    console.log(`✅ Language changed: ${previousLanguage} → ${lang}`);
+    console.log(`✅ Language changed: ${previousLanguage} → ${currentAppLanguage}`);
     
     // Update button states
-    updateLanguageButtonStates();
+    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
+        const btnLang = btn.getAttribute('data-lang');
+        if (btnLang === lang) {
+            btn.classList.add('active');
+            console.log(`✅ Activated ${btnLang} button`);
+        } else {
+            btn.classList.remove('active');
+            console.log(`⚪ Deactivated ${btnLang} button`);
+        }
+    });
     
     // Update UI
     updateMenuTranslations();
     updatePageTitles();
     
-    // Dispatch event for modules
+    // Dispatch event
     const languageChangeEvent = new CustomEvent('languageChanged', {
         detail: { language: lang, previousLanguage: previousLanguage }
     });
     document.dispatchEvent(languageChangeEvent);
     
-    // Notify specific modules
+    // Notify modules
     const moduleNotifications = [
-        { name: 'roulette', func: 'updateRouletteLanguage' },
-        { name: 'boss', func: 'updateBossLanguage' },
-        { name: 'worlds', func: 'updateWorldsLanguage' },
-        { name: 'potions', func: 'updatePotionsLanguage' },
-        { name: 'secret', func: 'updateSecretLanguage' },
-        { name: 'peoples', func: 'updatePeoplesLanguage' },
-        { name: 'help', func: 'updateHelpLanguage' },
-        { name: 'settings', func: 'updateSettingsLanguage' },
-        { name: 'trader', func: 'updateTraderLanguage' }
+        'updateRouletteLanguage',
+        'updateBossLanguage',
+        'updateWorldsLanguage',
+        'updatePotionsLanguage',
+        'updateSecretLanguage',
+        'updatePeoplesLanguage',
+        'updateHelpLanguage',
+        'updateSettingsLanguage',
+        'updateTraderLanguage'
     ];
     
-    moduleNotifications.forEach(({ name, func }) => {
-        if (typeof window[func] === 'function') {
+    moduleNotifications.forEach(funcName => {
+        if (typeof window[funcName] === 'function') {
             try {
-                window[func](lang);
-                console.log(`✅ Updated ${name} module`);
+                window[funcName](lang);
+                console.log(`✅ Updated ${funcName}`);
             } catch (error) {
-                console.error(`❌ Error updating ${name}:`, error);
+                console.error(`❌ Error in ${funcName}:`, error);
             }
         }
     });
     
-    console.log('=== LANGUAGE SWITCH END ===');
-}
-
-function setupLanguageButtons() {
-    console.log('🔧 Setting up language buttons...');
-    
-    const langButtons = document.querySelectorAll('.lang-flag-btn');
-    console.log(`📍 Found ${langButtons.length} language buttons`);
-    
-    langButtons.forEach((btn, index) => {
-        const lang = btn.getAttribute('data-lang');
-        console.log(`🔘 Button ${index}: lang="${lang}"`);
-        
-        // Remove all existing event listeners by cloning
-        const newBtn = btn.cloneNode(true);
-        btn.parentNode.replaceChild(newBtn, btn);
-        
-        // Add new click handler
-        newBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const targetLang = this.getAttribute('data-lang');
-            console.log('🖱️ Language button clicked:', targetLang);
-            
-            if (targetLang && targetLang !== currentAppLanguage) {
-                console.log(`🔄 Switching language: ${currentAppLanguage} → ${targetLang}`);
-                switchAppLanguage(targetLang);
-            } else {
-                console.log('⏭️ Same language or invalid, skipping');
-            }
-        });
-        
-        // Add visual feedback
-        newBtn.style.cursor = 'pointer';
-        newBtn.style.userSelect = 'none';
-        
-        console.log(`✅ Button "${lang}" setup complete`);
-    });
-    
-    // Set initial active state
-    updateLanguageButtonStates();
-    console.log('✅ Language buttons setup complete');
-}
-
-function updateLanguageButtonStates() {
-    const buttons = document.querySelectorAll('.lang-flag-btn');
-    console.log(`🔄 Updating ${buttons.length} button states (current: ${currentAppLanguage})`);
-    
-    buttons.forEach(btn => {
-        const btnLang = btn.getAttribute('data-lang');
-        const isActive = btnLang === currentAppLanguage;
-        
-        if (isActive) {
-            btn.classList.add('active');
-            console.log(`✅ ${btnLang}: ACTIVE`);
-        } else {
-            btn.classList.remove('active');
-            console.log(`⚪ ${btnLang}: inactive`);
-        }
-    });
+    console.log('=== LANGUAGE SWITCH COMPLETE ===');
 }
 
 function switchPage(page) {
@@ -298,9 +372,7 @@ function switchPage(page) {
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
     
     const targetPage = document.getElementById(page + 'Page');
-    if (targetPage) {
-        targetPage.classList.add('active');
-    }
+    if (targetPage) targetPage.classList.add('active');
     
     const targetButton = document.querySelector(`[data-page="${page}"]`);
     if (targetButton) targetButton.classList.add('active');
@@ -397,28 +469,26 @@ async function initializeApp() {
     
     // Load saved language
     currentAppLanguage = getCurrentAppLanguage();
-    console.log(`📝 Loaded language: ${currentAppLanguage}`);
+    console.log(`📝 Current language: ${currentAppLanguage}`);
     
     // Load translations
     await loadMenuTranslations();
     
-    // Setup language buttons with delay to ensure DOM is ready
-    setTimeout(() => {
-        setupLanguageButtons();
-        console.log('✅ Language buttons initialized');
-    }, 500);
+    // Set initial button states
+    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
+        const btnLang = btn.getAttribute('data-lang');
+        btn.classList.toggle('active', btnLang === currentAppLanguage);
+    });
     
-    // Update UI with current language
+    // Update UI
     updateMenuTranslations();
     updatePageTitles();
     
-    // Initialize categories
+    // Initialize categories and modules
     initializeCategories();
-    
-    // Initialize all modules
     initializeAllModules();
     
-    // Apply menu position and restore page
+    // Apply settings and restore page
     setTimeout(() => {
         if (typeof window.menuManager !== 'undefined') {
             const currentMenuPos = getCurrentMenuPosition();
@@ -474,7 +544,6 @@ function toggleCategory(categoryId) {
 
 function initializeCategories() {
     console.log('🔧 Initializing categories...');
-    // Setup language buttons will be called after DOM is ready
 }
 
 function toggleMobileMenu() {
@@ -542,25 +611,22 @@ window.updatePageTitles = updatePageTitles;
 window.saveCurrentPage = saveCurrentPage;
 window.getCurrentPage = getCurrentPage;
 window.getCurrentMenuPosition = getCurrentMenuPosition;
-window.setupLanguageButtons = setupLanguageButtons;
-window.updateLanguageButtonStates = updateLanguageButtonStates;
 
-// Debug helpers
-window.debugLanguageButtons = function() {
-    console.log('=== LANGUAGE BUTTONS DEBUG ===');
+// Debug helper
+window.debugLanguage = function() {
+    console.log('=== LANGUAGE DEBUG ===');
+    console.log('Current language:', currentAppLanguage);
+    console.log('Saved language:', getCurrentAppLanguage());
+    console.log('Available languages:', menuTranslations ? Object.keys(menuTranslations) : 'Not loaded');
+    
     const buttons = document.querySelectorAll('.lang-flag-btn');
-    console.log('Total buttons:', buttons.length);
+    console.log(`Language buttons found: ${buttons.length}`);
     buttons.forEach((btn, i) => {
         const lang = btn.getAttribute('data-lang');
         const isActive = btn.classList.contains('active');
-        console.log(`Button ${i}: lang="${lang}", active=${isActive}`, btn);
+        console.log(`Button ${i}: lang="${lang}", active=${isActive}`);
     });
-    console.log('Current language:', currentAppLanguage);
-    console.log('Saved language:', getCurrentAppLanguage());
-    console.log('===========================');
+    console.log('===================');
 };
 
-window.testLanguageSwitch = function(lang) {
-    console.log(`🧪 Testing language switch to: ${lang}`);
-    switchAppLanguage(lang);
-};
+console.log('✅ general.js loaded successfully')
