@@ -1,4 +1,4 @@
-// Content loader script - Complete with trader page
+// Content loader script - Without trader page
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -80,7 +80,6 @@ async function loadContent() {
                             <div class="category-buttons" id="othersButtons">
                                 <button class="nav-btn" data-page="help" onclick="switchPage('help')"></button>
                                 <button class="nav-btn" data-page="peoples" onclick="switchPage('peoples')"></button>
-                                <button class="nav-btn" data-page="trader" onclick="switchPage('trader')"></button>
                             </div>
                         </div>
                     </div>
