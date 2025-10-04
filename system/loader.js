@@ -28,7 +28,8 @@ async function loadScriptsDeferred() {
         'info/worlds.js', 
         'moderation/settings.js',
         'other/peoples.js', 
-        'other/help.js'
+        'other/help.js',
+        'other/sell.js'  // ДОДАНО
     ];
     
     updateLoadingText('Loading modules...');
@@ -99,7 +100,8 @@ function handleEnhancedRouting() {
         '/tester_site_Secret/aura_info': 'aura', '/aura_info': 'aura', 'aura_info': 'aura',
         '/tester_site_Secret/trainer_info': 'trainer', '/trainer_info': 'trainer', 'trainer_info': 'trainer',
         '/tester_site_Secret/charms_info': 'charms', '/charms_info': 'charms', 'charms_info': 'charms',
-        '/tester_site_Secret/settings': 'settings', '/settings': 'settings', 'settings': 'settings'
+        '/tester_site_Secret/settings': 'settings', '/settings': 'settings', 'settings': 'settings',
+        '/tester_site_Secret/trader_store': 'trader', '/trader_store': 'trader', 'trader_store': 'trader'
     };
     
     const currentPath = window.location.pathname;
@@ -134,7 +136,7 @@ function parsePathToPage(path) {
         'arm_calculator': 'arm', 'grind_calculator': 'grind', 'roulette_calculator': 'roulette',
         'boss_calculator': 'boss', 'shiny_list': 'shiny', 'codes_list': 'codes',
         'aura_info': 'aura', 'trainer_info': 'trainer', 'charms_info': 'charms',
-        'settings': 'settings', '': 'calculator'
+        'settings': 'settings', 'trader_store': 'trader', '': 'calculator'
     };
     
     return pathMap[cleanPath] || 'calculator';
