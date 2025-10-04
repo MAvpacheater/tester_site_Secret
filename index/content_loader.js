@@ -1,4 +1,4 @@
-// Content loader script - With debug logging for language buttons
+// Content loader script - Full debug version
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -95,11 +95,11 @@ async function loadContent() {
                             <!-- Settings Button -->
                             <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">⚙️</button>
                             
-                            <!-- Language Flags with inline onclick -->
+                            <!-- Language Flags with detailed debugging -->
                             <div class="language-flags" id="languageFlags">
-                                <button class="lang-flag-btn active" data-lang="en" onclick="console.log('EN clicked'); window.switchAppLanguage('en');" title="English">🇺🇸</button>
-                                <button class="lang-flag-btn" data-lang="uk" onclick="console.log('UK clicked'); window.switchAppLanguage('uk');" title="Українська">🇺🇦</button>
-                                <button class="lang-flag-btn" data-lang="ru" onclick="console.log('RU clicked'); window.switchAppLanguage('ru');" title="Русский">🇷🇺</button>
+                                <button class="lang-flag-btn" data-lang="en" onclick="event.preventDefault(); event.stopPropagation(); console.log('🇺🇸 EN button clicked'); window.switchAppLanguage('en');" title="English">🇺🇸</button>
+                                <button class="lang-flag-btn" data-lang="uk" onclick="event.preventDefault(); event.stopPropagation(); console.log('🇺🇦 UK button clicked'); window.switchAppLanguage('uk');" title="Українська">🇺🇦</button>
+                                <button class="lang-flag-btn" data-lang="ru" onclick="event.preventDefault(); event.stopPropagation(); console.log('🇷🇺 RU button clicked'); window.switchAppLanguage('ru');" title="Русский">🇷🇺</button>
                             </div>
                         </div>
                     </div>
@@ -116,31 +116,55 @@ async function loadContent() {
             appContent.innerHTML = fullContent;
             console.log('✅ Content loaded successfully');
             
-            // Additional manual event listeners as backup
+            // Check current saved language
+            const savedLang = localStorage.getItem('armHelper_language');
+            console.log('🔍 Saved language in localStorage:', savedLang);
+            
+            // Set active button based on saved language
             setTimeout(() => {
                 const langButtons = document.querySelectorAll('.lang-flag-btn');
                 console.log(`🔍 Found ${langButtons.length} language buttons`);
                 
                 langButtons.forEach((btn, index) => {
                     const lang = btn.getAttribute('data-lang');
-                    console.log(`🔘 Button ${index}: ${lang}, onclick:`, btn.onclick !== null);
+                    const isActive = lang === savedLang;
+                    
+                    if (isActive) {
+                        btn.classList.add('active');
+                        console.log(`✅ Button ${lang} set to ACTIVE (matches saved: ${savedLang})`);
+                    } else {
+                        btn.classList.remove('active');
+                    }
                     
                     // Add additional event listener as backup
                     btn.addEventListener('click', function(e) {
                         e.preventDefault();
                         e.stopPropagation();
-                        console.log(`🖱️ Click event on ${lang} button`);
+                        
+                        const targetLang = this.getAttribute('data-lang');
+                        console.log(`🖱️ addEventListener: Click on ${targetLang} button`);
+                        console.log(`📍 Before switch - localStorage:`, localStorage.getItem('armHelper_language'));
                         
                         if (typeof window.switchAppLanguage === 'function') {
-                            console.log(`✅ Calling switchAppLanguage('${lang}')`);
-                            window.switchAppLanguage(lang);
+                            console.log(`✅ Calling switchAppLanguage('${targetLang}')`);
+                            window.switchAppLanguage(targetLang);
+                            
+                            // Verify after switch
+                            setTimeout(() => {
+                                const newSavedLang = localStorage.getItem('armHelper_language');
+                                console.log(`📍 After switch - localStorage:`, newSavedLang);
+                                if (newSavedLang !== targetLang) {
+                                    console.error(`❌ PROBLEM: Tried to switch to ${targetLang} but localStorage shows ${newSavedLang}`);
+                                } else {
+                                    console.log(`✅ SUCCESS: Language correctly saved as ${targetLang}`);
+                                }
+                            }, 100);
                         } else {
                             console.error('❌ switchAppLanguage function not found on window!');
-                            console.log('Available functions:', Object.keys(window).filter(k => k.includes('Language')));
                         }
-                    }, true); // Use capture phase
+                    }, true);
                     
-                    console.log(`✅ Backup listener added for ${lang}`);
+                    console.log(`✅ Listeners added for ${lang}`);
                 });
             }, 200);
             
@@ -150,6 +174,7 @@ async function loadContent() {
             // Wait for DOM to be ready, then initialize
             setTimeout(() => {
                 if (typeof initializeApp === 'function') {
+                    console.log('🚀 Calling initializeApp...');
                     initializeApp();
                 } else {
                     console.error('❌ initializeApp function not found');
@@ -205,3 +230,4 @@ window.handleAuthAction = handleAuthAction;
 
 console.log('✅ Content loader ready');
 console.log('🔍 Checking switchAppLanguage:', typeof window.switchAppLanguage);
+console.log('🔍 Current localStorage language:', localStorage.getItem('armHelper_language'));
