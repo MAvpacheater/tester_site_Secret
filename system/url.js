@@ -15,7 +15,7 @@ class URLRouter {
         console.log('🔍 Detecting base:', { protocol, host, pathname });
         
         if (host === 'mavpacheater.github.io') {
-            const base = `${protocol}//${host}/tester_site_Secret/`;
+            const base = `${protocol}//${host}/armwrestlerinfopost/`;
             console.log('✅ GitHub Pages:', base);
             return base;
         }
@@ -41,14 +41,14 @@ class URLRouter {
             this.routes.set(page, path);
             
             if (path === '') {
-                ['/', '', '/tester_site_Secret/', '/tester_site_Secret'].forEach(v => 
+                ['/', '', '/armwrestlerinfopost/', '/armwrestlerinfopost'].forEach(v => 
                     this.routes.set(v, page)
                 );
             } else {
                 [
                     path, `/${path}`, `${path}/`, `/${path}/`,
-                    `/tester_site_Secret/${path}`, `/tester_site_Secret/${path}/`,
-                    `tester_site_Secret/${path}`, `tester_site_Secret/${path}/`
+                    `/armwrestlerinfopost/${path}`, `/armwrestlerinfopost/${path}/`,
+                    `armwrestlerinfopost/${path}`, `armwrestlerinfopost/${path}/`
                 ].forEach(v => this.routes.set(v, page));
             }
         });
@@ -108,7 +108,7 @@ class URLRouter {
     }
 
     parsePathToPage(path) {
-        let clean = path.replace(/^\/|\/$/g, '').replace(/^tester_site_Secret\//, '');
+        let clean = path.replace(/^\/|\/$/g, '').replace(/^armwrestlerinfopost\//, '');
         
         for (const test of [clean, `/${clean}`, `${clean}/`, `/${clean}/`]) {
             if (this.routes.has(test)) return this.routes.get(test);
@@ -127,8 +127,8 @@ class URLRouter {
             return direct;
         }
 
-        let relative = pathname.includes('/tester_site_Secret/') 
-            ? pathname.split('/tester_site_Secret/')[1] || ''
+        let relative = pathname.includes('/tester_site_Sarmwrestlerinfopostecret/') 
+            ? pathname.split('/armwrestlerinfopost/')[1] || ''
             : pathname;
         
         relative = relative.replace(/^\/|\/$/g, '');
@@ -138,7 +138,7 @@ class URLRouter {
         const tests = [
             relative, `/${relative}`, `${relative}/`, `/${relative}/`,
             pathname, `${pathname}/`, pathname.replace(/\/$/, ''),
-            `/tester_site_Secret/${relative}`, `/tester_site_Secret/${relative}/`
+            `/armwrestlerinfopost/${relative}`, `/armwrestlerinfopost/${relative}/`
         ];
         
         const unique = [...new Set(tests)].filter(Boolean);
@@ -151,7 +151,7 @@ class URLRouter {
             }
         }
         
-        if (!relative || pathname === '/' || pathname.includes('/tester_site_Secret')) {
+        if (!relative || pathname === '/' || pathname.includes('/armwrestlerinfopost')) {
             console.log('✅ Root → calculator');
             return 'calculator';
         }
