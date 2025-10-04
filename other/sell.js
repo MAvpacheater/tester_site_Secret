@@ -27,19 +27,40 @@ async function loadTraderJSON() {
 }
 
 async function initializeTrader() {
-    if (traderInitialized) return;
+    if (traderInitialized) {
+        console.log('⚠️ Trader already initialized, re-rendering...');
+        currentLang = getCurrentAppLanguage?.() || 'en';
+        renderTraderStore(currentLang);
+        return;
+    }
 
     traderCache.page = document.getElementById('traderPage');
-    if (!traderCache.page) return;
+    if (!traderCache.page) {
+        console.error('❌ Trader page not found');
+        return;
+    }
 
+    console.log('🚀 Initializing Trader...');
     await loadTraderJSON();
     
     currentLang = getCurrentAppLanguage?.() || 'en';
+    
+    // Перевіряємо чи сторінка видима зараз
+    const isVisible = traderCache.page.offsetParent !== null;
+    console.log('👁️ Trader page visible:', isVisible);
+    
+    if (isVisible) {
+        // Якщо видима - рендеримо одразу
+        renderTraderStore(currentLang);
+        isTraderVisible = true;
+    }
     
     // Рендеримо тільки якщо сторінка видима
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             isTraderVisible = entry.isIntersecting;
+            console.log('🔄 Trader visibility changed:', isTraderVisible);
+            
             if (isTraderVisible && !traderCache.page.innerHTML) {
                 renderTraderStore(currentLang);
             }
@@ -78,11 +99,22 @@ function renderTraderStore(lang = 'en') {
     // Throttling - не рендеримо частіше ніж раз на 100ms
     const now = Date.now();
     if (now - traderCache.lastRender < traderCache.renderDelay) {
+        console.log('⏱️ Throttling render...');
         return;
     }
     traderCache.lastRender = now;
 
-    if (!traderCache.page || !traderData?.[lang]) return;
+    if (!traderCache.page) {
+        console.error('❌ Trader page not found in cache');
+        return;
+    }
+    
+    if (!traderData?.[lang]) {
+        console.error(`❌ No trader data for language: ${lang}`);
+        return;
+    }
+
+    console.log(`🎨 Rendering trader store for: ${lang}`);
 
     const data = traderData[lang];
     const items = data.items || [];
@@ -123,6 +155,8 @@ function renderTraderStore(lang = 'en') {
     // Очищаємо і вставляємо за один раз
     traderCache.page.innerHTML = '';
     traderCache.page.appendChild(fragment.firstChild);
+    
+    console.log('✅ Trader store rendered');
 }
 
 // Винесли створення карток в окрему функцію
@@ -223,9 +257,18 @@ function cancelTraderEdit(lang) {
 }
 
 function updateTraderLanguage(lang) {
-    if (!traderInitialized || !isTraderVisible) return;
+    console.log('🌍 Updating trader language to:', lang);
     currentLang = lang;
-    renderTraderStore(lang);
+    
+    // Завжди рендеримо при зміні мови, якщо сторінка активна
+    const traderPage = document.getElementById('traderPage');
+    const isActive = traderPage?.classList.contains('active');
+    
+    console.log('📄 Trader page active:', isActive);
+    
+    if (isActive || isTraderVisible) {
+        renderTraderStore(lang);
+    }
 }
 
 // Експорт функцій
@@ -241,9 +284,8 @@ let langChangeTimeout;
 document.addEventListener('languageChanged', (e) => {
     clearTimeout(langChangeTimeout);
     langChangeTimeout = setTimeout(() => {
-        if (isTraderVisible) {
-            updateTraderLanguage(e.detail.language);
-        }
+        console.log('🔔 Language changed event received:', e.detail.language);
+        updateTraderLanguage(e.detail.language);
     }, 150);
 });
 
