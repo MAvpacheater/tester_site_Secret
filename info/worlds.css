@@ -1,0 +1,463 @@
+/* 🎃 Halloween Worlds Page - Spooky Theme */
+
+.worlds-page {
+    display: none;
+    padding: 20px;
+    min-height: auto;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.worlds-page.active {
+    display: block !important;
+}
+
+.worlds-page .title {
+    color: #FF6B00;
+    font-size: 2.5em;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(255, 107, 0, 0.6),
+        0 0 40px rgba(138, 43, 226, 0.4);
+    font-family: 'Orbitron', monospace;
+    background: linear-gradient(135deg, #FF6B00, #8B00FF, #DC143C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+    animation: spookyGlow 3s ease-in-out infinite;
+}
+
+@keyframes spookyGlow {
+    0%, 100% { 
+        text-shadow: 
+            3px 3px 6px rgba(0, 0, 0, 0.9),
+            0 0 20px rgba(255, 107, 0, 0.6),
+            0 0 40px rgba(138, 43, 226, 0.4);
+    }
+    50% { 
+        text-shadow: 
+            3px 3px 6px rgba(0, 0, 0, 0.9),
+            0 0 30px rgba(255, 107, 0, 0.8),
+            0 0 60px rgba(138, 43, 226, 0.6);
+    }
+}
+
+/* Loading State - Haunted */
+.worlds-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 40px;
+    color: #FF6B00;
+    font-size: 1.2em;
+    font-weight: 700;
+    min-height: 200px;
+    background: linear-gradient(135deg, 
+        rgba(25, 5, 45, 0.8) 0%, 
+        rgba(50, 10, 70, 0.7) 50%, 
+        rgba(20, 0, 40, 0.85) 100%);
+    border-radius: 16px;
+    border: 3px solid #8B00FF;
+    margin: 20px 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 15px 35px rgba(138, 43, 226, 0.4),
+        inset 0 2px 10px rgba(255, 107, 0, 0.2);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: 'Orbitron', monospace;
+}
+
+.worlds-loading::after {
+    content: '';
+    margin-left: 15px;
+    width: 24px;
+    height: 24px;
+    border: 3px solid #FF6B00;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 0 15px rgba(255, 107, 0, 0.5);
+}
+
+/* Container - Dark Realm */
+.worlds-container {
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 12px;
+    scroll-behavior: smooth;
+    min-height: 200px;
+}
+
+.worlds-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.worlds-container::-webkit-scrollbar-track {
+    background: linear-gradient(135deg, 
+        rgba(25, 5, 45, 0.3), 
+        rgba(50, 10, 70, 0.4));
+    border-radius: 12px;
+}
+
+.worlds-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #FF6B00, #8B00FF);
+    border-radius: 12px;
+    border: 1px solid #DC143C;
+    box-shadow: 0 0 10px rgba(255, 107, 0, 0.5);
+}
+
+/* World Items - Haunted Cards */
+.world-item {
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, 
+        rgba(25, 5, 45, 0.8) 0%, 
+        rgba(50, 10, 70, 0.7) 50%, 
+        rgba(20, 0, 40, 0.85) 100%);
+    border-radius: 16px;
+    border: 3px solid rgba(138, 43, 226, 0.6);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Roboto', sans-serif;
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.4),
+        inset 0 2px 10px rgba(255, 107, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    min-height: 140px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+    backdrop-filter: blur(8px);
+}
+
+.world-item:nth-child(1) { animation-delay: 0.1s; }
+.world-item:nth-child(2) { animation-delay: 0.15s; }
+.world-item:nth-child(3) { animation-delay: 0.2s; }
+.world-item:nth-child(4) { animation-delay: 0.25s; }
+.world-item:nth-child(5) { animation-delay: 0.3s; }
+.world-item:nth-child(n+6) { animation-delay: 0.35s; }
+
+.world-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 107, 0, 0.15), 
+        transparent);
+    transition: left 0.6s ease;
+}
+
+.world-item:hover::before {
+    left: 100%;
+}
+
+.world-item:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 107, 0, 0.25) 0%, 
+        rgba(138, 43, 226, 0.3) 50%, 
+        rgba(50, 10, 70, 0.8) 100%);
+    border-color: rgba(255, 107, 0, 0.8);
+    transform: translateX(8px) translateY(-4px);
+    box-shadow: 
+        0 15px 40px rgba(255, 107, 0, 0.4),
+        inset 0 2px 15px rgba(255, 107, 0, 0.2);
+}
+
+.world-item:nth-child(even) {
+    background: linear-gradient(135deg, 
+        rgba(50, 10, 70, 0.8) 0%, 
+        rgba(20, 0, 40, 0.85) 50%, 
+        rgba(25, 5, 45, 0.9) 100%);
+}
+
+.world-item:nth-child(even):hover {
+    background: linear-gradient(135deg, 
+        rgba(138, 43, 226, 0.3) 0%, 
+        rgba(255, 107, 0, 0.25) 50%, 
+        rgba(50, 10, 70, 0.8) 100%);
+    border-color: rgba(138, 43, 226, 0.8);
+}
+
+/* World Content - Spooky Text */
+.world-title {
+    font-weight: 700;
+    color: #FF6B00;
+    font-size: 1.4em;
+    margin-bottom: 12px;
+    font-family: 'Orbitron', monospace;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(255, 107, 0, 0.5);
+    line-height: 1.3;
+}
+
+.world-icon {
+    font-size: 1.3em;
+    min-width: 1.8em;
+    text-align: center;
+    filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.6));
+    flex-shrink: 0;
+}
+
+.world-description {
+    color: #FFB84D;
+    font-size: 1.05em;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.world-details {
+    color: #B794F4;
+    font-size: 0.95em;
+    line-height: 1.5;
+    font-style: italic;
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* Error State - Cursed */
+.worlds-error {
+    text-align: center;
+    padding: 50px 30px;
+    color: #DC143C;
+    font-size: 1.1em;
+    font-weight: 600;
+    background: linear-gradient(135deg, 
+        rgba(25, 5, 45, 0.9) 0%, 
+        rgba(50, 10, 70, 0.8) 50%, 
+        rgba(20, 0, 40, 0.95) 100%);
+    border-radius: 16px;
+    border: 3px solid rgba(220, 20, 60, 0.6);
+    margin: 20px 0;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    box-shadow: 
+        0 15px 35px rgba(220, 20, 60, 0.3),
+        inset 0 2px 10px rgba(220, 20, 60, 0.1);
+}
+
+.worlds-empty {
+    text-align: center;
+    padding: 60px 30px;
+    color: #B794F4;
+    font-size: 1.1em;
+    font-weight: 600;
+    background: linear-gradient(135deg, 
+        rgba(25, 5, 45, 0.7) 0%, 
+        rgba(50, 10, 70, 0.6) 50%, 
+        rgba(20, 0, 40, 0.8) 100%);
+    border-radius: 16px;
+    border: 3px solid rgba(138, 43, 226, 0.4);
+    margin: 20px 0;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(8px);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.retry-btn {
+    margin-top: 20px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #FF6B00, #8B00FF);
+    border: 2px solid #DC143C;
+    color: #FFF;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    font-family: 'Orbitron', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 
+        0 8px 20px rgba(255, 107, 0, 0.4),
+        inset 0 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+.retry-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 12px 30px rgba(255, 107, 0, 0.5),
+        inset 0 2px 15px rgba(255, 255, 255, 0.2);
+    border-color: #FF6B00;
+    background: linear-gradient(135deg, #FF8C00, #9B30FF);
+}
+
+.retry-btn:active {
+    transform: translateY(0);
+}
+
+/* Animations */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .worlds-page {
+        padding: 15px;
+    }
+    
+    .worlds-page .title {
+        font-size: 2.2em;
+        margin-bottom: 25px;
+    }
+    
+    .worlds-container {
+        max-height: 500px;
+        padding-right: 8px;
+        min-height: 150px;
+    }
+    
+    .worlds-loading {
+        padding: 40px 20px;
+        min-height: 150px;
+        font-size: 1.1em;
+    }
+    
+    .worlds-loading::after {
+        width: 20px;
+        height: 20px;
+        margin-left: 12px;
+    }
+    
+    .world-item {
+        padding: 20px 22px;
+        min-height: 120px;
+        margin-bottom: 14px;
+    }
+    
+    .world-title {
+        font-size: 1.25em;
+        gap: 10px;
+    }
+    
+    .world-icon {
+        font-size: 1.2em;
+        min-width: 1.6em;
+    }
+    
+    .world-description {
+        font-size: 1em;
+        margin-bottom: 10px;
+    }
+    
+    .world-details {
+        font-size: 0.9em;
+    }
+    
+    .worlds-error,
+    .worlds-empty {
+        padding: 40px 20px;
+        font-size: 1em;
+        min-height: 150px;
+    }
+    
+    .retry-btn {
+        padding: 12px 24px;
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 480px) {
+    .worlds-page {
+        padding: 12px;
+    }
+    
+    .worlds-page .title {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+    
+    .worlds-container {
+        max-height: 450px;
+        padding-right: 5px;
+        min-height: 120px;
+    }
+    
+    .worlds-loading {
+        padding: 30px 15px;
+        min-height: 120px;
+        font-size: 1em;
+    }
+    
+    .worlds-loading::after {
+        width: 16px;
+        height: 16px;
+        margin-left: 8px;
+    }
+    
+    .world-item {
+        padding: 16px 18px;
+        min-height: 100px;
+        margin-bottom: 12px;
+    }
+    
+    .world-item:hover {
+        transform: translateY(-2px);
+    }
+    
+    .world-title {
+        font-size: 1.1em;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .world-icon {
+        font-size: 1.1em;
+        min-width: auto;
+    }
+    
+    .world-description {
+        font-size: 0.95em;
+        margin-bottom: 8px;
+    }
+    
+    .world-details {
+        font-size: 0.85em;
+    }
+    
+    .worlds-error,
+    .worlds-empty {
+        padding: 30px 15px;
+        font-size: 0.95em;
+        min-height: 120px;
+    }
+    
+    .retry-btn {
+        padding: 10px 20px;
+        font-size: 0.85em;
+    }
+}
