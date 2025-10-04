@@ -1,4 +1,4 @@
-// General JavaScript functions - Without trader
+// General JavaScript functions - Fixed language switching
 
 let currentAppLanguage = 'en';
 let menuTranslations = null;
@@ -26,11 +26,17 @@ function getCurrentPage() {
 }
 
 function getCurrentAppLanguage() {
-    return localStorage.getItem('armHelper_language') || 'en';
+    const saved = localStorage.getItem('armHelper_language');
+    console.log('📖 Getting current language:', saved || 'en (default)');
+    return saved || 'en';
 }
 
 function saveAppLanguage(lang) {
+    console.log('💾 Saving language:', lang);
     localStorage.setItem('armHelper_language', lang);
+    // Додаткова перевірка
+    const saved = localStorage.getItem('armHelper_language');
+    console.log('✅ Language saved, verification:', saved);
 }
 
 function getCurrentMenuPosition() {
@@ -55,15 +61,20 @@ function loadSettingsFromStorage(key) {
 
 // Menu translations
 async function loadMenuTranslations() {
-    if (menuTranslations) return menuTranslations;
+    if (menuTranslations) {
+        console.log('✅ Menu translations already loaded');
+        return menuTranslations;
+    }
     
     try {
+        console.log('📥 Loading menu translations...');
         const response = await fetch('moderation/menu.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         menuTranslations = await response.json();
+        console.log('✅ Menu translations loaded:', Object.keys(menuTranslations));
         return menuTranslations;
     } catch (error) {
-        console.error('Error loading menu translations:', error);
+        console.error('❌ Error loading menu translations:', error);
         menuTranslations = {
             en: {
                 menu: "Menu",
@@ -97,10 +108,18 @@ async function loadMenuTranslations() {
 }
 
 function updateMenuTranslations() {
-    if (!menuTranslations || !currentAppLanguage) return;
+    console.log('🔄 Updating menu translations for:', currentAppLanguage);
+    
+    if (!menuTranslations || !currentAppLanguage) {
+        console.warn('⚠️ No translations or language');
+        return;
+    }
     
     const translations = menuTranslations[currentAppLanguage];
-    if (!translations) return;
+    if (!translations) {
+        console.warn('⚠️ No translations for language:', currentAppLanguage);
+        return;
+    }
     
     const sidebarHeader = document.querySelector('.sidebar-header h3');
     if (sidebarHeader) sidebarHeader.textContent = translations.menu;
@@ -127,6 +146,8 @@ function updateMenuTranslations() {
     if (authButton && translations.auth.login) {
         authButton.textContent = translations.auth.login;
     }
+    
+    console.log('✅ Menu translations updated');
 }
 
 function updatePageTitles() {
@@ -168,19 +189,32 @@ function updatePageTitles() {
 }
 
 async function switchAppLanguage(lang) {
-    if (!menuTranslations) await loadMenuTranslations();
+    console.log('🌍 switchAppLanguage called with:', lang);
+    console.log('📍 Current language before switch:', currentAppLanguage);
+    
+    if (!menuTranslations) {
+        console.log('📥 Loading translations first...');
+        await loadMenuTranslations();
+    }
     
     if (!menuTranslations[lang]) {
-        console.error(`Language ${lang} not found, defaulting to English`);
+        console.error(`❌ Language ${lang} not found, defaulting to English`);
         lang = 'en';
     }
     
     const previousLanguage = currentAppLanguage;
     currentAppLanguage = lang;
+    
+    // ВАЖЛИВО: спочатку зберігаємо, потім оновлюємо UI
     saveAppLanguage(lang);
     
+    console.log('🔄 Updating UI for language:', lang);
+    
+    // Оновлюємо активну кнопку
     document.querySelectorAll('.lang-flag-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
+        const isActive = btn.dataset.lang === lang;
+        btn.classList.toggle('active', isActive);
+        console.log(`🔘 Button ${btn.dataset.lang}: ${isActive ? 'ACTIVE' : 'inactive'}`);
     });
     
     updateMenuTranslations();
@@ -205,12 +239,16 @@ async function switchAppLanguage(lang) {
     moduleNotifications.forEach(({ func }) => {
         if (typeof window[func] === 'function') {
             try {
+                console.log(`📢 Notifying module: ${func}`);
                 window[func](lang);
             } catch (error) {
-                console.error(`Error updating language:`, error);
+                console.error(`❌ Error updating ${func}:`, error);
             }
         }
     });
+    
+    console.log('✅ Language switched to:', lang);
+    console.log('💾 Saved in localStorage:', localStorage.getItem('armHelper_language'));
 }
 
 function switchPage(page) {
@@ -303,16 +341,30 @@ function initializeAllModules() {
 }
 
 async function initializeApp() {
-    if (appInitialized) return;
+    if (appInitialized) {
+        console.log('⚠️ App already initialized');
+        return;
+    }
+    
+    console.log('🚀 Initializing app...');
     
     const appContent = document.getElementById('app-content');
-    if (!appContent || !appContent.innerHTML.trim()) return;
+    if (!appContent || !appContent.innerHTML.trim()) {
+        console.error('❌ App content not ready');
+        return;
+    }
     
+    // КРИТИЧНО: завантажуємо збережену мову ПЕРЕД будь-якими оновленнями
     currentAppLanguage = getCurrentAppLanguage();
+    console.log('🌍 Initial language:', currentAppLanguage);
+    
     await loadMenuTranslations();
     
+    // Встановлюємо активну кнопку мови
     document.querySelectorAll('.lang-flag-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === currentAppLanguage);
+        const isActive = btn.dataset.lang === currentAppLanguage;
+        btn.classList.toggle('active', isActive);
+        console.log(`🔘 Init: Button ${btn.dataset.lang}: ${isActive ? 'ACTIVE' : 'inactive'}`);
     });
     
     updateMenuTranslations();
@@ -353,6 +405,7 @@ async function initializeApp() {
     });
 
     appInitialized = true;
+    console.log('✅ App initialized with language:', currentAppLanguage);
 }
 
 function toggleCategory(categoryId) {
@@ -439,3 +492,7 @@ window.updatePageTitles = updatePageTitles;
 window.saveCurrentPage = saveCurrentPage;
 window.getCurrentPage = getCurrentPage;
 window.getCurrentMenuPosition = getCurrentMenuPosition;
+
+// Debug info
+console.log('✅ General.js loaded');
+console.log('🔍 switchAppLanguage available:', typeof window.switchAppLanguage);
