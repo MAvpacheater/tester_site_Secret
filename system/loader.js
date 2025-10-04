@@ -10,7 +10,7 @@ function createScript(src) {
 }
 
 async function loadScriptsDeferred() {
-    // Updated script paths - включаємо trader
+    // Updated script paths - removed subdirectories
     const scripts = [
         'calc/calculator.js', 
         'calc/arm.js', 
@@ -28,8 +28,7 @@ async function loadScriptsDeferred() {
         'info/worlds.js', 
         'moderation/settings.js',
         'other/peoples.js', 
-        'other/help.js',
-        'other/sell.js'  // ДОДАНО trader модуль
+        'other/help.js'
     ];
     
     updateLoadingText('Loading modules...');
@@ -100,8 +99,7 @@ function handleEnhancedRouting() {
         '/tester_site_Secret/aura_info': 'aura', '/aura_info': 'aura', 'aura_info': 'aura',
         '/tester_site_Secret/trainer_info': 'trainer', '/trainer_info': 'trainer', 'trainer_info': 'trainer',
         '/tester_site_Secret/charms_info': 'charms', '/charms_info': 'charms', 'charms_info': 'charms',
-        '/tester_site_Secret/settings': 'settings', '/settings': 'settings', 'settings': 'settings',
-        '/tester_site_Secret/trader_store': 'trader', '/trader_store': 'trader', 'trader_store': 'trader'  // ДОДАНО trader маршрут
+        '/tester_site_Secret/settings': 'settings', '/settings': 'settings', 'settings': 'settings'
     };
     
     const currentPath = window.location.pathname;
@@ -136,7 +134,7 @@ function parsePathToPage(path) {
         'arm_calculator': 'arm', 'grind_calculator': 'grind', 'roulette_calculator': 'roulette',
         'boss_calculator': 'boss', 'shiny_list': 'shiny', 'codes_list': 'codes',
         'aura_info': 'aura', 'trainer_info': 'trainer', 'charms_info': 'charms',
-        'settings': 'settings', 'trader_store': 'trader', '': 'calculator'  // ДОДАНО trader
+        'settings': 'settings', '': 'calculator'
     };
     
     return pathMap[cleanPath] || 'calculator';
@@ -193,7 +191,7 @@ Object.assign(window, {
     },
     checkLoadedModules: () => {
         console.log('=== LOADED MODULES ===');
-        ['initializeApp', 'switchPage', 'initURLRouting', 'initGitHubAutoReload', 'initializeBoss', 'initializeTrader']
+        ['initializeApp', 'switchPage', 'initURLRouting', 'initGitHubAutoReload', 'initializeBoss']
             .forEach(fn => console.log(`${fn}:`, typeof window[fn]));
         console.log('App content:', document.getElementById('app-content') ? 'Found' : 'Missing');
         console.log('Current page:', typeof getCurrentPage === 'function' ? getCurrentPage() : 'Unknown');
