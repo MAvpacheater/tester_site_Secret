@@ -12,10 +12,18 @@
     },
       "codes": [
       {
-        "code": "playfulmines",
+        "code": "citymines",
         "hours": 72,
         "extras": "NEW",
         "isNew": true
+      },
+      {
+        "code": "playfulminessorry",
+        "hours": 72
+      },
+      {
+        "code": "playfulmines",
+        "hours": 72
       },
       {
         "code": "desertmines",
@@ -286,10 +294,18 @@
     },
     "codes": [
       {
-        "code": "playfulmines",
+        "code": "citymines",
         "hours": 72,
         "extras": "Новий",
         "isNew": true
+      },
+      {
+        "code": "playfulminessorry",
+        "hours": 72
+      },
+      {
+        "code": "playfulmines",
+        "hours": 72
       },
       {
         "code": "desertmines",
@@ -560,10 +576,18 @@
     },
     "codes": [
       {
-        "code": "playfulmines",
+        "code": "citymines",
         "hours": 72,
         "extras": "Новый",
         "isNew": true
+      },
+      {
+        "code": "playfulminessorry",
+        "hours": 72
+      },
+      {
+        "code": "playfulmines",
+        "hours": 72
       },
       {
         "code": "desertmines",
