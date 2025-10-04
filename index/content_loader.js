@@ -1,4 +1,4 @@
-// Content loader script - Without trader page
+// Content loader script - For tester_site_Secret with working language switch
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -16,7 +16,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure WITHOUT inline onclick handlers for language buttons
+            // Create the main structure - language buttons will have onclick directly
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -95,11 +95,11 @@ async function loadContent() {
                             <!-- Settings Button -->
                             <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">⚙️</button>
                             
-                            <!-- Language Flags - NO ONCLICK, will be set up by JS -->
-                            <div class="language-flags" id="languageFlags">
-                                <button class="lang-flag-btn active" data-lang="en" title="English">🇺🇸</button>
-                                <button class="lang-flag-btn" data-lang="uk" title="Українська">🇺🇦</button>
-                                <button class="lang-flag-btn" data-lang="ru" title="Русский">🇷🇺</button>
+                            <!-- Language Flags with direct onclick -->
+                            <div class="language-flags">
+                                <button class="lang-flag-btn active" data-lang="en" onclick="switchAppLanguage('en')" title="English">🇺🇸</button>
+                                <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="Українська">🇺🇦</button>
+                                <button class="lang-flag-btn" data-lang="ru" onclick="switchAppLanguage('ru')" title="Русский">🇷🇺</button>
                             </div>
                         </div>
                     </div>
@@ -116,13 +116,10 @@ async function loadContent() {
             appContent.innerHTML = fullContent;
             console.log('✅ Content loaded successfully');
             
-            // Setup language buttons AFTER content is loaded
-            setupLanguageButtonHandlers();
-            
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
             
-            // Wait for DOM to be ready, then initialize
+            // Wait a bit for DOM to be ready, then initialize
             setTimeout(() => {
                 if (typeof initializeApp === 'function') {
                     initializeApp();
@@ -148,45 +145,6 @@ async function loadContent() {
             }
         }, 500);
     }
-}
-
-// Setup language button click handlers
-function setupLanguageButtonHandlers() {
-    console.log('🔧 Setting up language button handlers...');
-    
-    const langButtons = document.querySelectorAll('.lang-flag-btn');
-    console.log(`📍 Found ${langButtons.length} language buttons`);
-    
-    if (langButtons.length === 0) {
-        console.warn('⚠️ No language buttons found!');
-        return;
-    }
-    
-    langButtons.forEach((button, index) => {
-        const lang = button.getAttribute('data-lang');
-        console.log(`🔘 Setting up button ${index}: ${lang}`);
-        
-        // Add click event listener
-        button.addEventListener('click', function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            const targetLang = this.getAttribute('data-lang');
-            console.log(`🖱️ Button clicked! Target language: ${targetLang}`);
-            
-            // Call the language switch function
-            if (typeof window.switchAppLanguage === 'function') {
-                console.log(`✅ Calling switchAppLanguage('${targetLang}')`);
-                window.switchAppLanguage(targetLang);
-            } else {
-                console.error('❌ switchAppLanguage function not found!');
-            }
-        });
-        
-        console.log(`✅ Handler added for ${lang} button`);
-    });
-    
-    console.log('✅ All language button handlers set up');
 }
 
 // Auth action handler
@@ -216,6 +174,5 @@ if (document.readyState === 'loading') {
 
 // Make functions globally available
 window.handleAuthAction = handleAuthAction;
-window.setupLanguageButtonHandlers = setupLanguageButtonHandlers;
 
 console.log('✅ Content loader ready');
