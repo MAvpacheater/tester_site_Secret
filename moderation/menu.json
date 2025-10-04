@@ -21,7 +21,7 @@
             "worlds": "🌍 Worlds",
             "settings": "⚙️ Settings",
             "help": "🆘 Help",
-            "peoples": "🙏 Peoples"
+            "peoples": "🙏 Peoples",
             "trader": "🛒 Ur shop img"
         },
         "auth": {
@@ -70,7 +70,7 @@
             "worlds": "🌍 Світи",
             "settings": "⚙️ Налаштування",
             "help": "🆘 Допомога",
-            "peoples": "🙏 Люди"
+            "peoples": "🙏 Люди",
             "trader": "🛒 Твоє shop фото"
         },
         "auth": {
@@ -119,7 +119,7 @@
             "worlds": "🌍 Миры",
             "settings": "⚙️ Настройки",
             "help": "🆘 Помощь",
-            "peoples": "🙏 Люди"
+            "peoples": "🙏 Люди",
             "trader": "🛒 Твое shop фото"
         },
         "auth": {
