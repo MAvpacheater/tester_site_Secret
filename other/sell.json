@@ -1,0 +1,176 @@
+{
+    "en": {
+        "title": "HALLOWEEN TRADER",
+        "subtitle": "Spooky Tokens & Cursed Offers",
+        "priceLabel": "Price:",
+        "editButton": "Edit Store",
+        "saveButton": "Save Changes",
+        "cancelButton": "Cancel",
+        "items": [
+            {
+                "icon": "🔮",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🧪",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🎯",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "💎",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "👻",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🌟",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🎃",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🔥",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            }
+        ]
+    },
+    "uk": {
+        "title": "ХЕЛОВІНСЬКИЙ ТРЕЙДЕР",
+        "subtitle": "Моторошні Токени та Прокляті Пропозиції",
+        "priceLabel": "Ціна:",
+        "editButton": "Редагувати",
+        "saveButton": "Зберегти",
+        "cancelButton": "Скасувати",
+        "items": [
+            {
+                "icon": "🔮",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🧪",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🎯",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "💎",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "👻",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🌟",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🎃",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🔥",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            }
+        ]
+    },
+    "ru": {
+        "title": "ХЭЛЛОУИНСКИЙ ТРЕЙДЕР",
+        "subtitle": "Жуткие Токены и Проклятые Предложения",
+        "priceLabel": "Цена:",
+        "editButton": "Редактировать",
+        "saveButton": "Сохранить",
+        "cancelButton": "Отменить",
+        "items": [
+            {
+                "icon": "🔮",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🧪",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🎯",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "💎",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "👻",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🌟",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🎃",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            },
+            {
+                "icon": "🔥",
+                "name": "",
+                "price": "",
+                "quantity": ""
+            }
+        ]
+    }
+}
