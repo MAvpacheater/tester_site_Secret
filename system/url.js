@@ -1,4 +1,4 @@
-// URL Routing System - Optimized (without trader)
+// URL Routing System - Optimized for tester_site_Secret
 class URLRouter {
     constructor() {
         this.baseURL = this.getBaseURL();
