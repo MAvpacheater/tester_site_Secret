@@ -224,7 +224,8 @@ class URLRouter {
             worlds: { title: '🌍 Worlds', description: 'Worlds guide' },
             settings: { title: '⚙️ Settings', description: 'Customize app' },
             help: { title: '🆘 Help', description: 'Help guide' },
-            peoples: { title: '🙏 Thanks', description: 'Community credits' }
+            peoples: { title: '🙏 Thanks', description: 'Community credits' },
+            trader: { title: '🛒 Trader Store', description: 'Browse trader items' }
         };
         return data[page] || { title: 'Arm Helper', description: 'Ultimate helper tool' };
     }
