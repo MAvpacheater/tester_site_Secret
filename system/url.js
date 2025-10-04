@@ -1,4 +1,4 @@
-// URL Routing System - Optimized
+// URL Routing System - Optimized (without trader)
 class URLRouter {
     constructor() {
         this.baseURL = this.getBaseURL();
@@ -32,7 +32,7 @@ class URLRouter {
             shiny: 'shiny_list', secret: 'secret_pets', codes: 'codes_list', aura: 'aura_info',
             trainer: 'trainer_info', charms: 'charms_info', potions: 'potions_food',
             worlds: 'worlds_info', settings: 'settings', help: 'help_guide', 
-            peoples: 'peoples_thanks', trader: 'trader_store'
+            peoples: 'peoples_thanks'
         };
 
         this.routes.clear();
@@ -224,8 +224,7 @@ class URLRouter {
             worlds: { title: '🌍 Worlds', description: 'Worlds guide' },
             settings: { title: '⚙️ Settings', description: 'Customize app' },
             help: { title: '🆘 Help', description: 'Help guide' },
-            peoples: { title: '🙏 Thanks', description: 'Community credits' },
-            trader: { title: '🛒 Trader Store', description: 'Trading marketplace' }
+            peoples: { title: '🙏 Thanks', description: 'Community credits' }
         };
         return data[page] || { title: 'Arm Helper', description: 'Ultimate helper tool' };
     }
