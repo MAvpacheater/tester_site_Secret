@@ -92,7 +92,8 @@ async function loadMenuTranslations() {
                     worlds: "🌍 Worlds",
                     settings: "⚙️ Settings",
                     help: "🆘 Help",
-                    peoples: "🙏 Peoples"
+                    peoples: "🙏 Peoples",
+                    trader: "🛒 Trader"
                 },
                 auth: { login: "Login (Soon...)" }
             }
@@ -167,13 +168,14 @@ function updatePageTitles() {
         'worldsPage': 'worlds',
         'settingsPage': 'settings',
         'helpPage': 'help',
-        'peoplesPage': 'peoples'
+        'peoplesPage': 'peoples',
+        'traderPage': 'trader'
     };
     
     Object.entries(pageTitleMappings).forEach(([pageId, translationKey]) => {
         const page = document.getElementById(pageId);
         if (page && translations.pages[translationKey]) {
-            const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title, .settings-title');
+            const titleElement = page.querySelector('h1, .title, .peoples-title, .help-title, .settings-title, .trader-title');
             if (titleElement) titleElement.textContent = translations.pages[translationKey];
             
             const headerControlsTitle = page.querySelector('.header-controls h1');
@@ -236,7 +238,8 @@ async function switchAppLanguage(lang) {
         { name: 'secret', func: 'updateSecretLanguage' },
         { name: 'peoples', func: 'updatePeoplesLanguage' },
         { name: 'help', func: 'updateHelpLanguage' },
-        { name: 'settings', func: 'updateSettingsLanguage' }
+        { name: 'settings', func: 'updateSettingsLanguage' },
+        { name: 'trader', func: 'updateTraderLanguage' }
     ];
     
     moduleNotifications.forEach(({ func }) => {
@@ -306,12 +309,13 @@ function initializePageContent(page) {
         worlds: 'initializeWorlds',
         settings: 'initializeSettings',
         help: 'initializeHelp',
-        peoples: 'initializePeoples'
+        peoples: 'initializePeoples',
+        trader: 'initializeTrader'
     };
     
     const initFunc = modules[page];
     if (initFunc && typeof window[initFunc] === 'function') {
-        const needsReset = ['grind', 'roulette', 'boss', 'secret', 'potions', 'help', 'peoples', 'settings'];
+        const needsReset = ['grind', 'roulette', 'boss', 'secret', 'potions', 'help', 'peoples', 'settings', 'trader'];
         if (needsReset.includes(page) && window[`${page}Initialized`] !== undefined) {
             window[`${page}Initialized`] = false;
         }
@@ -322,13 +326,13 @@ function initializePageContent(page) {
 function initializeAllModules() {
     const modules = [
         'Calculator', 'Arm', 'Grind', 'Roulette', 'Boss', 'Boosts', 'Shiny', 'Secret',
-        'Potions', 'Aura', 'Trainer', 'Charms', 'Codes', 'Worlds', 'Settings', 'Help', 'Peoples'
+        'Potions', 'Aura', 'Trainer', 'Charms', 'Codes', 'Worlds', 'Settings', 'Help', 'Peoples', 'Trader'
     ];
     
     modules.forEach(name => {
         const funcName = `initialize${name}`;
         if (typeof window[funcName] === 'function') {
-            const needsDelay = ['Secret', 'Potions', 'Grind', 'Peoples', 'Worlds', 'Help', 'Settings', 'Roulette', 'Boss'];
+            const needsDelay = ['Secret', 'Potions', 'Grind', 'Peoples', 'Worlds', 'Help', 'Settings', 'Roulette', 'Boss', 'Trader'];
             
             if (needsDelay.includes(name)) {
                 setTimeout(() => {
@@ -468,7 +472,7 @@ function debugPageStates() {
 }
 
 function forceReinitializeModule(moduleName) {
-    const modules = ['secret', 'potions', 'grind', 'peoples', 'help', 'settings', 'roulette', 'boss'];
+    const modules = ['secret', 'potions', 'grind', 'peoples', 'help', 'settings', 'roulette', 'boss', 'trader'];
     
     if (modules.includes(moduleName) && typeof window !== 'undefined') {
         window[`${moduleName}Initialized`] = false;
