@@ -11,15 +11,15 @@ const GITHUB_CONFIG = {
 };
 
 const backgroundOptions = {
-    penguin: { icon: '🐧', filename: 'penguin.png' },
-    game: { icon: '🎮', filename: 'game.png' },
-    code: { icon: '💻', filename: 'code.png' },
-    dodep: { icon: '🎰', filename: 'dodep.png' },
-    prison: { icon: '👮‍♂️', filename: 'prison.png' },
-    forest: { icon: '🌲', filename: 'forest.jpg' },
-    space: { icon: '💰', filename: 'bank.png' },
-    ocean: { icon: '🌊', filename: 'sea.jpeg' },
-    desert: { icon: '🔭', filename: 'earth.jpg' }
+    penguin: { icon: '🕸️', filename: 'h1.png' },
+    game: { icon: '🎃', filename: 'h2.png' },
+    code: { icon: '👻', filename: 'h3.png' },
+    dodep: { icon: '🕸️', filename: 'h4.png' },
+    prison: { icon: '🎃', filename: 'h5.png' },
+    forest: { icon: '👻', filename: 'h6.png' },
+    space: { icon: '🕸️', filename: 'h7.png' },
+    ocean: { icon: '🎃', filename: 'h8.png' },
+    desert: { icon: '👻', filename: 'h9.png' }
 };
 
 Object.keys(backgroundOptions).forEach(key => {
