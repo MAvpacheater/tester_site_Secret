@@ -1,4 +1,4 @@
-// Content loader script - For tester_site_Secret with working language switch
+// Content loader script - With debug logging for language buttons
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -16,7 +16,7 @@ async function loadContent() {
         const appContent = document.getElementById('app-content');
         
         if (appContent) {
-            // Create the main structure - language buttons will have onclick directly
+            // Create the main structure with onclick handlers
             const fullContent = `
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
@@ -95,11 +95,11 @@ async function loadContent() {
                             <!-- Settings Button -->
                             <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">⚙️</button>
                             
-                            <!-- Language Flags with direct onclick -->
-                            <div class="language-flags">
-                                <button class="lang-flag-btn active" data-lang="en" onclick="switchAppLanguage('en')" title="English">🇺🇸</button>
-                                <button class="lang-flag-btn" data-lang="uk" onclick="switchAppLanguage('uk')" title="Українська">🇺🇦</button>
-                                <button class="lang-flag-btn" data-lang="ru" onclick="switchAppLanguage('ru')" title="Русский">🇷🇺</button>
+                            <!-- Language Flags with inline onclick -->
+                            <div class="language-flags" id="languageFlags">
+                                <button class="lang-flag-btn active" data-lang="en" onclick="console.log('EN clicked'); window.switchAppLanguage('en');" title="English">🇺🇸</button>
+                                <button class="lang-flag-btn" data-lang="uk" onclick="console.log('UK clicked'); window.switchAppLanguage('uk');" title="Українська">🇺🇦</button>
+                                <button class="lang-flag-btn" data-lang="ru" onclick="console.log('RU clicked'); window.switchAppLanguage('ru');" title="Русский">🇷🇺</button>
                             </div>
                         </div>
                     </div>
@@ -116,10 +116,38 @@ async function loadContent() {
             appContent.innerHTML = fullContent;
             console.log('✅ Content loaded successfully');
             
+            // Additional manual event listeners as backup
+            setTimeout(() => {
+                const langButtons = document.querySelectorAll('.lang-flag-btn');
+                console.log(`🔍 Found ${langButtons.length} language buttons`);
+                
+                langButtons.forEach((btn, index) => {
+                    const lang = btn.getAttribute('data-lang');
+                    console.log(`🔘 Button ${index}: ${lang}, onclick:`, btn.onclick !== null);
+                    
+                    // Add additional event listener as backup
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log(`🖱️ Click event on ${lang} button`);
+                        
+                        if (typeof window.switchAppLanguage === 'function') {
+                            console.log(`✅ Calling switchAppLanguage('${lang}')`);
+                            window.switchAppLanguage(lang);
+                        } else {
+                            console.error('❌ switchAppLanguage function not found on window!');
+                            console.log('Available functions:', Object.keys(window).filter(k => k.includes('Language')));
+                        }
+                    }, true); // Use capture phase
+                    
+                    console.log(`✅ Backup listener added for ${lang}`);
+                });
+            }, 200);
+            
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
             
-            // Wait a bit for DOM to be ready, then initialize
+            // Wait for DOM to be ready, then initialize
             setTimeout(() => {
                 if (typeof initializeApp === 'function') {
                     initializeApp();
@@ -176,3 +204,4 @@ if (document.readyState === 'loading') {
 window.handleAuthAction = handleAuthAction;
 
 console.log('✅ Content loader ready');
+console.log('🔍 Checking switchAppLanguage:', typeof window.switchAppLanguage);
