@@ -6,6 +6,10 @@ let itemImages = {};
 async function loadTraderJSON() {
     try {
         const response = await fetch('other/sell.json');
+        if (!response.ok) {
+            console.warn('Could not load trader data');
+            return null;
+        }
         traderData = await response.json();
         return traderData;
     } catch (error) {
@@ -26,6 +30,12 @@ async function initializeTrader() {
         return;
     }
 
+    // Не завантажуємо дані, якки сторінка не активна
+    if (!traderPage.classList.contains('active')) {
+        console.log('⏸️ Trader page not active, skipping initialization');
+        return;
+    }
+
     await loadTraderJSON();
     
     const currentLang = getCurrentAppLanguage() || 'en';
@@ -38,6 +48,12 @@ async function initializeTrader() {
 function handleImageUpload(event, index, lang) {
     const file = event.target.files[0];
     if (!file) return;
+
+    // Обмеження розміру файлу (2MB)
+    if (file.size > 2 * 1024 * 1024) {
+        alert('File too large! Maximum size is 2MB');
+        return;
+    }
 
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -210,6 +226,7 @@ function updateTraderLanguage(lang) {
     renderTraderStore(lang);
 }
 
+// Експортуємо функції
 window.initializeTrader = initializeTrader;
 window.updateTraderLanguage = updateTraderLanguage;
 window.toggleTraderEdit = toggleTraderEdit;
@@ -217,15 +234,18 @@ window.saveTraderChanges = saveTraderChanges;
 window.cancelTraderEdit = cancelTraderEdit;
 window.handleImageUpload = handleImageUpload;
 
-document.addEventListener('DOMContentLoaded', () => {
-    const traderPage = document.getElementById('traderPage');
-    if (traderPage && traderPage.classList.contains('active')) {
-        initializeTrader();
+// Ініціалізація лише при активній сторінці
+document.addEventListener('pageChanged', (e) => {
+    if (e.detail.page === 'trader' && !traderInitialized) {
+        setTimeout(() => initializeTrader(), 100);
     }
 });
 
+// Оновлення мови
 document.addEventListener('languageChanged', (e) => {
-    updateTraderLanguage(e.detail.language);
+    if (traderInitialized) {
+        updateTraderLanguage(e.detail.language);
+    }
 });
 
 console.log('✅ Trader store module loaded');
