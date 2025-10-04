@@ -10,7 +10,6 @@ function createScript(src) {
 }
 
 async function loadScriptsDeferred() {
-    // Updated script paths - removed subdirectories
     const scripts = [
         'calc/calculator.js', 
         'calc/arm.js', 
@@ -91,6 +90,7 @@ function handleEnhancedRouting() {
         '/tester_site_Secret/worlds_info': 'worlds', '/worlds_info': 'worlds', 'worlds_info': 'worlds',
         '/tester_site_Secret/help_guide': 'help', '/help_guide': 'help', 'help_guide': 'help',
         '/tester_site_Secret/peoples_thanks': 'peoples', '/peoples_thanks': 'peoples', 'peoples_thanks': 'peoples',
+        '/tester_site_Secret/trader_store': 'trader', '/trader_store': 'trader', 'trader_store': 'trader',
         '/tester_site_Secret/arm_calculator': 'arm', '/arm_calculator': 'arm', 'arm_calculator': 'arm',
         '/tester_site_Secret/grind_calculator': 'grind', '/grind_calculator': 'grind', 'grind_calculator': 'grind',
         '/tester_site_Secret/roulette_calculator': 'roulette', '/roulette_calculator': 'roulette', 'roulette_calculator': 'roulette',
@@ -100,8 +100,7 @@ function handleEnhancedRouting() {
         '/tester_site_Secret/aura_info': 'aura', '/aura_info': 'aura', 'aura_info': 'aura',
         '/tester_site_Secret/trainer_info': 'trainer', '/trainer_info': 'trainer', 'trainer_info': 'trainer',
         '/tester_site_Secret/charms_info': 'charms', '/charms_info': 'charms', 'charms_info': 'charms',
-        '/tester_site_Secret/settings': 'settings', '/settings': 'settings', 'settings': 'settings',
-        '/tester_site_Secret/trader_store': 'trader', '/trader_store': 'trader', 'trader_store': 'trader'
+        '/tester_site_Secret/settings': 'settings', '/settings': 'settings', 'settings': 'settings'
     };
     
     const currentPath = window.location.pathname;
@@ -133,10 +132,10 @@ function parsePathToPage(path) {
     const pathMap = {
         'boosts_info': 'boosts', 'secret_pets': 'secret', 'potions_food': 'potions',
         'worlds_info': 'worlds', 'help_guide': 'help', 'peoples_thanks': 'peoples',
-        'arm_calculator': 'arm', 'grind_calculator': 'grind', 'roulette_calculator': 'roulette',
-        'boss_calculator': 'boss', 'shiny_list': 'shiny', 'codes_list': 'codes',
-        'aura_info': 'aura', 'trainer_info': 'trainer', 'charms_info': 'charms',
-        'settings': 'settings', 'trader_store': 'trader', '': 'calculator'
+        'trader_store': 'trader', 'arm_calculator': 'arm', 'grind_calculator': 'grind', 
+        'roulette_calculator': 'roulette', 'boss_calculator': 'boss', 'shiny_list': 'shiny', 
+        'codes_list': 'codes', 'aura_info': 'aura', 'trainer_info': 'trainer', 
+        'charms_info': 'charms', 'settings': 'settings', '': 'calculator'
     };
     
     return pathMap[cleanPath] || 'calculator';
@@ -193,7 +192,7 @@ Object.assign(window, {
     },
     checkLoadedModules: () => {
         console.log('=== LOADED MODULES ===');
-        ['initializeApp', 'switchPage', 'initURLRouting', 'initGitHubAutoReload', 'initializeBoss']
+        ['initializeApp', 'switchPage', 'initURLRouting', 'initGitHubAutoReload', 'initializeBoss', 'initializeTrader']
             .forEach(fn => console.log(`${fn}:`, typeof window[fn]));
         console.log('App content:', document.getElementById('app-content') ? 'Found' : 'Missing');
         console.log('Current page:', typeof getCurrentPage === 'function' ? getCurrentPage() : 'Unknown');
