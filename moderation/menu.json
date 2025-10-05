@@ -31,6 +31,7 @@
             "title": "⚙️ Settings",
             "background": "Background",
             "menu": "Menu Position",
+            "colors": "Color Theme",
             "penguin": "Hallowen",
             "game": "Hallowen", 
             "code": "Hallowen",
@@ -80,6 +81,7 @@
             "title": "⚙️ Налаштування", 
             "background": "Фон",
             "menu": "Позиція меню",
+            "colors": "Кольорова Тема",
             "penguin": "Хеловін",
             "game": "Хеловін",
             "code": "Хеловін",
@@ -125,10 +127,11 @@
         "auth": {
             "login": "Вход (Скоро...)"
         },
-        "settings": {
+                "settings": {
             "title": "⚙️ Настройки",
             "background": "Фон",
-            "menu": "Позиция меню", 
+            "menu": "Позиция меню",
+            "colors": "Цветовая Тема",
             "penguin": "Хелоун",
             "game": "Хелоун",
             "code": "Хелоун",
