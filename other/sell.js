@@ -3,6 +3,7 @@ let traderInitialized = false;
 let isEditMode = false;
 let traderData = null;
 let itemImages = {};
+let pageBackground = null; // Зберігаємо фонове зображення
 let currentLang = 'en';
 let isTraderVisible = false;
 
@@ -73,6 +74,54 @@ async function initializeTrader() {
     console.log('✅ Trader initialized (optimized)');
 }
 
+function handleBackgroundUpload(event) {
+    const file = event.target.files[0];
+    if (!file || file.size > 10000000) { // Ліміт 10MB
+        if (file?.size > 10000000) {
+            alert('Image too large! Max 10MB');
+        }
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        pageBackground = e.target.result;
+        applyPageBackground();
+        console.log('🖼️ Page background uploaded');
+    };
+    reader.readAsDataURL(file);
+}
+
+function applyPageBackground() {
+    if (!traderCache.page) return;
+    
+    if (pageBackground) {
+        const style = traderCache.page.querySelector('style') || document.createElement('style');
+        style.textContent = `
+            #traderPage::before {
+                background-image: url('${pageBackground}'), 
+                    radial-gradient(circle at 20% 50%, rgba(255,100,0,0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 50%, rgba(138,43,226,0.08) 0%, transparent 50%) !important;
+                background-blend-mode: overlay, normal, normal;
+            }
+        `;
+        if (!traderCache.page.querySelector('style')) {
+            traderCache.page.appendChild(style);
+        }
+        traderCache.page.classList.add('has-custom-bg');
+    } else {
+        const style = traderCache.page.querySelector('style');
+        if (style) style.remove();
+        traderCache.page.classList.remove('has-custom-bg');
+    }
+}
+
+function removePageBackground() {
+    pageBackground = null;
+    applyPageBackground();
+    console.log('🗑️ Page background removed');
+}
+
 function handleImageUpload(event, index, lang) {
     const file = event.target.files[0];
     if (!file || file.size > 5000000) { // Ліміт 5MB
@@ -126,7 +175,10 @@ function renderTraderStore(lang = 'en') {
     container.innerHTML = `
         ${!isEditMode ? `
             <button class="trader-settings-btn" onclick="toggleTraderEdit('${lang}')" title="${data.editButton}">⚙️</button>
-        ` : ''}
+        ` : `
+            <label for="trader-bg-upload" class="trader-bg-btn" title="Upload Background">🖼️</label>
+            <input type="file" id="trader-bg-upload" class="trader-bg-input" accept="image/*" onchange="handleBackgroundUpload(event)">
+        `}
         
         <div class="trader-header">
             ${isEditMode ? `
@@ -142,6 +194,7 @@ function renderTraderStore(lang = 'en') {
             <div style="text-align: center; margin: 20px 0;">
                 <button onclick="saveTraderChanges('${lang}')" class="trader-btn trader-btn-save">${data.saveButton}</button>
                 <button onclick="cancelTraderEdit('${lang}')" class="trader-btn trader-btn-cancel">${data.cancelButton}</button>
+                ${pageBackground ? `<button onclick="removePageBackground()" class="trader-btn" style="background: linear-gradient(135deg, #666, #444); border-color: #666;">🗑️ Remove Background</button>` : ''}
             </div>
         ` : ''}
         
@@ -155,6 +208,9 @@ function renderTraderStore(lang = 'en') {
     // Очищаємо і вставляємо за один раз
     traderCache.page.innerHTML = '';
     traderCache.page.appendChild(fragment.firstChild);
+    
+    // Застосовуємо фон після рендеру
+    applyPageBackground();
     
     console.log('✅ Trader store rendered');
 }
@@ -278,6 +334,8 @@ window.toggleTraderEdit = toggleTraderEdit;
 window.saveTraderChanges = saveTraderChanges;
 window.cancelTraderEdit = cancelTraderEdit;
 window.handleImageUpload = handleImageUpload;
+window.handleBackgroundUpload = handleBackgroundUpload;
+window.removePageBackground = removePageBackground;
 
 // Слухач зміни мови з debounce
 let langChangeTimeout;
