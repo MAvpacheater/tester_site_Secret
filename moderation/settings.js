@@ -1,7 +1,7 @@
-// Оптимізований Settings без лагів
+// Оптимізований Settings з підтримкою кольорів
 let settingsInitialized = false;
 let settingsTranslations = null;
-let categoriesState = { background: false, menu: false };
+let categoriesState = { background: false, menu: false, colors: false };
 
 const GITHUB_CONFIG = {
     user: 'MAvpacheater',
@@ -222,27 +222,62 @@ function applyBackground(background) {
     body.style.backgroundAttachment = 'scroll';
 }
 
-// SETTINGS MANAGEMENT
+// SETTINGS MANAGEMENT - ОНОВЛЕНО: одночасно лише 1 категорія відкрита
 function toggleSettingsCategory(categoryName) {
     if (!categoriesState.hasOwnProperty(categoryName)) return;
     
-    categoriesState[categoryName] = !categoriesState[categoryName];
+    const wasOpen = categoriesState[categoryName];
     
-    const header = document.querySelector(`#settingsPage [data-category="${categoryName}"] .category-header`);
-    const options = document.querySelector(`#settingsPage .${categoryName}-options`);
+    // Закриваємо всі категорії
+    Object.keys(categoriesState).forEach(cat => {
+        categoriesState[cat] = false;
+        
+        const header = document.querySelector(`#settingsPage [data-category="${cat}"] .category-header`);
+        const optionsClass = cat === 'colors' ? 'color-options' : 
+                             cat === 'background' ? 'background-options' : 
+                             'menu-options';
+        const options = document.querySelector(`#settingsPage .${optionsClass}`);
+        
+        if (header && options) {
+            header.classList.add('collapsed');
+            options.classList.add('collapsed');
+        }
+    });
     
-    if (header && options) {
-        header.classList.toggle('collapsed', !categoriesState[categoryName]);
-        options.classList.toggle('collapsed', !categoriesState[categoryName]);
-        localStorage.setItem('armHelper_categoriesState', JSON.stringify(categoriesState));
+    // Відкриваємо вибрану категорію, якщо вона була закрита
+    if (!wasOpen) {
+        categoriesState[categoryName] = true;
+        
+        const header = document.querySelector(`#settingsPage [data-category="${categoryName}"] .category-header`);
+        const optionsClass = categoryName === 'colors' ? 'color-options' : 
+                             categoryName === 'background' ? 'background-options' : 
+                             'menu-options';
+        const options = document.querySelector(`#settingsPage .${optionsClass}`);
+        
+        if (header && options) {
+            header.classList.remove('collapsed');
+            options.classList.remove('collapsed');
+        }
     }
+    
+    localStorage.setItem('armHelper_categoriesState', JSON.stringify(categoriesState));
 }
 
 function loadCategoriesState() {
     const saved = localStorage.getItem('armHelper_categoriesState');
     if (saved) {
         try {
-            categoriesState = { ...categoriesState, ...JSON.parse(saved) };
+            const savedState = JSON.parse(saved);
+            // Переконуємося, що тільки одна категорія відкрита
+            const openCategories = Object.keys(savedState).filter(key => savedState[key]);
+            if (openCategories.length > 1) {
+                // Якщо більше однієї відкритої, закриваємо всі
+                Object.keys(categoriesState).forEach(key => {
+                    categoriesState[key] = false;
+                });
+            } else {
+                categoriesState = { ...categoriesState, ...savedState };
+            }
         } catch (e) {
             console.error('Error loading categories state:', e);
         }
@@ -252,7 +287,10 @@ function loadCategoriesState() {
 function applyCategoriesState() {
     Object.keys(categoriesState).forEach(category => {
         const header = document.querySelector(`#settingsPage [data-category="${category}"] .category-header`);
-        const options = document.querySelector(`#settingsPage .${category}-options`);
+        const optionsClass = category === 'colors' ? 'color-options' : 
+                            category === 'background' ? 'background-options' : 
+                            'menu-options';
+        const options = document.querySelector(`#settingsPage .${optionsClass}`);
         
         if (header && options) {
             header.classList.toggle('collapsed', !categoriesState[category]);
@@ -336,6 +374,7 @@ function updateSettingsLanguage(lang = null) {
     
     const updates = [
         { selector: '#settingsPage .settings-title', text: t.title },
+        { selector: '#settingsPage [data-category="colors"] .category-title span:last-child', text: t.colors },
         { selector: '#settingsPage [data-category="background"] .category-title span:last-child', text: t.background },
         { selector: '#settingsPage [data-category="menu"] .category-title span:last-child', text: t.menu }
     ];
@@ -356,6 +395,18 @@ function updateSettingsLanguage(lang = null) {
     });
 }
 
+function updateColorThemeNames() {
+    const currentLang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
+    const colorThemes = window.colorThemes || {};
+    
+    Object.keys(colorThemes).forEach(theme => {
+        const el = document.querySelector(`#settingsPage [data-theme="${theme}"] .color-option-name`);
+        if (el && colorThemes[theme].name[currentLang]) {
+            el.textContent = colorThemes[theme].name[currentLang];
+        }
+    });
+}
+
 // HTML GENERATION
 function createSettingsHTML() {
     const backgroundOptionsHTML = Object.keys(backgroundOptions).map(bg => `
@@ -373,9 +424,38 @@ function createSettingsHTML() {
         </div>
     `).join('');
 
+    // Додаємо кольорові теми
+    const colorThemes = window.colorThemes || {};
+    const colorOptionsHTML = Object.keys(colorThemes).map(theme => {
+        const themeData = colorThemes[theme];
+        return `
+            <div class="color-option" data-theme="${theme}" onclick="changeColorTheme('${theme}')">
+                <div class="color-option-icon">${themeData.icon}</div>
+                <div class="color-preview">
+                    <div class="color-preview-split">
+                        <div class="color-preview-left" style="background: ${themeData.primary}"></div>
+                        <div class="color-preview-right" style="background: ${themeData.secondary}"></div>
+                    </div>
+                </div>
+                <div class="color-option-name">${themeData.name.en}</div>
+            </div>
+        `;
+    }).join('');
+
     return `
         <div class="settings-container">
             <h1 class="settings-title">⚙️ Settings</h1>
+            
+            <div class="settings-section" data-category="colors">
+                <div class="category-header collapsed" onclick="toggleSettingsCategory('colors')">
+                    <div class="category-title">
+                        <span class="section-icon">🎨</span>
+                        <span>Color Theme</span>
+                    </div>
+                    <span class="category-toggle">▼</span>
+                </div>
+                <div class="color-options collapsed">${colorOptionsHTML}</div>
+            </div>
             
             <div class="settings-section" data-category="background">
                 <div class="category-header collapsed" onclick="toggleSettingsCategory('background')">
@@ -415,6 +495,7 @@ async function initializeSettings() {
     
     loadSettingsTranslations().then(() => {
         updateSettingsLanguage();
+        updateColorThemeNames();
     });
     
     const currentBg = getCurrentBackground();
@@ -424,6 +505,11 @@ async function initializeSettings() {
     const currentMenuPos = getCurrentMenuPosition();
     menuManager.showOnlyMenu(currentMenuPos);
     updateMenuPositionUI();
+    
+    // Оновлюємо UI кольорів
+    if (typeof updateColorThemeUI === 'function') {
+        updateColorThemeUI();
+    }
     
     applyCategoriesState();
     
@@ -442,6 +528,7 @@ function initializeSettingsOnStart() {
 document.addEventListener('languageChanged', (e) => {
     if (settingsInitialized && e.detail && e.detail.language) {
         updateSettingsLanguage(e.detail.language);
+        updateColorThemeNames();
     }
 });
 
