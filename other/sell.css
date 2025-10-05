@@ -25,7 +25,14 @@
         radial-gradient(circle at 80% 50%, rgba(138,43,226,0.08) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     /* Вимкнено анімацію на фоні */
+}
+
+.trader-page.has-custom-bg::before {
+    background-blend-mode: overlay;
 }
 
 .trader-header {
@@ -36,7 +43,7 @@
 }
 
 .trader-settings-btn {
-    position: absolute;
+    position: fixed;
     top: 15px;
     right: 30px;
     width: 45px;
@@ -51,13 +58,46 @@
     font-size: 22px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 0 20px rgba(255,100,0,0.5);
-    z-index: 10;
+    z-index: 1000;
+    opacity: 1;
+    visibility: visible;
 }
 
 .trader-settings-btn:hover {
     transform: rotate(90deg) scale(1.1);
     box-shadow: 0 0 30px rgba(255,100,0,0.7);
     border-color: #8B008B;
+}
+
+.trader-bg-btn {
+    position: fixed;
+    top: 15px;
+    right: 90px;
+    width: 45px;
+    height: 45px;
+    background: rgba(0,0,0,0.9);
+    border: 2px solid #8B008B;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 20px rgba(138,43,226,0.5);
+    z-index: 1000;
+    opacity: 1;
+    visibility: visible;
+}
+
+.trader-bg-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(138,43,226,0.7);
+    border-color: #FF6600;
+}
+
+.trader-bg-input {
+    display: none;
 }
 
 .trader-title {
@@ -315,6 +355,10 @@
     .trader-settings-btn {
         right: 25px;
     }
+    
+    .trader-bg-btn {
+        right: 80px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -333,6 +377,19 @@
     
     .trader-image-container {
         height: 130px;
+    }
+    
+    .trader-bg-btn {
+        right: 75px;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+    
+    .trader-settings-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
     }
 }
 
