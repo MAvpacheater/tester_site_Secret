@@ -10,6 +10,15 @@
     "trainers": {
       "free": [
         {
+          "name": "Expert Miner [CW]",
+          "strength": "315",
+          "strengthBoost": "472,5",
+          "luck": "122",
+          "luckBoost": "183",
+          "wins": "135",
+          "winsBoost": "202,5"
+        },
+        {
           "name": "Overseer [1/12.5m]",
           "strength": "270",
           "strengthBoost": "405",
@@ -74,7 +83,16 @@
         }
       ],
       "donate": [
-                {
+        {
+          "name": "Skater boy",
+          "strength": "345",
+          "strengthBoost": "517,5",
+          "luck": "138",
+          "luckBoost": "207",
+          "wins": "148",
+          "winsBoost": "222"
+        },
+        {
           "name": "Desert Miner",
           "strength": "335",
           "strengthBoost": "502,5",
@@ -187,6 +205,15 @@
     "trainers": {
       "free": [
         {
+          "name": "Експерт-шахтар [CW]",
+          "strength": "315",
+          "strengthBoost": "472,5",
+          "luck": "122",
+          "luckBoost": "183",
+          "wins": "135",
+          "winsBoost": "202,5"
+        },
+        {
           "name": "Наглядач [1/12.5м]",
           "strength": "270",
           "strengthBoost": "405",
@@ -251,7 +278,16 @@
         }
       ],
       "donate": [
-                {
+        {
+          "name": "Хлопчик-скейтер",
+          "strength": "345",
+          "strengthBoost": "517,5",
+          "luck": "138",
+          "luckBoost": "207",
+          "wins": "148",
+          "winsBoost": "222"
+        },
+        {
           "name": "Шахтар пустелі",
           "strength": "335",
           "strengthBoost": "502,5",
@@ -364,6 +400,15 @@
     "trainers": {
       "free": [
         {
+          "name": "ЕЭксперт-майнер [CW]",
+          "strength": "315",
+          "strengthBoost": "472,5",
+          "luck": "122",
+          "luckBoost": "183",
+          "wins": "135",
+          "winsBoost": "202,5"
+        },
+        {
           "name": "Надзиратель [1/12.5м]",
           "strength": "270",
           "strengthBoost": "405",
@@ -428,6 +473,15 @@
         }
       ],
       "donate": [
+        {
+          "name": "Мальчик-скейтер",
+          "strength": "345",
+          "strengthBoost": "517,5",
+          "luck": "138",
+          "luckBoost": "207",
+          "wins": "148",
+          "winsBoost": "222"
+        },
         {
           "name": "Пустынный шахтер",
           "strength": "335",
