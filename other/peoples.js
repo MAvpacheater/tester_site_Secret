@@ -79,9 +79,9 @@ const contributors = [
         discord: null
     },
     {
-        name: 'Typka123',
-        contribution: 'Gave information',
-        role: 'Helper',
+        name: 'Pupirka',
+        contribution: 'Develop RCU ',
+        role: 'Admin',
         telegram: '@Tynka235',
         discord: null
     },
