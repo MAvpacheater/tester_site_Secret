@@ -133,7 +133,7 @@
         console.log('🔍 Path parts:', pathParts);
         
         // Check if this is a repository-based URL
-        var isRepoURL = pathParts.length >= 2 && pathParts[0] === 'armwrestlerinfopost';
+        var isRepoURL = pathParts.length >= 2 && pathParts[0] === 'roblox_info_post';
         var isDirectPageAccess = pathParts.length === 1 && pageNames['/' + pathParts[0]];
         
         if (isRepoURL) {
@@ -148,7 +148,7 @@
             console.log('💾 Stored repo-based path for restoration:', pagePath + search + hash);
             
             // Redirect to the base repository URL
-            var baseURL = window.location.protocol + '//' + window.location.host + '/armwrestlerinfopost/';
+            var baseURL = window.location.protocol + '//' + window.location.host + '/roblox_info_post/';
             console.log('🔄 Redirecting to repository base:', baseURL);
             
             setTimeout(function() {
@@ -167,7 +167,7 @@
             console.log('💾 Stored direct path for restoration:', pagePath + search + hash);
             
             // Redirect to the correct repository URL
-            var correctURL = window.location.protocol + '//' + window.location.host + '/armwrestlerinfopost' + pagePath + search + hash;
+            var correctURL = window.location.protocol + '//' + window.location.host + '/roblox_info_post' + pagePath + search + hash;
             console.log('🎯 Redirecting to correct repository URL:', correctURL);
             
             setTimeout(function() {
@@ -180,7 +180,7 @@
             
             sessionStorage.setItem('pathToRestore', '/' + search + hash);
             
-            var baseURL = window.location.protocol + '//' + window.location.host + '/armwrestlerinfopost/';
+            var baseURL = window.location.protocol + '//' + window.location.host + '/roblox_info_post/';
             console.log('🔄 Fallback redirect to:', baseURL);
             
             setTimeout(function() {
