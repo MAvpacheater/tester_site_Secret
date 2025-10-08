@@ -299,7 +299,6 @@ body {
     user-select: none;
     transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
     flex-shrink: 0;
-    /* КРИТИЧНО ВАЖЛИВО - кнопки МАЮТЬ бути кликабельні */
     pointer-events: auto !important;
     position: relative;
     z-index: 100;
@@ -318,7 +317,6 @@ body {
 .language-flags { 
     display: flex; 
     gap: 12px; 
-    /* КРИТИЧНО ВАЖЛИВО */
     pointer-events: auto !important;
     position: relative;
     z-index: 100;
@@ -363,7 +361,18 @@ body {
     border-radius: 20px;
     border: 2px solid rgba(138,43,226,.4);
     user-select: none;
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.signature:hover {
+    background: rgba(50,25,75,.8);
+    transform: scale(1.05);
+}
+
+.signature:active {
+    transform: scale(0.95);
 }
 
 #loading-screen {
@@ -421,7 +430,6 @@ body {
     opacity: 1; 
 }
 
-/* Забезпечуємо що ВСІ інтерактивні елементи кликабельні */
 button, .nav-btn, .category-header, .lang-flag-btn, .settings-btn-sidebar, .close-sidebar, .mobile-menu-toggle, .auth-btn-sidebar {
     -webkit-tap-highlight-color: rgba(255, 102, 0, 0.3);
     touch-action: manipulation;
@@ -429,7 +437,6 @@ button, .nav-btn, .category-header, .lang-flag-btn, .settings-btn-sidebar, .clos
     pointer-events: auto !important;
 }
 
-/* Додатково для language-flags контейнера */
 .language-flags * {
     pointer-events: auto !important;
 }
