@@ -1,7 +1,7 @@
-// Оптимізований Settings з підтримкою кольорів
+// Settings з підтримкою кольорів та мов
 let settingsInitialized = false;
 let settingsTranslations = null;
-let categoriesState = { background: false, menu: false, colors: false };
+let categoriesState = { background: false, menu: false, colors: false, language: false };
 
 const GITHUB_CONFIG = {
     user: 'MAvpacheater',
@@ -52,6 +52,12 @@ const menuItems = [
     { page: 'help', icon: '🆘' },
     { page: 'peoples', icon: '🙏' }
 ];
+
+const languageOptions = {
+    en: { icon: '🇺🇸', name: { en: 'English', uk: 'Англійська', ru: 'Английский' } },
+    uk: { icon: '🇺🇦', name: { en: 'Ukrainian', uk: 'Українська', ru: 'Украинский' } },
+    ru: { icon: '🇷🇺', name: { en: 'Russian', uk: 'Російська', ru: 'Русский' } }
+};
 
 // MENU BUTTON
 function createMenuButton() {
@@ -222,7 +228,7 @@ function applyBackground(background) {
     body.style.backgroundAttachment = 'scroll';
 }
 
-// SETTINGS MANAGEMENT - ОНОВЛЕНО: одночасно лише 1 категорія відкрита
+// SETTINGS MANAGEMENT
 function toggleSettingsCategory(categoryName) {
     if (!categoriesState.hasOwnProperty(categoryName)) return;
     
@@ -235,6 +241,7 @@ function toggleSettingsCategory(categoryName) {
         const header = document.querySelector(`#settingsPage [data-category="${cat}"] .category-header`);
         const optionsClass = cat === 'colors' ? 'color-options' : 
                              cat === 'background' ? 'background-options' : 
+                             cat === 'language' ? 'language-options' :
                              'menu-options';
         const options = document.querySelector(`#settingsPage .${optionsClass}`);
         
@@ -251,6 +258,7 @@ function toggleSettingsCategory(categoryName) {
         const header = document.querySelector(`#settingsPage [data-category="${categoryName}"] .category-header`);
         const optionsClass = categoryName === 'colors' ? 'color-options' : 
                              categoryName === 'background' ? 'background-options' : 
+                             categoryName === 'language' ? 'language-options' :
                              'menu-options';
         const options = document.querySelector(`#settingsPage .${optionsClass}`);
         
@@ -268,10 +276,8 @@ function loadCategoriesState() {
     if (saved) {
         try {
             const savedState = JSON.parse(saved);
-            // Переконуємося, що тільки одна категорія відкрита
             const openCategories = Object.keys(savedState).filter(key => savedState[key]);
             if (openCategories.length > 1) {
-                // Якщо більше однієї відкритої, закриваємо всі
                 Object.keys(categoriesState).forEach(key => {
                     categoriesState[key] = false;
                 });
@@ -289,6 +295,7 @@ function applyCategoriesState() {
         const header = document.querySelector(`#settingsPage [data-category="${category}"] .category-header`);
         const optionsClass = category === 'colors' ? 'color-options' : 
                             category === 'background' ? 'background-options' : 
+                            category === 'language' ? 'language-options' :
                             'menu-options';
         const options = document.querySelector(`#settingsPage .${optionsClass}`);
         
@@ -333,6 +340,16 @@ function changeMenuPosition(position) {
     updateMenuPositionUI();
 }
 
+function changeLanguage(lang) {
+    if (!languageOptions[lang]) return;
+    
+    if (typeof window.switchAppLanguage === 'function') {
+        window.switchAppLanguage(lang);
+    }
+    
+    updateLanguageUI();
+}
+
 function updateBackgroundUI() {
     const currentBg = getCurrentBackground();
     const options = document.querySelectorAll('#settingsPage .background-option');
@@ -348,6 +365,15 @@ function updateMenuPositionUI() {
     
     options.forEach(option => {
         option.classList.toggle('active', option.dataset.position === currentPos);
+    });
+}
+
+function updateLanguageUI() {
+    const currentLang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
+    const options = document.querySelectorAll('#settingsPage .language-option');
+    
+    options.forEach(option => {
+        option.classList.toggle('active', option.dataset.language === currentLang);
     });
 }
 
@@ -374,6 +400,7 @@ function updateSettingsLanguage(lang = null) {
     
     const updates = [
         { selector: '#settingsPage .settings-title', text: t.title },
+        { selector: '#settingsPage [data-category="language"] .category-title span:last-child', text: t.language },
         { selector: '#settingsPage [data-category="colors"] .category-title span:last-child', text: t.colors },
         { selector: '#settingsPage [data-category="background"] .category-title span:last-child', text: t.background },
         { selector: '#settingsPage [data-category="menu"] .category-title span:last-child', text: t.menu }
@@ -393,6 +420,8 @@ function updateSettingsLanguage(lang = null) {
         const el = document.querySelector(`#settingsPage [data-position="${pos}"] .menu-option-name`);
         if (el && t[pos]) el.textContent = t[pos];
     });
+    
+    updateLanguageNames();
 }
 
 function updateColorThemeNames() {
@@ -403,6 +432,17 @@ function updateColorThemeNames() {
         const el = document.querySelector(`#settingsPage [data-theme="${theme}"] .color-option-name`);
         if (el && colorThemes[theme].name[currentLang]) {
             el.textContent = colorThemes[theme].name[currentLang];
+        }
+    });
+}
+
+function updateLanguageNames() {
+    const currentLang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
+    
+    Object.keys(languageOptions).forEach(lang => {
+        const el = document.querySelector(`#settingsPage [data-language="${lang}"] .language-option-name`);
+        if (el && languageOptions[lang].name[currentLang]) {
+            el.textContent = languageOptions[lang].name[currentLang];
         }
     });
 }
@@ -424,7 +464,6 @@ function createSettingsHTML() {
         </div>
     `).join('');
 
-    // Додаємо кольорові теми
     const colorThemes = window.colorThemes || {};
     const colorOptionsHTML = Object.keys(colorThemes).map(theme => {
         const themeData = colorThemes[theme];
@@ -442,9 +481,30 @@ function createSettingsHTML() {
         `;
     }).join('');
 
+    const languageOptionsHTML = Object.keys(languageOptions).map(lang => {
+        const langData = languageOptions[lang];
+        return `
+            <div class="language-option" data-language="${lang}" onclick="changeLanguage('${lang}')">
+                <div class="language-option-icon">${langData.icon}</div>
+                <div class="language-option-name">${langData.name.en}</div>
+            </div>
+        `;
+    }).join('');
+
     return `
         <div class="settings-container">
             <h1 class="settings-title">⚙️ Settings</h1>
+            
+            <div class="settings-section" data-category="language">
+                <div class="category-header collapsed" onclick="toggleSettingsCategory('language')">
+                    <div class="category-title">
+                        <span class="section-icon">🌍</span>
+                        <span>Language</span>
+                    </div>
+                    <span class="category-toggle">▼</span>
+                </div>
+                <div class="language-options collapsed">${languageOptionsHTML}</div>
+            </div>
             
             <div class="settings-section" data-category="colors">
                 <div class="category-header collapsed" onclick="toggleSettingsCategory('colors')">
@@ -496,6 +556,7 @@ async function initializeSettings() {
     loadSettingsTranslations().then(() => {
         updateSettingsLanguage();
         updateColorThemeNames();
+        updateLanguageNames();
     });
     
     const currentBg = getCurrentBackground();
@@ -506,10 +567,11 @@ async function initializeSettings() {
     menuManager.showOnlyMenu(currentMenuPos);
     updateMenuPositionUI();
     
-    // Оновлюємо UI кольорів
     if (typeof updateColorThemeUI === 'function') {
         updateColorThemeUI();
     }
+    
+    updateLanguageUI();
     
     applyCategoriesState();
     
@@ -529,6 +591,7 @@ document.addEventListener('languageChanged', (e) => {
     if (settingsInitialized && e.detail && e.detail.language) {
         updateSettingsLanguage(e.detail.language);
         updateColorThemeNames();
+        updateLanguageNames();
     }
 });
 
@@ -548,6 +611,7 @@ if (document.readyState === 'loading') {
 window.initializeSettings = initializeSettings;
 window.changeBackground = changeBackground;
 window.changeMenuPosition = changeMenuPosition;
+window.changeLanguage = changeLanguage;
 window.toggleSettingsCategory = toggleSettingsCategory;
 window.updateSettingsLanguage = updateSettingsLanguage;
 window.menuManager = menuManager;
