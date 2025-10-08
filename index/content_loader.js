@@ -1,4 +1,4 @@
-// Content loader script - Fixed version
+// Content loader script - Fixed version with Profile and Clans support
 console.log('🔄 Loading content...');
 
 // Function to load content
@@ -85,24 +85,10 @@ async function loadContent() {
                         </div>
                     </div>
                     
-                    <!-- User Section -->
+                    <!-- User Section with Settings -->
                     <div class="sidebar-user" id="sidebarUser">
-                        <button class="auth-btn-sidebar disabled" id="authButton" title="Coming Soon!" onclick="handleAuthAction()"></button>
-                    </div>
-                    
-                    <!-- Settings and Language Controls -->
-                    <div class="sidebar-controls">
-                        <div class="control-buttons">
-                            <!-- Settings Button -->
-                            <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">⚙️</button>
-                            
-                            <!-- Language Flags -->
-                            <div class="language-flags" id="languageFlags">
-                                <button class="lang-flag-btn" data-lang="en" title="English">🇺🇸</button>
-                                <button class="lang-flag-btn" data-lang="uk" title="Українська">🇺🇦</button>
-                                <button class="lang-flag-btn" data-lang="ru" title="Русский">🇷🇺</button>
-                            </div>
-                        </div>
+                        <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">⚙️</button>
+                        <button class="auth-btn-sidebar" id="authButton">⏳ Soon...</button>
                     </div>
                 </div>
 
@@ -121,38 +107,11 @@ async function loadContent() {
             const savedLang = localStorage.getItem('armHelper_language');
             console.log('🔍 Saved language in localStorage:', savedLang);
             
-            // Set active button and attach event listeners
-            setTimeout(() => {
-                const langButtons = document.querySelectorAll('.lang-flag-btn');
-                console.log(`🔍 Found ${langButtons.length} language buttons`);
-                
-                langButtons.forEach((btn) => {
-                    const lang = btn.getAttribute('data-lang');
-                    const isActive = lang === savedLang;
-                    
-                    if (isActive) {
-                        btn.classList.add('active');
-                        console.log(`✅ Button ${lang} set to ACTIVE`);
-                    } else {
-                        btn.classList.remove('active');
-                    }
-                    
-                    // Single event listener with proper handling
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        const targetLang = this.getAttribute('data-lang');
-                        console.log(`🖱️ Click: ${targetLang}`);
-                        
-                        if (typeof window.switchAppLanguage === 'function') {
-                            window.switchAppLanguage(targetLang);
-                        }
-                    }, { capture: true, once: false });
-                    
-                    console.log(`✅ Listener added for ${lang}`);
-                });
-            }, 200);
+            // Auth button will be set up by auth.js
+            console.log('ℹ️ Auth button will be configured by auth.js');
+            
+            // Initialize signature easter egg
+            initializeSignatureEasterEgg();
             
             // Dispatch event that content is loaded
             document.dispatchEvent(new CustomEvent('contentLoaded'));
@@ -172,12 +131,10 @@ async function loadContent() {
     } catch (error) {
         console.error('❌ Error loading content:', error);
         
-        // Dispatch error event
         document.dispatchEvent(new CustomEvent('contentLoadError', { 
             detail: error 
         }));
         
-        // Fallback - try to initialize anyway
         setTimeout(() => {
             if (typeof initializeApp === 'function') {
                 initializeApp();
@@ -186,21 +143,73 @@ async function loadContent() {
     }
 }
 
-// Auth action handler
-function handleAuthAction() {
-    console.log('⚠️ Login feature is disabled - coming soon');
-    const authBtn = document.getElementById('authButton');
-    if (authBtn) {
-        const originalText = authBtn.textContent;
-        authBtn.textContent = '🔒 Coming Soon!';
-        authBtn.style.transform = 'scale(0.95)';
-        
-        setTimeout(() => {
-            authBtn.textContent = originalText;
-            authBtn.style.transform = 'scale(1)';
-        }, 1000);
+// Easter egg for signature double-click
+function initializeSignatureEasterEgg() {
+    const signature = document.querySelector('.signature');
+    if (!signature) {
+        console.log('⚠️ Signature element not found, retrying...');
+        setTimeout(initializeSignatureEasterEgg, 500);
+        return;
     }
+    
+    let clickCount = 0;
+    let clickTimer = null;
+    
+    signature.addEventListener('click', function() {
+        clickCount++;
+        
+        if (clickCount === 1) {
+            clickTimer = setTimeout(() => {
+                clickCount = 0;
+            }, 300);
+        } else if (clickCount === 2) {
+            clearTimeout(clickTimer);
+            clickCount = 0;
+            
+            // Toggle megadep background
+            if (document.body.style.backgroundImage.includes('megadep.png')) {
+                document.body.style.backgroundImage = '';
+                document.body.style.backgroundSize = '';
+                document.body.style.backgroundPosition = '';
+                document.body.style.backgroundRepeat = '';
+                document.body.style.backgroundAttachment = '';
+                console.log('🎨 Easter egg: Background removed');
+            } else {
+                document.body.style.backgroundImage = 'url(image/bg/megadep.png)';
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundPosition = 'center';
+                document.body.style.backgroundRepeat = 'no-repeat';
+                document.body.style.backgroundAttachment = 'fixed';
+                console.log('🎨 Easter egg: Megadep background activated! 🎉');
+            }
+        }
+    });
+    
+    signature.style.cursor = 'pointer';
+    signature.title = 'Double click me! 😉';
+    
+    console.log('✅ Signature easter egg initialized');
 }
+
+// Listen for language changes
+document.addEventListener('languageChanged', (e) => {
+    console.log('🌍 Language changed in content_loader');
+    
+    const authButton = document.getElementById('authButton');
+    if (!authButton) return;
+
+    // Only update if auth hasn't taken over yet
+    if (!window.firebaseManager?.isInitialized) {
+        const currentLang = (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : null) || 'en';
+        const translations = {
+            en: '⏳ Loading...',
+            uk: '⏳ Завантаження...',
+            ru: '⏳ Загрузка...'
+        };
+        
+        authButton.textContent = translations[currentLang] || '⏳ Loading...';
+    }
+});
 
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
@@ -211,9 +220,6 @@ if (document.readyState === 'loading') {
     loadContent();
 }
 
-// Make functions globally available
-window.handleAuthAction = handleAuthAction;
-
-console.log('✅ Content loader ready');
+console.log('✅ Content loader ready (WITH PROFILE + CLANS SUPPORT + EASTER EGG)');
 console.log('🔍 Checking switchAppLanguage:', typeof window.switchAppLanguage);
 console.log('🔍 Current localStorage language:', localStorage.getItem('armHelper_language'));
