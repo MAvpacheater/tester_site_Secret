@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting... - Arm Helper</title>
+    <title>Redirecting... - Roblox Helper</title>
     <style>
         body {
             margin: 0;
@@ -88,7 +88,7 @@
 <body>
     <div class="redirect-container">
         <div class="loading-icon">🚀</div>
-        <div class="redirect-title">Redirecting to <span id="pageName">Arm Helper</span></div>
+        <div class="redirect-title">Redirecting to <span id="pageName">Roblox Helper</span></div>
         <div class="redirect-subtitle">
             <!-- Removed tester_site_Secret path display -->
         </div>
@@ -127,7 +127,7 @@
         var search = window.location.search;
         var hash = window.location.hash;
         var pathParts = currentPath.split('/').filter(part => part);
-        var pageName = 'Arm Helper';
+        var pageName = 'Roblox Helper';
         
         console.log('🔄 404 Redirect triggered for:', currentPath);
         console.log('🔍 Path parts:', pathParts);
@@ -139,7 +139,7 @@
         if (isRepoURL) {
             // This is mavpacheater.github.io/tester_site_Secret/page_name
             var pagePath = '/' + pathParts.slice(1).join('/');
-            pageName = pageNames[pagePath] || 'Arm Helper';
+            pageName = pageNames[pagePath] || 'Roblox Helper';
             
             document.getElementById('pageName').textContent = pageName;
             
