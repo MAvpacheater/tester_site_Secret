@@ -5,7 +5,7 @@ let categoriesState = { background: false, menu: false, colors: false, language:
 
 const GITHUB_CONFIG = {
     user: 'MAvpacheater',
-    repo: 'tester_site_Secret',
+    repo: 'roblox_info_post',
     branch: 'main',
     imagePath: 'image/bg/'
 };
