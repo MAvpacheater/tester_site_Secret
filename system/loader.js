@@ -58,7 +58,7 @@ function initializeSystems() {
         if (typeof initGitHubAutoReload === 'function') {
             initGitHubAutoReload({
                 githubUser: 'MAvpacheater',
-                githubRepo: 'armwrestlerinfopost',
+                githubRepo: 'roblox_info_post',
                 branch: 'main',
                 checkInterval: 30000
             });
@@ -85,23 +85,23 @@ function handleEnhancedRouting() {
     }
     
     const pathMappings = {
-        '/armwrestlerinfopost/boosts_info': 'boosts', '/boosts_info': 'boosts', 'boosts_info': 'boosts',
-        '/armwrestlerinfopost/secret_pets': 'secret', '/secret_pets': 'secret', 'secret_pets': 'secret',
-        '/armwrestlerinfopost/potions_food': 'potions', '/potions_food': 'potions', 'potions_food': 'potions',
-        '/armwrestlerinfopost/worlds_info': 'worlds', '/worlds_info': 'worlds', 'worlds_info': 'worlds',
-        '/armwrestlerinfopost/help_guide': 'help', '/help_guide': 'help', 'help_guide': 'help',
-        '/armwrestlerinfopost/peoples_thanks': 'peoples', '/peoples_thanks': 'peoples', 'peoples_thanks': 'peoples',
-        '/armwrestlerinfopost/arm_calculator': 'arm', '/arm_calculator': 'arm', 'arm_calculator': 'arm',
-        '/armwrestlerinfopost/grind_calculator': 'grind', '/grind_calculator': 'grind', 'grind_calculator': 'grind',
-        '/armwrestlerinfopost/roulette_calculator': 'roulette', '/roulette_calculator': 'roulette', 'roulette_calculator': 'roulette',
-        '/armwrestlerinfopost/boss_calculator': 'boss', '/boss_calculator': 'boss', 'boss_calculator': 'boss',
-        '/armwrestlerinfopost/shiny_list': 'shiny', '/shiny_list': 'shiny', 'shiny_list': 'shiny',
-        '/armwrestlerinfopost/codes_list': 'codes', '/codes_list': 'codes', 'codes_list': 'codes',
-        '/armwrestlerinfopost/aura_info': 'aura', '/aura_info': 'aura', 'aura_info': 'aura',
-        '/armwrestlerinfopost/trainer_info': 'trainer', '/trainer_info': 'trainer', 'trainer_info': 'trainer',
-        '/armwrestlerinfopost/charms_info': 'charms', '/charms_info': 'charms', 'charms_info': 'charms',
-        '/armwrestlerinfopost/settings': 'settings', '/settings': 'settings', 'settings': 'settings',
-        '/armwrestlerinfopost/trader_store': 'trader', '/trader_store': 'trader', 'trader_store': 'trader'
+        '/roblox_info_post/boosts_info': 'boosts', '/boosts_info': 'boosts', 'boosts_info': 'boosts',
+        '/roblox_info_post/secret_pets': 'secret', '/secret_pets': 'secret', 'secret_pets': 'secret',
+        '/roblox_info_post/potions_food': 'potions', '/potions_food': 'potions', 'potions_food': 'potions',
+        '/roblox_info_post/worlds_info': 'worlds', '/worlds_info': 'worlds', 'worlds_info': 'worlds',
+        '/roblox_info_post/help_guide': 'help', '/help_guide': 'help', 'help_guide': 'help',
+        '/roblox_info_post/peoples_thanks': 'peoples', '/peoples_thanks': 'peoples', 'peoples_thanks': 'peoples',
+        '/roblox_info_post/arm_calculator': 'arm', '/arm_calculator': 'arm', 'arm_calculator': 'arm',
+        '/roblox_info_post/grind_calculator': 'grind', '/grind_calculator': 'grind', 'grind_calculator': 'grind',
+        '/roblox_info_post/roulette_calculator': 'roulette', '/roulette_calculator': 'roulette', 'roulette_calculator': 'roulette',
+        '/roblox_info_post/boss_calculator': 'boss', '/boss_calculator': 'boss', 'boss_calculator': 'boss',
+        '/roblox_info_post/shiny_list': 'shiny', '/shiny_list': 'shiny', 'shiny_list': 'shiny',
+        '/roblox_info_post/codes_list': 'codes', '/codes_list': 'codes', 'codes_list': 'codes',
+        '/roblox_info_post/aura_info': 'aura', '/aura_info': 'aura', 'aura_info': 'aura',
+        '/roblox_info_post/trainer_info': 'trainer', '/trainer_info': 'trainer', 'trainer_info': 'trainer',
+        '/roblox_info_post/charms_info': 'charms', '/charms_info': 'charms', 'charms_info': 'charms',
+        '/roblox_info_post/settings': 'settings', '/settings': 'settings', 'settings': 'settings',
+        '/roblox_info_post/trader_store': 'trader', '/trader_store': 'trader', 'trader_store': 'trader'
     };
     
     const currentPath = window.location.pathname;
@@ -109,7 +109,7 @@ function handleEnhancedRouting() {
     
     if (!pathMappings[currentPath]) {
         for (const [path, page] of Object.entries(pathMappings)) {
-            if (currentPath.includes(path.replace('/armwrestlerinfopost', '')) && 
+            if (currentPath.includes(path.replace('/roblox_info_post', '')) && 
                 path.replace('/м', '')) {
                 targetPage = page;
                 break;
@@ -127,7 +127,7 @@ function parsePathToPage(path) {
     if (cleanPath.startsWith('/')) cleanPath = cleanPath.substring(1);
     if (cleanPath.endsWith('/')) cleanPath = cleanPath.slice(0, -1);
     if (cleanPath.startsWith('armwrestlerinfopost/')) {
-        cleanPath = cleanPath.substring('armwrestlerinfopost/'.length);
+        cleanPath = cleanPath.substring('roblox_info_post/'.length);
     }
     
     const pathMap = {
