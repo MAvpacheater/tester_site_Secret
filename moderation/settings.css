@@ -1,4 +1,4 @@
-/* 🎃 Halloween Settings Styles - Оптимізована версія з кольорами */
+/* 🎃 Halloween Settings Styles */
 
 .settings-container {
     width: 100%;
@@ -112,7 +112,89 @@
     transform: rotate(-90deg);
 }
 
-/* 🎨 COLOR OPTIONS - НОВА СЕКЦІЯ */
+/* 🌍 LANGUAGE OPTIONS */
+.language-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+    max-height: 200px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+    opacity: 1;
+    width: 100%;
+}
+
+.language-options.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+}
+
+.language-option {
+    background: linear-gradient(135deg, 
+        rgba(25, 5, 45, 0.6) 0%, 
+        rgba(50, 10, 70, 0.5) 100%);
+    border: 2px solid rgba(138, 43, 226, 0.6);
+    border-radius: 15px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 100px;
+    will-change: transform;
+}
+
+.language-option:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 107, 0, 0.3) 0%, 
+        rgba(138, 43, 226, 0.4) 100%);
+    border-color: #FF6B00;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 30px rgba(255, 107, 0, 0.4);
+}
+
+.language-option.active {
+    background: linear-gradient(135deg, 
+        rgba(255, 107, 0, 0.4) 0%, 
+        rgba(138, 43, 226, 0.3) 100%);
+    border-color: #FF6B00;
+    box-shadow: 0 8px 35px rgba(255, 107, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+.language-option.active::after {
+    content: '✓';
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    color: #FF6B00;
+    font-size: 1.4em;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.language-option-icon {
+    font-size: 2.4em;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.6));
+}
+
+.language-option-name {
+    color: #FFB84D;
+    font-size: 1em;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+/* 🎨 COLOR OPTIONS */
 .color-options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -220,7 +302,7 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
 }
 
-/* Контейнер для кнопок фонів - 3 ряди */
+/* BACKGROUND OPTIONS */
 .background-options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -234,28 +316,13 @@
     width: 100%;
 }
 
-.menu-options {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-    margin-top: 20px;
-    max-width: 450px;
-    justify-content: center;
-    max-height: 600px;
-    overflow: hidden;
-    transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
-    opacity: 1;
-}
-
-.background-options.collapsed,
-.menu-options.collapsed {
+.background-options.collapsed {
     max-height: 0;
     opacity: 0;
     margin-top: 0;
 }
 
-/* Кнопки опцій */
-.background-option, .menu-option {
+.background-option {
     background: linear-gradient(135deg, 
         rgba(25, 5, 45, 0.6) 0%, 
         rgba(50, 10, 70, 0.5) 100%);
@@ -272,19 +339,11 @@
     align-items: center;
     box-sizing: border-box;
     width: 100%;
+    min-height: 150px;
     will-change: transform;
 }
 
-.background-option {
-    min-height: 150px;
-}
-
-.menu-option {
-    min-height: 100px;
-    padding: 20px 12px;
-}
-
-.background-option:hover, .menu-option:hover {
+.background-option:hover {
     background: linear-gradient(135deg, 
         rgba(255, 107, 0, 0.3) 0%, 
         rgba(138, 43, 226, 0.4) 100%);
@@ -293,11 +352,7 @@
     box-shadow: 0 8px 30px rgba(255, 107, 0, 0.4);
 }
 
-.menu-option:hover {
-    transform: translateY(-3px) scale(1.08);
-}
-
-.background-option.active, .menu-option.active {
+.background-option.active {
     background: linear-gradient(135deg, 
         rgba(255, 107, 0, 0.4) 0%, 
         rgba(138, 43, 226, 0.3) 100%);
@@ -306,7 +361,7 @@
     transform: translateY(-2px);
 }
 
-.background-option.active::after, .menu-option.active::after {
+.background-option.active::after {
     content: '✓';
     position: absolute;
     top: 12px;
@@ -317,41 +372,19 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
 }
 
-.menu-option.active::after {
-    top: 10px;
-    right: 12px;
-}
-
-.menu-option[data-position="up"] { grid-column: 2; grid-row: 1; }
-.menu-option[data-position="left"] { grid-column: 1; grid-row: 2; }
-.menu-option[data-position="right"] { grid-column: 3; grid-row: 2; }
-.menu-option[data-position="down"] { grid-column: 2; grid-row: 3; }
-
-.option-icon, .menu-option-icon {
+.option-icon {
     font-size: 2.4em;
     margin-bottom: 12px;
     display: block;
     filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.6));
 }
 
-.option-name, .menu-option-name {
+.option-name {
     color: #FFB84D;
     font-size: 1.1em;
     font-weight: 600;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
     margin-bottom: 8px;
-}
-
-.menu-option-name {
-    font-size: 1em;
-    margin-bottom: 6px;
-}
-
-.option-description {
-    color: #B794F4;
-    font-size: 0.9em;
-    opacity: 0.9;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .background-preview {
@@ -376,8 +409,97 @@
     border-radius: 10px;
 }
 
-/* СТАТИЧНІ МЕНЮ - ЗМЕНШЕНО В 1.5 РАЗИ */
+/* MENU OPTIONS */
+.menu-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 20px;
+    max-width: 450px;
+    justify-content: center;
+    max-height: 600px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+    opacity: 1;
+}
 
+.menu-options.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+}
+
+.menu-option {
+    background: linear-gradient(135deg, 
+        rgba(25, 5, 45, 0.6) 0%, 
+        rgba(50, 10, 70, 0.5) 100%);
+    border: 2px solid rgba(138, 43, 226, 0.6);
+    border-radius: 15px;
+    padding: 20px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 100px;
+    will-change: transform;
+}
+
+.menu-option:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 107, 0, 0.3) 0%, 
+        rgba(138, 43, 226, 0.4) 100%);
+    border-color: #FF6B00;
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 0 8px 30px rgba(255, 107, 0, 0.4);
+}
+
+.menu-option.active {
+    background: linear-gradient(135deg, 
+        rgba(255, 107, 0, 0.4) 0%, 
+        rgba(138, 43, 226, 0.3) 100%);
+    border-color: #FF6B00;
+    box-shadow: 0 8px 35px rgba(255, 107, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+.menu-option.active::after {
+    content: '✓';
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    color: #FF6B00;
+    font-size: 1.4em;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.menu-option[data-position="up"] { grid-column: 2; grid-row: 1; }
+.menu-option[data-position="left"] { grid-column: 1; grid-row: 2; }
+.menu-option[data-position="right"] { grid-column: 3; grid-row: 2; }
+.menu-option[data-position="down"] { grid-column: 2; grid-row: 3; }
+
+.menu-option-icon {
+    font-size: 2.4em;
+    margin-bottom: 12px;
+    display: block;
+    filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.6));
+}
+
+.menu-option-name {
+    color: #FFB84D;
+    font-size: 1em;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    margin-bottom: 6px;
+}
+
+/* STATIC MENU */
 .static-menu {
     position: fixed;
     z-index: 1002;
@@ -480,8 +602,7 @@
     padding-left: 20px;
 }
 
-/* КНОПКА МЕНЮ - ЗМЕНШЕНО В 1.5 РАЗИ */
-
+/* MOBILE MENU BUTTON */
 .mobile-menu-toggle {
     position: fixed;
     top: 15px;
@@ -533,7 +654,7 @@
     transform-origin: center;
 }
 
-/* КОНТРОЛЬ ВИДИМОСТІ МЕНЮ */
+/* MENU VISIBILITY CONTROL */
 .mobile-menu-toggle,
 .sidebar,
 .sidebar-overlay,
@@ -701,6 +822,17 @@ body.menu-right {
         margin-bottom: 20px;
     }
     
+    .language-options {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        max-height: 170px;
+    }
+    
+    .language-option {
+        min-height: 85px;
+        padding: 12px;
+    }
+    
     .color-options {
         grid-template-columns: repeat(3, 1fr);
         gap: 12px;
@@ -774,6 +906,21 @@ body.menu-right {
     body.menu-right .mobile-menu-toggle {
         right: 10px !important;
         left: auto !important;
+    }
+    
+    .language-options {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        max-height: 140px;
+    }
+    
+    .language-option {
+        min-height: 75px;
+        padding: 10px;
+    }
+    
+    .language-option-name {
+        font-size: 0.9em;
     }
     
     .color-options {
