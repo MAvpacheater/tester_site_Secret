@@ -272,6 +272,34 @@ class MenuManager {
             }
         });
         
+        // Перепозиціонування при скролі або resize
+        const repositionDropdown = () => {
+            if (this.activeDropdown) {
+                const dropdown = document.querySelector(`[data-dropdown="${this.activeDropdown}"]`);
+                const categoryBtn = document.querySelector(`[data-category="${this.activeDropdown}"] .category-btn`);
+                
+                if (dropdown && categoryBtn && dropdown.classList.contains('show')) {
+                    const btnRect = categoryBtn.getBoundingClientRect();
+                    const staticMenu = document.getElementById('staticMenu');
+                    const isTopMenu = staticMenu?.classList.contains('menu-top');
+                    
+                    dropdown.style.left = `${btnRect.left}px`;
+                    
+                    if (isTopMenu) {
+                        dropdown.style.top = `${btnRect.bottom + 10}px`;
+                        dropdown.style.bottom = 'auto';
+                    } else {
+                        dropdown.style.bottom = `${window.innerHeight - btnRect.top + 10}px`;
+                        dropdown.style.top = 'auto';
+                    }
+                }
+            }
+        };
+        
+        window.addEventListener('scroll', repositionDropdown);
+        window.addEventListener('resize', repositionDropdown);
+        staticMenu.addEventListener('scroll', repositionDropdown);
+        
         const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
         this.updateActiveState(currentPage);
     }
@@ -290,6 +318,21 @@ class MenuManager {
         } else {
             // Закриваємо попередній
             this.closeDropdown();
+            
+            // Позиціонуємо dropdown відносно кнопки
+            const btnRect = categoryBtn.getBoundingClientRect();
+            const staticMenu = document.getElementById('staticMenu');
+            const isTopMenu = staticMenu?.classList.contains('menu-top');
+            
+            dropdown.style.left = `${btnRect.left}px`;
+            
+            if (isTopMenu) {
+                dropdown.style.top = `${btnRect.bottom + 10}px`;
+                dropdown.style.bottom = 'auto';
+            } else {
+                dropdown.style.bottom = `${window.innerHeight - btnRect.top + 10}px`;
+                dropdown.style.top = 'auto';
+            }
             
             // Відкриваємо новий
             dropdown.classList.add('show');
