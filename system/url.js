@@ -1,90 +1,142 @@
-// URL Routing System - Optimized for tester_site_Secret
+// ========== URL ROUTER CLASS (FIXED - Auth Check Before Modal) ==========
 class URLRouter {
     constructor() {
         this.baseURL = this.getBaseURL();
         this.routes = new Map();
+        this.pageToPath = new Map();
         this.isInitialized = false;
-        this.debugMode = true;
+        this.debugMode = false;
         this.setupRoutes();
         this.setupListeners();
-        console.log(`🌐 Router initialized: ${this.baseURL}`);
     }
 
     getBaseURL() {
-        const { protocol, host, pathname } = window.location;
-        console.log('🔍 Detecting base:', { protocol, host, pathname });
+        const { protocol, host } = window.location;
         
         if (host === 'mavpacheater.github.io') {
-            const base = `${protocol}//${host}/roblox_info_post/`;
-            console.log('✅ GitHub Pages:', base);
-            return base;
+            return `${protocol}//${host}/tester_site_Secret/`;
         }
-        
-        const base = `${protocol}//${host}/`;
-        console.log('✅ Standard hosting:', base);
-        return base;
+        return `${protocol}//${host}/`;
     }
 
     setupRoutes() {
-        const routes = {
-            calculator: '', arm: 'arm_calculator', grind: 'grind_calculator', 
-            roulette: 'roulette_calculator', boss: 'boss_calculator', boosts: 'boosts_info',
-            shiny: 'shiny_list', secret: 'secret_pets', codes: 'codes_list', aura: 'aura_info',
-            trainer: 'trainer_info', charms: 'charms_info', potions: 'potions_food',
-            worlds: 'worlds_info', settings: 'settings', help: 'help_guide', 
-            peoples: 'peoples_thanks', trader: 'trader_store'
+        const awsRoutes = {
+            calculator: 'pets_calc',
+            arm: 'arm_calculator',
+            grind: 'grind_calculator',
+            roulette: 'roulette_calculator',
+            boss: 'boss_calculator',
+            boosts: 'boosts_info',
+            shiny: 'shiny_list',
+            secret: 'secret_pets',
+            codes: 'codes_list',
+            aura: 'aura_info',
+            trainer: 'trainer_info',
+            charms: 'charms_info',
+            potions: 'potions_food',
+            worlds: 'worlds_info',
+            help: 'help_guide',
+            peoples: 'peoples_thanks',
+            trader: 'trader_store',
+            clans: 'clans'
+        };
+
+        const rcuRoutes = {
+            petscalc: 'pets_calculator'
+        };
+
+        const systemRoutes = {
+            settings: 'settings',
+            profile: 'profile'
         };
 
         this.routes.clear();
+        this.pageToPath.clear();
 
-        Object.entries(routes).forEach(([page, path]) => {
-            this.routes.set(page, path);
+        // Реєстрація AWS маршрутів
+        Object.entries(awsRoutes).forEach(([page, path]) => {
+            const full = `AWS/${path}`;
+            this.pageToPath.set(page, full);
             
-            if (path === '') {
-                ['/', '', '/roblox_info_post/', '/roblox_info_post'].forEach(v => 
-                    this.routes.set(v, page)
-                );
-            } else {
-                [
-                    path, `/${path}`, `${path}/`, `/${path}/`,
-                    `/roblox_info_post/${path}`, `/roblox_info_post/${path}/`,
-                    `roblox_info_post/${path}`, `roblox_info_post/${path}/`
-                ].forEach(v => this.routes.set(v, page));
-            }
+            const pathVariants = [
+                full, `/${full}`, `${full}/`, `/${full}/`,
+                `/tester_site_Secret/${full}`, `/tester_site_Secret/${full}/`,
+                `tester_site_Secret/${full}`, `tester_site_Secret/${full}/`,
+                `${full}/menu`, `/${full}/menu`, `${full}/menu/`, `/${full}/menu/`,
+                `/tester_site_Secret/${full}/menu`, `/tester_site_Secret/${full}/menu/`,
+                `tester_site_Secret/${full}/menu`, `tester_site_Secret/${full}/menu/`,
+                path, `/${path}`, `${path}/`, `/${path}/`,
+                `/tester_site_Secret/${path}`, `/tester_site_Secret/${path}/`,
+                `tester_site_Secret/${path}`, `tester_site_Secret/${path}/`,
+                `${path}/menu`, `/${path}/menu`, `${path}/menu/`, `/${path}/menu/`,
+                `/tester_site_Secret/${path}/menu`, `/tester_site_Secret/${path}/menu/`,
+                `tester_site_Secret/${path}/menu`, `tester_site_Secret/${path}/menu/`
+            ];
+            
+            pathVariants.forEach(v => this.routes.set(v, page));
         });
 
-        if (this.debugMode) {
-            console.log('🗺️ Routes configured:', Array.from(this.routes.entries()).slice(0, 10));
-        }
+        // Реєстрація RCU маршрутів
+        Object.entries(rcuRoutes).forEach(([page, path]) => {
+            const full = `RCU/${path}`;
+            this.pageToPath.set(page, full);
+            
+            const pathVariants = [
+                full, `/${full}`, `${full}/`, `/${full}/`,
+                `/tester_site_Secret/${full}`, `/tester_site_Secret/${full}/`,
+                `tester_site_Secret/${full}`, `tester_site_Secret/${full}/`,
+                `${full}/menu`, `/${full}/menu`, `${full}/menu/`, `/${full}/menu/`,
+                `/tester_site_Secret/${full}/menu`, `/tester_site_Secret/${full}/menu/`,
+                `tester_site_Secret/${full}/menu`, `tester_site_Secret/${full}/menu/`,
+                path, `/${path}`, `${path}/`, `/${path}/`,
+                `/tester_site_Secret/${path}`, `/tester_site_Secret/${path}/`,
+                `tester_site_Secret/${path}`, `tester_site_Secret/${path}/`,
+                `${path}/menu`, `/${path}/menu`, `${path}/menu/`, `/${path}/menu/`,
+                `/tester_site_Secret/${path}/menu`, `/tester_site_Secret/${path}/menu/`,
+                `tester_site_Secret/${path}/menu`, `tester_site_Secret/${path}/menu/`
+            ];
+            
+            pathVariants.forEach(v => this.routes.set(v, page));
+        });
+
+        // Реєстрація системних маршрутів
+        Object.entries(systemRoutes).forEach(([page, path]) => {
+            this.pageToPath.set(page, path);
+            
+            [
+                path, `/${path}`, `${path}/`, `/${path}/`,
+                `/tester_site_Secret/${path}`, `/tester_site_Secret/${path}/`,
+                `tester_site_Secret/${path}`, `tester_site_Secret/${path}/`
+            ].forEach(v => this.routes.set(v, page));
+        });
+
+        ['/', '', '/tester_site_Secret/', '/tester_site_Secret'].forEach(v => this.routes.set(v, 'profile'));
+        this.pageToPath.set('profile', 'profile');
     }
 
     setupListeners() {
         window.addEventListener('popstate', (e) => {
-            console.log('🔙 Navigation:', e.state);
-            this.handleBrowserNavigation(this.getPageFromURL());
-        });
-
-        window.addEventListener('hashchange', () => {
-            console.log('🔗 Hash change');
             this.handleBrowserNavigation(this.getPageFromURL());
         });
     }
 
     init() {
-        if (this.isInitialized) return console.log('⚠️ Already initialized');
+        if (this.isInitialized) return;
 
-        console.log('🚀 Initializing router...');
-        
         const restored = sessionStorage.getItem('pathToRestore');
         if (restored) {
-            console.log(`🔄 Restored path: ${restored}`);
             const page = this.parsePathToPage(restored);
             if (page) {
                 sessionStorage.removeItem('pathToRestore');
                 setTimeout(() => {
                     if (typeof switchPage === 'function') {
                         switchPage(page);
-                        console.log(`🎯 Switched to: ${page}`);
+                    }
+                    this.openCategoryForCurrentPage(page);
+                    
+                    // Якщо це профіль - перевіряємо авторизацію
+                    if (page === 'profile') {
+                        this.waitForFirebaseAndCheckAuth();
                     }
                 }, 100);
                 this.isInitialized = true;
@@ -93,22 +145,116 @@ class URLRouter {
             sessionStorage.removeItem('pathToRestore');
         }
 
-        const initial = this.getPageFromURL();
-        console.log(`🎯 Initial page: ${initial}`);
+        const pathname = window.location.pathname;
+        const isDirectLink = this.isDirectPageLink(pathname);
+        const targetPage = this.getPageFromURL();
         
-        if (typeof switchPage === 'function') {
-            setTimeout(() => {
-                switchPage(initial);
-                console.log(`✅ Loaded: ${initial}`);
-            }, 200);
+        console.log('🔗 URL Router Init:', {
+            pathname,
+            isDirectLink,
+            targetPage
+        });
+
+        if (isDirectLink) {
+            // Пряме посилання на конкретну сторінку
+            console.log('📍 Direct link → opening page:', targetPage);
+            
+            if (typeof switchPage === 'function') {
+                setTimeout(() => {
+                    switchPage(targetPage);
+                    this.openCategoryForCurrentPage(targetPage);
+                    
+                    // ТІЛЬКИ якщо це профіль - перевіряємо авторизацію
+                    if (targetPage === 'profile') {
+                        console.log('👤 Direct profile link → checking auth');
+                        this.waitForFirebaseAndCheckAuth();
+                    }
+                }, 200);
+            }
+        } else {
+            // Головна сторінка - завжди відкриваємо профіль і перевіряємо авторизацію
+            console.log('🏠 Root page → opening profile and checking auth');
+            
+            if (typeof switchPage === 'function') {
+                setTimeout(() => {
+                    switchPage('profile');
+                    this.openCategoryForCurrentPage('profile');
+                    // ЗАВЖДИ перевіряємо авторизацію на головній сторінці
+                    this.waitForFirebaseAndCheckAuth();
+                }, 200);
+            }
         }
 
         this.isInitialized = true;
-        console.log('✅ Router ready');
+
+        if (!isDirectLink) {
+            setTimeout(() => this.applyStateFromURL(), 300);
+        }
+    }
+
+    openCategoryForCurrentPage(page) {
+        console.log('📂 Auto-opening category for page:', page);
+        
+        setTimeout(() => {
+            if (typeof window.openCategoryForPage === 'function') {
+                window.openCategoryForPage(page);
+            } else {
+                console.warn('⚠️ openCategoryForPage function not available');
+            }
+        }, 150);
+    }
+
+    // FIXED: Чекаємо Firebase і перевіряємо авторизацію
+    waitForFirebaseAndCheckAuth() {
+        let attempts = 0;
+        const maxAttempts = 100; // Збільшено до 10 секунд
+        
+        const checkAuth = () => {
+            attempts++;
+            
+            // Перевіряємо чи Firebase готовий
+            if (window.firebaseManager && window.firebaseManager.isInitialized) {
+                console.log('✅ Firebase ready, checking auth status');
+                
+                const isLoggedIn = this.checkUserLoggedIn();
+                
+                if (!isLoggedIn) {
+                    console.log('🔐 User not logged in, showing auth modal after delay');
+                    // Додаємо затримку щоб UI встиг завантажитись
+                    setTimeout(() => {
+                        // Перевіряємо ще раз перед показом модалки
+                        const stillNotLoggedIn = this.checkUserLoggedIn();
+                        if (!stillNotLoggedIn) {
+                            console.log('✅ User logged in during delay, skipping modal');
+                            return;
+                        }
+                        
+                        console.log('🔐 Opening auth modal');
+                        this.setQueryParams({ auth: 'signin' }, true);
+                        this.applyStateFromURL();
+                    }, 500); // Затримка 500мс після ініціалізації Firebase
+                } else {
+                    console.log('✅ User already logged in, skipping auth modal');
+                }
+                return;
+            }
+            
+            // Якщо таймаут - НЕ показуємо логін (краще нічого не показувати)
+            if (attempts >= maxAttempts) {
+                console.warn('⚠️ Firebase timeout, skipping auth check completely');
+                return;
+            }
+            
+            // Повторюємо перевірку
+            setTimeout(checkAuth, 100);
+        };
+        
+        // Запускаємо перевірку
+        checkAuth();
     }
 
     parsePathToPage(path) {
-        let clean = path.replace(/^\/|\/$/g, '').replace(/^roblox_info_post\//, '');
+        let clean = path.replace(/^\/|\/$/g, '').replace(/^tester_site_Secret\//, '');
         
         for (const test of [clean, `/${clean}`, `${clean}/`, `/${clean}/`]) {
             if (this.routes.has(test)) return this.routes.get(test);
@@ -119,115 +265,228 @@ class URLRouter {
     getPageFromURL() {
         const { pathname } = window.location;
         
-        if (this.debugMode) console.log(`🔍 Analyzing: ${pathname}`);
-        
         const direct = this.routes.get(pathname);
-        if (direct) {
-            console.log(`✅ Direct match: ${pathname} → ${direct}`);
-            return direct;
-        }
+        if (direct) return direct;
 
-        let relative = pathname.includes('/roblox_info_post/') 
-            ? pathname.split('/roblox_info_post/')[1] || ''
+        let relative = pathname.includes('/tester_site_Secret/') 
+            ? pathname.split('/tester_site_Secret/')[1] || ''
             : pathname;
         
         relative = relative.replace(/^\/|\/$/g, '');
         
-        if (this.debugMode) console.log(`🎯 Relative: "${relative}"`);
-        
         const tests = [
             relative, `/${relative}`, `${relative}/`, `/${relative}/`,
             pathname, `${pathname}/`, pathname.replace(/\/$/, ''),
-            `/roblox_info_post/${relative}`, `/roblox_info_post/${relative}/`
+            `/tester_site_Secret/${relative}`, `/tester_site_Secret/${relative}/`
         ];
         
         const unique = [...new Set(tests)].filter(Boolean);
         
         for (const test of unique) {
             if (this.routes.has(test)) {
-                const page = this.routes.get(test);
-                console.log(`✅ Match: "${test}" → ${page}`);
-                return page;
+                return this.routes.get(test);
             }
         }
         
-        if (!relative || pathname === '/' || pathname.includes('/roblox_info_post')) {
-            console.log('✅ Root → calculator');
-            return 'calculator';
+        if (!relative || pathname === '/' || pathname === '/tester_site_Secret' || pathname === '/tester_site_Secret/') {
+            return 'profile';
         }
         
-        console.log(`❓ No match: "${pathname}"`);
-        return 'calculator';
+        return 'profile';
     }
 
     updateURL(page, pushState = true) {
-        const segment = this.routes.get(page);
-        if (segment === undefined) return console.warn(`⚠️ No route: ${page}`);
+        const segment = this.pageToPath.get(page);
+        if (segment === undefined) return;
 
         let url = this.baseURL.replace(/\/$/, '');
-        if (segment) url += `/${segment}`;
-        else url += '/';
+        
+        const sidebar = document.getElementById('sidebar');
+        const isMenuOpen = sidebar && sidebar.classList.contains('open');
+        const suffix = isMenuOpen ? '/menu' : '';
+        
+        if (segment) {
+            url += `/${segment}${suffix}`;
+        } else {
+            url += '/';
+        }
         
         const current = new URL(window.location.href);
         if (current.search) url += current.search;
         if (current.hash) url += current.hash;
         
-        console.log(`🔗 URL: ${page} → ${url}`);
-        
         if (url !== window.location.href) {
             try {
                 const state = { page, timestamp: Date.now() };
                 window.history[pushState ? 'pushState' : 'replaceState'](state, '', url);
-                console.log(`📍 URL ${pushState ? 'pushed' : 'replaced'}`);
-                this.updateMetaTags(page);
             } catch (e) {
-                console.error('❌ URL error:', e);
+                console.error('URL update error:', e);
             }
         }
     }
 
-    handleBrowserNavigation(page) {
-        console.log(`🔙 Navigating to: ${page}`);
-        if (typeof switchPage === 'function') {
-            setTimeout(() => switchPage(page), 50);
+    getQueryParam(key) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(key);
+    }
+
+    setQueryParams(partial, pushState = true) {
+        const url = new URL(window.location.href);
+        const params = url.searchParams;
+        Object.entries(partial).forEach(([k, v]) => {
+            if (v === undefined || v === null || v === '' || v === false) params.delete(k);
+            else params.set(k, v);
+        });
+        url.search = params.toString();
+        try {
+            const state = { ...history.state, timestamp: Date.now() };
+            window.history[pushState ? 'pushState' : 'replaceState'](state, '', url.toString());
+        } catch (e) {
+            console.error('URL query update error:', e);
         }
     }
 
-    updateMetaTags(page) {
-        const info = this.getPageInfo(page);
-        document.title = `${info.title} - Arm Helper`;
+    // FIXED: Застосування стану з URL
+    applyStateFromURL() {
+        const pathname = window.location.pathname;
+        const isDirectPageLink = this.isDirectPageLink(pathname);
+        const targetPage = this.getPageFromURL();
         
-        let meta = document.querySelector('meta[name="description"]');
-        if (!meta) {
-            meta = document.createElement('meta');
-            meta.name = 'description';
-            document.head.appendChild(meta);
+        console.log('🔗 Apply state from URL:', {
+            pathname,
+            isDirectPageLink,
+            targetPage,
+            hasAuth: !!this.getQueryParam('auth'),
+            hasMenu: pathname.includes('/menu')
+        });
+
+        // Меню через /menu в шляху
+        const hasMenuInPath = pathname.includes('/menu');
+        if (hasMenuInPath && typeof window.toggleMobileMenu === 'function') {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar && !sidebar.classList.contains('open')) {
+                setTimeout(() => window.toggleMobileMenu(), 100);
+            }
         }
-        meta.content = info.description;
+
+        // Меню через query параметр (застарілий спосіб)
+        const menu = this.getQueryParam('menu');
+        if (menu === 'open' && typeof window.toggleMobileMenu === 'function') {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar && !sidebar.classList.contains('open')) window.toggleMobileMenu();
+        }
+
+        // FIXED: Обробка auth параметра
+        const auth = this.getQueryParam('auth');
+        if (auth === 'signin') {
+            // CRITICAL: Перевіряємо чи це НЕ профіль
+            if (targetPage !== 'profile') {
+                console.log('⏭️ Not a profile page, removing auth param');
+                this.setQueryParams({ auth: null }, true);
+                return;
+            }
+
+            // CRITICAL: Перевіряємо чи Firebase готовий
+            if (!window.firebaseManager || !window.firebaseManager.isInitialized) {
+                console.log('⏳ Firebase not ready yet, skipping auth modal');
+                this.setQueryParams({ auth: null }, true);
+                return;
+            }
+
+            // CRITICAL: Перевіряємо чи користувач вже увійшов
+            const isUserLoggedIn = this.checkUserLoggedIn();
+            if (isUserLoggedIn) {
+                console.log('✅ User already logged in, removing auth param');
+                this.setQueryParams({ auth: null }, true);
+                return;
+            }
+
+            // Якщо дійшли сюди - це профіль і користувач НЕ увійшов
+            console.log('🔐 Profile page + not logged in → opening auth modal');
+            const tryOpen = (attempt = 0) => {
+                if (window.authUI && typeof window.authUI.openModal === 'function') {
+                    // Остання перевірка перед відкриттям
+                    const stillNotLoggedIn = this.checkUserLoggedIn();
+                    if (!stillNotLoggedIn) {
+                        console.log('✅ User logged in before modal opened');
+                        this.setQueryParams({ auth: null }, true);
+                        return;
+                    }
+                    
+                    console.log('📱 Opening auth modal');
+                    window.authUI.openModal('signin');
+                    this.setQueryParams({ auth: null }, true);
+                    return;
+                }
+                if (attempt < 30) setTimeout(() => tryOpen(attempt + 1), 100);
+                else {
+                    console.warn('⚠️ Auth UI not available, removing param');
+                    this.setQueryParams({ auth: null }, true);
+                }
+            };
+            tryOpen();
+        }
     }
 
-    getPageInfo(page) {
-        const data = {
-            calculator: { title: '🐾 Pet Calculator', description: 'Calculate pet upgrades' },
-            arm: { title: '💪 Arm Calculator', description: 'Calculate arm strength' },
-            grind: { title: '🏋️‍♂️ Grind Calculator', description: 'Calculate grinding efficiency' },
-            roulette: { title: '🎰 Roulette Calculator', description: 'Calculate roulette time' },
-            boss: { title: '👹 Boss Calculator', description: 'Calculate boss battle time' },
-            boosts: { title: '🚀 Boosts', description: 'Complete guide to boosts' },
-            shiny: { title: '✨ Shiny Stats', description: 'Shiny pets list' },
-            secret: { title: '🔮 Secret Pets', description: 'Secret pets guide' },
-            codes: { title: '🎁 Codes', description: 'Latest working codes' },
-            aura: { title: '🌟 Aura', description: 'Aura guide' },
-            trainer: { title: '🏆 Trainer', description: 'Training guide' },
-            charms: { title: '🔮 Charms', description: 'Charms guide' },
-            potions: { title: '🧪 Potions & Food', description: 'Potions guide' },
-            worlds: { title: '🌍 Worlds', description: 'Worlds guide' },
-            settings: { title: '⚙️ Settings', description: 'Customize app' },
-            help: { title: '🆘 Help', description: 'Help guide' },
-            peoples: { title: '🙏 Thanks', description: 'Community credits' },
-            trader: { title: '🛒 Trader Store', description: 'Browse trader items' }
-        };
-        return data[page] || { title: 'Arm Helper', description: 'Ultimate helper tool' };
+    isDirectPageLink(pathname) {
+        const normalized = pathname.replace(/^\/|\/$/g, '');
+        
+        // Головна сторінка БЕЗ додаткових параметрів
+        if (!normalized || 
+            normalized === 'tester_site_Secret' || 
+            pathname === '/' || 
+            pathname === '/tester_site_Secret' || 
+            pathname === '/tester_site_Secret/') {
+            console.log('🏠 Root path detected (no direct link)');
+            return false;
+        }
+
+        // Отримуємо сторінку з URL
+        const page = this.getPageFromURL();
+        
+        // Якщо визначили конкретну сторінку
+        if (page) {
+            console.log('📍 Direct page link detected:', page);
+            return true;
+        }
+
+        console.log('🏠 No direct link');
+        return false;
+    }
+
+    // FIXED: Перевірка чи користувач увійшов
+    checkUserLoggedIn() {
+        // Перевіряємо чи Firebase ініціалізований
+        if (!window.firebaseManager || !window.firebaseManager.isInitialized) {
+            console.log('⏳ Firebase not ready for auth check');
+            return false;
+        }
+
+        try {
+            // Перевіряємо чи є поточний користувач
+            const currentUser = window.firebaseManager.getCurrentUser();
+            const isLoggedIn = !!currentUser;
+            
+            if (isLoggedIn) {
+                console.log('👤 User logged in:', currentUser.displayName || currentUser.email);
+            } else {
+                console.log('👤 User not logged in');
+            }
+            
+            return isLoggedIn;
+        } catch (error) {
+            console.error('❌ Error checking auth:', error);
+            return false;
+        }
+    }
+
+    handleBrowserNavigation(page) {
+        if (typeof switchPage === 'function') {
+            setTimeout(() => {
+                switchPage(page);
+                this.openCategoryForCurrentPage(page);
+            }, 50);
+        }
     }
 
     debug() {
@@ -236,16 +495,55 @@ class URLRouter {
         console.log('Path:', window.location.pathname);
         console.log('Base:', this.baseURL);
         console.log('Page:', this.getPageFromURL());
-        console.log('Routes:', this.routes.size);
-        console.log('Sample:', Array.from(this.routes.entries()).slice(0, 10));
+        console.log('Is Direct Link:', this.isDirectPageLink(window.location.pathname));
+        console.log('User Logged In:', this.checkUserLoggedIn());
+        console.log('PageToPath map:', this.pageToPath);
         console.log('===================');
     }
 
     forceRouteCheck() {
-        console.log('🔄 Force route check...');
         const page = this.getPageFromURL();
-        console.log(`🎯 Detected: ${page}`);
-        if (typeof switchPage === 'function') switchPage(page);
+        if (typeof switchPage === 'function') {
+            switchPage(page);
+            this.openCategoryForCurrentPage(page);
+        }
         return page;
     }
 }
+
+// ========== GLOBAL VARIABLES ==========
+let urlRouter = null;
+
+// ========== INITIALIZATION FUNCTION ==========
+function initURLRouting() {
+    if (urlRouter) {
+        console.log('ℹ️ URL Router already initialized');
+        return urlRouter;
+    }
+    
+    console.log('🌐 Initializing URL Router...');
+    urlRouter = new URLRouter();
+    
+    setTimeout(() => urlRouter.init(), 100);
+
+    const originalSwitchPage = window.switchPage;
+    if (typeof originalSwitchPage === 'function') {
+        window.switchPage = function(page) {
+            const result = originalSwitchPage.call(this, page);
+            if (urlRouter) urlRouter.updateURL(page, true);
+            return result;
+        };
+    }
+    
+    console.log('✅ URL Router initialized');
+    return urlRouter;
+}
+
+// ========== GLOBAL EXPORTS ==========
+Object.assign(window, {
+    URLRouter,
+    urlRouter: () => urlRouter,
+    initURLRouting
+});
+
+console.log('✅ URL.js loaded (FIXED - Auth Check Before Modal)');

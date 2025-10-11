@@ -1,0 +1,198 @@
+{
+  "common": {
+    "auras": [
+      {
+        "id": "hacked",
+        "strength": 200,
+        "luck": 125,
+        "speed": 44,
+        "rarity": "mythic",
+        "image": "https://i.postimg.cc/Fzk4nnfN/2025-09-07-13-49-35.png"
+      },
+      {
+        "id": "dark_matter",
+        "strength": 197,
+        "luck": 116,
+        "speed": 42,
+        "rarity": "legendary",
+        "image": "https://i.postimg.cc/x1J6NDw0/2025-09-07-14-03-45.png"
+      },
+      {
+        "id": "corrupted",
+        "strength": 192,
+        "luck": 108,
+        "speed": 40,
+        "rarity": "mythic",
+        "image": "https://i.postimg.cc/qRR0274t/2025-09-07-13-49-17.png"
+      },
+      {
+        "id": "galaxy",
+        "strength": 184,
+        "luck": 98,
+        "speed": 38,
+        "rarity": "legendary",
+        "image": "https://i.postimg.cc/Pxhy7LPx/2025-09-07-14-05-11.png"
+      },
+      {
+        "id": "matrix",
+        "strength": 177,
+        "luck": 94,
+        "speed": 36,
+        "rarity": "epic",
+        "image": "https://i.postimg.cc/FHy94qTK/2025-09-07-13-48-49.png"
+      },
+      {
+        "id": "solar",
+        "strength": 167,
+        "luck": 88,
+        "speed": 34,
+        "rarity": "epic",
+        "image": "https://i.postimg.cc/XqPvrC57/2025-09-07-13-48-28.png"
+      },
+      {
+        "id": "universe",
+        "strength": 153,
+        "luck": 81,
+        "speed": 32,
+        "rarity": "epic",
+        "image": "https://i.postimg.cc/SsDRp5N9/2025-09-07-13-47-53.png"
+      },
+      {
+        "id": "storm",
+        "strength": 141,
+        "luck": 74,
+        "speed": 30,
+        "rarity": "rare",
+        "image": "https://i.postimg.cc/jdjNCHpK/2025-09-07-13-43-07.png"
+      },
+      {
+        "id": "poison",
+        "strength": 130,
+        "luck": 65,
+        "speed": 28,
+        "rarity": "epic",
+        "image": "https://i.postimg.cc/fTx4tdm2/2025-09-07-13-43-02.png"
+      },
+      {
+        "id": "divine",
+        "strength": 108,
+        "luck": 59,
+        "speed": 26,
+        "rarity": "rare",
+        "image": "https://i.postimg.cc/5NPBm7B6/2025-09-07-13-47-10.png"
+      },
+      {
+        "id": "firework",
+        "strength": 99,
+        "luck": 57,
+        "speed": 24,
+        "rarity": "rare",
+        "image": "https://i.postimg.cc/XvBkqfyX/2025-09-07-13-46-43.png"
+      },
+      {
+        "id": "glitch",
+        "strength": 91,
+        "luck": 52,
+        "speed": 22,
+        "rarity": "rare",
+        "image": "https://i.postimg.cc/KvbqWH3f/2025-09-07-13-46-17.png"
+      },
+      {
+        "id": "butterfly",
+        "strength": 78,
+        "luck": 47,
+        "speed": 20,
+        "rarity": "rare",
+        "image": "https://i.postimg.cc/wBr4bxDR/2025-09-07-13-42-56.png"
+      },
+      {
+        "id": "sun",
+        "strength": 69,
+        "luck": 44,
+        "speed": 18,
+        "rarity": "uncommon",
+        "image": "https://i.postimg.cc/W1XHgw3n/2025-09-07-13-42-52.png"
+      },
+      {
+        "id": "lightning",
+        "strength": 58,
+        "luck": 38,
+        "speed": 16,
+        "rarity": "uncommon",
+        "image": "https://i.postimg.cc/j27phw9j/2025-09-07-13-42-44.png"
+      }
+    ]
+  },
+  "en": {
+    "title": "Aura Boosts",
+    "loading": "Loading auras...",
+    "error": "Error loading aura data",
+    "retry": "Retry",
+    "description": "Gives you %strength% strength, %luck% luck and %speed% training speed",
+    "names": {
+      "hacked": "Hacked [1/37.5m]",
+      "dark_matter": "Dark Matter [1/30m]",
+      "corrupted": "Corrupted [1/20m]",
+      "galaxy": "Galaxy [1/10m]",
+      "matrix": "Matrix [1/5m]",
+      "solar": "Solar [1/2.5m]",
+      "universe": "Universe [1/1m]",
+      "storm": "Storm [1/500k]",
+      "poison": "Poison [1/150k]",
+      "divine": "Divine [1/50k]",
+      "firework": "Firework [1/25k]",
+      "glitch": "Glitch [1/15k]",
+      "butterfly": "Butterfly [1/9.5k]",
+      "sun": "Sun [1/4.2k]",
+      "lightning": "Lightning [1/1k]"
+    }
+  },
+  "uk": {
+    "title": "Аури та підсилення",
+    "loading": "Завантаження аур...",
+    "error": "Помилка завантаження аур",
+    "retry": "Спробувати знову",
+    "description": "Дає вам %strength% сили, %luck% удачі та %speed% швидкості тренування",
+    "names": {
+      "hacked": "Зламана [1/37.5м]",
+      "dark_matter": "Темна матерія [1/30м]",
+      "corrupted": "Зіпсована [1/20м]",
+      "galaxy": "Галактика [1/10м]",
+      "matrix": "Матриця [1/5м]",
+      "solar": "Сонячна [1/2.5м]",
+      "universe": "Всесвіт [1/1м]",
+      "storm": "Буря [1/500к]",
+      "poison": "Отрута [1/150к]",
+      "divine": "Божественна [1/50к]",
+      "firework": "Фейєрверк [1/25к]",
+      "glitch": "Глітч [1/15к]",
+      "butterfly": "Метелик [1/9.5к]",
+      "sun": "Сонце [1/4.2к]",
+      "lightning": "Блискавка [1/1к]"
+    }
+  },
+  "ru": {
+    "title": "Ауры и усиления",
+    "loading": "Загрузка аур...",
+    "error": "Ошибка загрузки аур",
+    "retry": "Повторить",
+    "description": "Дает вам %strength% силы, %luck% удачи и %speed% скорости тренировки",
+    "names": {
+      "hacked": "Взломанная [1/37.5м]",
+      "dark_matter": "Темная материя [1/30м]",
+      "corrupted": "Поврежденная [1/20м]",
+      "galaxy": "Галактика [1/10м]",
+      "matrix": "Матрица [1/5м]",
+      "solar": "Солнечная [1/2.5м]",
+      "universe": "Вселенная [1/1м]",
+      "storm": "Шторм [1/500к]",
+      "poison": "Яд [1/150к]",
+      "divine": "Божественная [1/50к]",
+      "firework": "Фейерверк [1/25к]",
+      "glitch": "Глитч [1/15к]",
+      "butterfly": "Бабочка [1/9.5к]",
+      "sun": "Солнце [1/4.2к]",
+      "lightning": "Молния [1/1к]"
+    }
+  }
+}

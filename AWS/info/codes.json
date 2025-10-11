@@ -1,0 +1,417 @@
+{
+  "common": {
+    "codes": [
+      {
+        "id": "citymines",
+        "code": "citymines",
+        "hours": 72,
+        "isNew": true
+      },
+      {
+        "id": "playfulminessorry",
+        "code": "playfulminessorry",
+        "hours": 72
+      },
+      {
+        "id": "playfulmines",
+        "code": "playfulmines",
+        "hours": 72
+      },
+      {
+        "id": "desertmines",
+        "code": "desertmines",
+        "hours": 72
+      },
+      {
+        "id": "welovemining",
+        "code": "welovemining",
+        "hours": 72
+      },
+      {
+        "id": "sorryfordelay",
+        "code": "sorryfordelay",
+        "hours": 0,
+        "isNew": true
+      },
+      {
+        "id": "pyramids",
+        "code": "pyramids",
+        "hours": 72
+      },
+      {
+        "id": "egyptian",
+        "code": "egyptian",
+        "hours": 72
+      },
+      {
+        "id": "21iscoming",
+        "code": "21iscoming",
+        "hours": 48
+      },
+      {
+        "id": "brainrot",
+        "code": "brainrot",
+        "hours": 48
+      },
+      {
+        "id": "removal",
+        "code": "removal",
+        "hours": 48
+      },
+      {
+        "id": "octogames",
+        "code": "octogames",
+        "hours": 48
+      },
+      {
+        "id": "glassbridge",
+        "code": "glassbridge",
+        "hours": 48
+      },
+      {
+        "id": "celebration",
+        "code": "celebration",
+        "hours": 48
+      },
+      {
+        "id": "banker",
+        "code": "banker",
+        "hours": 24
+      },
+      {
+        "id": "sorryoops",
+        "code": "sorryoops",
+        "hours": 24
+      },
+      {
+        "id": "timetravel",
+        "code": "timetravel",
+        "hours": 48
+      },
+      {
+        "id": "world19",
+        "code": "world19",
+        "hours": 48
+      },
+      {
+        "id": "bulk",
+        "code": "bulk",
+        "hours": 48
+      },
+      {
+        "id": "superhero",
+        "code": "superhero",
+        "hours": 48
+      },
+      {
+        "id": "tokenstore",
+        "code": "tokenstore",
+        "hours": 48
+      },
+      {
+        "id": "captain",
+        "code": "captain",
+        "hours": 48
+      },
+      {
+        "id": "skullbeard",
+        "code": "skullbeard",
+        "hours": 48
+      },
+      {
+        "id": "pirate",
+        "code": "pirate",
+        "hours": 0
+      },
+      {
+        "id": "athlete",
+        "code": "athlete",
+        "hours": 48
+      },
+      {
+        "id": "tradingback",
+        "code": "tradingback",
+        "hours": 0
+      },
+      {
+        "id": "blossom",
+        "code": "blossom",
+        "hours": 48
+      },
+      {
+        "id": "ninja",
+        "code": "ninja",
+        "hours": 48
+      },
+      {
+        "id": "snowops",
+        "code": "snowops",
+        "hours": 48
+      },
+      {
+        "id": "hideout",
+        "code": "hideout",
+        "hours": 48
+      },
+      {
+        "id": "cosmic",
+        "code": "cosmic",
+        "hours": 24
+      },
+      {
+        "id": "stocking",
+        "code": "stocking",
+        "hours": 72
+      },
+      {
+        "id": "frostlands",
+        "code": "frostlands",
+        "hours": 24
+      },
+      {
+        "id": "polar",
+        "code": "polar",
+        "hours": 24
+      },
+      {
+        "id": "shiny",
+        "code": "shiny",
+        "hours": 24
+      },
+      {
+        "id": "Christmas",
+        "code": "Christmas",
+        "hours": 72
+      },
+      {
+        "id": "hacker",
+        "code": "hacker",
+        "hours": 24
+      },
+      {
+        "id": "classic",
+        "code": "classic",
+        "hours": 24
+      },
+      {
+        "id": "clans",
+        "code": "clans",
+        "hours": 24
+      },
+      {
+        "id": "rifted",
+        "code": "rifted",
+        "hours": 24
+      },
+      {
+        "id": "hauntedmanor",
+        "code": "hauntedmanor",
+        "hours": 24
+      },
+      {
+        "id": "trainers",
+        "code": "trainers",
+        "hours": 24
+      },
+      {
+        "id": "ghosthunting",
+        "code": "ghosthunting",
+        "hours": 24
+      },
+      {
+        "id": "spooky",
+        "code": "spooky",
+        "hours": 24
+      },
+      {
+        "id": "soon",
+        "code": "soon",
+        "hours": 24
+      },
+      {
+        "id": "hatching",
+        "code": "hatching",
+        "hours": 24
+      },
+      {
+        "id": "billion",
+        "code": "billion",
+        "hours": 24
+      },
+      {
+        "id": "Heavenly",
+        "code": "Heavenly",
+        "hours": 24
+      },
+      {
+        "id": "rework",
+        "code": "rework",
+        "hours": 24
+      },
+      {
+        "id": "paradise",
+        "code": "paradise",
+        "hours": 24
+      },
+      {
+        "id": "wasteland",
+        "code": "wasteland",
+        "hours": 24
+      },
+      {
+        "id": "apocalypse",
+        "code": "apocalypse",
+        "hours": 24
+      },
+      {
+        "id": "energy",
+        "code": "energy",
+        "hours": 24
+      },
+      {
+        "id": "royalty",
+        "code": "royalty",
+        "hours": 24
+      },
+      {
+        "id": "performance",
+        "code": "performance",
+        "hours": 24
+      },
+      {
+        "id": "charms",
+        "code": "charms",
+        "hours": 24
+      },
+      {
+        "id": "wizard",
+        "code": "wizard",
+        "hours": 24
+      },
+      {
+        "id": "atlantis",
+        "code": "atlantis",
+        "hours": 8
+      },
+      {
+        "id": "800mvisits",
+        "code": "800mvisits",
+        "hours": 8
+      },
+      {
+        "id": "icecold",
+        "code": "icecold",
+        "hours": 24
+      },
+      {
+        "id": "forging",
+        "code": "forging",
+        "hours": 24
+      },
+      {
+        "id": "axel",
+        "code": "axel",
+        "hours": 0
+      }
+    ]
+  },
+  "en": {
+    "title": "Codes Collection",
+    "loading": "Loading codes...",
+    "error": "Error loading codes data",
+    "retry": "Retry",
+    "stats": {
+      "total": "Total Codes",
+      "used": "Used",
+      "available": "Available",
+      "progress": "Progress"
+    },
+    "descTemplate": "3x boost for %hours% hours",
+    "extras": {
+      "citymines": "NEW",
+      "sorryfordelay": "1 BILLION Mining Bicep Strength!",
+      "sorryoops": "strength boost",
+      "timetravel": "+5% all stats",
+      "world19": "+5% all strengths",
+      "pirate": "+5% all strengths, 1,000 Gold",
+      "tradingback": "+5% all strengths",
+      "blossom": "1,500 Prison Coins",
+      "ninja": "1,500 Prison Coins",
+      "hideout": "2,500 Prison Coins",
+      "stocking": "Christmas Title",
+      "frostlands": "150 Ice Cubes",
+      "hauntedmanor": "free candy",
+      "ghosthunting": "1 Halloween card",
+      "spooky": "3,500 candy",
+      "paradise": "1 gold",
+      "wizard": "25 Miner Crystal",
+      "axel": "50 Wins"
+    }
+  },
+  "uk": {
+    "title": "Колекція кодів",
+    "loading": "Завантаження кодів...",
+    "error": "Помилка завантаження даних кодів",
+    "retry": "Спробувати знову",
+    "stats": {
+      "total": "Всього кодів",
+      "used": "Використано",
+      "available": "Доступно",
+      "progress": "Прогрес"
+    },
+    "descTemplate": "3x підсилення на %hours% годин",
+    "extras": {
+      "citymines": "Новий",
+      "sorryfordelay": "1 МІЛЬЯРД ЗІ СИЛИ Біцепсів!",
+      "sorryoops": "підсилення сили",
+      "timetravel": "+5% всі характеристики",
+      "world19": "+5% вся сила",
+      "pirate": "+5% вся сила, 1,000 золота",
+      "tradingback": "+5% вся сила",
+      "blossom": "1,500 тюремних монет",
+      "ninja": "1,500 тюремних монет",
+      "hideout": "2,500 тюремних монет",
+      "stocking": "різдвяний титул",
+      "frostlands": "150 кубиків льоду",
+      "hauntedmanor": "безкоштовні цукерки",
+      "ghosthunting": "1 хеллоуїнська картка",
+      "spooky": "3,500 цукерок",
+      "paradise": "1 золото",
+      "wizard": "25 шахтарських кристалів",
+      "axel": "50 перемог"
+    }
+  },
+  "ru": {
+    "title": "Коллекция кодов",
+    "loading": "Загрузка кодов...",
+    "error": "Ошибка загрузки данных кодов",
+    "retry": "Повторить",
+    "stats": {
+      "total": "Всего кодов",
+      "used": "Использовано",
+      "available": "Доступно",
+      "progress": "Прогресс"
+    },
+    "descTemplate": "3x усиление на %hours% часов",
+    "extras": {
+      "citymines": "Новый",
+      "sorryfordelay": "1 МИЛЛИАРДЫ Майнинга Силы Бицепса!",
+      "sorryoops": "усиление силы",
+      "timetravel": "+5% все характеристики",
+      "world19": "+5% вся сила",
+      "pirate": "+5% вся сила, 1,000 золота",
+      "tradingback": "+5% вся сила",
+      "blossom": "1,500 тюремных монет",
+      "ninja": "1,500 тюремных монет",
+      "hideout": "2,500 тюремных монет",
+      "stocking": "рождественский титул",
+      "frostlands": "150 кубиков льда",
+      "hauntedmanor": "бесплатные конфеты",
+      "ghosthunting": "1 хеллоуинская карта",
+      "spooky": "3,500 конфет",
+      "paradise": "1 золото",
+      "wizard": "25 шахтерских кристаллов",
+      "axel": "50 побед"
+    }
+  }
+}

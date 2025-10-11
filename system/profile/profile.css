@@ -1,0 +1,765 @@
+/* Profile Page Styles - Halloween Theme with Social Accounts */
+
+.profile-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.profile-page h1 {
+    color: #FF6B00;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 107, 0, 0.5);
+    font-family: 'Orbitron', 'Arial Black', sans-serif;
+    background: linear-gradient(135deg, #FF6B00, #FF8C00, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.profile-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+/* Profile Card - Halloween Style */
+.profile-card {
+    background: linear-gradient(135deg, 
+        rgba(26, 10, 10, 0.9) 0%, 
+        rgba(75, 0, 130, 0.85) 50%, 
+        rgba(139, 0, 139, 0.9) 100%);
+    border: 3px solid #8B008B;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 
+        0 15px 35px rgba(255, 107, 0, 0.3),
+        inset 0 2px 10px rgba(255, 107, 0, 0.1);
+    height: fit-content;
+    backdrop-filter: blur(15px);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 107, 0, 0.05) 50%, 
+        transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.profile-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-avatar-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FF6B00, #FF8C00);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    border: 4px solid #8B008B;
+    box-shadow: 0 8px 25px rgba(255, 107, 0, 0.6);
+    margin: 0 auto 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.profile-avatar-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-username {
+    color: #FF6B00;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 107, 0, 0.4);
+}
+
+.profile-email {
+    color: #F5DEB3;
+    font-size: 16px;
+    opacity: 0.8;
+    margin: 0 0 15px 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.profile-badges {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.profile-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.profile-badge.verified {
+    background: rgba(40, 167, 69, 0.3);
+    border: 2px solid rgba(40, 167, 69, 0.6);
+    color: #6dff8a;
+}
+
+.profile-badge.google {
+    background: rgba(66, 133, 244, 0.3);
+    border: 2px solid rgba(66, 133, 244, 0.6);
+    color: #6ba9ff;
+}
+
+.profile-badge.username {
+    background: rgba(138, 43, 226, 0.3);
+    border: 2px solid rgba(138, 43, 226, 0.6);
+    color: #c084fc;
+}
+
+.profile-badge.not-verified {
+    background: rgba(255, 193, 7, 0.3);
+    border: 2px solid rgba(255, 193, 7, 0.6);
+    color: #ffc107;
+}
+
+.profile-stats {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 2px solid rgba(139, 0, 139, 0.5);
+}
+
+.profile-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    color: #F5DEB3;
+    font-size: 14px;
+}
+
+.profile-stat-label {
+    opacity: 0.7;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.profile-stat-value {
+    font-weight: 600;
+    color: #FF6B00;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 107, 0, 0.3);
+}
+
+/* Social Accounts Section - Halloween Style */
+.profile-social-section {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 2px solid rgba(139, 0, 139, 0.5);
+}
+
+.profile-social-title {
+    color: #FF6B00;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 107, 0, 0.3);
+}
+
+.profile-social-accounts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.social-account-btn {
+    padding: 12px 15px;
+    background: rgba(139, 0, 139, 0.2);
+    border: 2px solid;
+    border-radius: 12px;
+    color: #F5DEB3;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    text-align: left;
+    backdrop-filter: blur(5px);
+}
+
+.social-account-btn:hover {
+    background: rgba(139, 0, 139, 0.4);
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+}
+
+.social-account-btn.connected {
+    opacity: 0.9;
+}
+
+.social-account-btn.connected:hover {
+    opacity: 1;
+}
+
+.social-icon {
+    font-size: 28px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.social-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.social-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #F5DEB3;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.social-status {
+    font-size: 12px;
+    opacity: 0.7;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.social-account-btn.connected .social-status {
+    font-weight: 500;
+    opacity: 1;
+    color: #FF6B00;
+}
+
+.social-disconnect {
+    font-size: 18px;
+    color: #ff6b7a;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    flex-shrink: 0;
+    padding: 5px;
+}
+
+.social-account-btn.connected:hover .social-disconnect {
+    opacity: 1;
+}
+
+/* Profile Content - Halloween Style */
+.profile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.profile-section {
+    background: linear-gradient(135deg, 
+        rgba(26, 10, 10, 0.9) 0%, 
+        rgba(75, 0, 130, 0.85) 50%, 
+        rgba(139, 0, 139, 0.9) 100%);
+    border: 3px solid #8B008B;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 
+        0 15px 35px rgba(255, 107, 0, 0.3),
+        inset 0 2px 10px rgba(255, 107, 0, 0.1);
+    backdrop-filter: blur(15px);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 107, 0, 0.05) 50%, 
+        transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.profile-section > * {
+    position: relative;
+    z-index: 1;
+}
+
+.profile-section-title {
+    color: #FF6B00;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 107, 0, 0.4);
+    font-family: 'Orbitron', Arial, sans-serif;
+}
+
+.profile-section-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Quick Actions - Halloween Style */
+.profile-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.quick-action-btn {
+    padding: 20px;
+    background: linear-gradient(135deg, 
+        rgba(139, 0, 139, 0.3), 
+        rgba(75, 0, 130, 0.4));
+    border: 2px solid #8B008B;
+    border-radius: 15px;
+    color: #F5DEB3;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+    backdrop-filter: blur(5px);
+}
+
+.quick-action-btn:hover {
+    background: linear-gradient(135deg, #FF6B00, #FF8C00);
+    border-color: #FF6B00;
+    color: #1a0a0a;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(255, 107, 0, 0.6);
+}
+
+.quick-action-btn .icon {
+    font-size: 36px;
+}
+
+.quick-action-btn .label {
+    font-weight: 600;
+    font-size: 15px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.quick-action-btn:hover .label {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Settings Modal - Halloween Style */
+.settings-modal {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(139, 0, 139, 0.2);
+    border: 2px solid #8B008B;
+    border-radius: 15px;
+    animation: slideDown 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.settings-modal.show {
+    display: block;
+}
+
+/* Profile Form - Halloween Style */
+.profile-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profile-form-label {
+    color: #F5DEB3;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.profile-form-input {
+    width: 100%;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, 
+        rgba(139, 0, 139, 0.2), 
+        rgba(75, 0, 130, 0.3));
+    border: 2px solid #8B008B;
+    border-radius: 10px;
+    color: #F5DEB3;
+    font-size: 16px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.profile-form-input::placeholder {
+    color: rgba(245, 222, 179, 0.5);
+    text-shadow: none;
+}
+
+.profile-form-input:focus {
+    outline: none;
+    border-color: #FF6B00;
+    background: linear-gradient(135deg, 
+        rgba(255, 107, 0, 0.1), 
+        rgba(139, 0, 139, 0.3));
+    box-shadow: 
+        0 0 0 3px rgba(255, 107, 0, 0.3),
+        0 8px 20px rgba(255, 107, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+.profile-form-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.profile-form-hint {
+    color: rgba(245, 222, 179, 0.6);
+    font-size: 12px;
+    opacity: 0.8;
+    font-style: italic;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Checkbox Group - Halloween Style */
+.profile-checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.profile-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #FF6B00;
+}
+
+.profile-checkbox-label {
+    color: #F5DEB3;
+    font-size: 14px;
+    cursor: pointer;
+    user-select: none;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Profile Buttons - Halloween Style */
+.profile-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.profile-btn {
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+    min-width: 150px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.profile-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.profile-btn:hover::before {
+    transform: translateX(100%);
+}
+
+.profile-btn.primary {
+    background: linear-gradient(135deg, #FF6B00, #FF8C00);
+    border-color: #8B008B;
+    color: #1a0a0a;
+    box-shadow: 0 4px 15px rgba(255, 107, 0, 0.6);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.profile-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 0, 0.8);
+}
+
+.profile-btn.secondary {
+    background: linear-gradient(135deg, 
+        rgba(139, 0, 139, 0.3), 
+        rgba(75, 0, 130, 0.4));
+    border-color: #8B008B;
+    color: #F5DEB3;
+}
+
+.profile-btn.secondary:hover {
+    background: linear-gradient(135deg, 
+        rgba(139, 0, 139, 0.5), 
+        rgba(75, 0, 130, 0.6));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(139, 0, 139, 0.5);
+}
+
+.profile-btn.danger {
+    background: rgba(220, 53, 69, 0.3);
+    border-color: rgba(220, 53, 69, 0.6);
+    color: #ff6b7a;
+}
+
+.profile-btn.danger:hover {
+    background: rgba(220, 53, 69, 0.5);
+    border-color: rgba(220, 53, 69, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.5);
+}
+
+.profile-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Profile Message - Halloween Style */
+.profile-message {
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    display: none;
+    animation: slideDown 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.profile-message.show {
+    display: block;
+}
+
+.profile-message.info {
+    background: rgba(66, 133, 244, 0.3);
+    border: 2px solid rgba(66, 133, 244, 0.6);
+    color: #6ba9ff;
+}
+
+.profile-message.success {
+    background: rgba(40, 167, 69, 0.3);
+    border: 2px solid rgba(40, 167, 69, 0.6);
+    color: #6dff8a;
+}
+
+.profile-message.error {
+    background: rgba(220, 53, 69, 0.3);
+    border: 2px solid rgba(220, 53, 69, 0.6);
+    color: #ff6b7a;
+}
+
+/* Delete Confirmation - Halloween Style */
+.profile-delete-confirm {
+    background: rgba(220, 53, 69, 0.2);
+    border: 2px solid rgba(220, 53, 69, 0.5);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 15px;
+    display: none;
+    backdrop-filter: blur(5px);
+}
+
+.profile-delete-confirm.show {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+.profile-delete-text {
+    color: #ff6b7a;
+    font-size: 15px;
+    margin-bottom: 15px;
+    line-height: 1.5;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.profile-delete-input {
+    margin-bottom: 15px;
+}
+
+.profile-delete-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Info Text - Halloween Style */
+.profile-info-text {
+    color: #F5DEB3;
+    font-size: 14px;
+    opacity: 0.9;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Animations */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes successPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-page {
+        padding: 15px;
+    }
+
+    .profile-card,
+    .profile-section {
+        padding: 20px;
+    }
+
+    .profile-username {
+        font-size: 24px;
+    }
+
+    .profile-section-title {
+        font-size: 20px;
+    }
+
+    .profile-actions {
+        flex-direction: column;
+    }
+
+    .profile-btn {
+        min-width: 100%;
+    }
+    
+    .profile-quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-page h1 {
+        font-size: 1.8em;
+    }
+
+    .profile-avatar-large {
+        width: 100px;
+        height: 100px;
+        font-size: 50px;
+    }
+
+    .profile-username {
+        font-size: 22px;
+    }
+
+    .profile-card,
+    .profile-section {
+        padding: 15px;
+    }
+
+    .profile-form-input,
+    .profile-btn {
+        padding: 12px 16px;
+        font-size: 15px;
+    }
+    
+    .quick-action-btn {
+        padding: 15px;
+    }
+    
+    .quick-action-btn .icon {
+        font-size: 30px;
+    }
+}
+
+/* Scrollbar - Halloween Style */
+.profile-page::-webkit-scrollbar {
+    width: 8px;
+}
+
+.profile-page::-webkit-scrollbar-track {
+    background: rgba(139, 0, 139, 0.2);
+    border-radius: 4px;
+}
+
+.profile-page::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #FF6B00, #FF8C00);
+    border-radius: 4px;
+}
+
+.profile-page::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #FF8C00, #FFA500);
+}

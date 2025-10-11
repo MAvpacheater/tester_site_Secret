@@ -1,171 +1,280 @@
 function createScript(src) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
+        if (document.querySelector(`script[src="${src}"]`)) {
+            console.log(`⚠️ Already loaded: ${src}`);
+            resolve(src);
+            return;
+        }
+
         const script = document.createElement('script');
         script.src = src;
         script.defer = true;
-        script.onload = () => resolve(src);
-        script.onerror = () => resolve(src);
+        script.onload = () => {
+            console.log(`✅ Loaded: ${src}`);
+            resolve(src);
+        };
+        script.onerror = (error) => {
+            console.error(`❌ Failed: ${src}`);
+            reject(new Error(`Failed to load ${src}`));
+        };
+        
         document.head.appendChild(script);
     });
 }
 
-async function loadScriptsDeferred() {
-    // Updated script paths - removed subdirectories
-    const scripts = [
-        'calc/calculator.js', 
-        'calc/arm.js', 
-        'calc/grind.js',
-        'calc/roulette.js', 
-        'calc/boss.js', 
-        'info/boosts.js',
-        'info/shiny.js', 
-        'info/secret.js', 
-        'info/codes.js',
-        'info/aura.js', 
-        'info/trainer.js', 
-        'info/charms.js',
-        'info/potions.js', 
-        'info/worlds.js', 
-        'moderation/settings.js',
-        'other/peoples.js', 
-        'other/help.js',
-        'other/sell.js'
-    ];
-    
-    updateLoadingText('Loading modules...');
+async function loadSystemScripts() {
+    updateLoadingText('Loading system modules...');
     
     try {
-        await Promise.all(scripts.map(createScript));
-        await createScript('index/content_loader.js');
-        updateLoadingText('Ready!');
+        // STEP 1: System scripts (Auth + Profile + Settings)
+        console.log('📦 Step 1: System scripts...');
+        const systemScripts = [
+            'system/profile/auth.js',
+            'system/profile/profile_info.js',
+            'system/profile/profile_edit.js',
+            'system/profile/profile.js',
+            'system/moderation/settings.js'
+        ];
+        
+        await Promise.all(systemScripts.map(createScript));
+        console.log('✅ System scripts loaded');
+        
+        // STEP 2: AWS system
+        console.log('📦 Step 2: AWS system...');
+        await createScript('AWS/system/aws_utils.js');
+        await createScript('AWS/system/aws_router.js');
+        await createScript('AWS/system/aws_loader.js');
+        console.log('✅ AWS system loaded');
+        
+        // STEP 3: RCU system (NEW!)
+        console.log('📦 Step 3: RCU system...');
+        await createScript('RCU/system/RCU_loader.js');
+        console.log('✅ RCU system loaded');
+        
+        // STEP 4: System Content Loader
+        console.log('📦 Step 4: System Content Loader...');
+        await createScript('system/system_content/system_content.js');
+        console.log('✅ System Content Loader loaded');
+        
+        // STEP 5: Content loader (combines AWS + RCU + System)
+        console.log('📦 Step 5: Content loader...');
+        await createScript('system/content_loader.js');
+        console.log('✅ Content loader loaded');
+        
+        // Initialize
+        updateLoadingText('Initializing systems...');
         setTimeout(initializeSystems, 500);
+        
     } catch (error) {
-        console.error('Error loading scripts:', error);
-        updateLoadingText('Loading completed with warnings');
-        setTimeout(initializeSystems, 1000);
+        console.error('❌ Critical error:', error);
+        updateLoadingText('Loading failed!');
+        setTimeout(initializeSystems, 2000);
     }
 }
 
-function initializeSystems() {
+async function initializeSystems() {
     try {
-        if (typeof initURLRouting === 'function') {
-            const router = initURLRouting();
-            if (router?.forceRouteCheck) {
-                setTimeout(() => router.forceRouteCheck(), 100);
-            }
+        console.log('🚀 ========== INITIALIZING ==========');
+        
+        // STEP 1: Firebase (CRITICAL)
+        updateLoadingText('Connecting to Firebase...');
+        const firebaseReady = await initializeFirebaseSystem();
+        console.log('🔥 Firebase ready:', firebaseReady);
+        
+        // STEP 2: Auth UI
+        if (firebaseReady) {
+            updateLoadingText('Setting up authentication...');
+            await initializeAuthSystem();
         }
         
+        // STEP 3: AWS Router
+        updateLoadingText('Initializing AWS router...');
+        console.log('📦 AWS Router:', window.awsRouter ? '✅' : '⚠️ Not found');
+        
+        // STEP 4: RCU Loader (NEW!)
+        updateLoadingText('Initializing RCU loader...');
+        console.log('🎮 RCU Loader:', window.rcuLoader ? '✅' : '⚠️ Not found');
+        
+        // STEP 5: System Content Loader
+        updateLoadingText('Initializing System modules...');
+        console.log('🔧 System Content Loader:', window.systemContentLoader ? '✅' : '⚠️ Not found');
+        
+        // STEP 6: AWS Modules (critical CSS only)
+        updateLoadingText('Loading AWS modules...');
+        if (typeof loadAllAWSModules === 'function') {
+            await loadAllAWSModules();
+            console.log('✅ Critical AWS modules loaded');
+        }
+        
+        // STEP 7: RCU Modules (critical CSS only) (NEW!)
+        updateLoadingText('Loading RCU modules...');
+        if (typeof loadAllRCUModules === 'function') {
+            await loadAllRCUModules();
+            console.log('✅ Critical RCU modules loaded');
+        }
+        
+        // STEP 8: URL Routing
+        updateLoadingText('Setting up routing...');
+        if (typeof initURLRouting === 'function') {
+            initURLRouting();
+            console.log('✅ URL routing initialized');
+        }
+        
+        // STEP 9: Auto-Reload
+        updateLoadingText('Setting up auto-reload...');
         if (typeof initGitHubAutoReload === 'function') {
             initGitHubAutoReload({
                 githubUser: 'MAvpacheater',
-                githubRepo: 'roblox_info_post',
+                githubRepo: 'tester_site_Secret',
                 branch: 'main',
-                checkInterval: 30000
+                checkInterval: 60000
             });
+            console.log('✅ Auto-reload initialized');
         }
         
-        setTimeout(handleEnhancedRouting, 300);
+        // STEP 10: Final setup
+        updateLoadingText('Finalizing...');
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        initDebugUtilities();
+        
+        console.log('✅ ========== SYSTEMS READY ==========');
+        
+        setTimeout(() => {
+            updateLoadingText('Ready!');
+            setTimeout(hideLoadingScreen, 500);
+        }, 1000);
+        
     } catch (error) {
-        console.error('Error initializing systems:', error);
-        setTimeout(handleEnhancedRouting, 1000);
+        console.error('❌ Critical error:', error);
+        updateLoadingText('Initialization error!');
+        setTimeout(() => {
+            hideLoadingScreen();
+        }, 2000);
     }
 }
 
-function handleEnhancedRouting() {
-    const restoredPath = sessionStorage.getItem('pathToRestore');
-    if (restoredPath) {
-        const targetPage = parsePathToPage(restoredPath);
-        if (targetPage) {
-            setTimeout(() => {
-                if (typeof switchPage === 'function') switchPage(targetPage);
-            }, 200);
-            sessionStorage.removeItem('pathToRestore');
-            return;
-        }
+async function initializeFirebaseSystem() {
+    if (typeof firebase === 'undefined') {
+        console.error('❌ Firebase SDK not loaded');
+        updateLoadingText('⚠️ Firebase unavailable');
+        return false;
     }
+
+    console.log('✅ Firebase SDK available');
     
-    const pathMappings = {
-        '/roblox_info_post/boosts_info': 'boosts', '/boosts_info': 'boosts', 'boosts_info': 'boosts',
-        '/roblox_info_post/secret_pets': 'secret', '/secret_pets': 'secret', 'secret_pets': 'secret',
-        '/roblox_info_post/potions_food': 'potions', '/potions_food': 'potions', 'potions_food': 'potions',
-        '/roblox_info_post/worlds_info': 'worlds', '/worlds_info': 'worlds', 'worlds_info': 'worlds',
-        '/roblox_info_post/help_guide': 'help', '/help_guide': 'help', 'help_guide': 'help',
-        '/roblox_info_post/peoples_thanks': 'peoples', '/peoples_thanks': 'peoples', 'peoples_thanks': 'peoples',
-        '/roblox_info_post/arm_calculator': 'arm', '/arm_calculator': 'arm', 'arm_calculator': 'arm',
-        '/roblox_info_post/grind_calculator': 'grind', '/grind_calculator': 'grind', 'grind_calculator': 'grind',
-        '/roblox_info_post/roulette_calculator': 'roulette', '/roulette_calculator': 'roulette', 'roulette_calculator': 'roulette',
-        '/roblox_info_post/boss_calculator': 'boss', '/boss_calculator': 'boss', 'boss_calculator': 'boss',
-        '/roblox_info_post/shiny_list': 'shiny', '/shiny_list': 'shiny', 'shiny_list': 'shiny',
-        '/roblox_info_post/codes_list': 'codes', '/codes_list': 'codes', 'codes_list': 'codes',
-        '/roblox_info_post/aura_info': 'aura', '/aura_info': 'aura', 'aura_info': 'aura',
-        '/roblox_info_post/trainer_info': 'trainer', '/trainer_info': 'trainer', 'trainer_info': 'trainer',
-        '/roblox_info_post/charms_info': 'charms', '/charms_info': 'charms', 'charms_info': 'charms',
-        '/roblox_info_post/settings': 'settings', '/settings': 'settings', 'settings': 'settings',
-        '/roblox_info_post/trader_store': 'trader', '/trader_store': 'trader', 'trader_store': 'trader'
-    };
-    
-    const currentPath = window.location.pathname;
-    let targetPage = pathMappings[currentPath] || 'calculator';
-    
-    if (!pathMappings[currentPath]) {
-        for (const [path, page] of Object.entries(pathMappings)) {
-            if (currentPath.includes(path.replace('/roblox_info_post', '')) && 
-                path.replace('/м', '')) {
-                targetPage = page;
-                break;
-            }
-        }
+    if (typeof initializeFirebase !== 'function') {
+        console.warn('⚠️ initializeFirebase not found');
+        return false;
     }
-    
-    if (typeof switchPage === 'function') {
-        setTimeout(() => switchPage(targetPage), 300);
+
+    try {
+        console.log('🔥 Initializing Firebase...');
+        const firebaseManager = await initializeFirebase();
+        
+        if (!firebaseManager) {
+            console.warn('⚠️ Firebase manager not created');
+            return false;
+        }
+        
+        let attempts = 0;
+        const maxAttempts = 50;
+        
+        while (!firebaseManager.isInitialized && attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        
+        if (firebaseManager.isInitialized) {
+            console.log('✅ Firebase fully initialized');
+            
+            const currentUser = firebaseManager.getCurrentUser();
+            console.log('👤 Current user:', currentUser ? currentUser.displayName : 'Not logged in');
+            
+            return true;
+        }
+        
+        console.warn('⚠️ Firebase initialization timeout');
+        return false;
+        
+    } catch (error) {
+        console.error('❌ Firebase error:', error);
+        return false;
     }
 }
 
-function parsePathToPage(path) {
-    let cleanPath = path.split('?')[0].split('#')[0];
-    if (cleanPath.startsWith('/')) cleanPath = cleanPath.substring(1);
-    if (cleanPath.endsWith('/')) cleanPath = cleanPath.slice(0, -1);
-    if (cleanPath.startsWith('armwrestlerinfopost/')) {
-        cleanPath = cleanPath.substring('roblox_info_post/'.length);
+async function initializeAuthSystem() {
+    if (!window.firebaseManager) {
+        console.warn('⚠️ Firebase manager not available');
+        return;
     }
     
-    const pathMap = {
-        'boosts_info': 'boosts', 'secret_pets': 'secret', 'potions_food': 'potions',
-        'worlds_info': 'worlds', 'help_guide': 'help', 'peoples_thanks': 'peoples',
-        'arm_calculator': 'arm', 'grind_calculator': 'grind', 'roulette_calculator': 'roulette',
-        'boss_calculator': 'boss', 'shiny_list': 'shiny', 'codes_list': 'codes',
-        'aura_info': 'aura', 'trainer_info': 'trainer', 'charms_info': 'charms',
-        'settings': 'settings', 'trader_store': 'trader', '': 'calculator'
-    };
-    
-    return pathMap[cleanPath] || 'calculator';
+    if (typeof initializeAuthUI !== 'function') {
+        console.warn('⚠️ initializeAuthUI not found');
+        return;
+    }
+
+    try {
+        console.log('🔐 Initializing Auth UI...');
+        initializeAuthUI();
+        
+        let attempts = 0;
+        const maxAttempts = 30;
+        
+        while (!window.authUI && attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        
+        if (window.authUI) {
+            console.log('✅ Auth UI ready');
+        } else {
+            console.warn('⚠️ Auth UI timeout');
+        }
+    } catch (error) {
+        console.error('❌ Auth UI error:', error);
+    }
 }
 
 function updateLoadingText(text) {
     const subtitle = document.querySelector('.loading-subtitle');
-    if (subtitle) subtitle.textContent = text;
+    if (subtitle) {
+        subtitle.textContent = text;
+        console.log('📝', text);
+    }
 }
 
 function hideLoadingScreen() {
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) {
+        console.log('✅ Hiding loading screen');
         loadingScreen.style.opacity = '0';
         setTimeout(() => loadingScreen.remove(), 300);
     }
 }
 
+// ========== MAIN INITIALIZATION ==========
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 ========== DOM READY ==========');
+    console.log('📍 URL:', window.location.href);
+    console.log('📍 Path:', window.location.pathname);
+    
     let attempts = 0;
     const maxAttempts = 50;
     
     function waitForCriticalScripts() {
-        if (typeof initializeApp === 'function' || attempts >= maxAttempts) {
-            loadScriptsDeferred();
-            setTimeout(() => {
-                updateLoadingText('Ready!');
-                setTimeout(hideLoadingScreen, 500);
-            }, 3000);
+        const criticalFunctions = ['initializeApp', 'switchPage', 'getCurrentAppLanguage'];
+        const allLoaded = criticalFunctions.every(fn => typeof window[fn] === 'function');
+        
+        if (allLoaded) {
+            console.log('✅ Critical scripts loaded');
+            loadSystemScripts();
+        } else if (attempts >= maxAttempts) {
+            console.error('❌ Critical scripts timeout');
+            console.error('Missing:', criticalFunctions.filter(fn => typeof window[fn] !== 'function'));
+            updateLoadingText('Critical error - please refresh');
+            setTimeout(() => alert('Critical scripts failed to load. Please refresh.'), 1000);
         } else {
             attempts++;
             setTimeout(waitForCriticalScripts, 100);
@@ -175,27 +284,91 @@ document.addEventListener('DOMContentLoaded', function() {
     waitForCriticalScripts();
 });
 
-Object.assign(window, {
-    debugURL: () => {
-        console.log('=== URL DEBUG ===');
-        console.log('href:', window.location.href);
-        console.log('pathname:', window.location.pathname);
-        console.log('pathToRestore:', sessionStorage.getItem('pathToRestore'));
-        if (typeof urlRouter === 'function' && urlRouter()) urlRouter().debug();
-    },
-    forceRouteCheck: () => {
-        if (typeof urlRouter === 'function' && urlRouter()?.forceRouteCheck) {
-            return urlRouter().forceRouteCheck();
+// ========== DEBUG UTILITIES ==========
+
+window.debugSystemReady = false;
+
+function initDebugUtilities() {
+    Object.assign(window, {
+        debugSystem: () => {
+            console.log('=== SYSTEM DEBUG ===');
+            console.log('URL:', window.location.href);
+            console.log('Path:', window.location.pathname);
+            console.log('\n=== FIREBASE ===');
+            console.log('Manager:', window.firebaseManager ? '✅' : '❌');
+            console.log('Initialized:', window.firebaseManager?.isInitialized);
+            console.log('Current User:', window.firebaseManager?.getCurrentUser()?.displayName || 'Not logged in');
+            console.log('\n=== FUNCTIONS ===');
+            ['initializeApp', 'switchPage', 'getCurrentAppLanguage', 'initURLRouting', 'loadAllAWSModules', 'loadAllRCUModules'].forEach(fn => {
+                console.log(`${typeof window[fn] === 'function' ? '✅' : '❌'} ${fn}`);
+            });
+            console.log('\n=== AWS ===');
+            console.log('Loader:', typeof window.awsLoader);
+            console.log('Router:', typeof window.awsRouter);
+            console.log('Utils:', typeof window.awsUtils);
+            if (window.awsLoader) {
+                console.log('Loaded:', window.awsLoader.getLoadedModules());
+            }
+            console.log('\n=== RCU ===');
+            console.log('Loader:', typeof window.rcuLoader);
+            if (window.rcuLoader) {
+                console.log('Loaded:', window.rcuLoader.getLoadedModules());
+            }
+            console.log('\n=== SYSTEM ===');
+            console.log('Content Loader:', typeof window.systemContentLoader);
+            if (window.systemContentLoader) {
+                console.log('Loaded:', window.systemContentLoader.getLoadedModules());
+            }
+        },
+        
+        forceRoute: (page) => {
+            console.log('🔄 Force route:', page);
+            typeof switchPage === 'function' ? switchPage(page) : console.error('❌ switchPage N/A');
+        },
+        
+        checkModules: () => {
+            console.log('=== AWS MODULES ===');
+            if (window.awsLoader) {
+                console.log('Loaded:', window.awsLoader.getLoadedModules());
+                console.log('All:', window.awsLoader.getAllModuleNames());
+            } else {
+                console.error('❌ AWS Loader N/A');
+            }
+            
+            console.log('\n=== RCU MODULES ===');
+            if (window.rcuLoader) {
+                console.log('Loaded:', window.rcuLoader.getLoadedModules());
+                console.log('All:', window.rcuLoader.getAllModuleNames());
+            } else {
+                console.error('❌ RCU Loader N/A');
+            }
+            
+            console.log('\n=== SYSTEM MODULES ===');
+            if (window.systemContentLoader) {
+                console.log('Loaded:', window.systemContentLoader.getLoadedModules());
+                console.log('All:', window.systemContentLoader.getAllModuleNames());
+            } else {
+                console.error('❌ System Content Loader N/A');
+            }
+        },
+        
+        quickReload: () => {
+            console.log('🔄 Reloading');
+            window.location.reload();
+        },
+        
+        checkAuth: () => {
+            console.log('=== AUTH STATUS ===');
+            console.log('Firebase:', window.firebaseManager?.isInitialized ? '✅' : '❌');
+            console.log('Auth UI:', window.authUI ? '✅' : '❌');
+            const user = window.firebaseManager?.getCurrentUser();
+            console.log('User:', user ? `✅ ${user.displayName}` : '❌ Not logged in');
         }
-        const targetPage = parsePathToPage(window.location.pathname);
-        if (typeof switchPage === 'function') switchPage(targetPage);
-        return targetPage;
-    },
-    checkLoadedModules: () => {
-        console.log('=== LOADED MODULES ===');
-        ['initializeApp', 'switchPage', 'initURLRouting', 'initGitHubAutoReload', 'initializeBoss', 'initializeTrader']
-            .forEach(fn => console.log(`${fn}:`, typeof window[fn]));
-        console.log('App content:', document.getElementById('app-content') ? 'Found' : 'Missing');
-        console.log('Current page:', typeof getCurrentPage === 'function' ? getCurrentPage() : 'Unknown');
-    }
-});
+    });
+    
+    window.debugSystemReady = true;
+    console.log('✅ Debug utilities ready');
+}
+
+console.log('✅ System Loader ready (AWS + RCU + System Separate)');
+console.log('📖 Debug: window.debugSystem() | window.checkModules()');

@@ -1,0 +1,149 @@
+{
+  "common": {
+    "charms": [
+      {
+        "id": "infinite",
+        "imageUrl": "https://i.postimg.cc/W4TNJQmF/2025-09-07-09-40-22.png",
+        "description": "20% training rep",
+        "maxStock": 5,
+        "category": "charm"
+      },
+      {
+        "id": "leaderboard",
+        "imageUrl": "https://i.postimg.cc/vHwZsg1t/image.png",
+        "description": "18% training rep",
+        "maxStock": 7,
+        "category": "charm"
+      },
+      {
+        "id": "endless",
+        "imageUrl": "https://i.postimg.cc/76TqvwwR/2025-09-07-10-00-26.png",
+        "description": "15% training rep",
+        "maxStock": 10,
+        "category": "charm"
+      },
+      {
+        "id": "luck",
+        "imageUrl": "https://i.postimg.cc/wB1pJgyB/2025-09-07-10-01-45.png",
+        "description": "5% luck",
+        "maxStock": 16,
+        "category": "charm"
+      },
+      {
+        "id": "training",
+        "imageUrl": "https://i.postimg.cc/FRZLQ0bY/telegram-cloud-photo-size-2-5190785500309485773-m.jpg",
+        "description": "5% training rep",
+        "maxStock": 16,
+        "category": "charm"
+      },
+      {
+        "id": "loot",
+        "imageUrl": "https://i.postimg.cc/7LtL8K75/2025-09-07-09-55-01.png",
+        "description": "5% boss loot",
+        "maxStock": 16,
+        "category": "charm"
+      },
+      {
+        "id": "winner",
+        "imageUrl": "https://i.postimg.cc/XY8JxjYc/2025-09-07-09-55-06.png",
+        "description": "5% boss wins",
+        "maxStock": 16,
+        "category": "charm"
+      },
+      {
+        "id": "coal",
+        "imageUrl": "https://i.postimg.cc/B68nq2cM/2025-09-07-09-54-40.png",
+        "description": "remove charm",
+        "maxStock": 1,
+        "category": "charm"
+      }
+    ]
+  },
+  "en": {
+    "title": "Charms Boosts",
+    "loading": "Loading charms...",
+    "error": "Error loading charms data",
+    "retry": "Retry",
+    "descTemplate": "Gives %value% to %type%",
+    "maxStockLabel": "Max stock:",
+    "useOnlyLabel": "use only",
+    "names": {
+      "infinite": "Infinite charm",
+      "leaderboard": "Leaderboard charm",
+      "endless": "Endless charm",
+      "luck": "Luck charm",
+      "training": "Training charms",
+      "loot": "Loot charm",
+      "winner": "Winner charm",
+      "coal": "Coal charm"
+    },
+    "descriptions": {
+      "infinite": "Gives 20% to training rep",
+      "leaderboard": "Gives 18% to training rep",
+      "endless": "Gives 15% to training rep",
+      "luck": "Adds 5% to luck",
+      "training": "Gives 5% to training rep",
+      "loot": "Gives 5% to find loot from boss",
+      "winner": "Gives 5% more wins from boss",
+      "coal": "You can remove charm from pet"
+    }
+  },
+  "uk": {
+    "title": "Брелок та підсилення",
+    "loading": "Завантаження чарів...",
+    "error": "Помилка завантаження чарів",
+    "retry": "Спробувати знову",
+    "maxStockLabel": "Макс запас:",
+    "useOnlyLabel": "використання",
+    "names": {
+      "infinite": "Нескінченні Брелки",
+      "leaderboard": "Брелок лідера",
+      "endless": "Безкінечні Брелки",
+      "luck": "Брелок удачі",
+      "training": "Тренувальні Брелки",
+      "loot": "Брелок здобичі",
+      "winner": "Брелок переможця",
+      "coal": "Вугільні Брелки"
+    },
+    "descriptions": {
+      "infinite": "Дають 20% до тренування",
+      "leaderboard": "Дають 18% до тренування",
+      "endless": "Дають 15% до тренування",
+      "luck": "Додають 5% до удачі",
+      "training": "Дають 5% до тренування",
+      "loot": "Дають 5% на знаходження здобичі з боса",
+      "winner": "Дають 5% більше перемог над босом",
+      "coal": "Можна видалити чари з питомця"
+    },
+    "category": "Брелок"
+  },
+  "ru": {
+    "title": "Чары и усиления",
+    "loading": "Загрузка чар...",
+    "error": "Ошибка загрузки чар",
+    "retry": "Повторить",
+    "maxStockLabel": "Макс запас:",
+    "useOnlyLabel": "использование",
+    "names": {
+      "infinite": "Бесконечные Чармы",
+      "leaderboard": "Чармы лидера",
+      "endless": "Бесконечные Чары",
+      "luck": "Чармы удачи",
+      "training": "Тренировочные чармы",
+      "loot": "Чармы добычи",
+      "winner": "Чармы победителя",
+      "coal": "Угольные чармы"
+    },
+    "descriptions": {
+      "infinite": "Дают 20% к тренировке",
+      "leaderboard": "Дают 18% к тренировке",
+      "endless": "Дают 15% к тренировке",
+      "luck": "Добавляют 5% к удаче",
+      "training": "Дают 5% к тренировке",
+      "loot": "Дают 5% на поиск добычи с босса",
+      "winner": "Дают 5% больше побед над боссом",
+      "coal": "Можно убрать чары с питомца"
+    },
+    "category": "чармы"
+  }
+}

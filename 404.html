@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting... - Roblox Helper</title>
+    <title>Redirecting... - Arm Helper</title>
     <style>
         body {
             margin: 0;
@@ -88,7 +88,7 @@
 <body>
     <div class="redirect-container">
         <div class="loading-icon">🚀</div>
-        <div class="redirect-title">Redirecting to <span id="pageName">Roblox Helper</span></div>
+        <div class="redirect-title">Redirecting to <span id="pageName">Arm Helper</span></div>
         <div class="redirect-subtitle">
             <!-- Removed tester_site_Secret path display -->
         </div>
@@ -101,8 +101,9 @@
     </div>
 
     <script>
-        // Page name mappings (without trader)
+        // Page name mappings (AWS + RCU)
         var pageNames = {
+            // AWS Pages
             '/shiny_list': 'Shiny Stats',
             '/arm_calculator': 'Arm Calculator',
             '/grind_calculator': 'Grind Calculator',
@@ -119,7 +120,11 @@
             '/settings': 'Settings',
             '/help_guide': 'Help Guide',
             '/peoples_thanks': 'Thanks & Credits',
-            '/trader_store': 'Trader Store'
+            '/trader_store': 'Trader Store',
+            '/profile': 'Profile',
+            '/clans': 'Clans',
+            // RCU Pages
+            '/pets_calculator': 'RCU Pets Calculator'
         };
         
         // Display current path and determine page name
@@ -127,19 +132,19 @@
         var search = window.location.search;
         var hash = window.location.hash;
         var pathParts = currentPath.split('/').filter(part => part);
-        var pageName = 'Roblox Helper';
+        var pageName = 'Arm Helper';
         
         console.log('🔄 404 Redirect triggered for:', currentPath);
         console.log('🔍 Path parts:', pathParts);
         
         // Check if this is a repository-based URL
-        var isRepoURL = pathParts.length >= 2 && pathParts[0] === 'roblox_info_post';
+        var isRepoURL = pathParts.length >= 2 && pathParts[0] === 'tester_site_Secret';
         var isDirectPageAccess = pathParts.length === 1 && pageNames['/' + pathParts[0]];
         
         if (isRepoURL) {
             // This is mavpacheater.github.io/tester_site_Secret/page_name
             var pagePath = '/' + pathParts.slice(1).join('/');
-            pageName = pageNames[pagePath] || 'Roblox Helper';
+            pageName = pageNames[pagePath] || 'Arm Helper';
             
             document.getElementById('pageName').textContent = pageName;
             
@@ -148,7 +153,7 @@
             console.log('💾 Stored repo-based path for restoration:', pagePath + search + hash);
             
             // Redirect to the base repository URL
-            var baseURL = window.location.protocol + '//' + window.location.host + '/roblox_info_post/';
+            var baseURL = window.location.protocol + '//' + window.location.host + '/tester_site_Secret/';
             console.log('🔄 Redirecting to repository base:', baseURL);
             
             setTimeout(function() {
@@ -167,7 +172,7 @@
             console.log('💾 Stored direct path for restoration:', pagePath + search + hash);
             
             // Redirect to the correct repository URL
-            var correctURL = window.location.protocol + '//' + window.location.host + '/roblox_info_post' + pagePath + search + hash;
+            var correctURL = window.location.protocol + '//' + window.location.host + '/tester_site_Secret' + pagePath + search + hash;
             console.log('🎯 Redirecting to correct repository URL:', correctURL);
             
             setTimeout(function() {
@@ -180,7 +185,7 @@
             
             sessionStorage.setItem('pathToRestore', '/' + search + hash);
             
-            var baseURL = window.location.protocol + '//' + window.location.host + '/roblox_info_post/';
+            var baseURL = window.location.protocol + '//' + window.location.host + '/tester_site_Secret/';
             console.log('🔄 Fallback redirect to:', baseURL);
             
             setTimeout(function() {

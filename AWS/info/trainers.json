@@ -1,0 +1,587 @@
+{
+  "en": {
+    "title": "Trainers",
+    "loading": "Loading trainers...",
+    "free_button": "Free",
+    "donate_button": "Donate",
+    "free_label": "free",
+    "donate_label": "donate",
+    "description_template": "{strength}%/{strengthBoost}% Strength -- {luck}%/{luckBoost}% luck -- {wins}%/{winsBoost}% wins",
+    "trainers": {
+      "free": [
+        {
+          "name": "Expert Miner [CW]",
+          "strength": "315",
+          "strengthBoost": "472,5",
+          "luck": "122",
+          "luckBoost": "183",
+          "wins": "135",
+          "winsBoost": "202,5"
+        },
+        {
+          "name": "Overseer [1/12.5m]",
+          "strength": "270",
+          "strengthBoost": "405",
+          "luck": "91",
+          "luckBoost": "136.5",
+          "wins": "94",
+          "winsBoost": "141"
+        },
+        {
+          "name": "Mr Robot [1/1.5m]",
+          "strength": "220",
+          "strengthBoost": "330",
+          "luck": "71",
+          "luckBoost": "106.5",
+          "wins": "77",
+          "winsBoost": "115.5"
+        },
+        {
+          "name": "Pirate Peanguin [1/500k]",
+          "strength": "205",
+          "strengthBoost": "307.5",
+          "luck": "65",
+          "luckBoost": "97.5",
+          "wins": "69",
+          "winsBoost": "103.5"
+        },
+        {
+          "name": "Princes [1/150k]",
+          "strength": "190",
+          "strengthBoost": "285",
+          "luck": "59",
+          "luckBoost": "88.5",
+          "wins": "61",
+          "winsBoost": "91.5"
+        },
+        {
+          "name": "Sensei [1/100k]",
+          "strength": "180",
+          "strengthBoost": "270",
+          "luck": "56",
+          "luckBoost": "84",
+          "wins": "58",
+          "winsBoost": "87"
+        },
+        {
+          "name": "Dominus lord [1/75k]",
+          "strength": "160",
+          "strengthBoost": "240",
+          "luck": "53",
+          "luckBoost": "79.5",
+          "wins": "55",
+          "winsBoost": "82.5"
+        },
+        {
+          "name": "Vampire [1/50k]",
+          "strength": "145",
+          "strengthBoost": "217.5",
+          "luck": "50",
+          "luckBoost": "75",
+          "wins": "52",
+          "winsBoost": "78"
+        }
+      ],
+      "donate": [
+        {
+          "name": "Skater boy",
+          "strength": "345",
+          "strengthBoost": "517,5",
+          "luck": "138",
+          "luckBoost": "207",
+          "wins": "148",
+          "winsBoost": "222"
+        },
+        {
+          "name": "Desert Miner",
+          "strength": "335",
+          "strengthBoost": "502,5",
+          "luck": "132",
+          "luckBoost": "198.5",
+          "wins": "142",
+          "winsBoost": "213"
+        },
+        {
+          "name": "Pharoah",
+          "strength": "320",
+          "strengthBoost": "480",
+          "luck": "129",
+          "luckBoost": "193.5",
+          "wins": "139",
+          "winsBoost": "208.5"
+        },
+        {
+          "name": "Tung Tung Tung Sahur",
+          "strength": "300",
+          "strengthBoost": "450",
+          "luck": "118",
+          "luckBoost": "177",
+          "wins": "128",
+          "winsBoost": "192"
+        },
+        {
+          "name": "Manager guard",
+          "strength": "280",
+          "strengthBoost": "420",
+          "luck": "108",
+          "luckBoost": "162",
+          "wins": "118",
+          "winsBoost": "177"
+        },
+        {
+          "name": "Octo guard",
+          "strength": "270",
+          "strengthBoost": "405",
+          "luck": "98",
+          "luckBoost": "147",
+          "wins": "108",
+          "winsBoost": "162"
+        },
+        {
+          "name": "Frontman",
+          "strength": "260",
+          "strengthBoost": "390",
+          "luck": "98",
+          "luckBoost": "147",
+          "wins": "108",
+          "winsBoost": "162"
+        },
+        {
+          "name": "Island surfer",
+          "strength": "250",
+          "strengthBoost": "375",
+          "luck": "95",
+          "luckBoost": "142.5",
+          "wins": "20",
+          "winsBoost": "30"
+        },
+        {
+          "name": "Surfer Jake",
+          "strength": "240",
+          "strengthBoost": "360",
+          "luck": "85",
+          "luckBoost": "127.5",
+          "wins": "95",
+          "winsBoost": "142.5"
+        },
+        {
+          "name": "Shrine Master",
+          "strength": "230",
+          "strengthBoost": "345",
+          "luck": "77",
+          "luckBoost": "115.5",
+          "wins": "85",
+          "winsBoost": "127.5"
+        },
+        {
+          "name": "Rune keeper",
+          "strength": "220",
+          "strengthBoost": "330",
+          "luck": "73",
+          "luckBoost": "109.5",
+          "wins": "78",
+          "winsBoost": "117"
+        },
+        {
+          "name": "Zeus",
+          "strength": "205",
+          "strengthBoost": "307.5",
+          "luck": "67",
+          "luckBoost": "100.5",
+          "wins": "70",
+          "winsBoost": "105"
+        }
+      ]
+    }
+  },
+  "uk": {
+    "title": "Тренери",
+    "loading": "Завантаження тренерів...",
+    "free_button": "Безкоштовно",
+    "donate_button": "Донат",
+    "free_label": "безкоштовно",
+    "donate_label": "донат",
+    "description_template": "{strength}%/{strengthBoost}% Сила -- {luck}%/{luckBoost}% удача -- {wins}%/{winsBoost}% перемоги",
+    "trainers": {
+      "free": [
+        {
+          "name": "Експерт-шахтар [CW]",
+          "strength": "315",
+          "strengthBoost": "472,5",
+          "luck": "122",
+          "luckBoost": "183",
+          "wins": "135",
+          "winsBoost": "202,5"
+        },
+        {
+          "name": "Наглядач [1/12.5м]",
+          "strength": "270",
+          "strengthBoost": "405",
+          "luck": "91",
+          "luckBoost": "136.5",
+          "wins": "94",
+          "winsBoost": "141"
+        },
+        {
+          "name": "Містер Робот [1/1.5м]",
+          "strength": "220",
+          "strengthBoost": "330",
+          "luck": "71",
+          "luckBoost": "106.5",
+          "wins": "77",
+          "winsBoost": "115.5"
+        },
+        {
+          "name": "Пірат Пінгвін [1/500к]",
+          "strength": "205",
+          "strengthBoost": "307.5",
+          "luck": "65",
+          "luckBoost": "97.5",
+          "wins": "69",
+          "winsBoost": "103.5"
+        },
+        {
+          "name": "Принцеса [1/150к]",
+          "strength": "190",
+          "strengthBoost": "285",
+          "luck": "59",
+          "luckBoost": "88.5",
+          "wins": "61",
+          "winsBoost": "91.5"
+        },
+        {
+          "name": "Сенсей [1/100к]",
+          "strength": "180",
+          "strengthBoost": "270",
+          "luck": "56",
+          "luckBoost": "84",
+          "wins": "58",
+          "winsBoost": "87"
+        },
+        {
+          "name": "Лорд Домінус [1/75к]",
+          "strength": "160",
+          "strengthBoost": "240",
+          "luck": "53",
+          "luckBoost": "79.5",
+          "wins": "55",
+          "winsBoost": "82.5"
+        },
+        {
+          "name": "Вампір [1/50к]",
+          "strength": "145",
+          "strengthBoost": "217.5",
+          "luck": "50",
+          "luckBoost": "75",
+          "wins": "52",
+          "winsBoost": "78"
+        }
+      ],
+      "donate": [
+        {
+          "name": "Хлопчик-скейтер",
+          "strength": "345",
+          "strengthBoost": "517,5",
+          "luck": "138",
+          "luckBoost": "207",
+          "wins": "148",
+          "winsBoost": "222"
+        },
+        {
+          "name": "Шахтар пустелі",
+          "strength": "335",
+          "strengthBoost": "502,5",
+          "luck": "132",
+          "luckBoost": "198.5",
+          "wins": "142",
+          "winsBoost": "213"
+        },
+        {
+          "name": "Фараон",
+          "strength": "320",
+          "strengthBoost": "480",
+          "luck": "129",
+          "luckBoost": "193.5",
+          "wins": "139",
+          "winsBoost": "208.5"
+        },
+        {
+          "name": "Тунг Тунг Тунг Сахур",
+          "strength": "300",
+          "strengthBoost": "450",
+          "luck": "118",
+          "luckBoost": "177",
+          "wins": "128",
+          "winsBoost": "192"
+        },
+        {
+          "name": "Охоронець-менеджер",
+          "strength": "280",
+          "strengthBoost": "420",
+          "luck": "108",
+          "luckBoost": "162",
+          "wins": "118",
+          "winsBoost": "177"
+        },
+        {
+          "name": "Охоронець-восьминіг",
+          "strength": "270",
+          "strengthBoost": "405",
+          "luck": "98",
+          "luckBoost": "147",
+          "wins": "108",
+          "winsBoost": "162"
+        },
+        {
+          "name": "Фронтмен",
+          "strength": "260",
+          "strengthBoost": "390",
+          "luck": "98",
+          "luckBoost": "147",
+          "wins": "108",
+          "winsBoost": "162"
+        },
+        {
+          "name": "Острівний серфер",
+          "strength": "250",
+          "strengthBoost": "375",
+          "luck": "95",
+          "luckBoost": "142.5",
+          "wins": "20",
+          "winsBoost": "30"
+        },
+        {
+          "name": "Серфер Джейк",
+          "strength": "240",
+          "strengthBoost": "360",
+          "luck": "85",
+          "luckBoost": "127.5",
+          "wins": "95",
+          "winsBoost": "142.5"
+        },
+        {
+          "name": "Майстер Святині",
+          "strength": "230",
+          "strengthBoost": "345",
+          "luck": "77",
+          "luckBoost": "115.5",
+          "wins": "85",
+          "winsBoost": "127.5"
+        },
+        {
+          "name": "Охоронець рун",
+          "strength": "220",
+          "strengthBoost": "330",
+          "luck": "73",
+          "luckBoost": "109.5",
+          "wins": "78",
+          "winsBoost": "117"
+        },
+        {
+          "name": "Зевс",
+          "strength": "205",
+          "strengthBoost": "307.5",
+          "luck": "67",
+          "luckBoost": "100.5",
+          "wins": "70",
+          "winsBoost": "105"
+        }
+      ]
+    }
+  },
+  "ru": {
+    "title": "Тренеры",
+    "loading": "Загрузка тренеров...",
+    "free_button": "Бесплатно",
+    "donate_button": "Донат",
+    "free_label": "бесплатно",
+    "donate_label": "донат",
+    "description_template": "{strength}%/{strengthBoost}% Сила -- {luck}%/{luckBoost}% удача -- {wins}%/{winsBoost}% победы",
+    "trainers": {
+      "free": [
+        {
+          "name": "ЕЭксперт-майнер [CW]",
+          "strength": "315",
+          "strengthBoost": "472,5",
+          "luck": "122",
+          "luckBoost": "183",
+          "wins": "135",
+          "winsBoost": "202,5"
+        },
+        {
+          "name": "Надзиратель [1/12.5м]",
+          "strength": "270",
+          "strengthBoost": "405",
+          "luck": "91",
+          "luckBoost": "136.5",
+          "wins": "94",
+          "winsBoost": "141"
+        },
+        {
+          "name": "Мистер Робот [1/1.5м]",
+          "strength": "220",
+          "strengthBoost": "330",
+          "luck": "71",
+          "luckBoost": "106.5",
+          "wins": "77",
+          "winsBoost": "115.5"
+        },
+        {
+          "name": "Пират Пингвин [1/500к]",
+          "strength": "205",
+          "strengthBoost": "307.5",
+          "luck": "65",
+          "luckBoost": "97.5",
+          "wins": "69",
+          "winsBoost": "103.5"
+        },
+        {
+          "name": "Принцесса [1/150к]",
+          "strength": "190",
+          "strengthBoost": "285",
+          "luck": "59",
+          "luckBoost": "88.5",
+          "wins": "61",
+          "winsBoost": "91.5"
+        },
+        {
+          "name": "Сенсей [1/100к]",
+          "strength": "180",
+          "strengthBoost": "270",
+          "luck": "56",
+          "luckBoost": "84",
+          "wins": "58",
+          "winsBoost": "87"
+        },
+        {
+          "name": "Лорд Доминус [1/75к]",
+          "strength": "160",
+          "strengthBoost": "240",
+          "luck": "53",
+          "luckBoost": "79.5",
+          "wins": "55",
+          "winsBoost": "82.5"
+        },
+        {
+          "name": "Вампир [1/50к]",
+          "strength": "145",
+          "strengthBoost": "217.5",
+          "luck": "50",
+          "luckBoost": "75",
+          "wins": "52",
+          "winsBoost": "78"
+        }
+      ],
+      "donate": [
+        {
+          "name": "Мальчик-скейтер",
+          "strength": "345",
+          "strengthBoost": "517,5",
+          "luck": "138",
+          "luckBoost": "207",
+          "wins": "148",
+          "winsBoost": "222"
+        },
+        {
+          "name": "Пустынный шахтер",
+          "strength": "335",
+          "strengthBoost": "502,5",
+          "luck": "132",
+          "luckBoost": "198.5",
+          "wins": "142",
+          "winsBoost": "213"
+        },
+        {
+          "name": "Фараон",
+          "strength": "320",
+          "strengthBoost": "480",
+          "luck": "129",
+          "luckBoost": "193.5",
+          "wins": "139",
+          "winsBoost": "208.5"
+        },
+        {
+          "name": "Тунг Тунг Тунг Сахур",
+          "strength": "300",
+          "strengthBoost": "450",
+          "luck": "118",
+          "luckBoost": "177",
+          "wins": "128",
+          "winsBoost": "192"
+        },
+        {
+          "name": "Охранник-менеджер",
+          "strength": "280",
+          "strengthBoost": "420",
+          "luck": "108",
+          "luckBoost": "162",
+          "wins": "118",
+          "winsBoost": "177"
+        },
+        {
+          "name": "Охранник-осьминог",
+          "strength": "270",
+          "strengthBoost": "405",
+          "luck": "98",
+          "luckBoost": "147",
+          "wins": "108",
+          "winsBoost": "162"
+        },
+        {
+          "name": "Фронтмен",
+          "strength": "260",
+          "strengthBoost": "390",
+          "luck": "98",
+          "luckBoost": "147",
+          "wins": "108",
+          "winsBoost": "162"
+        },
+        {
+          "name": "Островной серфер",
+          "strength": "250",
+          "strengthBoost": "375",
+          "luck": "95",
+          "luckBoost": "142.5",
+          "wins": "20",
+          "winsBoost": "30"
+        },
+        {
+          "name": "Серфер Джейк",
+          "strength": "240",
+          "strengthBoost": "360",
+          "luck": "85",
+          "luckBoost": "127.5",
+          "wins": "95",
+          "winsBoost": "142.5"
+        },
+        {
+          "name": "Мастер Святилища",
+          "strength": "230",
+          "strengthBoost": "345",
+          "luck": "77",
+          "luckBoost": "115.5",
+          "wins": "85",
+          "winsBoost": "127.5"
+        },
+        {
+          "name": "Хранитель рун",
+          "strength": "220",
+          "strengthBoost": "330",
+          "luck": "73",
+          "luckBoost": "109.5",
+          "wins": "78",
+          "winsBoost": "117"
+        },
+        {
+          "name": "Зевс",
+          "strength": "205",
+          "strengthBoost": "307.5",
+          "luck": "67",
+          "luckBoost": "100.5",
+          "wins": "70",
+          "winsBoost": "105"
+        }
+      ]
+    }
+  }
+}

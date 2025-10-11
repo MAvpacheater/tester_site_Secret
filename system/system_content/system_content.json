@@ -1,0 +1,46 @@
+{
+  "modules": {
+    "settings": {
+      "id": "settings",
+      "name": "Settings",
+      "icon": "⚙️",
+      "container": "settingsPage",
+      "initFunction": "initializeSettings",
+      "category": "system"
+    },
+    "profile": {
+      "id": "profile",
+      "name": "Profile",
+      "icon": "👤",
+      "container": "profilePage",
+      "initFunction": "initializeProfile",
+      "category": "system"
+    },
+    "help": {
+      "id": "help",
+      "name": "Help",
+      "icon": "🆘",
+      "container": "helpPage",
+      "initFunction": "initializeHelp",
+      "category": "system"
+    },
+    "peoples": {
+      "id": "peoples",
+      "name": "Peoples",
+      "icon": "🙏",
+      "container": "peoplesPage",
+      "initFunction": "initializePeoples",
+      "category": "system"
+    }
+  },
+  "categories": {
+    "system": {
+      "id": "systemCategory",
+      "name": "System",
+      "icon": "⚙️",
+      "modules": ["settings", "profile", "help", "peoples"]
+    }
+  },
+  "initOrder": ["settings", "profile", "help", "peoples"],
+  "criticalModules": ["settings", "profile"]
+}

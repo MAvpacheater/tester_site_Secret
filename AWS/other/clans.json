@@ -1,0 +1,104 @@
+{
+    "en": {
+        "title": "Clans",
+        "switcher": {
+            "upgrades": "Upgrades",
+            "add": "Add Clan"
+        },
+        "upgrades": [
+            { "level": "Level 1", "cost": "2.5k tokens", "boost": "5%" },
+            { "level": "Level 2", "cost": "10k tokens", "boost": "10%" },
+            { "level": "Level 3", "cost": "25k tokens", "boost": "15%" },
+            { "level": "Level 4", "cost": "50k tokens", "boost": "20%" },
+            { "level": "Level 5", "cost": "87.5k tokens", "boost": "25%" },
+            { "level": "Level 6", "cost": "??? tokens", "boost": "30%" },
+            { "level": "Level 7", "cost": "??? tokens", "boost": "35%" }
+        ],
+        "form": {
+            "title": "Add Your Clan",
+            "clanPhoto": "Clan Photo:",
+            "clanName": "Clan Name:",
+            "clanBoost": "Clan Boost:",
+            "requirements": "Requirements:",
+            "perClick": "Per Click:",
+            "rawStrength": "Raw Strength:",
+            "event": "Event (CW):",
+            "donate": "Donate:",
+            "thanks": "Thanks:",
+            "uploadImage": "Upload Image",
+            "submit": "Submit Clan",
+            "clear": "Clear Form",
+            "editButton": "Settings",
+            "saveButton": "Save",
+            "cancelButton": "Cancel"
+        }
+    },
+    "uk": {
+        "title": "Клани",
+        "switcher": {
+            "upgrades": "Покращення",
+            "add": "Додати Клан"
+        },
+        "upgrades": [
+            { "level": "Рівень 1", "cost": "2.5k токенів", "boost": "5%" },
+            { "level": "Рівень 2", "cost": "10k токенів", "boost": "10%" },
+            { "level": "Рівень 3", "cost": "25k токенів", "boost": "15%" },
+            { "level": "Рівень 4", "cost": "50k токенів", "boost": "20%" },
+            { "level": "Рівень 5", "cost": "87.5k токенів", "boost": "25%" },
+            { "level": "Рівень 6", "cost": "??? токенів", "boost": "30%" },
+            { "level": "Рівень 7", "cost": "??? токенів", "boost": "35%" }
+        ],
+        "form": {
+            "title": "Додати Свій Клан",
+            "clanPhoto": "Фото Клану:",
+            "clanName": "Назва Клану:",
+            "clanBoost": "Буст Клану:",
+            "requirements": "Вимоги:",
+            "perClick": "За Клік:",
+            "rawStrength": "Чиста Сила:",
+            "event": "Подія (CW):",
+            "donate": "Донат:",
+            "thanks": "Подяка:",
+            "uploadImage": "Завантажити Зображення",
+            "submit": "Надіслати Клан",
+            "clear": "Очистити Форму",
+            "editButton": "Налаштування",
+            "saveButton": "Зберегти",
+            "cancelButton": "Скасувати"
+        }
+    },
+    "ru": {
+        "title": "Кланы",
+        "switcher": {
+            "upgrades": "Улучшения",
+            "add": "Добавить Клан"
+        },
+        "upgrades": [
+            { "level": "Уровень 1", "cost": "2.5k токенов", "boost": "5%" },
+            { "level": "Уровень 2", "cost": "10k токенов", "boost": "10%" },
+            { "level": "Уровень 3", "cost": "25k токенов", "boost": "15%" },
+            { "level": "Уровень 4", "cost": "50k токенов", "boost": "20%" },
+            { "level": "Уровень 5", "cost": "87.5k токенов", "boost": "25%" },
+            { "level": "Уровень 6", "cost": "??? токенов", "boost": "30%" },
+            { "level": "Уровень 7", "cost": "??? токенов", "boost": "35%" }
+        ],
+        "form": {
+            "title": "Добавить Свой Клан",
+            "clanPhoto": "Фото Клана:",
+            "clanName": "Название Клана:",
+            "clanBoost": "Буст Клана:",
+            "requirements": "Требования:",
+            "perClick": "За Клик:",
+            "rawStrength": "Чистая Сила:",
+            "event": "Событие (CW):",
+            "donate": "Донат:",
+            "thanks": "Благодарность:",
+            "uploadImage": "Загрузить Изображение",
+            "submit": "Отправить Клан",
+            "clear": "Очистить Форму",
+            "editButton": "Настройки",
+            "saveButton": "Сохранить",
+            "cancelButton": "Отменить"
+        }
+    }
+}
