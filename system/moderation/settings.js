@@ -1,4 +1,4 @@
-// Settings з підтримкою кольорів та мов
+// Settings з підтримкою категорій у меню
 let settingsInitialized = false;
 let settingsTranslations = null;
 let categoriesState = { background: false, menu: false, colors: false, language: false };
@@ -24,12 +24,43 @@ function getSettingsBasePath() {
 
 const SETTINGS_BASE_PATH = getSettingsBasePath();
 
-// ========== GITHUB CONFIG ==========
-const GITHUB_CONFIG = {
-    user: 'MAvpacheater',
-    repo: 'tester_site_Secret',
-    branch: 'main',
-    imagePath: 'image/bg/'
+// ========== MENU CATEGORIES CONFIG ==========
+const menuCategories = {
+    aws: {
+        icon: '📦',
+        pages: [
+            { page: 'calculator', icon: '🐾' },
+            { page: 'arm', icon: '💪' },
+            { page: 'grind', icon: '🏋️‍♂️' },
+            { page: 'roulette', icon: '🎰' },
+            { page: 'boss', icon: '👹' },
+            { page: 'boosts', icon: '🚀' },
+            { page: 'shiny', icon: '✨' },
+            { page: 'secret', icon: '🔮' },
+            { page: 'codes', icon: '🎁' },
+            { page: 'aura', icon: '🌟' },
+            { page: 'trainer', icon: '🏆' },
+            { page: 'charms', icon: '🔮' },
+            { page: 'potions', icon: '🧪' },
+            { page: 'worlds', icon: '🌍' },
+            { page: 'trader', icon: '🛒' },
+            { page: 'clans', icon: '🏰' }
+        ]
+    },
+    rcu: {
+        icon: '🎮',
+        pages: [
+            { page: 'petscalc', icon: '🐾' }
+        ]
+    },
+    system: {
+        icon: '⚙️',
+        pages: [
+            { page: 'help', icon: '🆘' },
+            { page: 'peoples', icon: '🙏' },
+            { page: 'profile', icon: '👤' }
+        ]
+    }
 };
 
 // ========== BACKGROUND OPTIONS ==========
@@ -45,10 +76,8 @@ const backgroundOptions = {
     castle: { icon: '🏰', filename: 'h9.png' }
 };
 
-// Генеруємо URL для всіх фонів (як в content_loader.js)
 Object.keys(backgroundOptions).forEach(key => {
     const bg = backgroundOptions[key];
-    // Використовуємо той самий формат що і для megadep.png
     bg.url = `AWS/image/bg/${bg.filename}`;
 });
 
@@ -58,28 +87,6 @@ const menuPositions = {
     up: { icon: '⬆️' },
     down: { icon: '⬇️' }
 };
-
-const menuItems = [
-    { page: 'calculator', icon: '🐾' },
-    { page: 'arm', icon: '💪' },
-    { page: 'grind', icon: '🏋️‍♂️' },
-    { page: 'roulette', icon: '🎰' },
-    { page: 'boss', icon: '👹' },
-    { page: 'boosts', icon: '🚀' },
-    { page: 'shiny', icon: '✨' },
-    { page: 'secret', icon: '🔮' },
-    { page: 'codes', icon: '🎁' },
-    { page: 'aura', icon: '🌟' },
-    { page: 'trainer', icon: '🏆' },
-    { page: 'charms', icon: '🔮' },
-    { page: 'potions', icon: '🧪' },
-    { page: 'worlds', icon: '🌍' },
-    { page: 'trader', icon: '🛒' },
-    { page: 'help', icon: '🆘' },
-    { page: 'peoples', icon: '🙏' },
-    { page: 'clans', icon: '🏰' },
-    { page: 'profile', icon: '👤' }
-];
 
 const languageOptions = {
     en: { icon: '🇺🇸', name: { en: 'English', uk: 'Англійська', ru: 'Английский' } },
@@ -141,6 +148,7 @@ function updateMenuButtonVisibility() {
 class MenuManager {
     constructor() {
         this.currentMenuType = null;
+        this.activeDropdown = null;
     }
 
     clearAllMenus() {
@@ -197,18 +205,52 @@ class MenuManager {
         staticMenu.className = `static-menu ${menuClass}`;
         staticMenu.id = 'staticMenu';
         
-        const navButtons = document.createElement('div');
-        navButtons.className = 'nav-buttons';
+        const menuCategoriesDiv = document.createElement('div');
+        menuCategoriesDiv.className = 'menu-categories';
         
-        menuItems.forEach(item => {
-            const btn = document.createElement('button');
-            btn.className = 'nav-btn';
-            btn.dataset.page = item.page;
-            btn.textContent = item.icon;
-            btn.onclick = () => this.handleNavClick(item.page);
-            navButtons.appendChild(btn);
+        // Отримуємо переклади
+        const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
+        const translations = settingsTranslations?.[lang] || settingsTranslations?.en || {};
+        
+        // Створюємо категорії
+        Object.keys(menuCategories).forEach(catKey => {
+            const category = menuCategories[catKey];
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'menu-category';
+            categoryDiv.dataset.category = catKey;
+            
+            // Кнопка категорії
+            const categoryBtn = document.createElement('button');
+            categoryBtn.className = 'category-btn';
+            categoryBtn.innerHTML = `${category.icon} <span class="category-name">${translations[`${catKey}Category`] || catKey.toUpperCase()}</span>`;
+            categoryBtn.onclick = (e) => {
+                e.stopPropagation();
+                this.toggleDropdown(catKey);
+            };
+            
+            // Dropdown з сторінками
+            const dropdown = document.createElement('div');
+            dropdown.className = 'category-dropdown';
+            dropdown.dataset.dropdown = catKey;
+            
+            category.pages.forEach(item => {
+                const dropdownItem = document.createElement('button');
+                dropdownItem.className = 'dropdown-item';
+                dropdownItem.dataset.page = item.page;
+                dropdownItem.innerHTML = `${item.icon} ${translations.pages?.[item.page] || item.page}`;
+                dropdownItem.onclick = (e) => {
+                    e.stopPropagation();
+                    this.handleNavClick(item.page);
+                };
+                dropdown.appendChild(dropdownItem);
+            });
+            
+            categoryDiv.appendChild(categoryBtn);
+            categoryDiv.appendChild(dropdown);
+            menuCategoriesDiv.appendChild(categoryDiv);
         });
         
+        // Settings button
         const settingsBtn = document.createElement('button');
         settingsBtn.className = 'nav-btn settings-btn-static';
         settingsBtn.textContent = '⚙️';
@@ -218,13 +260,54 @@ class MenuManager {
         settingsContainer.className = 'settings-container-static';
         settingsContainer.appendChild(settingsBtn);
         
-        staticMenu.appendChild(navButtons);
+        staticMenu.appendChild(menuCategoriesDiv);
         staticMenu.appendChild(settingsContainer);
         fragment.appendChild(staticMenu);
         document.body.appendChild(fragment);
         
+        // Закриття dropdown при кліку поза ним
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.menu-category') && this.activeDropdown) {
+                this.closeDropdown();
+            }
+        });
+        
         const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
         this.updateActiveState(currentPage);
+    }
+
+    toggleDropdown(catKey) {
+        const dropdown = document.querySelector(`[data-dropdown="${catKey}"]`);
+        const categoryBtn = document.querySelector(`[data-category="${catKey}"] .category-btn`);
+        
+        if (!dropdown || !categoryBtn) return;
+        
+        // Якщо це вже активний dropdown, закриваємо
+        if (this.activeDropdown === catKey) {
+            dropdown.classList.remove('show');
+            categoryBtn.classList.remove('expanded');
+            this.activeDropdown = null;
+        } else {
+            // Закриваємо попередній
+            this.closeDropdown();
+            
+            // Відкриваємо новий
+            dropdown.classList.add('show');
+            categoryBtn.classList.add('expanded');
+            this.activeDropdown = catKey;
+        }
+    }
+
+    closeDropdown() {
+        if (!this.activeDropdown) return;
+        
+        const dropdown = document.querySelector(`[data-dropdown="${this.activeDropdown}"]`);
+        const categoryBtn = document.querySelector(`[data-category="${this.activeDropdown}"] .category-btn`);
+        
+        if (dropdown) dropdown.classList.remove('show');
+        if (categoryBtn) categoryBtn.classList.remove('expanded');
+        
+        this.activeDropdown = null;
     }
 
     handleNavClick(page) {
@@ -232,17 +315,62 @@ class MenuManager {
             window.switchPage(page);
         }
         this.updateActiveState(page);
+        this.closeDropdown();
     }
 
     updateActiveState(activePage) {
         const staticMenu = document.getElementById('staticMenu');
         if (!staticMenu) return;
         
-        const buttons = staticMenu.querySelectorAll('.nav-btn');
-        buttons.forEach(btn => {
-            const isActive = btn.dataset.page === activePage || 
-                           (activePage === 'settings' && btn.classList.contains('settings-btn-static'));
-            btn.classList.toggle('active', isActive);
+        // Оновлюємо активний стан для items в dropdown
+        const dropdownItems = staticMenu.querySelectorAll('.dropdown-item');
+        dropdownItems.forEach(item => {
+            item.classList.toggle('active', item.dataset.page === activePage);
+        });
+        
+        // Оновлюємо активний стан для settings button
+        const settingsBtn = staticMenu.querySelector('.settings-btn-static');
+        if (settingsBtn) {
+            settingsBtn.classList.toggle('active', activePage === 'settings');
+        }
+        
+        // Підсвічуємо активну категорію
+        Object.keys(menuCategories).forEach(catKey => {
+            const category = menuCategories[catKey];
+            const categoryBtn = document.querySelector(`[data-category="${catKey}"] .category-btn`);
+            
+            if (categoryBtn) {
+                const isActive = category.pages.some(item => item.page === activePage);
+                categoryBtn.classList.toggle('active', isActive);
+            }
+        });
+    }
+
+    updateTranslations() {
+        const staticMenu = document.getElementById('staticMenu');
+        if (!staticMenu) return;
+        
+        const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
+        const translations = settingsTranslations?.[lang] || settingsTranslations?.en || {};
+        
+        // Оновлюємо назви категорій
+        Object.keys(menuCategories).forEach(catKey => {
+            const categoryName = staticMenu.querySelector(`[data-category="${catKey}"] .category-name`);
+            if (categoryName && translations[`${catKey}Category`]) {
+                categoryName.textContent = translations[`${catKey}Category`];
+            }
+        });
+        
+        // Оновлюємо назви сторінок
+        staticMenu.querySelectorAll('.dropdown-item').forEach(item => {
+            const page = item.dataset.page;
+            if (translations.pages?.[page]) {
+                const category = menuCategories[Object.keys(menuCategories).find(key => 
+                    menuCategories[key].pages.some(p => p.page === page)
+                )];
+                const pageIcon = category?.pages.find(p => p.page === page)?.icon || '';
+                item.innerHTML = `${pageIcon} ${translations.pages[page]}`;
+            }
         });
     }
 }
@@ -279,7 +407,6 @@ async function applyBackground(background) {
         return;
     }
     
-    // Передзавантажуємо зображення
     const imageUrl = await preloadBackgroundImage(background);
     
     if (imageUrl) {
@@ -289,7 +416,6 @@ async function applyBackground(background) {
         console.log(`🎃 Background applied: ${background}`);
     } else {
         console.error(`❌ Failed to apply background: ${background}`);
-        // Застосуємо градієнт без зображення
         const body = document.body;
         body.style.background = `linear-gradient(135deg, rgba(41, 39, 35, 0.9) 0%, rgba(28, 26, 23, 0.95) 50%, rgba(20, 19, 17, 1) 100%)`;
     }
@@ -301,7 +427,6 @@ function toggleSettingsCategory(categoryName) {
     
     const wasOpen = categoriesState[categoryName];
     
-    // Закриваємо всі категорії
     Object.keys(categoriesState).forEach(cat => {
         categoriesState[cat] = false;
         
@@ -318,7 +443,6 @@ function toggleSettingsCategory(categoryName) {
         }
     });
     
-    // Відкриваємо вибрану категорію, якщо вона була закрита
     if (!wasOpen) {
         categoriesState[categoryName] = true;
         
@@ -510,6 +634,11 @@ function updateSettingsLanguage(lang = null) {
     });
     
     updateLanguageNames();
+    
+    // Оновлюємо переклади в статичному меню
+    if (menuManager) {
+        menuManager.updateTranslations();
+    }
 }
 
 function updateColorThemeNames() {
@@ -680,6 +809,8 @@ async function initializeSettingsOnStart() {
     const currentBg = getCurrentBackground();
     await applyBackground(currentBg);
     
+    await loadSettingsTranslations();
+    
     const currentMenuPos = getCurrentMenuPosition();
     menuManager.showOnlyMenu(currentMenuPos);
     
@@ -731,7 +862,6 @@ async function preloadAllBackgrounds() {
     console.log('✅ Background images preloaded');
 }
 
-// Викликаємо при завантаженні модуля
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(preloadAllBackgrounds, 1000);
@@ -740,5 +870,5 @@ if (document.readyState === 'loading') {
     setTimeout(preloadAllBackgrounds, 1000);
 }
 
-console.log('✅ Settings module loaded');
+console.log('✅ Settings module loaded (with categories menu)');
 console.log('📍 Base path:', SETTINGS_BASE_PATH);
