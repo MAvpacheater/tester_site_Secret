@@ -549,6 +549,7 @@
 
 .static-menu .menu-category {
     position: relative;
+    overflow: visible;
 }
 
 .static-menu .category-btn {
@@ -593,7 +594,7 @@
 }
 
 .static-menu .category-dropdown {
-    position: fixed;
+    position: fixed !important;
     min-width: 200px;
     max-width: 300px;
     background: linear-gradient(135deg, 
@@ -609,9 +610,10 @@
         0 8px 30px rgba(138, 43, 226, 0.6),
         0 0 40px rgba(255, 107, 0, 0.3);
     backdrop-filter: blur(15px);
-    z-index: 1004;
+    z-index: 1004 !important;
     max-height: 80vh;
     overflow-y: auto;
+    pointer-events: auto !important;
 }
 
 .menu-top .category-dropdown {
@@ -623,7 +625,9 @@
 }
 
 .static-menu .category-dropdown.show {
-    display: flex;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .static-menu .category-dropdown::-webkit-scrollbar {
