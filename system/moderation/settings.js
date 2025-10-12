@@ -246,13 +246,24 @@
                 btn.dataset.categoryKey = key;
                 btn.innerHTML = `${category.icon} <span class="category-name">${t[`${key}Category`] || key.toUpperCase()}</span>`;
                 
-                // Add click handler
+                // Add click handler with more logging
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('🖱️ Category button clicked:', key);
+                    console.log('===== CATEGORY CLICKED =====');
+                    console.log('🖱️ Category:', key);
+                    console.log('🔘 Button element:', btn);
+                    console.log('📍 Button dataset:', btn.dataset);
+                    console.log('============================');
                     this.toggleDropdown(key, btn);
                 });
+                
+                // Also add mousedown for debugging
+                btn.addEventListener('mousedown', (e) => {
+                    console.log('🖱️ MOUSEDOWN on category:', key);
+                });
+                
+                console.log(`✅ Added event listeners to button: ${key}`);
                 
                 categoryDiv.appendChild(btn);
                 categoriesDiv.appendChild(categoryDiv);
@@ -276,10 +287,15 @@
                 dropdown.className = 'category-dropdown';
                 dropdown.dataset.dropdown = key;
                 
-                // Initially hide dropdown
-                dropdown.style.display = 'none';
-                dropdown.style.visibility = 'hidden';
-                dropdown.style.opacity = '0';
+                // Initially hide dropdown with explicit inline styles
+                dropdown.style.cssText = `
+                    display: none;
+                    visibility: hidden;
+                    opacity: 0;
+                    position: fixed;
+                    z-index: 1004;
+                    pointer-events: none;
+                `;
                 
                 category.pages.forEach(item => {
                     const dropdownItem = document.createElement('button');
@@ -333,12 +349,18 @@
         }
 
         toggleDropdown(catKey, btnElement) {
-            console.log('🔍 Toggle dropdown called:', catKey);
+            console.log('===== TOGGLE DROPDOWN =====');
+            console.log('🔍 Key:', catKey);
+            console.log('🔘 Button:', btnElement);
             
             const dropdown = document.querySelector(`[data-dropdown="${catKey}"]`);
             
             if (!dropdown) {
                 console.error('❌ Dropdown not found for:', catKey);
+                console.log('Available dropdowns:', 
+                    Array.from(document.querySelectorAll('[data-dropdown]'))
+                        .map(d => d.dataset.dropdown)
+                );
                 return;
             }
             
@@ -347,8 +369,8 @@
                 return;
             }
             
-            console.log('📦 Found dropdown:', dropdown);
-            console.log('🔘 Found button:', btnElement);
+            console.log('✅ Found dropdown:', dropdown);
+            console.log('✅ Found button:', btnElement);
             
             // If already open, close it
             if (state.activeDropdown === catKey) {
@@ -360,21 +382,44 @@
             // Close previous dropdown
             this.closeDropdown();
             
-            // Position and show dropdown
+            // Get menu and check position
             const menu = document.getElementById('staticMenu');
             const isTop = menu?.classList.contains('menu-top');
             
-            console.log('📍 Menu position - isTop:', isTop);
+            console.log('📍 Menu info:', {
+                exists: !!menu,
+                isTop: isTop,
+                classList: menu?.className
+            });
             
-            // Make sure dropdown is visible before positioning
-            dropdown.style.display = 'flex';
-            dropdown.style.visibility = 'visible';
-            dropdown.style.opacity = '1';
-            dropdown.style.pointerEvents = 'auto';
+            // Show dropdown with explicit inline styles
+            dropdown.style.cssText = `
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                position: fixed !important;
+                z-index: 1004 !important;
+                flex-direction: column !important;
+                min-width: 200px;
+                max-width: 300px;
+                background: linear-gradient(135deg, rgba(25, 5, 45, 0.98) 0%, rgba(50, 10, 70, 0.99) 100%);
+                border: 2px solid #8B00FF;
+                border-radius: 12px;
+                padding: 8px;
+                gap: 6px;
+                box-shadow: 0 8px 30px rgba(138, 43, 226, 0.6), 0 0 40px rgba(255, 107, 0, 0.3);
+                backdrop-filter: blur(15px);
+                max-height: 80vh;
+                overflow-y: auto;
+            `;
             
             dropdown.classList.add('show');
             btnElement.classList.add('expanded');
             state.activeDropdown = catKey;
+            
+            console.log('🎨 Dropdown classes:', dropdown.className);
+            console.log('🎨 Button classes:', btnElement.className);
             
             // Position dropdown
             this.positionDropdown(dropdown, btnElement, isTop);
@@ -383,15 +428,7 @@
             this.startPositioner(dropdown, btnElement, isTop);
             
             console.log('✅ Dropdown opened:', catKey);
-            console.log('📊 Dropdown styles:', {
-                display: dropdown.style.display,
-                visibility: dropdown.style.visibility,
-                opacity: dropdown.style.opacity,
-                position: dropdown.style.position,
-                top: dropdown.style.top,
-                bottom: dropdown.style.bottom,
-                left: dropdown.style.left
-            });
+            console.log('============================');
         }
 
         positionDropdown(dropdown, btn, isTop) {
