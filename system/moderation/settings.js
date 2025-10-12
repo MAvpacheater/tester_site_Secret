@@ -1,7 +1,13 @@
 // Settings з підтримкою категорій у меню
-let settingsInitialized = false;
-let settingsTranslations = null;
-let categoriesState = { background: false, menu: false, colors: false, language: false };
+(function() {
+    if (window.settingsInitialized) {
+        console.log('⚠️ Settings already loaded, skipping');
+        return;
+    }
+    
+    let settingsInitialized = false;
+    let settingsTranslations = null;
+    let categoriesState = { background: false, menu: false, colors: false, language: false };
 
 // ========== BASE PATH ==========
 function getSettingsBasePath() {
@@ -908,6 +914,13 @@ async function initializeSettingsOnStart() {
     const currentMenuPos = getCurrentMenuPosition();
     menuManager.showOnlyMenu(currentMenuPos);
     
+    // Перевіряємо чи потрібно оновити переклади в меню
+    setTimeout(() => {
+        if (menuManager && typeof getCurrentAppLanguage === 'function') {
+            menuManager.updateTranslations();
+        }
+    }, 500);
+    
     console.log('✅ Settings startup complete');
 }
 
@@ -964,5 +977,19 @@ if (document.readyState === 'loading') {
     setTimeout(preloadAllBackgrounds, 1000);
 }
 
+// ========== RE-INITIALIZE MENU ON SETTINGS LOAD ==========
+document.addEventListener('contentLoaded', () => {
+    console.log('📦 Content loaded, re-initializing menu...');
+    if (menuManager && getCurrentMenuPosition) {
+        const currentPos = getCurrentMenuPosition();
+        console.log('🔄 Re-applying menu position:', currentPos);
+        menuManager.showOnlyMenu(currentPos);
+    }
+});
+
 console.log('✅ Settings module loaded (with categories menu)');
 console.log('📍 Base path:', SETTINGS_BASE_PATH);
+
+window.settingsInitialized = true;
+
+})(); // End of IIFE
