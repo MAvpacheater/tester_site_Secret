@@ -64,10 +64,10 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: var(--before-gradient, linear-gradient(90deg, 
+    background: linear-gradient(90deg, 
         transparent 0%, 
         rgba(255, 107, 0, 0.7) 50%, 
-        transparent 100%));
+        transparent 100%);
 }
 
 .category-header {
@@ -595,25 +595,28 @@
 
 .static-menu .category-dropdown {
     position: fixed !important;
-    min-width: 200px;
-    max-width: 300px;
+    min-width: 250px;
+    max-width: 350px;
     background: linear-gradient(135deg, 
         rgba(25, 5, 45, 0.98) 0%, 
         rgba(50, 10, 70, 0.99) 100%);
-    border: 2px solid #8B00FF;
-    border-radius: 12px;
-    padding: 8px;
+    border: 3px solid #8B00FF;
+    border-radius: 15px;
+    padding: 10px;
     display: none;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     box-shadow: 
-        0 8px 30px rgba(138, 43, 226, 0.6),
-        0 0 40px rgba(255, 107, 0, 0.3);
-    backdrop-filter: blur(15px);
-    z-index: 1004 !important;
-    max-height: 80vh;
+        0 10px 40px rgba(138, 43, 226, 0.7),
+        0 0 50px rgba(255, 107, 0, 0.4);
+    backdrop-filter: blur(20px);
+    z-index: 99999 !important;
+    max-height: 70vh;
     overflow-y: auto;
-    pointer-events: auto !important;
+    pointer-events: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .menu-top .category-dropdown {
@@ -628,20 +631,21 @@
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
+    pointer-events: auto !important;
 }
 
 .static-menu .category-dropdown::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
 }
 
 .static-menu .category-dropdown::-webkit-scrollbar-track {
     background: rgba(25, 5, 45, 0.5);
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
 .static-menu .category-dropdown::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, #FF6B00, #8B00FF);
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
 .static-menu .category-dropdown::-webkit-scrollbar-thumb:hover {
@@ -649,22 +653,24 @@
 }
 
 .static-menu .dropdown-item {
-    padding: 10px 12px;
-    font-size: 1em;
+    padding: 12px 16px;
+    font-size: 1.05em;
+    font-weight: 600;
     color: #FFB84D;
     background: linear-gradient(135deg, 
-        rgba(25, 5, 45, 0.5) 0%, 
-        rgba(50, 10, 70, 0.4) 100%);
-    border: 2px solid rgba(138, 43, 226, 0.4);
-    border-radius: 8px;
+        rgba(25, 5, 45, 0.6) 0%, 
+        rgba(50, 10, 70, 0.5) 100%);
+    border: 2px solid rgba(138, 43, 226, 0.5);
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: left;
     white-space: nowrap;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    will-change: transform, background-color, border-color;
 }
 
 .static-menu .dropdown-item:hover {
@@ -673,14 +679,16 @@
         rgba(138, 43, 226, 0.5) 100%);
     border-color: #FF6B00;
     color: #FF6B00;
-    transform: translateX(4px);
+    transform: translateX(5px) scale(1.02);
+    box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4);
 }
 
 .static-menu .dropdown-item.active {
     background: linear-gradient(135deg, #FF6B00, #8B00FF);
     border-color: #FFB84D;
     color: #FFF;
-    box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4);
+    box-shadow: 0 4px 20px rgba(255, 107, 0, 0.6);
+    transform: translateX(5px);
 }
 
 .settings-container-static {
@@ -906,17 +914,17 @@ body.menu-right {
 }
 
 .static-menu::-webkit-scrollbar-track {
-    background: var(--scrollbar-track, rgba(25, 5, 45, 0.5));
+    background: rgba(25, 5, 45, 0.5);
     border-radius: 2px;
 }
 
 .static-menu::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb, linear-gradient(90deg, #FF6B00, #8B00FF));
+    background: linear-gradient(90deg, #FF6B00, #8B00FF);
     border-radius: 2px;
 }
 
 .static-menu::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-thumb-hover, linear-gradient(90deg, #FF8C00, #9B30FF));
+    background: linear-gradient(90deg, #FF8C00, #9B30FF);
 }
 
 /* Mobile Responsiveness */
