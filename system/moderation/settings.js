@@ -176,7 +176,13 @@
         }
 
         clearAll() {
+            // Remove static menu
             document.getElementById('staticMenu')?.remove();
+            
+            // Remove all dropdowns from body
+            document.querySelectorAll('.category-dropdown').forEach(dropdown => {
+                dropdown.remove();
+            });
             
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -392,6 +398,9 @@
                 classList: menu?.className
             });
             
+            // TEST: Add red border for visibility
+            dropdown.style.border = '5px solid red !important';
+            
             // Show dropdown with explicit inline styles
             dropdown.style.cssText = `
                 display: flex !important;
@@ -399,19 +408,19 @@
                 opacity: 1 !important;
                 pointer-events: auto !important;
                 position: fixed !important;
-                z-index: 1004 !important;
+                z-index: 99999 !important;
                 flex-direction: column !important;
                 min-width: 200px;
                 max-width: 300px;
-                background: linear-gradient(135deg, rgba(25, 5, 45, 0.98) 0%, rgba(50, 10, 70, 0.99) 100%);
-                border: 2px solid #8B00FF;
-                border-radius: 12px;
-                padding: 8px;
-                gap: 6px;
-                box-shadow: 0 8px 30px rgba(138, 43, 226, 0.6), 0 0 40px rgba(255, 107, 0, 0.3);
-                backdrop-filter: blur(15px);
-                max-height: 80vh;
-                overflow-y: auto;
+                background: linear-gradient(135deg, rgba(25, 5, 45, 0.98) 0%, rgba(50, 10, 70, 0.99) 100%) !important;
+                border: 5px solid red !important;
+                border-radius: 12px !important;
+                padding: 8px !important;
+                gap: 6px !important;
+                box-shadow: 0 8px 30px rgba(138, 43, 226, 0.6), 0 0 40px rgba(255, 107, 0, 0.3) !important;
+                backdrop-filter: blur(15px) !important;
+                max-height: 80vh !important;
+                overflow-y: auto !important;
             `;
             
             dropdown.classList.add('show');
@@ -423,6 +432,21 @@
             
             // Position dropdown
             this.positionDropdown(dropdown, btnElement, isTop);
+            
+            // Log final computed position
+            const rect = dropdown.getBoundingClientRect();
+            console.log('📐 Final dropdown position:', {
+                left: dropdown.style.left,
+                top: dropdown.style.top,
+                bottom: dropdown.style.bottom,
+                rect: {
+                    x: rect.x,
+                    y: rect.y,
+                    width: rect.width,
+                    height: rect.height
+                },
+                isVisible: rect.width > 0 && rect.height > 0
+            });
             
             // Start position updater
             this.startPositioner(dropdown, btnElement, isTop);
