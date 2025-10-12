@@ -245,10 +245,14 @@
                 btn.className = 'category-btn';
                 btn.dataset.categoryKey = key;
                 btn.innerHTML = `${category.icon} <span class="category-name">${t[`${key}Category`] || key.toUpperCase()}</span>`;
-                btn.onclick = (e) => {
+                
+                // Add click handler
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
                     e.stopPropagation();
+                    console.log('🖱️ Category button clicked:', key);
                     this.toggleDropdown(key, btn);
-                };
+                });
                 
                 categoryDiv.appendChild(btn);
                 categoriesDiv.appendChild(categoryDiv);
@@ -272,30 +276,53 @@
                 dropdown.className = 'category-dropdown';
                 dropdown.dataset.dropdown = key;
                 
+                // Initially hide dropdown
+                dropdown.style.display = 'none';
+                dropdown.style.visibility = 'hidden';
+                dropdown.style.opacity = '0';
+                
                 category.pages.forEach(item => {
                     const dropdownItem = document.createElement('button');
                     dropdownItem.className = 'dropdown-item';
                     dropdownItem.dataset.page = item.page;
                     dropdownItem.innerHTML = `${item.icon} ${t.pages?.[item.page] || item.page}`;
-                    dropdownItem.onclick = (e) => {
+                    dropdownItem.addEventListener('click', (e) => {
+                        e.preventDefault();
                         e.stopPropagation();
+                        console.log('🖱️ Page clicked:', item.page);
                         this.handleNav(item.page);
-                    };
+                    });
                     dropdown.appendChild(dropdownItem);
                 });
                 
                 menu.appendChild(dropdown);
+                console.log(`✅ Created dropdown for: ${key} with ${category.pages.length} items`);
             });
             
             document.body.appendChild(menu);
             
+            console.log('📋 Static menu created with categories:', Object.keys(CONFIG.menuCategories));
+            console.log('🔍 Checking dropdowns in DOM:');
+            Object.keys(CONFIG.menuCategories).forEach(key => {
+                const dropdown = document.querySelector(`[data-dropdown="${key}"]`);
+                const btn = document.querySelector(`[data-category-key="${key}"]`);
+                console.log(`  - ${key}:`, {
+                    dropdown: dropdown ? 'Found' : 'Missing',
+                    button: btn ? 'Found' : 'Missing',
+                    dropdownDisplay: dropdown?.style.display || 'none',
+                    dropdownClass: dropdown?.className || 'N/A'
+                });
+            });
+            
             // Close dropdown on outside click
-            document.addEventListener('click', (e) => {
+            const outsideClickHandler = (e) => {
                 if (!e.target.closest('.menu-category') && 
                     !e.target.closest('.category-dropdown')) {
+                    console.log('🖱️ Outside click detected');
                     this.closeDropdown();
                 }
-            });
+            };
+            document.addEventListener('click', outsideClickHandler);
             
             // Update active state
             const currentPage = typeof window.getCurrentPage === 'function' ? 
@@ -306,15 +333,26 @@
         }
 
         toggleDropdown(catKey, btnElement) {
+            console.log('🔍 Toggle dropdown called:', catKey);
+            
             const dropdown = document.querySelector(`[data-dropdown="${catKey}"]`);
             
-            if (!dropdown || !btnElement) {
-                console.error('❌ Dropdown or button not found!');
+            if (!dropdown) {
+                console.error('❌ Dropdown not found for:', catKey);
                 return;
             }
             
+            if (!btnElement) {
+                console.error('❌ Button element not found!');
+                return;
+            }
+            
+            console.log('📦 Found dropdown:', dropdown);
+            console.log('🔘 Found button:', btnElement);
+            
             // If already open, close it
             if (state.activeDropdown === catKey) {
+                console.log('🔒 Closing already open dropdown');
                 this.closeDropdown();
                 return;
             }
@@ -325,6 +363,14 @@
             // Position and show dropdown
             const menu = document.getElementById('staticMenu');
             const isTop = menu?.classList.contains('menu-top');
+            
+            console.log('📍 Menu position - isTop:', isTop);
+            
+            // Make sure dropdown is visible before positioning
+            dropdown.style.display = 'flex';
+            dropdown.style.visibility = 'visible';
+            dropdown.style.opacity = '1';
+            dropdown.style.pointerEvents = 'auto';
             
             dropdown.classList.add('show');
             btnElement.classList.add('expanded');
@@ -337,10 +383,32 @@
             this.startPositioner(dropdown, btnElement, isTop);
             
             console.log('✅ Dropdown opened:', catKey);
+            console.log('📊 Dropdown styles:', {
+                display: dropdown.style.display,
+                visibility: dropdown.style.visibility,
+                opacity: dropdown.style.opacity,
+                position: dropdown.style.position,
+                top: dropdown.style.top,
+                bottom: dropdown.style.bottom,
+                left: dropdown.style.left
+            });
         }
 
         positionDropdown(dropdown, btn, isTop) {
+            if (!dropdown || !btn) {
+                console.error('❌ Cannot position - missing elements');
+                return;
+            }
+            
             const btnRect = btn.getBoundingClientRect();
+            
+            console.log('📐 Positioning dropdown:', {
+                btnLeft: btnRect.left,
+                btnTop: btnRect.top,
+                btnBottom: btnRect.bottom,
+                windowHeight: window.innerHeight,
+                isTop: isTop
+            });
             
             dropdown.style.position = 'fixed';
             dropdown.style.left = `${btnRect.left}px`;
@@ -349,10 +417,20 @@
             if (isTop) {
                 dropdown.style.top = `${btnRect.bottom + 10}px`;
                 dropdown.style.bottom = 'auto';
+                console.log('⬇️ Positioning below button (top menu)');
             } else {
                 dropdown.style.bottom = `${window.innerHeight - btnRect.top + 10}px`;
                 dropdown.style.top = 'auto';
+                console.log('⬆️ Positioning above button (bottom menu)');
             }
+            
+            console.log('✅ Dropdown positioned at:', {
+                position: dropdown.style.position,
+                left: dropdown.style.left,
+                top: dropdown.style.top,
+                bottom: dropdown.style.bottom,
+                zIndex: dropdown.style.zIndex
+            });
         }
 
         startPositioner(dropdown, btn, isTop) {
@@ -379,13 +457,28 @@
         }
 
         closeDropdown() {
-            if (!state.activeDropdown) return;
+            if (!state.activeDropdown) {
+                console.log('ℹ️ No active dropdown to close');
+                return;
+            }
+            
+            console.log('🔒 Closing dropdown:', state.activeDropdown);
             
             const dropdown = document.querySelector(`[data-dropdown="${state.activeDropdown}"]`);
             const btn = document.querySelector(`[data-category-key="${state.activeDropdown}"]`);
             
-            dropdown?.classList.remove('show');
-            btn?.classList.remove('expanded');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+                dropdown.style.display = 'none';
+                dropdown.style.visibility = 'hidden';
+                dropdown.style.opacity = '0';
+                console.log('✅ Dropdown closed and hidden');
+            }
+            
+            if (btn) {
+                btn.classList.remove('expanded');
+                console.log('✅ Button expanded class removed');
+            }
             
             state.activeDropdown = null;
             this.stopPositioner();
