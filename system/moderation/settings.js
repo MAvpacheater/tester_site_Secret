@@ -1,4 +1,4 @@
-// Optimized Settings with Fixed Category Menu
+// Optimized Settings - Styles moved to CSS
 (function() {
     'use strict';
     
@@ -99,7 +99,6 @@
         }
     };
 
-    // Add URLs to backgrounds
     Object.keys(CONFIG.backgrounds).forEach(key => {
         CONFIG.backgrounds[key].url = `AWS/image/bg/${CONFIG.backgrounds[key].filename}`;
     });
@@ -176,13 +175,8 @@
         }
 
         clearAll() {
-            // Remove static menu
             document.getElementById('staticMenu')?.remove();
-            
-            // Remove all dropdowns from body
-            document.querySelectorAll('.category-dropdown').forEach(dropdown => {
-                dropdown.remove();
-            });
+            document.querySelectorAll('.category-dropdown').forEach(dropdown => dropdown.remove());
             
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -236,28 +230,22 @@
             const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
             const t = state.translations?.[lang] || state.translations?.en || {};
             
-            // Categories container
             const categoriesDiv = document.createElement('div');
             categoriesDiv.className = 'menu-categories';
             
-            // Create categories
             Object.entries(CONFIG.menuCategories).forEach(([key, category]) => {
                 const categoryDiv = document.createElement('div');
                 categoryDiv.className = 'menu-category';
                 categoryDiv.dataset.category = key;
                 
-                // Category button
                 const btn = document.createElement('button');
                 btn.className = 'category-btn';
                 btn.dataset.categoryKey = key;
                 btn.innerHTML = `${category.icon} <span class="category-name">${t[`${key}Category`] || key.toUpperCase()}</span>`;
                 
-                // Add click handler
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('===== CATEGORY CLICKED =====');
-                    console.log('🖱️ Category:', key);
                     this.toggleDropdown(key, btn);
                 });
                 
@@ -267,7 +255,6 @@
             
             menu.appendChild(categoriesDiv);
             
-            // Settings button
             const settingsContainer = document.createElement('div');
             settingsContainer.className = 'settings-container-static';
             const settingsBtn = document.createElement('button');
@@ -279,89 +266,16 @@
             
             document.body.appendChild(menu);
             
-            // Create dropdowns AFTER menu, directly in body
             Object.entries(CONFIG.menuCategories).forEach(([key, category]) => {
                 const dropdown = document.createElement('div');
                 dropdown.className = 'category-dropdown';
                 dropdown.dataset.dropdown = key;
-                
-                // Initially hide
-                dropdown.style.cssText = `
-                    display: none;
-                    visibility: hidden;
-                    opacity: 0;
-                    position: fixed;
-                    z-index: 9999;
-                    pointer-events: none;
-                `;
-                
-                // Add custom scrollbar styles
-                const style = document.createElement('style');
-                style.textContent = `
-                    .category-dropdown::-webkit-scrollbar {
-                        width: 8px;
-                    }
-                    .category-dropdown::-webkit-scrollbar-track {
-                        background: rgba(25, 5, 45, 0.5);
-                        border-radius: 4px;
-                    }
-                    .category-dropdown::-webkit-scrollbar-thumb {
-                        background: linear-gradient(180deg, #FF6B00, #8B00FF);
-                        border-radius: 4px;
-                    }
-                    .category-dropdown::-webkit-scrollbar-thumb:hover {
-                        background: linear-gradient(180deg, #FF8C00, #9B30FF);
-                    }
-                `;
-                if (!document.getElementById('dropdown-scrollbar-styles')) {
-                    style.id = 'dropdown-scrollbar-styles';
-                    document.head.appendChild(style);
-                }
                 
                 category.pages.forEach(item => {
                     const dropdownItem = document.createElement('button');
                     dropdownItem.className = 'dropdown-item';
                     dropdownItem.dataset.page = item.page;
                     dropdownItem.innerHTML = `${item.icon} ${t.pages?.[item.page] || item.page}`;
-                    
-                    // Add inline styles for better appearance
-                    dropdownItem.style.cssText = `
-                        padding: 12px 16px;
-                        font-size: 1.05em;
-                        font-weight: 600;
-                        color: #FFB84D;
-                        background: linear-gradient(135deg, rgba(25, 5, 45, 0.6) 0%, rgba(50, 10, 70, 0.5) 100%);
-                        border: 2px solid rgba(138, 43, 226, 0.5);
-                        border-radius: 10px;
-                        cursor: pointer;
-                        transition: all 0.2s ease;
-                        text-align: left;
-                        display: flex;
-                        align-items: center;
-                        gap: 10px;
-                        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
-                        white-space: nowrap;
-                        will-change: transform, background-color, border-color;
-                    `;
-                    
-                    // Hover effect
-                    dropdownItem.addEventListener('mouseenter', () => {
-                        dropdownItem.style.background = 'linear-gradient(135deg, rgba(255, 107, 0, 0.4) 0%, rgba(138, 43, 226, 0.5) 100%)';
-                        dropdownItem.style.borderColor = '#FF6B00';
-                        dropdownItem.style.color = '#FF6B00';
-                        dropdownItem.style.transform = 'translateX(5px) scale(1.02)';
-                        dropdownItem.style.boxShadow = '0 4px 15px rgba(255, 107, 0, 0.4)';
-                    });
-                    
-                    dropdownItem.addEventListener('mouseleave', () => {
-                        if (!dropdownItem.classList.contains('active')) {
-                            dropdownItem.style.background = 'linear-gradient(135deg, rgba(25, 5, 45, 0.6) 0%, rgba(50, 10, 70, 0.5) 100%)';
-                            dropdownItem.style.borderColor = 'rgba(138, 43, 226, 0.5)';
-                            dropdownItem.style.color = '#FFB84D';
-                            dropdownItem.style.transform = 'translateX(0) scale(1)';
-                            dropdownItem.style.boxShadow = 'none';
-                        }
-                    });
                     
                     dropdownItem.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -373,27 +287,19 @@
                 });
                 
                 document.body.appendChild(dropdown);
-                console.log(`✅ Dropdown created: ${key} (${category.pages.length} items)`);
             });
             
-            // Close on outside click
             document.addEventListener('click', (e) => {
-                if (!e.target.closest('.menu-category') && 
-                    !e.target.closest('.category-dropdown')) {
+                if (!e.target.closest('.menu-category') && !e.target.closest('.category-dropdown')) {
                     this.closeDropdown();
                 }
             });
             
-            const currentPage = typeof window.getCurrentPage === 'function' ? 
-                window.getCurrentPage() : 'calculator';
+            const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
             this.updateActive(currentPage);
-            
-            console.log('✅ Static menu created');
         }
 
         toggleDropdown(catKey, btnElement) {
-            console.log('===== TOGGLE DROPDOWN =====');
-            
             const dropdown = document.querySelector(`[data-dropdown="${catKey}"]`);
             
             if (!dropdown) {
@@ -401,82 +307,28 @@
                 return;
             }
             
-            // If already open, close
             if (state.activeDropdown === catKey) {
-                console.log('🔒 Closing');
                 this.closeDropdown();
                 return;
             }
             
-            // Close previous
             this.closeDropdown();
             
-            // Get menu position
             const menu = document.getElementById('staticMenu');
             const isTop = menu?.classList.contains('menu-top');
-            
-            // Show dropdown
-            dropdown.style.cssText = `
-                display: flex !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                pointer-events: auto !important;
-                position: fixed !important;
-                z-index: 99999 !important;
-                flex-direction: column !important;
-                min-width: 250px;
-                max-width: 350px;
-                background: linear-gradient(135deg, rgba(25, 5, 45, 0.98) 0%, rgba(50, 10, 70, 0.99) 100%) !important;
-                border: 3px solid #8B00FF !important;
-                border-radius: 15px !important;
-                padding: 10px !important;
-                gap: 8px !important;
-                box-shadow: 0 10px 40px rgba(138, 43, 226, 0.7), 0 0 50px rgba(255, 107, 0, 0.4) !important;
-                backdrop-filter: blur(20px) !important;
-                max-height: 70vh !important;
-                overflow-y: auto !important;
-                transition: opacity 0.2s ease, transform 0.2s ease !important;
-                transform: translateY(0) !important;
-            `;
             
             dropdown.classList.add('show');
             btnElement.classList.add('expanded');
             state.activeDropdown = catKey;
             
-            // Initial animation state
-            dropdown.style.opacity = '0';
-            dropdown.style.transform = isTop ? 'translateY(-10px)' : 'translateY(10px)';
-            
-            // Position
             this.positionDropdown(dropdown, btnElement, isTop);
-            
-            // Trigger animation
-            requestAnimationFrame(() => {
-                dropdown.style.opacity = '1';
-                dropdown.style.transform = 'translateY(0)';
-            });
-            
-            // Log position
-            const rect = dropdown.getBoundingClientRect();
-            console.log('📐 Dropdown positioned:', {
-                left: dropdown.style.left,
-                top: dropdown.style.top,
-                bottom: dropdown.style.bottom,
-                visible: rect.width > 0 && rect.height > 0
-            });
-            
-            // Start updater
             this.startPositioner(dropdown, btnElement, isTop);
-            
-            console.log('✅ Opened:', catKey);
         }
 
         positionDropdown(dropdown, btn, isTop) {
             const btnRect = btn.getBoundingClientRect();
             
-            dropdown.style.position = 'fixed';
             dropdown.style.left = `${btnRect.left}px`;
-            dropdown.style.zIndex = '99999';
             
             if (isTop) {
                 dropdown.style.top = `${btnRect.bottom + 10}px`;
@@ -504,11 +356,7 @@
                 const newTop = isTop ? btnRect.bottom + 10 : null;
                 const newBottom = !isTop ? window.innerHeight - btnRect.top + 10 : null;
                 
-                // Only update if position changed (optimization)
-                if (newLeft !== lastPosition.left || 
-                    newTop !== lastPosition.top || 
-                    newBottom !== lastPosition.bottom) {
-                    
+                if (newLeft !== lastPosition.left || newTop !== lastPosition.top || newBottom !== lastPosition.bottom) {
                     dropdown.style.left = `${newLeft}px`;
                     
                     if (isTop) {
@@ -525,10 +373,7 @@
                 rafId = requestAnimationFrame(reposition);
             };
             
-            // Start repositioning with requestAnimationFrame
             rafId = requestAnimationFrame(reposition);
-            
-            // Save RAF ID for cleanup
             this.dropdownPositioner = { rafId, type: 'raf' };
         }
 
@@ -549,21 +394,7 @@
             const dropdown = document.querySelector(`[data-dropdown="${state.activeDropdown}"]`);
             const btn = document.querySelector(`[data-category-key="${state.activeDropdown}"]`);
             
-            if (dropdown) {
-                // Animate out
-                const menu = document.getElementById('staticMenu');
-                const isTop = menu?.classList.contains('menu-top');
-                
-                dropdown.style.opacity = '0';
-                dropdown.style.transform = isTop ? 'translateY(-10px)' : 'translateY(10px)';
-                
-                // Wait for animation then hide
-                setTimeout(() => {
-                    dropdown.classList.remove('show');
-                    dropdown.style.display = 'none';
-                }, 200);
-            }
-            
+            if (dropdown) dropdown.classList.remove('show');
             if (btn) btn.classList.remove('expanded');
             
             state.activeDropdown = null;
@@ -582,31 +413,12 @@
             const menu = document.getElementById('staticMenu');
             if (!menu) return;
             
-            // Update dropdown items
             document.querySelectorAll('.dropdown-item').forEach(item => {
-                const isActive = item.dataset.page === activePage;
-                item.classList.toggle('active', isActive);
-                
-                if (isActive) {
-                    item.style.background = 'linear-gradient(135deg, #FF6B00, #8B00FF)';
-                    item.style.borderColor = '#FFB84D';
-                    item.style.color = '#FFF';
-                    item.style.boxShadow = '0 4px 20px rgba(255, 107, 0, 0.6)';
-                    item.style.transform = 'translateX(5px)';
-                } else {
-                    item.style.background = 'linear-gradient(135deg, rgba(25, 5, 45, 0.6) 0%, rgba(50, 10, 70, 0.5) 100%)';
-                    item.style.borderColor = 'rgba(138, 43, 226, 0.5)';
-                    item.style.color = '#FFB84D';
-                    item.style.boxShadow = 'none';
-                    item.style.transform = 'translateX(0)';
-                }
+                item.classList.toggle('active', item.dataset.page === activePage);
             });
             
-            // Update settings button
-            menu.querySelector('.settings-btn-static')?.classList
-                .toggle('active', activePage === 'settings');
+            menu.querySelector('.settings-btn-static')?.classList.toggle('active', activePage === 'settings');
             
-            // Update category buttons
             Object.entries(CONFIG.menuCategories).forEach(([key, category]) => {
                 const btn = menu.querySelector(`[data-category="${key}"] .category-btn`);
                 if (btn) {
@@ -710,8 +522,7 @@
     // ========== UI UPDATES ==========
     const ui = {
         updateSettings(lang = null) {
-            const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? 
-                getCurrentAppLanguage() : 'en');
+            const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en');
             
             if (!state.translations?.[currentLang]) return;
             
@@ -784,8 +595,7 @@
         },
 
         updateLanguage() {
-            const current = typeof getCurrentAppLanguage === 'function' ? 
-                getCurrentAppLanguage() : 'en';
+            const current = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
             document.querySelectorAll('.language-option').forEach(opt => {
                 opt.classList.toggle('active', opt.dataset.language === current);
             });
@@ -899,7 +709,6 @@
         const themes = window.colorThemes || {};
         const colorHTML = Object.entries(themes).map(([key, theme]) => `
             <div class="color-option" data-theme="${key}" onclick="changeColorTheme('${key}')">
-                <div class="color-option-icon">${theme.icon}</div>
                 <div class="color-preview">
                     <div class="color-preview-split">
                         <div class="color-preview-left" style="background: ${theme.primary}"></div>
@@ -919,7 +728,7 @@
 
         return `
             <div class="settings-container">
-                <h1 class="settings-title">⚙️ Settings</h1>
+                <h1 class="settings-title">Settings</h1>
                 
                 <div class="settings-section" data-category="language">
                     <div class="category-header collapsed" onclick="toggleSettingsCategory('language')">
