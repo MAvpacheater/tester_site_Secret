@@ -1,4 +1,4 @@
-// Optimized Settings with Category Menu Support
+// Optimized Settings with Fixed Category Menu
 (function() {
     'use strict';
     
@@ -252,24 +252,14 @@
                 btn.dataset.categoryKey = key;
                 btn.innerHTML = `${category.icon} <span class="category-name">${t[`${key}Category`] || key.toUpperCase()}</span>`;
                 
-                // Add click handler with more logging
+                // Add click handler
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     console.log('===== CATEGORY CLICKED =====');
                     console.log('🖱️ Category:', key);
-                    console.log('🔘 Button element:', btn);
-                    console.log('📍 Button dataset:', btn.dataset);
-                    console.log('============================');
                     this.toggleDropdown(key, btn);
                 });
-                
-                // Also add mousedown for debugging
-                btn.addEventListener('mousedown', (e) => {
-                    console.log('🖱️ MOUSEDOWN on category:', key);
-                });
-                
-                console.log(`✅ Added event listeners to button: ${key}`);
                 
                 categoryDiv.appendChild(btn);
                 categoriesDiv.appendChild(categoryDiv);
@@ -287,19 +277,21 @@
             settingsContainer.appendChild(settingsBtn);
             menu.appendChild(settingsContainer);
             
-            // Create dropdowns (positioned absolutely)
+            document.body.appendChild(menu);
+            
+            // Create dropdowns AFTER menu, directly in body
             Object.entries(CONFIG.menuCategories).forEach(([key, category]) => {
                 const dropdown = document.createElement('div');
                 dropdown.className = 'category-dropdown';
                 dropdown.dataset.dropdown = key;
                 
-                // Initially hide dropdown with explicit inline styles
+                // Initially hide
                 dropdown.style.cssText = `
                     display: none;
                     visibility: hidden;
                     opacity: 0;
                     position: fixed;
-                    z-index: 1004;
+                    z-index: 9999;
                     pointer-events: none;
                 `;
                 
@@ -311,42 +303,23 @@
                     dropdownItem.addEventListener('click', (e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        console.log('🖱️ Page clicked:', item.page);
                         this.handleNav(item.page);
                     });
                     dropdown.appendChild(dropdownItem);
                 });
                 
-                menu.appendChild(dropdown);
-                console.log(`✅ Created dropdown for: ${key} with ${category.pages.length} items`);
+                document.body.appendChild(dropdown);
+                console.log(`✅ Dropdown created: ${key} (${category.pages.length} items)`);
             });
             
-            document.body.appendChild(menu);
-            
-            console.log('📋 Static menu created with categories:', Object.keys(CONFIG.menuCategories));
-            console.log('🔍 Checking dropdowns in DOM:');
-            Object.keys(CONFIG.menuCategories).forEach(key => {
-                const dropdown = document.querySelector(`[data-dropdown="${key}"]`);
-                const btn = document.querySelector(`[data-category-key="${key}"]`);
-                console.log(`  - ${key}:`, {
-                    dropdown: dropdown ? 'Found' : 'Missing',
-                    button: btn ? 'Found' : 'Missing',
-                    dropdownDisplay: dropdown?.style.display || 'none',
-                    dropdownClass: dropdown?.className || 'N/A'
-                });
-            });
-            
-            // Close dropdown on outside click
-            const outsideClickHandler = (e) => {
+            // Close on outside click
+            document.addEventListener('click', (e) => {
                 if (!e.target.closest('.menu-category') && 
                     !e.target.closest('.category-dropdown')) {
-                    console.log('🖱️ Outside click detected');
                     this.closeDropdown();
                 }
-            };
-            document.addEventListener('click', outsideClickHandler);
+            });
             
-            // Update active state
             const currentPage = typeof window.getCurrentPage === 'function' ? 
                 window.getCurrentPage() : 'calculator';
             this.updateActive(currentPage);
@@ -356,52 +329,29 @@
 
         toggleDropdown(catKey, btnElement) {
             console.log('===== TOGGLE DROPDOWN =====');
-            console.log('🔍 Key:', catKey);
-            console.log('🔘 Button:', btnElement);
             
             const dropdown = document.querySelector(`[data-dropdown="${catKey}"]`);
             
             if (!dropdown) {
-                console.error('❌ Dropdown not found for:', catKey);
-                console.log('Available dropdowns:', 
-                    Array.from(document.querySelectorAll('[data-dropdown]'))
-                        .map(d => d.dataset.dropdown)
-                );
+                console.error('❌ Dropdown not found:', catKey);
                 return;
             }
             
-            if (!btnElement) {
-                console.error('❌ Button element not found!');
-                return;
-            }
-            
-            console.log('✅ Found dropdown:', dropdown);
-            console.log('✅ Found button:', btnElement);
-            
-            // If already open, close it
+            // If already open, close
             if (state.activeDropdown === catKey) {
-                console.log('🔒 Closing already open dropdown');
+                console.log('🔒 Closing');
                 this.closeDropdown();
                 return;
             }
             
-            // Close previous dropdown
+            // Close previous
             this.closeDropdown();
             
-            // Get menu and check position
+            // Get menu position
             const menu = document.getElementById('staticMenu');
             const isTop = menu?.classList.contains('menu-top');
             
-            console.log('📍 Menu info:', {
-                exists: !!menu,
-                isTop: isTop,
-                classList: menu?.className
-            });
-            
-            // TEST: Add red border for visibility
-            dropdown.style.border = '5px solid red !important';
-            
-            // Show dropdown with explicit inline styles
+            // Show dropdown
             dropdown.style.cssText = `
                 display: flex !important;
                 visibility: visible !important;
@@ -427,71 +377,38 @@
             btnElement.classList.add('expanded');
             state.activeDropdown = catKey;
             
-            console.log('🎨 Dropdown classes:', dropdown.className);
-            console.log('🎨 Button classes:', btnElement.className);
-            
-            // Position dropdown
+            // Position
             this.positionDropdown(dropdown, btnElement, isTop);
             
-            // Log final computed position
+            // Log position
             const rect = dropdown.getBoundingClientRect();
-            console.log('📐 Final dropdown position:', {
+            console.log('📐 Dropdown positioned:', {
                 left: dropdown.style.left,
                 top: dropdown.style.top,
                 bottom: dropdown.style.bottom,
-                rect: {
-                    x: rect.x,
-                    y: rect.y,
-                    width: rect.width,
-                    height: rect.height
-                },
-                isVisible: rect.width > 0 && rect.height > 0
+                rect: { x: rect.x, y: rect.y, w: rect.width, h: rect.height }
             });
             
-            // Start position updater
+            // Start updater
             this.startPositioner(dropdown, btnElement, isTop);
             
-            console.log('✅ Dropdown opened:', catKey);
-            console.log('============================');
+            console.log('✅ Opened:', catKey);
         }
 
         positionDropdown(dropdown, btn, isTop) {
-            if (!dropdown || !btn) {
-                console.error('❌ Cannot position - missing elements');
-                return;
-            }
-            
             const btnRect = btn.getBoundingClientRect();
-            
-            console.log('📐 Positioning dropdown:', {
-                btnLeft: btnRect.left,
-                btnTop: btnRect.top,
-                btnBottom: btnRect.bottom,
-                windowHeight: window.innerHeight,
-                isTop: isTop
-            });
             
             dropdown.style.position = 'fixed';
             dropdown.style.left = `${btnRect.left}px`;
-            dropdown.style.zIndex = '1004';
+            dropdown.style.zIndex = '99999';
             
             if (isTop) {
                 dropdown.style.top = `${btnRect.bottom + 10}px`;
                 dropdown.style.bottom = 'auto';
-                console.log('⬇️ Positioning below button (top menu)');
             } else {
                 dropdown.style.bottom = `${window.innerHeight - btnRect.top + 10}px`;
                 dropdown.style.top = 'auto';
-                console.log('⬆️ Positioning above button (bottom menu)');
             }
-            
-            console.log('✅ Dropdown positioned at:', {
-                position: dropdown.style.position,
-                left: dropdown.style.left,
-                top: dropdown.style.top,
-                bottom: dropdown.style.bottom,
-                zIndex: dropdown.style.zIndex
-            });
         }
 
         startPositioner(dropdown, btn, isTop) {
@@ -507,7 +424,6 @@
             
             window.addEventListener('scroll', reposition);
             window.addEventListener('resize', reposition);
-            document.getElementById('staticMenu')?.addEventListener('scroll', reposition);
         }
 
         stopPositioner() {
@@ -518,12 +434,7 @@
         }
 
         closeDropdown() {
-            if (!state.activeDropdown) {
-                console.log('ℹ️ No active dropdown to close');
-                return;
-            }
-            
-            console.log('🔒 Closing dropdown:', state.activeDropdown);
+            if (!state.activeDropdown) return;
             
             const dropdown = document.querySelector(`[data-dropdown="${state.activeDropdown}"]`);
             const btn = document.querySelector(`[data-category-key="${state.activeDropdown}"]`);
@@ -531,15 +442,8 @@
             if (dropdown) {
                 dropdown.classList.remove('show');
                 dropdown.style.display = 'none';
-                dropdown.style.visibility = 'hidden';
-                dropdown.style.opacity = '0';
-                console.log('✅ Dropdown closed and hidden');
             }
-            
-            if (btn) {
-                btn.classList.remove('expanded');
-                console.log('✅ Button expanded class removed');
-            }
+            if (btn) btn.classList.remove('expanded');
             
             state.activeDropdown = null;
             this.stopPositioner();
@@ -557,16 +461,13 @@
             const menu = document.getElementById('staticMenu');
             if (!menu) return;
             
-            // Update dropdown items
-            menu.querySelectorAll('.dropdown-item').forEach(item => {
+            document.querySelectorAll('.dropdown-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.page === activePage);
             });
             
-            // Update settings button
             menu.querySelector('.settings-btn-static')?.classList
                 .toggle('active', activePage === 'settings');
             
-            // Update category buttons
             Object.entries(CONFIG.menuCategories).forEach(([key, category]) => {
                 const btn = menu.querySelector(`[data-category="${key}"] .category-btn`);
                 if (btn) {
@@ -583,7 +484,6 @@
             const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
             const t = state.translations?.[lang] || state.translations?.en || {};
             
-            // Update category names
             Object.keys(CONFIG.menuCategories).forEach(key => {
                 const nameEl = menu.querySelector(`[data-category="${key}"] .category-name`);
                 if (nameEl && t[`${key}Category`]) {
@@ -591,8 +491,7 @@
                 }
             });
             
-            // Update page names
-            menu.querySelectorAll('.dropdown-item').forEach(item => {
+            document.querySelectorAll('.dropdown-item').forEach(item => {
                 const page = item.dataset.page;
                 if (t.pages?.[page]) {
                     const category = Object.values(CONFIG.menuCategories)
@@ -657,8 +556,6 @@
         
         try {
             const url = `${SETTINGS_BASE_PATH}system/moderation/menu.json`;
-            console.log(`📥 Loading translations: ${url}`);
-            
             const response = await fetch(url);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             
@@ -677,16 +574,12 @@
             const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? 
                 getCurrentAppLanguage() : 'en');
             
-            if (!state.translations?.[currentLang]) {
-                console.warn(`⚠️ No translations for: ${currentLang}`);
-                return;
-            }
+            if (!state.translations?.[currentLang]) return;
             
             const t = state.translations[currentLang].settings;
             const page = document.getElementById('settingsPage');
             if (!page) return;
             
-            // Update titles
             const updates = [
                 { selector: '.settings-title', text: t.title },
                 { selector: '[data-category="language"] .category-title span:last-child', text: t.language },
@@ -700,13 +593,11 @@
                 if (el) el.textContent = text;
             });
             
-            // Update backgrounds
             Object.keys(CONFIG.backgrounds).forEach(bg => {
                 const el = page.querySelector(`[data-background="${bg}"] .option-name`);
                 if (el && t[bg]) el.textContent = t[bg];
             });
             
-            // Update menu positions
             Object.keys(CONFIG.menuPositions).forEach(pos => {
                 const el = page.querySelector(`[data-position="${pos}"] .menu-option-name`);
                 if (el && t[pos]) el.textContent = t[pos];
@@ -769,13 +660,11 @@
             
             const wasOpen = state.categories[name];
             
-            // Close all
             Object.keys(state.categories).forEach(cat => {
                 state.categories[cat] = false;
                 this.updateUI(cat, false);
             });
             
-            // Open clicked if it was closed
             if (!wasOpen) {
                 state.categories[name] = true;
                 this.updateUI(name, true);
@@ -808,7 +697,6 @@
             const saved = storage.getJSON('categoriesState', {});
             const openCount = Object.values(saved).filter(Boolean).length;
             
-            // Reset if multiple open
             if (openCount > 1) {
                 Object.keys(state.categories).forEach(key => {
                     state.categories[key] = false;
@@ -827,10 +715,7 @@
 
     // ========== CHANGE FUNCTIONS ==========
     async function changeBackground(bg) {
-        if (!CONFIG.backgrounds[bg]) {
-            console.warn(`⚠️ Unknown background: ${bg}`);
-            return;
-        }
+        if (!CONFIG.backgrounds[bg]) return;
         
         storage.set('background', bg);
         await backgroundManager.apply(bg);
@@ -838,10 +723,7 @@
     }
 
     function changeMenuPosition(pos) {
-        if (!CONFIG.menuPositions[pos]) {
-            console.warn(`⚠️ Unknown position: ${pos}`);
-            return;
-        }
+        if (!CONFIG.menuPositions[pos]) return;
         
         storage.set('menuPosition', pos);
         menuManager.show(pos);
@@ -849,10 +731,7 @@
     }
 
     function changeLanguage(lang) {
-        if (!CONFIG.languages[lang]) {
-            console.warn(`⚠️ Unknown language: ${lang}`);
-            return;
-        }
+        if (!CONFIG.languages[lang]) return;
         
         if (typeof window.switchAppLanguage === 'function') {
             window.switchAppLanguage(lang);
@@ -1003,7 +882,6 @@
         const menuPos = storage.get('menuPosition', 'left');
         menuManager.show(menuPos);
         
-        // Update translations after menu is created
         setTimeout(() => {
             if (typeof getCurrentAppLanguage === 'function') {
                 menuManager.updateTranslations();
@@ -1031,7 +909,6 @@
     document.addEventListener('contentLoaded', () => {
         console.log('📦 Content loaded, re-initializing menu...');
         const pos = storage.get('menuPosition', 'left');
-        console.log('🔄 Re-applying menu position:', pos);
         menuManager.show(pos);
     });
 
@@ -1062,7 +939,7 @@
         setTimeout(() => backgroundManager.preloadAll(), 1000);
     }
 
-    console.log('✅ Settings module loaded (optimized)');
+    console.log('✅ Settings module loaded');
     console.log('📍 Base path:', SETTINGS_BASE_PATH);
 
     window.settingsInitialized = true;
