@@ -222,13 +222,35 @@ class MenuManager {
             // Кнопка категорії
             const categoryBtn = document.createElement('button');
             categoryBtn.className = 'category-btn';
+            categoryBtn.dataset.categoryKey = catKey;
             categoryBtn.innerHTML = `${category.icon} <span class="category-name">${translations[`${catKey}Category`] || catKey.toUpperCase()}</span>`;
             categoryBtn.onclick = (e) => {
                 e.stopPropagation();
+                console.log('🖱️ Category clicked:', catKey);
                 this.toggleDropdown(catKey);
             };
             
-            // Dropdown з сторінками
+            categoryDiv.appendChild(categoryBtn);
+            menuCategoriesDiv.appendChild(categoryDiv);
+        });
+        
+        // Settings button
+        const settingsBtn = document.createElement('button');
+        settingsBtn.className = 'nav-btn settings-btn-static';
+        settingsBtn.textContent = '⚙️';
+        settingsBtn.onclick = () => this.handleNavClick('settings');
+        
+        const settingsContainer = document.createElement('div');
+        settingsContainer.className = 'settings-container-static';
+        settingsContainer.appendChild(settingsBtn);
+        
+        staticMenu.appendChild(menuCategoriesDiv);
+        staticMenu.appendChild(settingsContainer);
+        
+        // Створюємо всі dropdown меню окремо (поза категоріями)
+        Object.keys(menuCategories).forEach(catKey => {
+            const category = menuCategories[catKey];
+            
             const dropdown = document.createElement('div');
             dropdown.className = 'category-dropdown';
             dropdown.dataset.dropdown = catKey;
@@ -245,38 +267,28 @@ class MenuManager {
                 dropdown.appendChild(dropdownItem);
             });
             
-            categoryDiv.appendChild(categoryBtn);
-            categoryDiv.appendChild(dropdown);
-            menuCategoriesDiv.appendChild(categoryDiv);
+            staticMenu.appendChild(dropdown);
         });
         
-        // Settings button
-        const settingsBtn = document.createElement('button');
-        settingsBtn.className = 'nav-btn settings-btn-static';
-        settingsBtn.textContent = '⚙️';
-        settingsBtn.onclick = () => this.handleNavClick('settings');
-        
-        const settingsContainer = document.createElement('div');
-        settingsContainer.className = 'settings-container-static';
-        settingsContainer.appendChild(settingsBtn);
-        
-        staticMenu.appendChild(menuCategoriesDiv);
-        staticMenu.appendChild(settingsContainer);
         fragment.appendChild(staticMenu);
         document.body.appendChild(fragment);
         
         // Закриття dropdown при кліку поза ним
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.menu-category') && this.activeDropdown) {
+        const clickHandler = (e) => {
+            if (!e.target.closest('.menu-category') && 
+                !e.target.closest('.category-dropdown') && 
+                this.activeDropdown) {
+                console.log('🖱️ Click outside, closing dropdown');
                 this.closeDropdown();
             }
-        });
+        };
+        document.addEventListener('click', clickHandler);
         
         // Перепозиціонування при скролі або resize
         const repositionDropdown = () => {
             if (this.activeDropdown) {
                 const dropdown = document.querySelector(`[data-dropdown="${this.activeDropdown}"]`);
-                const categoryBtn = document.querySelector(`[data-category="${this.activeDropdown}"] .category-btn`);
+                const categoryBtn = document.querySelector(`[data-category-key="${this.activeDropdown}"]`);
                 
                 if (dropdown && categoryBtn && dropdown.classList.contains('show')) {
                     const btnRect = categoryBtn.getBoundingClientRect();
@@ -302,18 +314,30 @@ class MenuManager {
         
         const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
         this.updateActiveState(currentPage);
+        
+        console.log('✅ Static menu created with categories:', Object.keys(menuCategories));
     }
 
     toggleDropdown(catKey) {
-        const dropdown = document.querySelector(`[data-dropdown="${catKey}"]`);
-        const categoryBtn = document.querySelector(`[data-category="${catKey}"] .category-btn`);
+        console.log('🎯 toggleDropdown called:', catKey);
         
-        if (!dropdown || !categoryBtn) return;
+        const dropdown = document.querySelector(`[data-dropdown="${catKey}"]`);
+        const categoryBtn = document.querySelector(`[data-category-key="${catKey}"]`);
+        
+        console.log('📦 Dropdown element:', dropdown);
+        console.log('🔘 Button element:', categoryBtn);
+        
+        if (!dropdown || !categoryBtn) {
+            console.error('❌ Dropdown or button not found!');
+            return;
+        }
         
         // Якщо це вже активний dropdown, закриваємо
         if (this.activeDropdown === catKey) {
+            console.log('🔒 Closing active dropdown');
             dropdown.classList.remove('show');
             categoryBtn.classList.remove('expanded');
+            dropdown.style.display = 'none';
             this.activeDropdown = null;
         } else {
             // Закриваємо попередній
@@ -324,7 +348,17 @@ class MenuManager {
             const staticMenu = document.getElementById('staticMenu');
             const isTopMenu = staticMenu?.classList.contains('menu-top');
             
+            console.log('📐 Button position:', btnRect);
+            console.log('📍 Is top menu:', isTopMenu);
+            
+            // Встановлюємо позицію
+            dropdown.style.position = 'fixed';
             dropdown.style.left = `${btnRect.left}px`;
+            dropdown.style.zIndex = '1004';
+            dropdown.style.display = 'flex';
+            dropdown.style.visibility = 'visible';
+            dropdown.style.opacity = '1';
+            dropdown.style.pointerEvents = 'auto';
             
             if (isTopMenu) {
                 dropdown.style.top = `${btnRect.bottom + 10}px`;
@@ -334,20 +368,37 @@ class MenuManager {
                 dropdown.style.top = 'auto';
             }
             
+            console.log('📍 Dropdown styles:', {
+                position: dropdown.style.position,
+                left: dropdown.style.left,
+                top: dropdown.style.top,
+                bottom: dropdown.style.bottom,
+                display: dropdown.style.display,
+                zIndex: dropdown.style.zIndex
+            });
+            
             // Відкриваємо новий
             dropdown.classList.add('show');
             categoryBtn.classList.add('expanded');
             this.activeDropdown = catKey;
+            
+            console.log('✅ Dropdown opened:', catKey);
+            console.log('📦 Dropdown classList:', dropdown.classList.toString());
         }
     }
 
     closeDropdown() {
         if (!this.activeDropdown) return;
         
-        const dropdown = document.querySelector(`[data-dropdown="${this.activeDropdown}"]`);
-        const categoryBtn = document.querySelector(`[data-category="${this.activeDropdown}"] .category-btn`);
+        console.log('🔒 Closing dropdown:', this.activeDropdown);
         
-        if (dropdown) dropdown.classList.remove('show');
+        const dropdown = document.querySelector(`[data-dropdown="${this.activeDropdown}"]`);
+        const categoryBtn = document.querySelector(`[data-category-key="${this.activeDropdown}"]`);
+        
+        if (dropdown) {
+            dropdown.classList.remove('show');
+            dropdown.style.display = 'none';
+        }
         if (categoryBtn) categoryBtn.classList.remove('expanded');
         
         this.activeDropdown = null;
