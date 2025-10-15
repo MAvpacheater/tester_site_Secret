@@ -1,4 +1,4 @@
-// ========== FIREBASE MANAGER (SECURE WITH VERCEL ENV) ==========
+// ========== FIREBASE MANAGER (SECURE - NO FALLBACK) ==========
 
 class FirebaseManager {
     constructor() {
@@ -8,42 +8,81 @@ class FirebaseManager {
         this.currentUser = null;
         this.isInitialized = false;
         this.listeners = new Map();
-        this.config = null; // Буде завантажено з API
+        this.config = null;
     }
 
     async loadConfig() {
         try {
-            // Спробувати завантажити з Vercel API
-            console.log('🔧 Loading Firebase config from API...');
-            const response = await fetch('/api/firebase-config');
+            console.log('🔧 Loading Firebase config from Vercel API...');
+            
+            const response = await fetch('/api/firebase-config', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+                throw new Error(`API returned ${response.status}: ${response.statusText}`);
             }
             
             const config = await response.json();
             
             if (config.error) {
-                throw new Error(config.error);
+                throw new Error(`Config error: ${config.error}`);
             }
             
-            console.log('✅ Firebase config loaded from Vercel');
+            // Validate all required fields
+            const requiredFields = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+            const missingFields = requiredFields.filter(field => !config[field]);
+            
+            if (missingFields.length > 0) {
+                throw new Error(`Missing config fields: ${missingFields.join(', ')}`);
+            }
+            
+            console.log('✅ Firebase config loaded securely from Vercel');
             return config;
             
         } catch (error) {
-            console.warn('⚠️ Failed to load from API, using fallback:', error.message);
+            console.error('❌ CRITICAL: Failed to load Firebase config from API:', error.message);
             
-            // Fallback конфігурація (для локальної розробки)
-            return {
-                apiKey: "AIzaSyCBorDocx60fpPb-0mYTlUQ1Ehkj-QISaY",
-                authDomain: "arm-helper-test.firebaseapp.com",
-                projectId: "arm-helper-test",
-                storageBucket: "arm-helper-test.firebasestorage.app",
-                messagingSenderId: "585262647515",
-                appId: "1:585262647515:web:0c468ed8d79a6dc3eae4fe",
-                measurementId: "G-EL5GR5CVVK"
-            };
+            // Show user-friendly error
+            this.showConfigError(error.message);
+            
+            throw new Error('Firebase configuration unavailable. Please check your connection and refresh the page.');
         }
+    }
+
+    showConfigError(message) {
+        // Create error notification
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff4444;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 10001;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 500px;
+            text-align: center;
+        `;
+        
+        errorDiv.innerHTML = `
+            <div style="font-size: 24px; margin-bottom: 10px;">⚠️</div>
+            <div style="font-weight: bold; margin-bottom: 5px;">Firebase Configuration Error</div>
+            <div style="font-size: 14px; opacity: 0.9;">Unable to load secure configuration from server.</div>
+            <div style="font-size: 12px; margin-top: 10px; opacity: 0.8;">Please check your internet connection and refresh the page.</div>
+        `;
+        
+        document.body.appendChild(errorDiv);
+        
+        // Auto-remove after 10 seconds
+        setTimeout(() => errorDiv.remove(), 10000);
     }
 
     async initialize() {
@@ -54,17 +93,19 @@ class FirebaseManager {
                 throw new Error('Firebase SDK not loaded');
             }
 
-            // Завантажити конфігурацію
+            // Load secure config from API (NO FALLBACK)
             this.config = await this.loadConfig();
             
             if (!this.config) {
                 throw new Error('Failed to load Firebase config');
             }
 
+            // Initialize Firebase with secure config
             this.app = firebase.initializeApp(this.config);
             this.auth = firebase.auth();
             this.db = firebase.firestore();
 
+            // Enable persistence
             try {
                 await this.db.enablePersistence({ synchronizeTabs: true });
                 console.log('✅ Firestore persistence enabled');
@@ -76,11 +117,12 @@ class FirebaseManager {
 
             this.setupAuthListener();
             this.isInitialized = true;
-            console.log('✅ Firebase initialized');
+            console.log('✅ Firebase initialized securely');
 
             return true;
         } catch (error) {
-            console.error('❌ Firebase init failed:', error);
+            console.error('❌ Firebase init failed:', error.message);
+            this.isInitialized = false;
             return false;
         }
     }
@@ -618,7 +660,7 @@ class FirebaseManager {
         return {
             isInitialized: this.isInitialized,
             isAuthenticated: this.isAuthenticated(),
-            configSource: this.config ? 'Loaded' : 'Not loaded',
+            configSource: this.config ? '🔒 Secure API' : '❌ Not loaded',
             currentUser: this.currentUser ? {
                 uid: this.currentUser.uid,
                 username: this.currentUser.username,
@@ -643,9 +685,9 @@ async function initializeFirebase() {
     const success = await firebaseManager.initialize();
     
     if (success) {
-        console.log('✅ Firebase ready (Secure config)');
+        console.log('✅ Firebase ready (100% Secure - No Fallback)');
     } else {
-        console.error('❌ Firebase init failed');
+        console.error('❌ Firebase init failed - Config not available');
     }
     
     return firebaseManager;
@@ -667,4 +709,4 @@ Object.assign(window, {
     debugFirebase
 });
 
-console.log('✅ Firebase module loaded (Secure with Vercel ENV)');
+console.log('✅ Firebase module loaded (🔒 100% Secure - No Hardcoded Config)');
