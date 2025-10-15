@@ -1,4 +1,4 @@
-// ========== FIREBASE MANAGER (SECURE - NO FALLBACK) ==========
+// ========== FIREBASE MANAGER (ОПТИМІЗОВАНИЙ) ==========
 
 class FirebaseManager {
     constructor() {
@@ -8,81 +8,16 @@ class FirebaseManager {
         this.currentUser = null;
         this.isInitialized = false;
         this.listeners = new Map();
-        this.config = null;
-    }
-
-    async loadConfig() {
-        try {
-            console.log('🔧 Loading Firebase config from Vercel API...');
-            
-            const response = await fetch('/api/firebase-config', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            if (!response.ok) {
-                throw new Error(`API returned ${response.status}: ${response.statusText}`);
-            }
-            
-            const config = await response.json();
-            
-            if (config.error) {
-                throw new Error(`Config error: ${config.error}`);
-            }
-            
-            // Validate all required fields
-            const requiredFields = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
-            const missingFields = requiredFields.filter(field => !config[field]);
-            
-            if (missingFields.length > 0) {
-                throw new Error(`Missing config fields: ${missingFields.join(', ')}`);
-            }
-            
-            console.log('✅ Firebase config loaded securely from Vercel');
-            return config;
-            
-        } catch (error) {
-            console.error('❌ CRITICAL: Failed to load Firebase config from API:', error.message);
-            
-            // Show user-friendly error
-            this.showConfigError(error.message);
-            
-            throw new Error('Firebase configuration unavailable. Please check your connection and refresh the page.');
-        }
-    }
-
-    showConfigError(message) {
-        // Create error notification
-        const errorDiv = document.createElement('div');
-        errorDiv.style.cssText = `
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ff4444;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 10001;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 500px;
-            text-align: center;
-        `;
         
-        errorDiv.innerHTML = `
-            <div style="font-size: 24px; margin-bottom: 10px;">⚠️</div>
-            <div style="font-weight: bold; margin-bottom: 5px;">Firebase Configuration Error</div>
-            <div style="font-size: 14px; opacity: 0.9;">Unable to load secure configuration from server.</div>
-            <div style="font-size: 12px; margin-top: 10px; opacity: 0.8;">Please check your internet connection and refresh the page.</div>
-        `;
-        
-        document.body.appendChild(errorDiv);
-        
-        // Auto-remove after 10 seconds
-        setTimeout(() => errorDiv.remove(), 10000);
+        this.config = {
+            apiKey: "AIzaSyCBorDocx60fpPb-0mYTlUQ1Ehkj-QISaY",
+            authDomain: "arm-helper-test.firebaseapp.com",
+            projectId: "arm-helper-test",
+            storageBucket: "arm-helper-test.firebasestorage.app",
+            messagingSenderId: "585262647515",
+            appId: "1:585262647515:web:0c468ed8d79a6dc3eae4fe",
+            measurementId: "G-EL5GR5CVVK"
+        };
     }
 
     async initialize() {
@@ -93,19 +28,10 @@ class FirebaseManager {
                 throw new Error('Firebase SDK not loaded');
             }
 
-            // Load secure config from API (NO FALLBACK)
-            this.config = await this.loadConfig();
-            
-            if (!this.config) {
-                throw new Error('Failed to load Firebase config');
-            }
-
-            // Initialize Firebase with secure config
             this.app = firebase.initializeApp(this.config);
             this.auth = firebase.auth();
             this.db = firebase.firestore();
 
-            // Enable persistence
             try {
                 await this.db.enablePersistence({ synchronizeTabs: true });
                 console.log('✅ Firestore persistence enabled');
@@ -117,12 +43,11 @@ class FirebaseManager {
 
             this.setupAuthListener();
             this.isInitialized = true;
-            console.log('✅ Firebase initialized securely');
+            console.log('✅ Firebase initialized');
 
             return true;
         } catch (error) {
-            console.error('❌ Firebase init failed:', error.message);
-            this.isInitialized = false;
+            console.error('❌ Firebase init failed:', error);
             return false;
         }
     }
@@ -337,7 +262,7 @@ class FirebaseManager {
         }
     }
 
-    // ========== PROFILE MANAGEMENT ==========
+    // ========== PROFILE MANAGEMENT (БЕЗ ДУБЛЮВАННЯ) ==========
 
     async updateUsername(newUsername, currentPassword = null) {
         if (!this.currentUser) {
@@ -345,22 +270,27 @@ class FirebaseManager {
         }
 
         try {
+            // Перевірка чи username вільний
             const usernameExists = await this.checkUsernameExists(newUsername);
             if (usernameExists) {
                 return { success: false, error: 'Username already taken' };
             }
             
+            // Для username акаунтів - реаутентифікація і зміна email
             if (this.currentUser.provider === 'username' && currentPassword) {
                 const oldEmail = this.auth.currentUser.email;
                 const newEmail = `${newUsername.toLowerCase()}@armhelper.local`;
                 
+                // Реаутентифікація зі старим паролем
                 const credential = firebase.auth.EmailAuthProvider.credential(oldEmail, currentPassword);
                 await this.auth.currentUser.reauthenticateWithCredential(credential);
                 
+                // Оновлення email (БЕЗ створення нового акаунту)
                 await this.auth.currentUser.updateEmail(newEmail);
                 console.log('✅ Email updated');
             }
             
+            // Для Google акаунтів з паролем - реаутентифікація
             if (this.currentUser.provider === 'google' && this.currentUser.hasPassword && currentPassword) {
                 const credential = firebase.auth.EmailAuthProvider.credential(
                     this.currentUser.email,
@@ -369,9 +299,13 @@ class FirebaseManager {
                 await this.auth.currentUser.reauthenticateWithCredential(credential);
             }
             
+            // Оновлення displayName в Auth
             await this.auth.currentUser.updateProfile({ displayName: newUsername });
+            
+            // Оновлення username в Firestore
             await this.updateUserProfile({ username: newUsername });
             
+            // Оновлення локальних даних
             this.currentUser.displayName = newUsername;
             this.currentUser.username = newUsername;
             if (this.currentUser.provider === 'username') {
@@ -381,7 +315,7 @@ class FirebaseManager {
             this.updateAuthUI(true);
             this.notifyListeners('authChanged', this.currentUser);
             
-            console.log('✅ Username updated');
+            console.log('✅ Username updated (same account)');
             return { success: true };
         } catch (error) {
             console.error('❌ Update username error:', error.code);
@@ -423,6 +357,7 @@ class FirebaseManager {
         try {
             const userId = this.currentUser.uid;
             
+            // Реаутентифікація
             if (this.currentUser.hasPassword) {
                 const credential = firebase.auth.EmailAuthProvider.credential(
                     this.auth.currentUser.email,
@@ -434,8 +369,10 @@ class FirebaseManager {
                 await this.auth.currentUser.reauthenticateWithPopup(provider);
             }
             
+            // Видалення з Auth
             await this.auth.currentUser.delete();
             
+            // Видалення з Firestore
             try {
                 await this.db.collection('users').doc(userId).delete();
             } catch (err) {
@@ -478,6 +415,7 @@ class FirebaseManager {
         try {
             const trimmed = username.trim();
             
+            // Перевірка чи вже прив'язаний до іншого користувача
             const existingLink = await this.db.collection('users')
                 .where(`socialAccounts.${platform}`, '==', trimmed)
                 .limit(1)
@@ -487,6 +425,7 @@ class FirebaseManager {
                 return { success: false, error: 'This account is already linked to another user' };
             }
             
+            // Оновлення
             const updateData = {};
             updateData[`socialAccounts.${platform}`] = trimmed;
             updateData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
@@ -660,7 +599,6 @@ class FirebaseManager {
         return {
             isInitialized: this.isInitialized,
             isAuthenticated: this.isAuthenticated(),
-            configSource: this.config ? '🔒 Secure API' : '❌ Not loaded',
             currentUser: this.currentUser ? {
                 uid: this.currentUser.uid,
                 username: this.currentUser.username,
@@ -685,9 +623,9 @@ async function initializeFirebase() {
     const success = await firebaseManager.initialize();
     
     if (success) {
-        console.log('✅ Firebase ready (100% Secure - No Fallback)');
+        console.log('✅ Firebase ready');
     } else {
-        console.error('❌ Firebase init failed - Config not available');
+        console.error('❌ Firebase init failed');
     }
     
     return firebaseManager;
@@ -709,4 +647,4 @@ Object.assign(window, {
     debugFirebase
 });
 
-console.log('✅ Firebase module loaded (🔒 100% Secure - No Hardcoded Config)');
+console.log('✅ Firebase module loaded (Optimized - No Duplicates)');
