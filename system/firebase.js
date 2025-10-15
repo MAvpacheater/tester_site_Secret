@@ -1,4 +1,4 @@
-// ========== FIREBASE MANAGER (ОПТИМІЗОВАНИЙ) ==========
+// ========== FIREBASE MANAGER (SECURE WITH VERCEL ENV) ==========
 
 class FirebaseManager {
     constructor() {
@@ -8,16 +8,42 @@ class FirebaseManager {
         this.currentUser = null;
         this.isInitialized = false;
         this.listeners = new Map();
-        
-        this.config = {
-            apiKey: "AIzaSyCBorDocx60fpPb-0mYTlUQ1Ehkj-QISaY",
-            authDomain: "arm-helper-test.firebaseapp.com",
-            projectId: "arm-helper-test",
-            storageBucket: "arm-helper-test.firebasestorage.app",
-            messagingSenderId: "585262647515",
-            appId: "1:585262647515:web:0c468ed8d79a6dc3eae4fe",
-            measurementId: "G-EL5GR5CVVK"
-        };
+        this.config = null; // Буде завантажено з API
+    }
+
+    async loadConfig() {
+        try {
+            // Спробувати завантажити з Vercel API
+            console.log('🔧 Loading Firebase config from API...');
+            const response = await fetch('/api/firebase-config');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            
+            const config = await response.json();
+            
+            if (config.error) {
+                throw new Error(config.error);
+            }
+            
+            console.log('✅ Firebase config loaded from Vercel');
+            return config;
+            
+        } catch (error) {
+            console.warn('⚠️ Failed to load from API, using fallback:', error.message);
+            
+            // Fallback конфігурація (для локальної розробки)
+            return {
+                apiKey: "AIzaSyCBorDocx60fpPb-0mYTlUQ1Ehkj-QISaY",
+                authDomain: "arm-helper-test.firebaseapp.com",
+                projectId: "arm-helper-test",
+                storageBucket: "arm-helper-test.firebasestorage.app",
+                messagingSenderId: "585262647515",
+                appId: "1:585262647515:web:0c468ed8d79a6dc3eae4fe",
+                measurementId: "G-EL5GR5CVVK"
+            };
+        }
     }
 
     async initialize() {
@@ -26,6 +52,13 @@ class FirebaseManager {
         try {
             if (typeof firebase === 'undefined') {
                 throw new Error('Firebase SDK not loaded');
+            }
+
+            // Завантажити конфігурацію
+            this.config = await this.loadConfig();
+            
+            if (!this.config) {
+                throw new Error('Failed to load Firebase config');
             }
 
             this.app = firebase.initializeApp(this.config);
@@ -262,7 +295,7 @@ class FirebaseManager {
         }
     }
 
-    // ========== PROFILE MANAGEMENT (БЕЗ ДУБЛЮВАННЯ) ==========
+    // ========== PROFILE MANAGEMENT ==========
 
     async updateUsername(newUsername, currentPassword = null) {
         if (!this.currentUser) {
@@ -270,27 +303,22 @@ class FirebaseManager {
         }
 
         try {
-            // Перевірка чи username вільний
             const usernameExists = await this.checkUsernameExists(newUsername);
             if (usernameExists) {
                 return { success: false, error: 'Username already taken' };
             }
             
-            // Для username акаунтів - реаутентифікація і зміна email
             if (this.currentUser.provider === 'username' && currentPassword) {
                 const oldEmail = this.auth.currentUser.email;
                 const newEmail = `${newUsername.toLowerCase()}@armhelper.local`;
                 
-                // Реаутентифікація зі старим паролем
                 const credential = firebase.auth.EmailAuthProvider.credential(oldEmail, currentPassword);
                 await this.auth.currentUser.reauthenticateWithCredential(credential);
                 
-                // Оновлення email (БЕЗ створення нового акаунту)
                 await this.auth.currentUser.updateEmail(newEmail);
                 console.log('✅ Email updated');
             }
             
-            // Для Google акаунтів з паролем - реаутентифікація
             if (this.currentUser.provider === 'google' && this.currentUser.hasPassword && currentPassword) {
                 const credential = firebase.auth.EmailAuthProvider.credential(
                     this.currentUser.email,
@@ -299,13 +327,9 @@ class FirebaseManager {
                 await this.auth.currentUser.reauthenticateWithCredential(credential);
             }
             
-            // Оновлення displayName в Auth
             await this.auth.currentUser.updateProfile({ displayName: newUsername });
-            
-            // Оновлення username в Firestore
             await this.updateUserProfile({ username: newUsername });
             
-            // Оновлення локальних даних
             this.currentUser.displayName = newUsername;
             this.currentUser.username = newUsername;
             if (this.currentUser.provider === 'username') {
@@ -315,7 +339,7 @@ class FirebaseManager {
             this.updateAuthUI(true);
             this.notifyListeners('authChanged', this.currentUser);
             
-            console.log('✅ Username updated (same account)');
+            console.log('✅ Username updated');
             return { success: true };
         } catch (error) {
             console.error('❌ Update username error:', error.code);
@@ -357,7 +381,6 @@ class FirebaseManager {
         try {
             const userId = this.currentUser.uid;
             
-            // Реаутентифікація
             if (this.currentUser.hasPassword) {
                 const credential = firebase.auth.EmailAuthProvider.credential(
                     this.auth.currentUser.email,
@@ -369,10 +392,8 @@ class FirebaseManager {
                 await this.auth.currentUser.reauthenticateWithPopup(provider);
             }
             
-            // Видалення з Auth
             await this.auth.currentUser.delete();
             
-            // Видалення з Firestore
             try {
                 await this.db.collection('users').doc(userId).delete();
             } catch (err) {
@@ -415,7 +436,6 @@ class FirebaseManager {
         try {
             const trimmed = username.trim();
             
-            // Перевірка чи вже прив'язаний до іншого користувача
             const existingLink = await this.db.collection('users')
                 .where(`socialAccounts.${platform}`, '==', trimmed)
                 .limit(1)
@@ -425,7 +445,6 @@ class FirebaseManager {
                 return { success: false, error: 'This account is already linked to another user' };
             }
             
-            // Оновлення
             const updateData = {};
             updateData[`socialAccounts.${platform}`] = trimmed;
             updateData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
@@ -599,6 +618,7 @@ class FirebaseManager {
         return {
             isInitialized: this.isInitialized,
             isAuthenticated: this.isAuthenticated(),
+            configSource: this.config ? 'Loaded' : 'Not loaded',
             currentUser: this.currentUser ? {
                 uid: this.currentUser.uid,
                 username: this.currentUser.username,
@@ -623,7 +643,7 @@ async function initializeFirebase() {
     const success = await firebaseManager.initialize();
     
     if (success) {
-        console.log('✅ Firebase ready');
+        console.log('✅ Firebase ready (Secure config)');
     } else {
         console.error('❌ Firebase init failed');
     }
@@ -647,4 +667,4 @@ Object.assign(window, {
     debugFirebase
 });
 
-console.log('✅ Firebase module loaded (Optimized - No Duplicates)');
+console.log('✅ Firebase module loaded (Secure with Vercel ENV)');
