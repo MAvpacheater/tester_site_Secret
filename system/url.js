@@ -1,4 +1,4 @@
-// ========== URL ROUTER CLASS (FIXED - Auth Check Before Modal) ==========
+// ========== URL ROUTER CLASS (NO AUTH) ==========
 class URLRouter {
     constructor() {
         this.baseURL = this.getBaseURL();
@@ -46,8 +46,7 @@ class URLRouter {
         };
 
         const systemRoutes = {
-            settings: 'settings',
-            profile: 'profile'
+            settings: 'settings'
         };
 
         this.routes.clear();
@@ -110,8 +109,9 @@ class URLRouter {
             ].forEach(v => this.routes.set(v, page));
         });
 
-        ['/', '', '/tester_site_Secret/', '/tester_site_Secret'].forEach(v => this.routes.set(v, 'profile'));
-        this.pageToPath.set('profile', 'profile');
+        // Головна сторінка - за замовчуванням calculator
+        ['/', '', '/tester_site_Secret/', '/tester_site_Secret'].forEach(v => this.routes.set(v, 'calculator'));
+        this.pageToPath.set('calculator', 'AWS/pets_calc');
     }
 
     setupListeners() {
@@ -133,11 +133,6 @@ class URLRouter {
                         switchPage(page);
                     }
                     this.openCategoryForCurrentPage(page);
-                    
-                    // Якщо це профіль - перевіряємо авторизацію
-                    if (page === 'profile') {
-                        this.waitForFirebaseAndCheckAuth();
-                    }
                 }, 100);
                 this.isInitialized = true;
                 return;
@@ -156,31 +151,21 @@ class URLRouter {
         });
 
         if (isDirectLink) {
-            // Пряме посилання на конкретну сторінку
             console.log('📍 Direct link → opening page:', targetPage);
             
             if (typeof switchPage === 'function') {
                 setTimeout(() => {
                     switchPage(targetPage);
                     this.openCategoryForCurrentPage(targetPage);
-                    
-                    // ТІЛЬКИ якщо це профіль - перевіряємо авторизацію
-                    if (targetPage === 'profile') {
-                        console.log('👤 Direct profile link → checking auth');
-                        this.waitForFirebaseAndCheckAuth();
-                    }
                 }, 200);
             }
         } else {
-            // Головна сторінка - завжди відкриваємо профіль і перевіряємо авторизацію
-            console.log('🏠 Root page → opening profile and checking auth');
+            console.log('🏠 Root page → opening calculator');
             
             if (typeof switchPage === 'function') {
                 setTimeout(() => {
-                    switchPage('profile');
-                    this.openCategoryForCurrentPage('profile');
-                    // ЗАВЖДИ перевіряємо авторизацію на головній сторінці
-                    this.waitForFirebaseAndCheckAuth();
+                    switchPage('calculator');
+                    this.openCategoryForCurrentPage('calculator');
                 }, 200);
             }
         }
@@ -202,55 +187,6 @@ class URLRouter {
                 console.warn('⚠️ openCategoryForPage function not available');
             }
         }, 150);
-    }
-
-    // FIXED: Чекаємо Firebase і перевіряємо авторизацію
-    waitForFirebaseAndCheckAuth() {
-        let attempts = 0;
-        const maxAttempts = 100; // Збільшено до 10 секунд
-        
-        const checkAuth = () => {
-            attempts++;
-            
-            // Перевіряємо чи Firebase готовий
-            if (window.firebaseManager && window.firebaseManager.isInitialized) {
-                console.log('✅ Firebase ready, checking auth status');
-                
-                const isLoggedIn = this.checkUserLoggedIn();
-                
-                if (!isLoggedIn) {
-                    console.log('🔐 User not logged in, showing auth modal after delay');
-                    // Додаємо затримку щоб UI встиг завантажитись
-                    setTimeout(() => {
-                        // Перевіряємо ще раз перед показом модалки
-                        const stillNotLoggedIn = this.checkUserLoggedIn();
-                        if (!stillNotLoggedIn) {
-                            console.log('✅ User logged in during delay, skipping modal');
-                            return;
-                        }
-                        
-                        console.log('🔐 Opening auth modal');
-                        this.setQueryParams({ auth: 'signin' }, true);
-                        this.applyStateFromURL();
-                    }, 500); // Затримка 500мс після ініціалізації Firebase
-                } else {
-                    console.log('✅ User already logged in, skipping auth modal');
-                }
-                return;
-            }
-            
-            // Якщо таймаут - НЕ показуємо логін (краще нічого не показувати)
-            if (attempts >= maxAttempts) {
-                console.warn('⚠️ Firebase timeout, skipping auth check completely');
-                return;
-            }
-            
-            // Повторюємо перевірку
-            setTimeout(checkAuth, 100);
-        };
-        
-        // Запускаємо перевірку
-        checkAuth();
     }
 
     parsePathToPage(path) {
@@ -289,10 +225,10 @@ class URLRouter {
         }
         
         if (!relative || pathname === '/' || pathname === '/tester_site_Secret' || pathname === '/tester_site_Secret/') {
-            return 'profile';
+            return 'calculator';
         }
         
-        return 'profile';
+        return 'calculator';
     }
 
     updateURL(page, pushState = true) {
@@ -346,17 +282,11 @@ class URLRouter {
         }
     }
 
-    // FIXED: Застосування стану з URL
     applyStateFromURL() {
         const pathname = window.location.pathname;
-        const isDirectPageLink = this.isDirectPageLink(pathname);
-        const targetPage = this.getPageFromURL();
         
         console.log('🔗 Apply state from URL:', {
             pathname,
-            isDirectPageLink,
-            targetPage,
-            hasAuth: !!this.getQueryParam('auth'),
             hasMenu: pathname.includes('/menu')
         });
 
@@ -374,57 +304,6 @@ class URLRouter {
         if (menu === 'open' && typeof window.toggleMobileMenu === 'function') {
             const sidebar = document.getElementById('sidebar');
             if (sidebar && !sidebar.classList.contains('open')) window.toggleMobileMenu();
-        }
-
-        // FIXED: Обробка auth параметра
-        const auth = this.getQueryParam('auth');
-        if (auth === 'signin') {
-            // CRITICAL: Перевіряємо чи це НЕ профіль
-            if (targetPage !== 'profile') {
-                console.log('⏭️ Not a profile page, removing auth param');
-                this.setQueryParams({ auth: null }, true);
-                return;
-            }
-
-            // CRITICAL: Перевіряємо чи Firebase готовий
-            if (!window.firebaseManager || !window.firebaseManager.isInitialized) {
-                console.log('⏳ Firebase not ready yet, skipping auth modal');
-                this.setQueryParams({ auth: null }, true);
-                return;
-            }
-
-            // CRITICAL: Перевіряємо чи користувач вже увійшов
-            const isUserLoggedIn = this.checkUserLoggedIn();
-            if (isUserLoggedIn) {
-                console.log('✅ User already logged in, removing auth param');
-                this.setQueryParams({ auth: null }, true);
-                return;
-            }
-
-            // Якщо дійшли сюди - це профіль і користувач НЕ увійшов
-            console.log('🔐 Profile page + not logged in → opening auth modal');
-            const tryOpen = (attempt = 0) => {
-                if (window.authUI && typeof window.authUI.openModal === 'function') {
-                    // Остання перевірка перед відкриттям
-                    const stillNotLoggedIn = this.checkUserLoggedIn();
-                    if (!stillNotLoggedIn) {
-                        console.log('✅ User logged in before modal opened');
-                        this.setQueryParams({ auth: null }, true);
-                        return;
-                    }
-                    
-                    console.log('📱 Opening auth modal');
-                    window.authUI.openModal('signin');
-                    this.setQueryParams({ auth: null }, true);
-                    return;
-                }
-                if (attempt < 30) setTimeout(() => tryOpen(attempt + 1), 100);
-                else {
-                    console.warn('⚠️ Auth UI not available, removing param');
-                    this.setQueryParams({ auth: null }, true);
-                }
-            };
-            tryOpen();
         }
     }
 
@@ -445,39 +324,13 @@ class URLRouter {
         const page = this.getPageFromURL();
         
         // Якщо визначили конкретну сторінку
-        if (page) {
+        if (page && page !== 'calculator') {
             console.log('📍 Direct page link detected:', page);
             return true;
         }
 
         console.log('🏠 No direct link');
         return false;
-    }
-
-    // FIXED: Перевірка чи користувач увійшов
-    checkUserLoggedIn() {
-        // Перевіряємо чи Firebase ініціалізований
-        if (!window.firebaseManager || !window.firebaseManager.isInitialized) {
-            console.log('⏳ Firebase not ready for auth check');
-            return false;
-        }
-
-        try {
-            // Перевіряємо чи є поточний користувач
-            const currentUser = window.firebaseManager.getCurrentUser();
-            const isLoggedIn = !!currentUser;
-            
-            if (isLoggedIn) {
-                console.log('👤 User logged in:', currentUser.displayName || currentUser.email);
-            } else {
-                console.log('👤 User not logged in');
-            }
-            
-            return isLoggedIn;
-        } catch (error) {
-            console.error('❌ Error checking auth:', error);
-            return false;
-        }
     }
 
     handleBrowserNavigation(page) {
@@ -496,7 +349,6 @@ class URLRouter {
         console.log('Base:', this.baseURL);
         console.log('Page:', this.getPageFromURL());
         console.log('Is Direct Link:', this.isDirectPageLink(window.location.pathname));
-        console.log('User Logged In:', this.checkUserLoggedIn());
         console.log('PageToPath map:', this.pageToPath);
         console.log('===================');
     }
@@ -546,4 +398,4 @@ Object.assign(window, {
     initURLRouting
 });
 
-console.log('✅ URL.js loaded (FIXED - Auth Check Before Modal)');
+console.log('✅ URL.js loaded (NO AUTH)');
