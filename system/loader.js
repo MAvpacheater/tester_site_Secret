@@ -26,13 +26,9 @@ async function loadSystemScripts() {
     updateLoadingText('Loading system modules...');
     
     try {
-        // STEP 1: System scripts (Auth + Profile + Settings)
+        // STEP 1: System scripts (Settings only, no Auth/Profile)
         console.log('📦 Step 1: System scripts...');
         const systemScripts = [
-            'system/profile/auth.js',
-            'system/profile/profile_info.js',
-            'system/profile/profile_edit.js',
-            'system/profile/profile.js',
             'system/moderation/settings.js'
         ];
         
@@ -46,7 +42,7 @@ async function loadSystemScripts() {
         await createScript('AWS/system/aws_loader.js');
         console.log('✅ AWS system loaded');
         
-        // STEP 3: RCU system (NEW!)
+        // STEP 3: RCU system
         console.log('📦 Step 3: RCU system...');
         await createScript('RCU/system/RCU_loader.js');
         console.log('✅ RCU system loaded');
@@ -76,51 +72,40 @@ async function initializeSystems() {
     try {
         console.log('🚀 ========== INITIALIZING ==========');
         
-        // STEP 1: Firebase (CRITICAL)
-        updateLoadingText('Connecting to Firebase...');
-        const firebaseReady = await initializeFirebaseSystem();
-        console.log('🔥 Firebase ready:', firebaseReady);
-        
-        // STEP 2: Auth UI
-        if (firebaseReady) {
-            updateLoadingText('Setting up authentication...');
-            await initializeAuthSystem();
-        }
-        
-        // STEP 3: AWS Router
+        // STEP 1: AWS Router
         updateLoadingText('Initializing AWS router...');
         console.log('📦 AWS Router:', window.awsRouter ? '✅' : '⚠️ Not found');
         
-        // STEP 4: RCU Loader (NEW!)
+        // STEP 2: RCU Loader
         updateLoadingText('Initializing RCU loader...');
         console.log('🎮 RCU Loader:', window.rcuLoader ? '✅' : '⚠️ Not found');
         
-        // STEP 5: System Content Loader
+        // STEP 3: System Content Loader
         updateLoadingText('Initializing System modules...');
         console.log('🔧 System Content Loader:', window.systemContentLoader ? '✅' : '⚠️ Not found');
         
-        // STEP 6: AWS Modules (critical CSS only)
+        // STEP 4: AWS Modules (critical CSS only)
         updateLoadingText('Loading AWS modules...');
         if (typeof loadAllAWSModules === 'function') {
             await loadAllAWSModules();
             console.log('✅ Critical AWS modules loaded');
         }
         
-        // STEP 7: RCU Modules (critical CSS only) (NEW!)
+        // STEP 5: RCU Modules (critical CSS only)
         updateLoadingText('Loading RCU modules...');
         if (typeof loadAllRCUModules === 'function') {
             await loadAllRCUModules();
             console.log('✅ Critical RCU modules loaded');
         }
         
-        // STEP 8: URL Routing
+        // STEP 6: URL Routing
         updateLoadingText('Setting up routing...');
         if (typeof initURLRouting === 'function') {
             initURLRouting();
             console.log('✅ URL routing initialized');
         }
         
-        // STEP 9: Auto-Reload
+        // STEP 7: Auto-Reload
         updateLoadingText('Setting up auto-reload...');
         if (typeof initGitHubAutoReload === 'function') {
             initGitHubAutoReload({
@@ -132,7 +117,7 @@ async function initializeSystems() {
             console.log('✅ Auto-reload initialized');
         }
         
-        // STEP 10: Final setup
+        // STEP 8: Final setup
         updateLoadingText('Finalizing...');
         await new Promise(resolve => setTimeout(resolve, 300));
         
@@ -151,88 +136,6 @@ async function initializeSystems() {
         setTimeout(() => {
             hideLoadingScreen();
         }, 2000);
-    }
-}
-
-async function initializeFirebaseSystem() {
-    if (typeof firebase === 'undefined') {
-        console.error('❌ Firebase SDK not loaded');
-        updateLoadingText('⚠️ Firebase unavailable');
-        return false;
-    }
-
-    console.log('✅ Firebase SDK available');
-    
-    if (typeof initializeFirebase !== 'function') {
-        console.warn('⚠️ initializeFirebase not found');
-        return false;
-    }
-
-    try {
-        console.log('🔥 Initializing Firebase...');
-        const firebaseManager = await initializeFirebase();
-        
-        if (!firebaseManager) {
-            console.warn('⚠️ Firebase manager not created');
-            return false;
-        }
-        
-        let attempts = 0;
-        const maxAttempts = 50;
-        
-        while (!firebaseManager.isInitialized && attempts < maxAttempts) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-            attempts++;
-        }
-        
-        if (firebaseManager.isInitialized) {
-            console.log('✅ Firebase fully initialized');
-            
-            const currentUser = firebaseManager.getCurrentUser();
-            console.log('👤 Current user:', currentUser ? currentUser.displayName : 'Not logged in');
-            
-            return true;
-        }
-        
-        console.warn('⚠️ Firebase initialization timeout');
-        return false;
-        
-    } catch (error) {
-        console.error('❌ Firebase error:', error);
-        return false;
-    }
-}
-
-async function initializeAuthSystem() {
-    if (!window.firebaseManager) {
-        console.warn('⚠️ Firebase manager not available');
-        return;
-    }
-    
-    if (typeof initializeAuthUI !== 'function') {
-        console.warn('⚠️ initializeAuthUI not found');
-        return;
-    }
-
-    try {
-        console.log('🔐 Initializing Auth UI...');
-        initializeAuthUI();
-        
-        let attempts = 0;
-        const maxAttempts = 30;
-        
-        while (!window.authUI && attempts < maxAttempts) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-            attempts++;
-        }
-        
-        if (window.authUI) {
-            console.log('✅ Auth UI ready');
-        } else {
-            console.warn('⚠️ Auth UI timeout');
-        }
-    } catch (error) {
-        console.error('❌ Auth UI error:', error);
     }
 }
 
@@ -294,10 +197,6 @@ function initDebugUtilities() {
             console.log('=== SYSTEM DEBUG ===');
             console.log('URL:', window.location.href);
             console.log('Path:', window.location.pathname);
-            console.log('\n=== FIREBASE ===');
-            console.log('Manager:', window.firebaseManager ? '✅' : '❌');
-            console.log('Initialized:', window.firebaseManager?.isInitialized);
-            console.log('Current User:', window.firebaseManager?.getCurrentUser()?.displayName || 'Not logged in');
             console.log('\n=== FUNCTIONS ===');
             ['initializeApp', 'switchPage', 'getCurrentAppLanguage', 'initURLRouting', 'loadAllAWSModules', 'loadAllRCUModules'].forEach(fn => {
                 console.log(`${typeof window[fn] === 'function' ? '✅' : '❌'} ${fn}`);
@@ -355,14 +254,6 @@ function initDebugUtilities() {
         quickReload: () => {
             console.log('🔄 Reloading');
             window.location.reload();
-        },
-        
-        checkAuth: () => {
-            console.log('=== AUTH STATUS ===');
-            console.log('Firebase:', window.firebaseManager?.isInitialized ? '✅' : '❌');
-            console.log('Auth UI:', window.authUI ? '✅' : '❌');
-            const user = window.firebaseManager?.getCurrentUser();
-            console.log('User:', user ? `✅ ${user.displayName}` : '❌ Not logged in');
         }
     });
     
@@ -370,5 +261,5 @@ function initDebugUtilities() {
     console.log('✅ Debug utilities ready');
 }
 
-console.log('✅ System Loader ready (AWS + RCU + System Separate)');
+console.log('✅ System Loader ready (AWS + RCU + System - NO AUTH)');
 console.log('📖 Debug: window.debugSystem() | window.checkModules()');
