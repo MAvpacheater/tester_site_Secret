@@ -67,8 +67,7 @@
                 icon: '⚙️',
                 pages: [
                     { page: 'help', icon: '🆘' },
-                    { page: 'peoples', icon: '🙏' },
-                    { page: 'profile', icon: '👤' }
+                    { page: 'peoples', icon: '🙏' }
                 ]
             }
         },
