@@ -20,7 +20,7 @@
 
     // Page management
     const saveCurrentPage = page => localStorage.setItem('armHelper_currentPage', page);
-    const getCurrentPage = () => localStorage.getItem('armHelper_currentPage') || 'profile';
+    const getCurrentPage = () => localStorage.getItem('armHelper_currentPage') || 'calculator';
 
     // Language management
     const getCurrentAppLanguage = () => {
@@ -76,10 +76,8 @@
                         settings: "⚙️ Settings",
                         help: "🆘 Help",
                         peoples: "🙏 Peoples",
-                        trader: "🛒 Trader",
-                        profile: "👤 Profile"
-                    },
-                    auth: { login: "🔐 Login" }
+                        trader: "🛒 Trader"
+                    }
                 }
             };
             return menuTranslations;
@@ -164,8 +162,7 @@
             'helpPage': 'help',
             'peoplesPage': 'peoples',
             'traderPage': 'trader',
-            'clansPage': 'clans',
-            'profilePage': 'profile'
+            'clansPage': 'clans'
         };
         
         Object.entries(pageTitleMappings).forEach(([pageId, key]) => {
@@ -245,7 +242,6 @@
         });
         
         if (typeof updateSettingsLanguage === 'function') updateSettingsLanguage(lang);
-        if (typeof updateProfileLanguage === 'function') updateProfileLanguage(lang);
         
         console.log('✅ ========== switchAppLanguage END ==========');
     };
@@ -253,13 +249,13 @@
     // Menu position
     const getCurrentMenuPosition = () => localStorage.getItem('armHelper_menuPosition') || 'left';
 
-    // Page switching - UPDATED
+    // Page switching
     const switchPage = page => {
         console.log('📄 Switching to page:', page);
         
         saveCurrentPage(page);
         
-        const systemPages = ['settings', 'profile', 'help', 'peoples'];
+        const systemPages = ['settings', 'help', 'peoples'];
         const rcuPages = ['petscalc'];
         
         document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
@@ -315,13 +311,11 @@
     const initializeSystemPage = page => {
         console.log(`🔧 Initializing system page: ${page}`);
         
-        // Load system module dynamically
         if (window.systemContentLoader) {
             window.systemContentLoader.loadModule(page).then(loaded => {
                 if (loaded) {
                     const initFunctions = {
                         settings: 'initializeSettings',
-                        profile: 'initializeProfile',
                         help: 'initializeHelp',
                         peoples: 'initializePeoples'
                     };
@@ -330,7 +324,6 @@
                     if (initFunc && typeof window[initFunc] === 'function') {
                         console.log(`📦 Calling ${initFunc}`);
                         
-                        // Delay for modules that need DOM ready
                         const needsDelay = ['help', 'peoples'];
                         if (needsDelay.includes(page)) {
                             setTimeout(() => window[initFunc](), 100);
@@ -341,10 +334,8 @@
                 }
             });
         } else {
-            // Fallback to direct initialization
             const initFunctions = {
                 settings: 'initializeSettings',
-                profile: 'initializeProfile',
                 help: 'initializeHelp',
                 peoples: 'initializePeoples'
             };
@@ -367,7 +358,6 @@
         const initFunc = initFunctions[page];
         if (initFunc && typeof window[initFunc] === 'function') {
             console.log(`📦 Calling ${initFunc}`);
-            
             setTimeout(() => window[initFunc](), 100);
         }
     };
@@ -403,7 +393,7 @@
         updatePageTitles();
         
         // Initialize system modules (critical ones)
-        ['Settings', 'Profile'].forEach(name => {
+        ['Settings'].forEach(name => {
             const funcName = `initialize${name}`;
             if (typeof window[funcName] === 'function') {
                 console.log(`🔧 Init system module: ${name}`);
@@ -590,6 +580,6 @@
         });
     })();
 
-    console.log('✅ General.js loaded (System Pages Integration + RCU)');
+    console.log('✅ General.js loaded (NO AUTH - System Pages Integration + RCU)');
     console.log('📍 Initial localStorage language:', localStorage.getItem('armHelper_language'));
 })();
