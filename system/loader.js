@@ -27,13 +27,15 @@ async function loadSystemScripts() {
     
     try {
         // STEP 1: System scripts (Settings only, no Auth/Profile)
-        console.log('📦 Step 1: System scripts...');
+        console.log('📦 Step 1: System scripts (NO AUTH)...');
         const systemScripts = [
-            'system/moderation/settings.js'
+            'system/moderation/settings.js',
+            'system/moderation/help.js',
+            'system/moderation/peoples.js'
         ];
         
         await Promise.all(systemScripts.map(createScript));
-        console.log('✅ System scripts loaded');
+        console.log('✅ System scripts loaded (NO AUTH)');
         
         // STEP 2: AWS system
         console.log('📦 Step 2: AWS system...');
