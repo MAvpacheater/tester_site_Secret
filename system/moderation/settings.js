@@ -66,15 +66,33 @@
         pageCategories: {
             aws: { 
                 icon: '📦',
-                pages: ['calculator', 'table', 'graph']
+                subcategories: {
+                    calculator: {
+                        icon: '🧮',
+                        pages: ['calculator', 'arm', 'grind', 'roulette', 'boss']
+                    },
+                    info: {
+                        icon: '📋',
+                        pages: ['boosts', 'shiny', 'secret', 'codes', 'aura', 'trainer', 'charms', 'potions', 'worlds']
+                    },
+                    others: {
+                        icon: '🔧',
+                        pages: ['trader', 'clans']
+                    }
+                }
             },
             rcu: { 
                 icon: '🎮',
-                pages: ['rcu_calculator', 'rcu_table', 'rcu_graph']
+                subcategories: {
+                    rcuCalc: {
+                        icon: '🧮',
+                        pages: ['petscalc']
+                    }
+                }
             },
             system: { 
                 icon: '⚙️',
-                pages: ['settings']
+                pages: ['settings', 'help', 'peoples']
             }
         }
     };
@@ -251,11 +269,51 @@
             
             categoryDiv.appendChild(btn);
             
-            // Створюємо dropdown зі сторінками
-            const dropdown = this.createPagesDropdown(category.pages);
+            // Створюємо dropdown
+            let dropdown;
+            if (category.subcategories) {
+                // Для AWS та RCU - з підкатегоріями
+                dropdown = this.createSubcategoriesDropdown(category.subcategories);
+            } else {
+                // Для System - прямі сторінки
+                dropdown = this.createPagesDropdown(category.pages);
+            }
             categoryDiv.appendChild(dropdown);
             
             container.appendChild(categoryDiv);
+        }
+
+        createSubcategoriesDropdown(subcategories) {
+            const dropdown = document.createElement('div');
+            dropdown.className = 'category-dropdown';
+            
+            Object.entries(subcategories).forEach(([subKey, subData]) => {
+                // Заголовок підкатегорії
+                const subHeader = document.createElement('div');
+                subHeader.className = 'dropdown-subcategory-header';
+                subHeader.innerHTML = `<span>${subData.icon}</span><span class="subcategory-name">${subKey}</span>`;
+                dropdown.appendChild(subHeader);
+                
+                // Сторінки підкатегорії
+                subData.pages.forEach(page => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'dropdown-item';
+                    itemDiv.dataset.page = page;
+                    
+                    const pageInfo = this.getPageInfo(page);
+                    itemDiv.innerHTML = `
+                        <span class="dropdown-item-icon">${pageInfo.icon}</span>
+                        <span class="dropdown-item-name">${pageInfo.name}</span>
+                    `;
+                    itemDiv.onclick = (e) => {
+                        e.stopPropagation();
+                        this.handleNav(page);
+                    };
+                    dropdown.appendChild(itemDiv);
+                });
+            });
+            
+            return dropdown;
         }
 
         createPagesDropdown(pages) {
@@ -267,9 +325,7 @@
                 itemDiv.className = 'dropdown-item';
                 itemDiv.dataset.page = page;
                 
-                // Отримуємо іконку та назву сторінки
                 const pageInfo = this.getPageInfo(page);
-                
                 itemDiv.innerHTML = `
                     <span class="dropdown-item-icon">${pageInfo.icon}</span>
                     <span class="dropdown-item-name">${pageInfo.name}</span>
@@ -285,20 +341,37 @@
         }
 
         getPageInfo(page) {
-            // Іконки для кожної сторінки
             const pageIcons = {
-                calculator: '🧮',
-                table: '📊',
-                graph: '📈',
-                rcu_calculator: '🎮',
-                rcu_table: '📋',
-                rcu_graph: '📉',
-                settings: '⚙️'
+                // AWS Calculator
+                calculator: '🐾',
+                arm: '💪',
+                grind: '🏋️‍♂️',
+                roulette: '🎰',
+                boss: '👹',
+                // AWS Info
+                boosts: '🚀',
+                shiny: '✨',
+                secret: '🔮',
+                codes: '🎁',
+                aura: '🌟',
+                trainer: '🏆',
+                charms: '🔮',
+                potions: '🧪',
+                worlds: '🌍',
+                // AWS Others
+                trader: '🛒',
+                clans: '🏰',
+                // RCU
+                petscalc: '🐾',
+                // System
+                settings: '⚙️',
+                help: '🆘',
+                peoples: '🙏'
             };
             
             return {
                 icon: pageIcons[page] || '📄',
-                name: page.replace('_', ' ').replace('rcu', 'RCU')
+                name: page.replace('_', ' ')
             };
         }
 
@@ -365,21 +438,45 @@
             const menu = document.getElementById('staticMenu');
             if (!menu) return;
             
-            // Оновлюємо назви категорій
-            Object.keys(CONFIG.pageCategories).forEach(categoryKey => {
-                const categoryName = t[categoryKey] || categoryKey.toUpperCase();
+            // Оновлюємо назви головних категорій
+            const categoryNames = {
+                aws: t.awsCategory || 'AWS',
+                rcu: t.rcuCategory || 'RCU',
+                system: t.systemCategory || 'System'
+            };
+            
+            Object.entries(categoryNames).forEach(([categoryKey, name]) => {
                 const btn = menu.querySelector(`.menu-category[data-category="${categoryKey}"] .category-name`);
-                if (btn) btn.textContent = categoryName;
+                if (btn) btn.textContent = name;
+            });
+            
+            // Оновлюємо назви підкатегорій
+            const subcategoryNames = {
+                calculator: t.calculator || 'Calculator',
+                info: t.info || 'Info',
+                others: t.others || 'Others',
+                rcuCalc: t.rcuCalc || 'Calculators'
+            };
+            
+            Object.entries(subcategoryNames).forEach(([subKey, name]) => {
+                const subHeaders = menu.querySelectorAll(`.dropdown-subcategory-header .subcategory-name`);
+                subHeaders.forEach(header => {
+                    if (header.textContent === subKey) {
+                        header.textContent = name;
+                    }
+                });
             });
             
             // Оновлюємо назви сторінок
-            document.querySelectorAll('.category-dropdown .dropdown-item').forEach(item => {
-                const page = item.dataset.page;
-                const nameEl = item.querySelector('.dropdown-item-name');
-                if (nameEl && t[page]) {
-                    nameEl.textContent = t[page];
-                }
-            });
+            if (t.pages) {
+                document.querySelectorAll('.category-dropdown .dropdown-item').forEach(item => {
+                    const page = item.dataset.page;
+                    const nameEl = item.querySelector('.dropdown-item-name');
+                    if (nameEl && t.pages[page]) {
+                        nameEl.textContent = t.pages[page];
+                    }
+                });
+            }
         }
     }
 
