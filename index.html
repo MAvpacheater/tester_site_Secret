@@ -119,8 +119,6 @@
     
     <!-- CRITICAL: System CSS - завантажуються статично -->
     <link rel="stylesheet" href="system/moderation/settings.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="system/profile/auth.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="system/profile/profile.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="system/system_content/system_content.css" media="print" onload="this.media='all'">
     
     <!-- AWS CSS завантажуються динамічно через aws_loader.js -->
@@ -138,31 +136,13 @@
     <div id="app-content"></div>
     <div class="signature">Completely free</div>
     
-    <!-- Auth Modal Container -->
-    <div id="authModalContainer"></div>
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-    
-    <!-- Verify Firebase -->
-    <script>
-        if (typeof firebase === 'undefined') {
-            console.error('❌ Firebase SDK failed to load');
-            alert('Firebase SDK failed to load.\n\nPlease check your internet connection and refresh the page.');
-        } else {
-            console.log('✅ Firebase SDK loaded v' + firebase.SDK_VERSION);
-        }
-    </script>
+    <!-- NO Firebase - All auth code removed -->
     
     <!-- CRITICAL: Тільки системні скрипти, AWS завантажуються через loader.js -->
     <script src="system/general.js" defer></script>
     <script src="system/colors.js" defer></script>
     <script src="system/reload.js" defer></script>
     <script src="system/url.js" defer></script>
-    <script src="system/firebase.js" defer></script>
     <script src="system/loader.js" defer></script>
 </body>
 </html>
