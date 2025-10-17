@@ -1,4 +1,4 @@
-// ========== OPTIMIZED SETTINGS MODULE WITH CATEGORY DROPDOWNS ==========
+// ========== OPTIMIZED SETTINGS MODULE WITH PAGE CATEGORIES ==========
 (function() {
     'use strict';
     
@@ -60,6 +60,22 @@
             en: { icon: '🇺🇸', name: { en: 'English', uk: 'Англійська', ru: 'Английский' } },
             uk: { icon: '🇺🇦', name: { en: 'Ukrainian', uk: 'Українська', ru: 'Украинский' } },
             ru: { icon: '🇷🇺', name: { en: 'Russian', uk: 'Російська', ru: 'Русский' } }
+        },
+        
+        // Категорії сторінок (як у бічному меню)
+        pageCategories: {
+            aws: { 
+                icon: '📦',
+                pages: ['calculator', 'table', 'graph']
+            },
+            rcu: { 
+                icon: '🎮',
+                pages: ['rcu_calculator', 'rcu_table', 'rcu_graph']
+            },
+            system: { 
+                icon: '⚙️',
+                pages: ['settings']
+            }
         }
     };
 
@@ -190,29 +206,17 @@
             menu.className = `static-menu menu-${isTop ? 'top' : 'bottom'}`;
             menu.id = 'staticMenu';
             
-            // Категорії
+            // Категорії сторінок
             const categories = document.createElement('div');
             categories.className = 'menu-categories';
             
-            // Додаємо кнопки категорій
-            this.createCategoryButton(categories, 'background', '🎃');
-            this.createCategoryButton(categories, 'colors', '🎨');
-            this.createCategoryButton(categories, 'language', '🌍');
-            this.createCategoryButton(categories, 'menu', '👻');
+            // Додаємо кнопки категорій сторінок
+            Object.keys(CONFIG.pageCategories).forEach(categoryKey => {
+                const category = CONFIG.pageCategories[categoryKey];
+                this.createCategoryButton(categories, categoryKey, category.icon);
+            });
             
             menu.appendChild(categories);
-            
-            // Settings кнопка
-            const settingsContainer = document.createElement('div');
-            settingsContainer.className = 'settings-container-static';
-            
-            const settingsBtn = document.createElement('button');
-            settingsBtn.className = 'nav-btn settings-btn-static';
-            settingsBtn.textContent = '⚙️';
-            settingsBtn.onclick = () => this.handleNav('settings');
-            
-            settingsContainer.appendChild(settingsBtn);
-            menu.appendChild(settingsContainer);
             
             document.body.appendChild(menu);
             
@@ -226,89 +230,53 @@
             const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
             this.updateActive(currentPage);
             
-            console.log('✅ Static menu created with categories');
+            console.log('✅ Static menu created with page categories');
         }
 
-        createCategoryButton(container, category, icon) {
+        createCategoryButton(container, categoryKey, icon) {
+            const category = CONFIG.pageCategories[categoryKey];
+            if (!category) return;
+            
             const categoryDiv = document.createElement('div');
             categoryDiv.className = 'menu-category';
-            categoryDiv.dataset.category = category;
+            categoryDiv.dataset.category = categoryKey;
             
             const btn = document.createElement('button');
             btn.className = 'category-btn';
-            btn.innerHTML = `<span>${icon}</span><span class="category-name">${category}</span>`;
+            btn.innerHTML = `<span>${icon}</span><span class="category-name">${categoryKey.toUpperCase()}</span>`;
             btn.onclick = (e) => {
                 e.stopPropagation();
-                this.toggleDropdown(category);
+                this.toggleDropdown(categoryKey);
             };
             
             categoryDiv.appendChild(btn);
             
-            // Створюємо dropdown
-            const dropdown = this.createDropdown(category);
+            // Створюємо dropdown зі сторінками
+            const dropdown = this.createPagesDropdown(category.pages);
             categoryDiv.appendChild(dropdown);
             
             container.appendChild(categoryDiv);
         }
 
-        createDropdown(category) {
+        createPagesDropdown(pages) {
             const dropdown = document.createElement('div');
             dropdown.className = 'category-dropdown';
-            dropdown.dataset.category = category;
             
-            let items = [];
-            
-            switch(category) {
-                case 'background':
-                    items = Object.entries(CONFIG.backgrounds).map(([key, bg]) => ({
-                        key,
-                        icon: bg.icon,
-                        name: key,
-                        action: () => changeBackground(key)
-                    }));
-                    break;
-                    
-                case 'colors':
-                    const themes = window.colorThemes || {};
-                    items = Object.entries(themes).map(([key, theme]) => ({
-                        key,
-                        icon: '🎨',
-                        name: theme.name.en,
-                        action: () => changeColorTheme(key)
-                    }));
-                    break;
-                    
-                case 'language':
-                    items = Object.entries(CONFIG.languages).map(([key, lang]) => ({
-                        key,
-                        icon: lang.icon,
-                        name: lang.name.en,
-                        action: () => changeLanguage(key)
-                    }));
-                    break;
-                    
-                case 'menu':
-                    items = Object.entries(CONFIG.menuPositions).map(([key, pos]) => ({
-                        key,
-                        icon: pos.icon,
-                        name: key,
-                        action: () => changeMenuPosition(key)
-                    }));
-                    break;
-            }
-            
-            items.forEach(item => {
+            pages.forEach(page => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'dropdown-item';
-                itemDiv.dataset.value = item.key;
+                itemDiv.dataset.page = page;
+                
+                // Отримуємо іконку та назву сторінки
+                const pageInfo = this.getPageInfo(page);
+                
                 itemDiv.innerHTML = `
-                    <span class="dropdown-item-icon">${item.icon}</span>
-                    <span class="dropdown-item-name">${item.name}</span>
+                    <span class="dropdown-item-icon">${pageInfo.icon}</span>
+                    <span class="dropdown-item-name">${pageInfo.name}</span>
                 `;
                 itemDiv.onclick = (e) => {
                     e.stopPropagation();
-                    item.action();
-                    this.updateDropdownActive(category, item.key);
+                    this.handleNav(page);
                 };
                 dropdown.appendChild(itemDiv);
             });
@@ -316,8 +284,26 @@
             return dropdown;
         }
 
-        toggleDropdown(category) {
-            const categoryDiv = document.querySelector(`.menu-category[data-category="${category}"]`);
+        getPageInfo(page) {
+            // Іконки для кожної сторінки
+            const pageIcons = {
+                calculator: '🧮',
+                table: '📊',
+                graph: '📈',
+                rcu_calculator: '🎮',
+                rcu_table: '📋',
+                rcu_graph: '📉',
+                settings: '⚙️'
+            };
+            
+            return {
+                icon: pageIcons[page] || '📄',
+                name: page.replace('_', ' ').replace('rcu', 'RCU')
+            };
+        }
+
+        toggleDropdown(categoryKey) {
+            const categoryDiv = document.querySelector(`.menu-category[data-category="${categoryKey}"]`);
             if (!categoryDiv) return;
             
             const dropdown = categoryDiv.querySelector('.category-dropdown');
@@ -337,7 +323,7 @@
                 dropdown.classList.add('show');
                 btn.classList.add('active');
                 this.activeDropdown = dropdown;
-                this.updateDropdownActive(category, this.getCurrentValue(category));
+                this.updateDropdownActive();
             }
         }
 
@@ -350,27 +336,11 @@
             }
         }
 
-        getCurrentValue(category) {
-            switch(category) {
-                case 'background':
-                    return storage.get('background', 'dodep');
-                case 'colors':
-                    return storage.get('colorTheme', 'spooky');
-                case 'language':
-                    return typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-                case 'menu':
-                    return storage.get('menuPosition', 'left');
-                default:
-                    return null;
-            }
-        }
-
-        updateDropdownActive(category, value) {
-            const dropdown = document.querySelector(`.category-dropdown[data-category="${category}"]`);
-            if (!dropdown) return;
+        updateDropdownActive() {
+            const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
             
-            dropdown.querySelectorAll('.dropdown-item').forEach(item => {
-                item.classList.toggle('active', item.dataset.value === value);
+            document.querySelectorAll('.category-dropdown .dropdown-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.page === currentPage);
             });
         }
 
@@ -383,50 +353,31 @@
         }
 
         updateActive(activePage) {
-            const menu = document.getElementById('staticMenu');
-            if (!menu) return;
-            
-            const settingsBtn = menu.querySelector('.settings-btn-static');
-            if (settingsBtn) {
-                settingsBtn.classList.toggle('active', activePage === 'settings');
-            }
+            // Оновлюємо активну сторінку в dropdown
+            this.updateDropdownActive();
         }
 
         updateTranslations() {
             const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-            if (!state.translations?.[lang]) return;
+            if (!state.translations?.[lang]?.menu) return;
             
-            const t = state.translations[lang].settings;
+            const t = state.translations[lang].menu;
             const menu = document.getElementById('staticMenu');
             if (!menu) return;
             
-            // Оновлюємо назви категорій в кнопках
-            const categoryNames = {
-                background: t.background,
-                colors: t.colors,
-                language: t.language,
-                menu: t.menu
-            };
-            
-            Object.entries(categoryNames).forEach(([category, name]) => {
-                const btn = menu.querySelector(`.menu-category[data-category="${category}"] .category-name`);
-                if (btn) btn.textContent = name;
+            // Оновлюємо назви категорій
+            Object.keys(CONFIG.pageCategories).forEach(categoryKey => {
+                const categoryName = t[categoryKey] || categoryKey.toUpperCase();
+                const btn = menu.querySelector(`.menu-category[data-category="${categoryKey}"] .category-name`);
+                if (btn) btn.textContent = categoryName;
             });
             
-            // Оновлюємо елементи в dropdown
-            this.updateDropdownTranslations('background', t);
-            this.updateDropdownTranslations('menu', t);
-        }
-
-        updateDropdownTranslations(category, translations) {
-            const dropdown = document.querySelector(`.category-dropdown[data-category="${category}"]`);
-            if (!dropdown) return;
-            
-            dropdown.querySelectorAll('.dropdown-item').forEach(item => {
-                const key = item.dataset.value;
+            // Оновлюємо назви сторінок
+            document.querySelectorAll('.category-dropdown .dropdown-item').forEach(item => {
+                const page = item.dataset.page;
                 const nameEl = item.querySelector('.dropdown-item-name');
-                if (nameEl && translations[key]) {
-                    nameEl.textContent = translations[key];
+                if (nameEl && t[page]) {
+                    nameEl.textContent = t[page];
                 }
             });
         }
@@ -544,17 +495,6 @@
                     el.textContent = CONFIG.languages[langKey].name[lang];
                 }
             });
-            
-            // Оновлюємо dropdown
-            const dropdown = document.querySelector('.category-dropdown[data-category="language"]');
-            if (dropdown) {
-                Object.keys(CONFIG.languages).forEach(langKey => {
-                    const item = dropdown.querySelector(`[data-value="${langKey}"] .dropdown-item-name`);
-                    if (item && CONFIG.languages[langKey].name[lang]) {
-                        item.textContent = CONFIG.languages[langKey].name[lang];
-                    }
-                });
-            }
         },
 
         updateColorThemeNames() {
@@ -567,17 +507,6 @@
                     el.textContent = themes[theme].name[lang];
                 }
             });
-            
-            // Оновлюємо dropdown
-            const dropdown = document.querySelector('.category-dropdown[data-category="colors"]');
-            if (dropdown) {
-                Object.keys(themes).forEach(theme => {
-                    const item = dropdown.querySelector(`[data-value="${theme}"] .dropdown-item-name`);
-                    if (item && themes[theme].name?.[lang]) {
-                        item.textContent = themes[theme].name[lang];
-                    }
-                });
-            }
         },
 
         updateBackground() {
@@ -585,7 +514,6 @@
             document.querySelectorAll('.background-option').forEach(opt => {
                 opt.classList.toggle('active', opt.dataset.background === current);
             });
-            menuManager.updateDropdownActive('background', current);
         },
 
         updateMenuPosition() {
@@ -593,7 +521,6 @@
             document.querySelectorAll('.menu-option').forEach(opt => {
                 opt.classList.toggle('active', opt.dataset.position === current);
             });
-            menuManager.updateDropdownActive('menu', current);
         },
 
         updateLanguage() {
@@ -601,7 +528,6 @@
             document.querySelectorAll('.language-option').forEach(opt => {
                 opt.classList.toggle('active', opt.dataset.language === current);
             });
-            menuManager.updateDropdownActive('language', current);
         }
     };
 
@@ -672,7 +598,6 @@
         storage.set('background', bg);
         await backgroundManager.apply(bg);
         ui.updateBackground();
-        menuManager.closeDropdown();
     }
 
     function changeMenuPosition(pos) {
@@ -681,7 +606,6 @@
         storage.set('menuPosition', pos);
         menuManager.show(pos);
         ui.updateMenuPosition();
-        menuManager.closeDropdown();
     }
 
     function changeLanguage(lang) {
@@ -692,7 +616,6 @@
         }
         
         ui.updateLanguage();
-        menuManager.closeDropdown();
     }
 
     // ========== HTML GENERATION ==========
@@ -894,7 +817,7 @@
         setTimeout(() => backgroundManager.preloadAll(), 1000);
     }
 
-    console.log('✅ Settings module loaded with category dropdowns');
+    console.log('✅ Settings module loaded with page categories');
     console.log('📍 Base path:', SETTINGS_BASE_PATH);
 
     window.settingsInitialized = true;
