@@ -3,7 +3,110 @@
     'use strict';
     
     if (window.settingsInitialized) {
-        console.log('⚠️ Settings already loaded');
+        console.log('🔧 Initializing settings...');
+        
+        categories.load();
+        page.innerHTML = createSettingsHTML();
+        
+        await loadTranslations();
+        ui.updateSettings();
+        ui.updateColorThemeNames();
+        ui.updateLanguageNames();
+        
+        const bg = storage.get('background', 'dodep');
+        await backgroundManager.apply(bg);
+        ui.updateBackground();
+        
+        const menuPos = storage.get('menuPosition', 'left');
+        menuManager.show(menuPos);
+        ui.updateMenuPosition();
+        
+        if (typeof updateColorThemeUI === 'function') {
+            updateColorThemeUI();
+        }
+        
+        ui.updateLanguage();
+        categories.apply();
+        
+        state.initialized = true;
+        console.log('✅ Settings initialized');
+    }
+
+    async function initOnStart() {
+        console.log('🚀 Startup initialization...');
+        
+        const bg = storage.get('background', 'dodep');
+        await backgroundManager.apply(bg);
+        
+        await loadTranslations();
+        
+        const menuPos = storage.get('menuPosition', 'left');
+        menuManager.show(menuPos);
+        
+        setTimeout(() => {
+            if (typeof getCurrentAppLanguage === 'function') {
+                menuManager.updateTranslations();
+            }
+        }, 500);
+        
+        console.log('✅ Startup complete');
+    }
+
+    // ========== EVENT LISTENERS ==========
+    document.addEventListener('languageChanged', (e) => {
+        if (state.initialized && e.detail?.language) {
+            ui.updateSettings(e.detail.language);
+            ui.updateColorThemeNames();
+            ui.updateLanguageNames();
+            menuManager.updateTranslations();
+        }
+    });
+
+    document.addEventListener('pageChanged', (e) => {
+        if (e.detail?.page) {
+            menuManager.updateActive(e.detail.page);
+        }
+    });
+
+    document.addEventListener('contentLoaded', () => {
+        console.log('📦 Content loaded, re-initializing menu...');
+        const pos = storage.get('menuPosition', 'left');
+        menuManager.show(pos);
+    });
+
+    // ========== GLOBAL EXPORTS ==========
+    Object.assign(window, {
+        initializeSettings: initSettings,
+        changeBackground,
+        changeMenuPosition,
+        changeLanguage,
+        toggleSettingsCategory: (name) => categories.toggle(name),
+        updateSettingsLanguage: (lang) => ui.updateSettings(lang),
+        menuManager,
+        toggleMobileMenu,
+        closeSidebar,
+        updateMenuButtonVisibility,
+        createMenuButton,
+        SETTINGS_BASE_PATH
+    });
+
+    // ========== AUTO INIT ==========
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            initOnStart();
+            setTimeout(() => backgroundManager.preloadAll(), 1000);
+        });
+    } else {
+        initOnStart();
+        setTimeout(() => backgroundManager.preloadAll(), 1000);
+    }
+
+    console.log('✅ Settings module loaded with page categories');
+    console.log('📍 Base path:', SETTINGS_BASE_PATH);
+
+    window.settingsInitialized = true;
+
+})();⚠️ Settings already loaded');
         return;
     }
 
@@ -186,7 +289,7 @@
                 document.body.classList.remove(`menu-${pos}`);
             });
             
-            this.closeDropdown();
+            this.closeAllDropdowns();
         }
 
         show(menuType) {
@@ -241,7 +344,7 @@
             // Закриття дропдауну при кліку поза ним
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('.menu-category')) {
-                    this.closeDropdown();
+                    this.closeAllDropdowns();
                 }
             });
             
@@ -382,17 +485,13 @@
             const dropdown = categoryDiv.querySelector('.category-dropdown');
             const btn = categoryDiv.querySelector('.category-btn');
             
-            // Закриваємо всі інші
-            if (this.activeDropdown && this.activeDropdown !== dropdown) {
-                this.closeDropdown();
-            }
+            const isCurrentlyOpen = dropdown.classList.contains('show');
             
-            // Перемикаємо поточний
-            if (dropdown.classList.contains('show')) {
-                dropdown.classList.remove('show');
-                btn.classList.remove('active');
-                this.activeDropdown = null;
-            } else {
+            // Завжди спочатку закриваємо всі dropdown
+            this.closeAllDropdowns();
+            
+            // Якщо dropdown не був відкритий, відкриваємо його
+            if (!isCurrentlyOpen) {
                 dropdown.classList.add('show');
                 btn.classList.add('active');
                 this.activeDropdown = dropdown;
@@ -409,6 +508,15 @@
             }
         }
 
+        closeAllDropdowns() {
+            document.querySelectorAll('.category-dropdown').forEach(dropdown => {
+                dropdown.classList.remove('show');
+                const btn = dropdown.parentElement?.querySelector('.category-btn');
+                if (btn) btn.classList.remove('active');
+            });
+            this.activeDropdown = null;
+        }
+
         updateDropdownActive() {
             const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
             
@@ -422,7 +530,7 @@
                 window.switchPage(page);
             }
             this.updateActive(page);
-            this.closeDropdown();
+            this.closeAllDropdowns();
         }
 
         updateActive(activePage) {
@@ -816,104 +924,6 @@
             return;
         }
         
-        console.log('🔧 Initializing settings...');
-        
-        categories.load();
-        page.innerHTML = createSettingsHTML();
-        
-        await loadTranslations();
-        ui.updateSettings();
-        ui.updateColorThemeNames();
-        ui.updateLanguageNames();
-        
-        const bg = storage.get('background', 'dodep');
-        await backgroundManager.apply(bg);
-        ui.updateBackground();
-        
-        const menuPos = storage.get('menuPosition', 'left');
-        menuManager.show(menuPos);
-        ui.updateMenuPosition();
-        
-        if (typeof updateColorThemeUI === 'function') {
-            updateColorThemeUI();
-        }
-        
-        ui.updateLanguage();
-        categories.apply();
-        
-        state.initialized = true;
-        console.log('✅ Settings initialized');
-    }
-
-    async function initOnStart() {
-        console.log('🚀 Startup initialization...');
-        
-        const bg = storage.get('background', 'dodep');
-        await backgroundManager.apply(bg);
-        
-        await loadTranslations();
-        
-        const menuPos = storage.get('menuPosition', 'left');
-        menuManager.show(menuPos);
-        
-        setTimeout(() => {
-            if (typeof getCurrentAppLanguage === 'function') {
-                menuManager.updateTranslations();
-            }
-        }, 500);
-        
-        console.log('✅ Startup complete');
-    }
-
-    // ========== EVENT LISTENERS ==========
-    document.addEventListener('languageChanged', (e) => {
-        if (state.initialized && e.detail?.language) {
-            ui.updateSettings(e.detail.language);
-            ui.updateColorThemeNames();
-            ui.updateLanguageNames();
-            menuManager.updateTranslations();
-        }
-    });
-
-    document.addEventListener('pageChanged', (e) => {
-        if (e.detail?.page) {
-            menuManager.updateActive(e.detail.page);
-        }
-    });
-
-    document.addEventListener('contentLoaded', () => {
-        console.log('📦 Content loaded, re-initializing menu...');
-        const pos = storage.get('menuPosition', 'left');
-        menuManager.show(pos);
-    });
-
-    // ========== GLOBAL EXPORTS ==========
-    Object.assign(window, {
-        initializeSettings: initSettings,
-        changeBackground,
-        changeMenuPosition,
-        changeLanguage,
-        toggleSettingsCategory: (name) => categories.toggle(name),
-        updateSettingsLanguage: (lang) => ui.updateSettings(lang),
-        menuManager,
-        toggleMobileMenu,
-        closeSidebar,
-        updateMenuButtonVisibility,
-        createMenuButton,
-        SETTINGS_BASE_PATH
-    });
-
-    // ========== AUTO INIT ==========
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            initOnStart();
-            setTimeout(() => backgroundManager.preloadAll(), 1000);
-        });
-    } else {
-        initOnStart();
-        setTimeout(() => backgroundManager.preloadAll(), 1000);
-    }
-
     console.log('✅ Settings module loaded with page categories');
     console.log('📍 Base path:', SETTINGS_BASE_PATH);
 
