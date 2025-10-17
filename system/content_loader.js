@@ -1,4 +1,4 @@
-// ========== CONTENT LOADER (AWS + RCU + System Separate) ==========
+// ========== CONTENT LOADER (AWS + RCU + System - NO AUTH) ==========
 
 async function loadContent() {
     try {
@@ -54,7 +54,6 @@ async function loadContent() {
         
         initializeSignatureEasterEgg();
         document.dispatchEvent(new CustomEvent('contentLoaded'));
-        waitForAuthUI();
         
         console.log('✅ Content loaded (AWS + RCU + System)');
         
@@ -82,12 +81,11 @@ function createAppStructure(contentHTML) {
                     { id: 'rcuCalculatorButtons', icon: '🧮', pages: ['petscalc'] }
                 ])}
 
-                ${createMainCategoryDirect('systemCategory', '⚙️', ['settings', 'profile', 'help', 'peoples'])}
+                ${createMainCategoryDirect('systemCategory', '⚙️', ['settings', 'help', 'peoples'])}
             </div>
             
-            <div class="sidebar-user" id="sidebarUser">
+            <div class="sidebar-controls" id="sidebarControls">
                 <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">⚙️</button>
-                <button class="auth-btn-sidebar" id="authButton">⏳ Loading...</button>
             </div>
         </div>
 
@@ -259,7 +257,6 @@ function openCategoryForPage(page) {
         'clans': ['awsCategory', 'othersAWSButtons'],
         'petscalc': ['rcuCategory', 'rcuCalculatorButtons'],
         'settings': ['systemCategory', null],
-        'profile': ['systemCategory', null],
         'help': ['systemCategory', null],
         'peoples': ['systemCategory', null]
     };
@@ -303,116 +300,6 @@ function openCategoryForPage(page) {
             subToggle.classList.add('expanded');
             console.log('✅ Opened subcategory:', subCategoryId);
         }
-    }
-}
-
-// ========== AUTH BUTTON ==========
-
-function waitForAuthUI() {
-    let attempts = 0;
-    const maxAttempts = 50;
-    
-    const interval = setInterval(() => {
-        attempts++;
-        
-        if (window.authUI?.openModal) {
-            console.log('✅ Auth UI ready');
-            clearInterval(interval);
-            setupAuthButton();
-            return;
-        }
-        
-        if (window.firebaseManager?.isInitialized && typeof initializeAuthUI === 'function') {
-            console.log('🔐 Initializing Auth UI');
-            initializeAuthUI();
-        }
-        
-        if (attempts >= maxAttempts) {
-            console.warn('⚠️ Auth UI timeout');
-            clearInterval(interval);
-            setupAuthButtonFallback();
-        }
-    }, 100);
-}
-
-function setupAuthButton() {
-    const authButton = document.getElementById('authButton');
-    if (!authButton) {
-        console.error('❌ Auth button not found');
-        return;
-    }
-    
-    const newButton = authButton.cloneNode(true);
-    authButton.parentNode.replaceChild(newButton, authButton);
-    
-    newButton.addEventListener('click', function(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        
-        if (!window.firebaseManager?.isInitialized) {
-            alert('Система авторизації ініціалізується.\nЗачекайте і спробуйте знову.');
-            return;
-        }
-        
-        const user = window.firebaseManager.getCurrentUser();
-        
-        if (user) {
-            typeof switchPage === 'function' && switchPage('profile');
-        } else {
-            if (window.urlRouter) {
-                const r = window.urlRouter();
-                r?.setQueryParams?.({ auth: 'signin' }, true);
-            }
-
-            if (window.authUI?.openModal) {
-                window.authUI.openModal('signin');
-            } else {
-                alert('UI авторизації не завантажений.\nОновіть сторінку.');
-            }
-        }
-    });
-    
-    updateAuthButtonText();
-    console.log('✅ Auth button configured');
-}
-
-function setupAuthButtonFallback() {
-    const authButton = document.getElementById('authButton');
-    if (!authButton) return;
-    
-    authButton.textContent = '🔐 Login';
-    authButton.classList.remove('disabled');
-    
-    authButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        alert('Система авторизації не завантажена.\n\nОновіть сторінку.');
-    });
-}
-
-function updateAuthButtonText() {
-    const authButton = document.getElementById('authButton');
-    if (!authButton) return;
-    
-    const lang = (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : null) || 'en';
-    
-    if (window.firebaseManager?.isInitialized) {
-        const user = window.firebaseManager.getCurrentUser();
-        
-        if (user) {
-            authButton.textContent = `👤 ${user.displayName || 'User'}`;
-            authButton.title = lang === 'uk' ? 'Переглянути профіль' : 'View profile';
-            authButton.classList.remove('disabled');
-        } else {
-            const texts = { en: '🔐 Login', uk: '🔐 Увійти', ru: '🔐 Войти' };
-            authButton.textContent = texts[lang] || '🔐 Login';
-            authButton.title = lang === 'uk' ? 'Увійдіть для синхронізації' : 'Login to sync data';
-            authButton.classList.remove('disabled');
-        }
-    } else {
-        const texts = { en: '⏳ Loading...', uk: '⏳ Завантаження...', ru: '⏳ Загрузка...' };
-        authButton.textContent = texts[lang] || '⏳ Loading...';
-        authButton.classList.add('disabled');
     }
 }
 
@@ -472,32 +359,6 @@ function initializeSignatureEasterEgg() {
 
 document.addEventListener('languageChanged', () => {
     console.log('🌍 Language changed');
-    updateAuthButtonText();
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    let checkCount = 0;
-    const interval = setInterval(() => {
-        checkCount++;
-        
-        if (window.firebaseManager?.isInitialized) {
-            console.log('✅ Firebase ready');
-            clearInterval(interval);
-            
-            if (window.firebaseManager.addEventListener) {
-                window.firebaseManager.addEventListener('authChanged', (user) => {
-                    console.log('🔄 Auth changed:', user ? user.displayName : 'signed out');
-                    updateAuthButtonText();
-                });
-            }
-            
-            updateAuthButtonText();
-        } else if (checkCount >= 100) {
-            console.warn('⚠️ Firebase timeout');
-            clearInterval(interval);
-            updateAuthButtonText();
-        }
-    }, 100);
 });
 
 // ========== PAGE CHANGE OBSERVER ==========
@@ -546,12 +407,10 @@ if (document.readyState === 'loading') {
 
 // Exports
 Object.assign(window, { 
-    updateAuthButtonText, 
-    setupAuthButton,
     ensureMobileMenuButton,
     toggleMainCategory,
     toggleCategory,
     openCategoryForPage
 });
 
-console.log('✅ Content Loader ready (AWS + RCU + System Separate)');
+console.log('✅ Content Loader ready (AWS + RCU + System - NO AUTH)');
