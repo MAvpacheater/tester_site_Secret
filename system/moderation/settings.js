@@ -1,4 +1,4 @@
-// Optimized Settings - Styles moved to CSS
+// ========== OPTIMIZED SETTINGS MODULE (NO DROPDOWNS) ==========
 (function() {
     'use strict';
     
@@ -37,41 +37,6 @@
     const SETTINGS_BASE_PATH = getBasePath();
 
     const CONFIG = {
-        menuCategories: {
-            aws: {
-                icon: '📦',
-                pages: [
-                    { page: 'calculator', icon: '🐾' },
-                    { page: 'arm', icon: '💪' },
-                    { page: 'grind', icon: '🏋️‍♂️' },
-                    { page: 'roulette', icon: '🎰' },
-                    { page: 'boss', icon: '👹' },
-                    { page: 'boosts', icon: '🚀' },
-                    { page: 'shiny', icon: '✨' },
-                    { page: 'secret', icon: '🔮' },
-                    { page: 'codes', icon: '🎁' },
-                    { page: 'aura', icon: '🌟' },
-                    { page: 'trainer', icon: '🏆' },
-                    { page: 'charms', icon: '🔮' },
-                    { page: 'potions', icon: '🧪' },
-                    { page: 'worlds', icon: '🌍' },
-                    { page: 'trader', icon: '🛒' },
-                    { page: 'clans', icon: '🏰' }
-                ]
-            },
-            rcu: {
-                icon: '🎮',
-                pages: [{ page: 'petscalc', icon: '🐾' }]
-            },
-            system: {
-                icon: '⚙️',
-                pages: [
-                    { page: 'help', icon: '🆘' },
-                    { page: 'peoples', icon: '🙏' }
-                ]
-            }
-        },
-        
         backgrounds: {
             dodep: { icon: '🕸️', filename: 'h1.png' },
             game: { icon: '🎃', filename: 'h2.png' },
@@ -167,7 +132,7 @@
         }
     };
 
-    // ========== MENU MANAGER ==========
+    // ========== MENU MANAGER (SIMPLIFIED) ==========
     class MenuManager {
         constructor() {
             this.dropdownPositioner = null;
@@ -226,230 +191,51 @@
             menu.className = `static-menu menu-${isTop ? 'top' : 'bottom'}`;
             menu.id = 'staticMenu';
             
-            const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-            const t = state.translations?.[lang] || state.translations?.en || {};
-            
-            const categoriesDiv = document.createElement('div');
-            categoriesDiv.className = 'menu-categories';
-            
-            Object.entries(CONFIG.menuCategories).forEach(([key, category]) => {
-                const categoryDiv = document.createElement('div');
-                categoryDiv.className = 'menu-category';
-                categoryDiv.dataset.category = key;
-                
-                const btn = document.createElement('button');
-                btn.className = 'category-btn';
-                btn.dataset.categoryKey = key;
-                btn.innerHTML = `${category.icon} <span class="category-name">${t[`${key}Category`] || key.toUpperCase()}</span>`;
-                
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.toggleDropdown(key, btn);
-                });
-                
-                categoryDiv.appendChild(btn);
-                categoriesDiv.appendChild(categoryDiv);
-            });
-            
-            menu.appendChild(categoriesDiv);
-            
+            // ТІЛЬКИ КНОПКА SETTINGS
             const settingsContainer = document.createElement('div');
             settingsContainer.className = 'settings-container-static';
+            
             const settingsBtn = document.createElement('button');
             settingsBtn.className = 'nav-btn settings-btn-static';
             settingsBtn.textContent = '⚙️';
             settingsBtn.onclick = () => this.handleNav('settings');
+            
             settingsContainer.appendChild(settingsBtn);
             menu.appendChild(settingsContainer);
             
             document.body.appendChild(menu);
             
-            Object.entries(CONFIG.menuCategories).forEach(([key, category]) => {
-                const dropdown = document.createElement('div');
-                dropdown.className = 'category-dropdown';
-                dropdown.dataset.dropdown = key;
-                
-                category.pages.forEach(item => {
-                    const dropdownItem = document.createElement('button');
-                    dropdownItem.className = 'dropdown-item';
-                    dropdownItem.dataset.page = item.page;
-                    dropdownItem.innerHTML = `${item.icon} ${t.pages?.[item.page] || item.page}`;
-                    
-                    dropdownItem.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        this.handleNav(item.page);
-                    });
-                    
-                    dropdown.appendChild(dropdownItem);
-                });
-                
-                document.body.appendChild(dropdown);
-            });
-            
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.menu-category') && !e.target.closest('.category-dropdown')) {
-                    this.closeDropdown();
-                }
-            });
-            
             const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
             this.updateActive(currentPage);
+            
+            console.log('✅ Static menu created (settings only)');
         }
 
-        toggleDropdown(catKey, btnElement) {
-            const dropdown = document.querySelector(`[data-dropdown="${catKey}"]`);
-            
-            if (!dropdown) {
-                console.error('❌ Dropdown not found:', catKey);
-                return;
-            }
-            
-            if (state.activeDropdown === catKey) {
-                this.closeDropdown();
-                return;
-            }
-            
-            this.closeDropdown();
-            
-            const menu = document.getElementById('staticMenu');
-            const isTop = menu?.classList.contains('menu-top');
-            
-            dropdown.classList.add('show');
-            btnElement.classList.add('expanded');
-            state.activeDropdown = catKey;
-            
-            this.positionDropdown(dropdown, btnElement, isTop);
-            this.startPositioner(dropdown, btnElement, isTop);
-        }
-
-        positionDropdown(dropdown, btn, isTop) {
-            const btnRect = btn.getBoundingClientRect();
-            
-            dropdown.style.left = `${btnRect.left}px`;
-            
-            if (isTop) {
-                dropdown.style.top = `${btnRect.bottom + 10}px`;
-                dropdown.style.bottom = 'auto';
-            } else {
-                dropdown.style.bottom = `${window.innerHeight - btnRect.top + 10}px`;
-                dropdown.style.top = 'auto';
-            }
-        }
-
-        startPositioner(dropdown, btn, isTop) {
-            this.stopPositioner();
-            
-            let rafId = null;
-            let lastPosition = { left: 0, top: 0, bottom: 0 };
-            
-            const reposition = () => {
-                if (!state.activeDropdown || !dropdown.classList.contains('show')) {
-                    this.stopPositioner();
-                    return;
-                }
-                
-                const btnRect = btn.getBoundingClientRect();
-                const newLeft = btnRect.left;
-                const newTop = isTop ? btnRect.bottom + 10 : null;
-                const newBottom = !isTop ? window.innerHeight - btnRect.top + 10 : null;
-                
-                if (newLeft !== lastPosition.left || newTop !== lastPosition.top || newBottom !== lastPosition.bottom) {
-                    dropdown.style.left = `${newLeft}px`;
-                    
-                    if (isTop) {
-                        dropdown.style.top = `${newTop}px`;
-                        dropdown.style.bottom = 'auto';
-                    } else {
-                        dropdown.style.bottom = `${newBottom}px`;
-                        dropdown.style.top = 'auto';
-                    }
-                    
-                    lastPosition = { left: newLeft, top: newTop, bottom: newBottom };
-                }
-                
-                rafId = requestAnimationFrame(reposition);
-            };
-            
-            rafId = requestAnimationFrame(reposition);
-            this.dropdownPositioner = { rafId, type: 'raf' };
-        }
-
-        stopPositioner() {
-            if (this.dropdownPositioner) {
-                if (this.dropdownPositioner.type === 'raf' && this.dropdownPositioner.rafId) {
-                    cancelAnimationFrame(this.dropdownPositioner.rafId);
-                } else if (typeof this.dropdownPositioner === 'number') {
-                    clearInterval(this.dropdownPositioner);
-                }
-                this.dropdownPositioner = null;
-            }
-        }
-
-        closeDropdown() {
-            if (!state.activeDropdown) return;
-            
-            const dropdown = document.querySelector(`[data-dropdown="${state.activeDropdown}"]`);
-            const btn = document.querySelector(`[data-category-key="${state.activeDropdown}"]`);
-            
-            if (dropdown) dropdown.classList.remove('show');
-            if (btn) btn.classList.remove('expanded');
-            
-            state.activeDropdown = null;
-            this.stopPositioner();
-        }
+        toggleDropdown() {}
+        positionDropdown() {}
+        startPositioner() {}
+        stopPositioner() {}
+        closeDropdown() {}
 
         handleNav(page) {
             if (typeof window.switchPage === 'function') {
                 window.switchPage(page);
             }
             this.updateActive(page);
-            this.closeDropdown();
         }
 
         updateActive(activePage) {
             const menu = document.getElementById('staticMenu');
             if (!menu) return;
             
-            document.querySelectorAll('.dropdown-item').forEach(item => {
-                item.classList.toggle('active', item.dataset.page === activePage);
-            });
-            
-            menu.querySelector('.settings-btn-static')?.classList.toggle('active', activePage === 'settings');
-            
-            Object.entries(CONFIG.menuCategories).forEach(([key, category]) => {
-                const btn = menu.querySelector(`[data-category="${key}"] .category-btn`);
-                if (btn) {
-                    const isActive = category.pages.some(item => item.page === activePage);
-                    btn.classList.toggle('active', isActive);
-                }
-            });
+            const settingsBtn = menu.querySelector('.settings-btn-static');
+            if (settingsBtn) {
+                settingsBtn.classList.toggle('active', activePage === 'settings');
+            }
         }
 
         updateTranslations() {
-            const menu = document.getElementById('staticMenu');
-            if (!menu) return;
-            
-            const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-            const t = state.translations?.[lang] || state.translations?.en || {};
-            
-            Object.keys(CONFIG.menuCategories).forEach(key => {
-                const nameEl = menu.querySelector(`[data-category="${key}"] .category-name`);
-                if (nameEl && t[`${key}Category`]) {
-                    nameEl.textContent = t[`${key}Category`];
-                }
-            });
-            
-            document.querySelectorAll('.dropdown-item').forEach(item => {
-                const page = item.dataset.page;
-                if (t.pages?.[page]) {
-                    const category = Object.values(CONFIG.menuCategories)
-                        .find(cat => cat.pages.some(p => p.page === page));
-                    const icon = category?.pages.find(p => p.page === page)?.icon || '';
-                    item.innerHTML = `${icon} ${t.pages[page]}`;
-                }
-            });
+            console.log('✅ Static menu: no translations needed');
         }
     }
 
@@ -886,7 +672,7 @@
         setTimeout(() => backgroundManager.preloadAll(), 1000);
     }
 
-    console.log('✅ Settings module loaded');
+    console.log('✅ Settings module loaded (simplified menu)');
     console.log('📍 Base path:', SETTINGS_BASE_PATH);
 
     window.settingsInitialized = true;
