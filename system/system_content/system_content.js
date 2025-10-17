@@ -1,11 +1,10 @@
-// ========== SYSTEM CONTENT LOADER ==========
+// ========== SYSTEM CONTENT LOADER (NO AUTH) ==========
 
 class SystemContentLoader {
     constructor() {
         this.basePath = this.getBasePath();
         this.moduleConfigs = {
             settings: { path: 'system/moderation/settings.js', css: 'system/moderation/settings.css' },
-            profile: { path: 'system/profile/profile.js', css: 'system/profile/profile.css' },
             help: { path: 'system/moderation/help.js', css: 'system/moderation/help.css' },
             peoples: { path: 'system/moderation/peoples.js', css: 'system/moderation/peoples.css' }
         };
@@ -138,4 +137,4 @@ Object.assign(window, {
     getLoadedSystemModules: () => systemContentLoader.getLoadedModules()
 });
 
-console.log('✅ System Content Loader initialized');
+console.log('✅ System Content Loader initialized (NO AUTH)');
