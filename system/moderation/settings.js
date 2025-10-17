@@ -1,4 +1,4 @@
-// ========== OPTIMIZED SETTINGS MODULE (NO DROPDOWNS) ==========
+// ========== OPTIMIZED SETTINGS MODULE WITH CATEGORY DROPDOWNS ==========
 (function() {
     'use strict';
     
@@ -132,10 +132,10 @@
         }
     };
 
-    // ========== MENU MANAGER (SIMPLIFIED) ==========
+    // ========== MENU MANAGER ==========
     class MenuManager {
         constructor() {
-            this.dropdownPositioner = null;
+            this.activeDropdown = null;
         }
 
         clearAll() {
@@ -153,7 +153,6 @@
             });
             
             this.closeDropdown();
-            this.stopPositioner();
         }
 
         show(menuType) {
@@ -191,7 +190,19 @@
             menu.className = `static-menu menu-${isTop ? 'top' : 'bottom'}`;
             menu.id = 'staticMenu';
             
-            // ТІЛЬКИ КНОПКА SETTINGS
+            // Категорії
+            const categories = document.createElement('div');
+            categories.className = 'menu-categories';
+            
+            // Додаємо кнопки категорій
+            this.createCategoryButton(categories, 'background', '🎃');
+            this.createCategoryButton(categories, 'colors', '🎨');
+            this.createCategoryButton(categories, 'language', '🌍');
+            this.createCategoryButton(categories, 'menu', '👻');
+            
+            menu.appendChild(categories);
+            
+            // Settings кнопка
             const settingsContainer = document.createElement('div');
             settingsContainer.className = 'settings-container-static';
             
@@ -205,23 +216,170 @@
             
             document.body.appendChild(menu);
             
+            // Закриття дропдауну при кліку поза ним
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.menu-category')) {
+                    this.closeDropdown();
+                }
+            });
+            
             const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
             this.updateActive(currentPage);
             
-            console.log('✅ Static menu created (settings only)');
+            console.log('✅ Static menu created with categories');
         }
 
-        toggleDropdown() {}
-        positionDropdown() {}
-        startPositioner() {}
-        stopPositioner() {}
-        closeDropdown() {}
+        createCategoryButton(container, category, icon) {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'menu-category';
+            categoryDiv.dataset.category = category;
+            
+            const btn = document.createElement('button');
+            btn.className = 'category-btn';
+            btn.innerHTML = `<span>${icon}</span><span class="category-name">${category}</span>`;
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                this.toggleDropdown(category);
+            };
+            
+            categoryDiv.appendChild(btn);
+            
+            // Створюємо dropdown
+            const dropdown = this.createDropdown(category);
+            categoryDiv.appendChild(dropdown);
+            
+            container.appendChild(categoryDiv);
+        }
+
+        createDropdown(category) {
+            const dropdown = document.createElement('div');
+            dropdown.className = 'category-dropdown';
+            dropdown.dataset.category = category;
+            
+            let items = [];
+            
+            switch(category) {
+                case 'background':
+                    items = Object.entries(CONFIG.backgrounds).map(([key, bg]) => ({
+                        key,
+                        icon: bg.icon,
+                        name: key,
+                        action: () => changeBackground(key)
+                    }));
+                    break;
+                    
+                case 'colors':
+                    const themes = window.colorThemes || {};
+                    items = Object.entries(themes).map(([key, theme]) => ({
+                        key,
+                        icon: '🎨',
+                        name: theme.name.en,
+                        action: () => changeColorTheme(key)
+                    }));
+                    break;
+                    
+                case 'language':
+                    items = Object.entries(CONFIG.languages).map(([key, lang]) => ({
+                        key,
+                        icon: lang.icon,
+                        name: lang.name.en,
+                        action: () => changeLanguage(key)
+                    }));
+                    break;
+                    
+                case 'menu':
+                    items = Object.entries(CONFIG.menuPositions).map(([key, pos]) => ({
+                        key,
+                        icon: pos.icon,
+                        name: key,
+                        action: () => changeMenuPosition(key)
+                    }));
+                    break;
+            }
+            
+            items.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'dropdown-item';
+                itemDiv.dataset.value = item.key;
+                itemDiv.innerHTML = `
+                    <span class="dropdown-item-icon">${item.icon}</span>
+                    <span class="dropdown-item-name">${item.name}</span>
+                `;
+                itemDiv.onclick = (e) => {
+                    e.stopPropagation();
+                    item.action();
+                    this.updateDropdownActive(category, item.key);
+                };
+                dropdown.appendChild(itemDiv);
+            });
+            
+            return dropdown;
+        }
+
+        toggleDropdown(category) {
+            const categoryDiv = document.querySelector(`.menu-category[data-category="${category}"]`);
+            if (!categoryDiv) return;
+            
+            const dropdown = categoryDiv.querySelector('.category-dropdown');
+            const btn = categoryDiv.querySelector('.category-btn');
+            
+            // Закриваємо всі інші
+            if (this.activeDropdown && this.activeDropdown !== dropdown) {
+                this.closeDropdown();
+            }
+            
+            // Перемикаємо поточний
+            if (dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+                btn.classList.remove('active');
+                this.activeDropdown = null;
+            } else {
+                dropdown.classList.add('show');
+                btn.classList.add('active');
+                this.activeDropdown = dropdown;
+                this.updateDropdownActive(category, this.getCurrentValue(category));
+            }
+        }
+
+        closeDropdown() {
+            if (this.activeDropdown) {
+                this.activeDropdown.classList.remove('show');
+                const btn = this.activeDropdown.parentElement.querySelector('.category-btn');
+                if (btn) btn.classList.remove('active');
+                this.activeDropdown = null;
+            }
+        }
+
+        getCurrentValue(category) {
+            switch(category) {
+                case 'background':
+                    return storage.get('background', 'dodep');
+                case 'colors':
+                    return storage.get('colorTheme', 'spooky');
+                case 'language':
+                    return typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
+                case 'menu':
+                    return storage.get('menuPosition', 'left');
+                default:
+                    return null;
+            }
+        }
+
+        updateDropdownActive(category, value) {
+            const dropdown = document.querySelector(`.category-dropdown[data-category="${category}"]`);
+            if (!dropdown) return;
+            
+            dropdown.querySelectorAll('.dropdown-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.value === value);
+            });
+        }
 
         handleNav(page) {
             if (typeof window.switchPage === 'function') {
                 window.switchPage(page);
             }
             this.updateActive(page);
+            this.closeDropdown();
         }
 
         updateActive(activePage) {
@@ -235,7 +393,42 @@
         }
 
         updateTranslations() {
-            console.log('✅ Static menu: no translations needed');
+            const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
+            if (!state.translations?.[lang]) return;
+            
+            const t = state.translations[lang].settings;
+            const menu = document.getElementById('staticMenu');
+            if (!menu) return;
+            
+            // Оновлюємо назви категорій в кнопках
+            const categoryNames = {
+                background: t.background,
+                colors: t.colors,
+                language: t.language,
+                menu: t.menu
+            };
+            
+            Object.entries(categoryNames).forEach(([category, name]) => {
+                const btn = menu.querySelector(`.menu-category[data-category="${category}"] .category-name`);
+                if (btn) btn.textContent = name;
+            });
+            
+            // Оновлюємо елементи в dropdown
+            this.updateDropdownTranslations('background', t);
+            this.updateDropdownTranslations('menu', t);
+        }
+
+        updateDropdownTranslations(category, translations) {
+            const dropdown = document.querySelector(`.category-dropdown[data-category="${category}"]`);
+            if (!dropdown) return;
+            
+            dropdown.querySelectorAll('.dropdown-item').forEach(item => {
+                const key = item.dataset.value;
+                const nameEl = item.querySelector('.dropdown-item-name');
+                if (nameEl && translations[key]) {
+                    nameEl.textContent = translations[key];
+                }
+            });
         }
     }
 
@@ -351,6 +544,17 @@
                     el.textContent = CONFIG.languages[langKey].name[lang];
                 }
             });
+            
+            // Оновлюємо dropdown
+            const dropdown = document.querySelector('.category-dropdown[data-category="language"]');
+            if (dropdown) {
+                Object.keys(CONFIG.languages).forEach(langKey => {
+                    const item = dropdown.querySelector(`[data-value="${langKey}"] .dropdown-item-name`);
+                    if (item && CONFIG.languages[langKey].name[lang]) {
+                        item.textContent = CONFIG.languages[langKey].name[lang];
+                    }
+                });
+            }
         },
 
         updateColorThemeNames() {
@@ -363,6 +567,17 @@
                     el.textContent = themes[theme].name[lang];
                 }
             });
+            
+            // Оновлюємо dropdown
+            const dropdown = document.querySelector('.category-dropdown[data-category="colors"]');
+            if (dropdown) {
+                Object.keys(themes).forEach(theme => {
+                    const item = dropdown.querySelector(`[data-value="${theme}"] .dropdown-item-name`);
+                    if (item && themes[theme].name?.[lang]) {
+                        item.textContent = themes[theme].name[lang];
+                    }
+                });
+            }
         },
 
         updateBackground() {
@@ -370,6 +585,7 @@
             document.querySelectorAll('.background-option').forEach(opt => {
                 opt.classList.toggle('active', opt.dataset.background === current);
             });
+            menuManager.updateDropdownActive('background', current);
         },
 
         updateMenuPosition() {
@@ -377,6 +593,7 @@
             document.querySelectorAll('.menu-option').forEach(opt => {
                 opt.classList.toggle('active', opt.dataset.position === current);
             });
+            menuManager.updateDropdownActive('menu', current);
         },
 
         updateLanguage() {
@@ -384,6 +601,7 @@
             document.querySelectorAll('.language-option').forEach(opt => {
                 opt.classList.toggle('active', opt.dataset.language === current);
             });
+            menuManager.updateDropdownActive('language', current);
         }
     };
 
@@ -454,6 +672,7 @@
         storage.set('background', bg);
         await backgroundManager.apply(bg);
         ui.updateBackground();
+        menuManager.closeDropdown();
     }
 
     function changeMenuPosition(pos) {
@@ -462,6 +681,7 @@
         storage.set('menuPosition', pos);
         menuManager.show(pos);
         ui.updateMenuPosition();
+        menuManager.closeDropdown();
     }
 
     function changeLanguage(lang) {
@@ -472,6 +692,7 @@
         }
         
         ui.updateLanguage();
+        menuManager.closeDropdown();
     }
 
     // ========== HTML GENERATION ==========
@@ -630,6 +851,7 @@
             ui.updateSettings(e.detail.language);
             ui.updateColorThemeNames();
             ui.updateLanguageNames();
+            menuManager.updateTranslations();
         }
     });
 
@@ -672,7 +894,7 @@
         setTimeout(() => backgroundManager.preloadAll(), 1000);
     }
 
-    console.log('✅ Settings module loaded (simplified menu)');
+    console.log('✅ Settings module loaded with category dropdowns');
     console.log('📍 Base path:', SETTINGS_BASE_PATH);
 
     window.settingsInitialized = true;
