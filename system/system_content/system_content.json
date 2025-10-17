@@ -8,14 +8,6 @@
       "initFunction": "initializeSettings",
       "category": "system"
     },
-    "profile": {
-      "id": "profile",
-      "name": "Profile",
-      "icon": "👤",
-      "container": "profilePage",
-      "initFunction": "initializeProfile",
-      "category": "system"
-    },
     "help": {
       "id": "help",
       "name": "Help",
@@ -38,9 +30,9 @@
       "id": "systemCategory",
       "name": "System",
       "icon": "⚙️",
-      "modules": ["settings", "profile", "help", "peoples"]
+      "modules": ["settings", "help", "peoples"]
     }
   },
-  "initOrder": ["settings", "profile", "help", "peoples"],
-  "criticalModules": ["settings", "profile"]
+  "initOrder": ["settings", "help", "peoples"],
+  "criticalModules": ["settings"]
 }
