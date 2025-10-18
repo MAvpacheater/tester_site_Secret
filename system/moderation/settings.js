@@ -59,7 +59,7 @@
                 subcategories: {
                     calculator: {
                         icon: '🧮',
-                        pages: ['calculator', 'arm', 'grind', 'roulette', 'boss']
+                        pages: ['petscalc', 'arm', 'grind', 'roulette', 'boss']
                     },
                     info: {
                         icon: '📋',
@@ -76,7 +76,7 @@
                 subcategories: {
                     calculator: {
                         icon: '🧮',
-                        pages: ['calculator']
+                        pages: ['petscalc']
                     }
                 }
             },
