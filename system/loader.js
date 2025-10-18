@@ -173,24 +173,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const maxAttempts = 50;
     
     function waitForCriticalScripts() {
+        // Мінімальний набір критичних функцій (menu_manager завантажиться пізніше)
         const criticalFunctions = [
             'initializeApp', 
             'switchPage', 
-            'getCurrentAppLanguage',
-            'menuPositionManager'
+            'getCurrentAppLanguage'
         ];
-        const allLoaded = criticalFunctions.every(fn => 
-            typeof window[fn] === 'function' || typeof window[fn] === 'object'
-        );
+        const allLoaded = criticalFunctions.every(fn => typeof window[fn] === 'function');
         
         if (allLoaded) {
             console.log('✅ Critical scripts loaded');
+            console.log('📋 Checking optional: menuPositionManager =', typeof window.menuPositionManager);
             loadSystemScripts();
         } else if (attempts >= maxAttempts) {
             console.error('❌ Critical scripts timeout');
-            console.error('Missing:', criticalFunctions.filter(fn => 
-                typeof window[fn] !== 'function' && typeof window[fn] !== 'object'
-            ));
+            console.error('Missing:', criticalFunctions.filter(fn => typeof window[fn] !== 'function'));
             updateLoadingText('Critical error - please refresh');
             setTimeout(() => alert('Critical scripts failed to load. Please refresh.'), 1000);
         } else {
