@@ -48,35 +48,36 @@
             console.error('❌ Error loading menu translations:', err);
             menuTranslations = {
                 en: {
-                    menu: "Menu",
-                    calculator: "Calculator", 
-                    info: "Info",
-                    others: "Others",
-                    rcuCalc: "Calculators",
-                    awsCategory: "AWS",
-                    rcuCategory: "RCU",
-                    systemCategory: "System",
-                    pages: {
-                        calculator: "🐾 Pet Calculator",
-                        arm: "💪 Arm Calculator",
-                        grind: "🏋️‍♂️ Grind Calculator",
-                        roulette: "🎰 Roulette Calculator",
-                        boss: "👹 Boss Calculator",
-                        boosts: "🚀 Boosts",
-                        shiny: "✨ Shiny Stats",
-                        secret: "🔮 Secret Pets",
-                        codes: "🎁 Codes",
-                        aura: "🌟 Aura",
-                        trainer: "🏆 Trainer",
-                        charms: "🔮 Charms",
-                        potions: "🧪 Potions & Food",
-                        worlds: "🌍 Worlds",
-                        clans: "🏰 Clans",
-                        petscalc: "🐾 Pets Calculator",
-                        settings: "⚙️ Settings",
-                        help: "🆘 Help",
-                        peoples: "🙏 Peoples",
-                        trader: "🛒 Trader"
+                    menu: {
+                        awsCategory: "AWS",
+                        rcuCategory: "RCU",
+                        systemCategory: "System",
+                        calculator: "Calculators",
+                        rcuCalc: "Calculators",
+                        info: "Info",
+                        others: "Others",
+                        pages: {
+                            calculator: "Pet Calculator",
+                            arm: "Arm Calculator",
+                            grind: "Grind Calculator",
+                            roulette: "Roulette Calculator",
+                            boss: "Boss Calculator",
+                            boosts: "Boosts",
+                            shiny: "Shiny Stats",
+                            secret: "Secret Pets",
+                            codes: "Codes",
+                            aura: "Aura",
+                            trainer: "Trainer",
+                            charms: "Charms",
+                            potions: "Potions & Food",
+                            worlds: "Worlds",
+                            clans: "Clans",
+                            petscalc: "Pets Calculator",
+                            settings: "Settings",
+                            help: "Help",
+                            peoples: "Peoples",
+                            trader: "Trader"
+                        }
                     }
                 }
             };
@@ -93,13 +94,13 @@
         }
         
         const t = menuTranslations[currentAppLanguage];
-        if (!t) {
+        if (!t || !t.menu) {
             console.warn('⚠️ No translations for language:', currentAppLanguage);
             return;
         }
         
         const sidebarHeader = document.querySelector('.sidebar-header h3');
-        if (sidebarHeader) sidebarHeader.textContent = t.menu;
+        if (sidebarHeader) sidebarHeader.textContent = 'Menu';
         
         // Update main category titles
         const mainCategoryMappings = {
@@ -109,9 +110,9 @@
         };
         
         Object.entries(mainCategoryMappings).forEach(([categoryId, key]) => {
-            const header = document.querySelector(`[data-main-category="${categoryId}"] .main-category-title span:last-child`);
-            if (header && t[key]) {
-                header.textContent = t[key];
+            const header = document.querySelector(`[data-main-category="${categoryId}"] .main-category-text`);
+            if (header && t.menu[key]) {
+                header.textContent = t.menu[key];
             }
         });
         
@@ -124,14 +125,17 @@
         };
         
         Object.entries(categoryMappings).forEach(([categoryId, key]) => {
-            const header = document.querySelector(`[data-category="${categoryId}"] .category-title span:last-child`);
-            if (header && t[key]) header.textContent = t[key];
+            const header = document.querySelector(`[data-category="${categoryId}"] .category-text`);
+            if (header && t.menu[key]) header.textContent = t.menu[key];
         });
         
-        Object.entries(t.pages).forEach(([page, translation]) => {
-            const btn = document.querySelector(`[data-page="${page}"]`);
-            if (btn) btn.textContent = translation;
-        });
+        // Update page buttons
+        if (t.menu.pages) {
+            Object.entries(t.menu.pages).forEach(([page, translation]) => {
+                const btn = document.querySelector(`[data-page="${page}"] .nav-btn-text`);
+                if (btn) btn.textContent = translation;
+            });
+        }
         
         console.log('✅ Menu translations updated');
     };
@@ -140,7 +144,7 @@
         if (!menuTranslations || !currentAppLanguage) return;
         
         const t = menuTranslations[currentAppLanguage];
-        if (!t || !t.pages) return;
+        if (!t || !t.menu || !t.menu.pages) return;
         
         const pageTitleMappings = {
             'calculatorPage': 'calculator',
@@ -167,12 +171,12 @@
         
         Object.entries(pageTitleMappings).forEach(([pageId, key]) => {
             const page = document.getElementById(pageId);
-            if (page && t.pages[key]) {
+            if (page && t.menu.pages[key]) {
                 const titleEl = page.querySelector('h1, .title, .peoples-title, .help-title, .settings-title, .trader-title, .clans-title');
-                if (titleEl) titleEl.textContent = t.pages[key];
+                if (titleEl) titleEl.textContent = t.menu.pages[key];
                 
                 const headerTitle = page.querySelector('.header-controls h1');
-                if (headerTitle) headerTitle.textContent = t.pages[key];
+                if (headerTitle) headerTitle.textContent = t.menu.pages[key];
             }
         });
     };
