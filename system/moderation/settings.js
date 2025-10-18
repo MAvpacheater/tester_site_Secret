@@ -198,6 +198,13 @@
                 toggle.style[pos === 'right' ? 'left' : 'right'] = 'auto';
                 setTimeout(() => createMenuButton(), 10);
             }
+            
+            // Оновлюємо переклади для sidebar
+            setTimeout(() => {
+                if (typeof window.updateSidebarTranslations === 'function') {
+                    window.updateSidebarTranslations();
+                }
+            }, 100);
         }
 
         createStatic(pos) {
@@ -219,6 +226,9 @@
             
             const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
             this.updateActive(currentPage);
+            
+            // Оновлюємо переклади після створення
+            setTimeout(() => this.updateTranslations(), 50);
         }
 
         createCategoryBtn(container, catKey) {
@@ -250,7 +260,7 @@
                 Object.entries(category.subcategories).forEach(([subKey, subData]) => {
                     const header = document.createElement('div');
                     header.className = 'dropdown-subcategory-header';
-                    header.innerHTML = `<span>${subData.icon}</span><span class="subcategory-name">${subKey}</span>`;
+                    header.innerHTML = `<span>${subData.icon}</span><span class="subcategory-name" data-key="${subKey}">${subKey}</span>`;
                     header.dataset.subcategory = subKey;
                     header.onclick = (e) => {
                         e.stopPropagation();
@@ -283,7 +293,7 @@
             item.dataset.page = page;
             item.innerHTML = `
                 <span class="dropdown-item-icon">${CONFIG.pageIcons[page] || '📄'}</span>
-                <span class="dropdown-item-name">${page.replace('_', ' ')}</span>
+                <span class="dropdown-item-name" data-page="${page}">${page.replace('_', ' ')}</span>
             `;
             item.onclick = (e) => {
                 e.stopPropagation();
@@ -301,7 +311,6 @@
             
             const wasOpen = !targetItems.classList.contains('collapsed');
             
-            // Закрити всі підкатегорії в цьому dropdown
             dropdown.querySelectorAll('.subcategory-items').forEach(items => {
                 items.classList.add('collapsed');
             });
@@ -309,7 +318,6 @@
                 h.classList.remove('active');
             });
             
-            // Відкрити цільову, якщо вона була закрита
             if (!wasOpen) {
                 targetItems.classList.remove('collapsed');
                 header.classList.add('active');
@@ -338,7 +346,6 @@
         closeAll() {
             document.querySelectorAll('.category-dropdown').forEach(d => {
                 d.classList.remove('show');
-                // Закрити всі підкатегорії
                 d.querySelectorAll('.subcategory-items').forEach(items => {
                     items.classList.add('collapsed');
                 });
@@ -385,27 +392,30 @@
             if (!menu) return;
             
             // Оновлюємо назви головних категорій
-            const catNames = { aws: t.awsCategory || 'AWS', rcu: t.rcuCategory || 'RCU', system: t.systemCategory || 'System' };
+            const catNames = { 
+                aws: t.awsCategory || 'AWS', 
+                rcu: t.rcuCategory || 'RCU', 
+                system: t.systemCategory || 'System' 
+            };
+            
             Object.entries(catNames).forEach(([key, name]) => {
                 const el = menu.querySelector(`.menu-category[data-category="${key}"] .category-name`);
                 if (el) el.textContent = name;
             });
             
             // Оновлюємо назви підкатегорій
-            menu.querySelectorAll('.dropdown-subcategory-header').forEach(header => {
-                const subKey = header.dataset.subcategory;
-                const nameEl = header.querySelector('.subcategory-name');
-                if (nameEl && subKey && t[subKey]) {
+            menu.querySelectorAll('.subcategory-name[data-key]').forEach(nameEl => {
+                const subKey = nameEl.dataset.key;
+                if (subKey && t[subKey]) {
                     nameEl.textContent = t[subKey];
                 }
             });
             
             // Оновлюємо назви сторінок
             if (t.pages) {
-                document.querySelectorAll('.dropdown-item').forEach(item => {
-                    const page = item.dataset.page;
-                    const nameEl = item.querySelector('.dropdown-item-name');
-                    if (nameEl && t.pages[page]) {
+                menu.querySelectorAll('.dropdown-item-name[data-page]').forEach(nameEl => {
+                    const page = nameEl.dataset.page;
+                    if (page && t.pages[page]) {
                         nameEl.textContent = t.pages[page];
                     }
                 });
