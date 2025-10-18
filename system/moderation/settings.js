@@ -59,7 +59,7 @@
                 subcategories: {
                     calculator: {
                         icon: '🧮',
-                        pages: ['petscalc', 'arm', 'grind', 'roulette', 'boss']
+                        pages: ['calculator', 'arm', 'grind', 'roulette', 'boss']
                     },
                     info: {
                         icon: '📋',
@@ -74,7 +74,7 @@
             rcu: { 
                 icon: '🎮',
                 subcategories: {
-                    calculator: {
+                    rcuCalc: {
                         icon: '🧮',
                         pages: ['petscalc']
                     }
@@ -384,31 +384,30 @@
             const menu = document.getElementById('staticMenu');
             if (!menu) return;
             
+            // Оновлюємо назви головних категорій
             const catNames = { aws: t.awsCategory || 'AWS', rcu: t.rcuCategory || 'RCU', system: t.systemCategory || 'System' };
             Object.entries(catNames).forEach(([key, name]) => {
                 const el = menu.querySelector(`.menu-category[data-category="${key}"] .category-name`);
                 if (el) el.textContent = name;
             });
             
-            const subNames = {
-                calculator: t.calculator || 'Calculator',
-                info: t.info || 'Info',
-                others: t.others || 'Others',
-                rcuCalc: t.rcuCalc || 'Calculators'
-            };
-            
-            Object.entries(subNames).forEach(([key, name]) => {
-                const els = menu.querySelectorAll('.dropdown-subcategory-header .subcategory-name');
-                els.forEach(el => {
-                    if (el.textContent === key) el.textContent = name;
-                });
+            // Оновлюємо назви підкатегорій
+            menu.querySelectorAll('.dropdown-subcategory-header').forEach(header => {
+                const subKey = header.dataset.subcategory;
+                const nameEl = header.querySelector('.subcategory-name');
+                if (nameEl && subKey && t[subKey]) {
+                    nameEl.textContent = t[subKey];
+                }
             });
             
+            // Оновлюємо назви сторінок
             if (t.pages) {
                 document.querySelectorAll('.dropdown-item').forEach(item => {
                     const page = item.dataset.page;
                     const nameEl = item.querySelector('.dropdown-item-name');
-                    if (nameEl && t.pages[page]) nameEl.textContent = t.pages[page];
+                    if (nameEl && t.pages[page]) {
+                        nameEl.textContent = t.pages[page];
+                    }
                 });
             }
         }
