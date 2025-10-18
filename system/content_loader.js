@@ -1,5 +1,14 @@
 // ========== CONTENT LOADER (AWS + RCU + System - NO AUTH) ==========
 
+// Конфігурація іконок для сторінок
+const PAGE_ICONS = {
+    calculator: '🐾', arm: '💪', grind: '🏋️‍♂️', roulette: '🎰', boss: '👹',
+    boosts: '🚀', shiny: '✨', secret: '🔮', codes: '🎁', aura: '🌟',
+    trainer: '🏆', charms: '🔮', potions: '🧪', worlds: '🌍',
+    trader: '🛒', clans: '🏰', petscalc: '🐾',
+    settings: '⚙️', help: '🆘', peoples: '🙏'
+};
+
 async function loadContent() {
     try {
         const baseTag = document.querySelector('base');
@@ -146,6 +155,7 @@ function createMainCategoryDirect(id, icon, pages) {
             <div class="main-category-content main-category-direct" id="${id}">
                 ${pages.map(page => 
                     `<button class="nav-btn" data-page="${page}" onclick="switchPage('${page}')">
+                        <span class="nav-btn-icon">${PAGE_ICONS[page] || '📄'}</span>
                         <span class="nav-btn-text"></span>
                     </button>`
                 ).join('')}
@@ -167,6 +177,7 @@ function createNavCategory(id, icon, pages) {
             <div class="category-buttons" id="${id}">
                 ${pages.map(page => 
                     `<button class="nav-btn" data-page="${page}" onclick="switchPage('${page}')">
+                        <span class="nav-btn-icon">${PAGE_ICONS[page] || '📄'}</span>
                         <span class="nav-btn-text"></span>
                     </button>`
                 ).join('')}
@@ -414,7 +425,8 @@ Object.assign(window, {
     ensureMobileMenuButton,
     toggleMainCategory,
     toggleCategory,
-    openCategoryForPage
+    openCategoryForPage,
+    PAGE_ICONS
 });
 
 console.log('✅ Content Loader ready (AWS + RCU + System - NO AUTH)');
