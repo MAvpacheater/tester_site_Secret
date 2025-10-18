@@ -8,10 +8,7 @@
     const state = {
         initialized: false,
         translations: null,
-        categories: { background: false, menu: false, colors: false, language: false },
-        activeDropdown: null,
-        activeCategory: null,
-        currentMenuType: null
+        categories: { background: false, menu: false, colors: false, language: false }
     };
 
     // ========== CONFIG ==========
@@ -51,47 +48,6 @@
             en: { icon: '🇺🇸', name: { en: 'English', uk: 'Англійська', ru: 'Английский' } },
             uk: { icon: '🇺🇦', name: { en: 'Ukrainian', uk: 'Українська', ru: 'Украинский' } },
             ru: { icon: '🇷🇺', name: { en: 'Russian', uk: 'Російська', ru: 'Русский' } }
-        },
-        
-        pageCategories: {
-            aws: { 
-                icon: '📦',
-                subcategories: {
-                    calculator: {
-                        icon: '🧮',
-                        pages: ['calculator', 'arm', 'grind', 'roulette', 'boss']
-                    },
-                    info: {
-                        icon: '📋',
-                        pages: ['boosts', 'shiny', 'secret', 'codes', 'aura', 'trainer', 'charms', 'potions', 'worlds']
-                    },
-                    others: {
-                        icon: '🔧',
-                        pages: ['trader', 'clans']
-                    }
-                }
-            },
-            rcu: { 
-                icon: '🎮',
-                subcategories: {
-                    rcuCalc: {
-                        icon: '🧮',
-                        pages: ['petscalc']
-                    }
-                }
-            },
-            system: { 
-                icon: '⚙️',
-                pages: ['settings', 'help', 'peoples']
-            }
-        },
-        
-        pageIcons: {
-            calculator: '🐾', arm: '💪', grind: '🏋️‍♂️', roulette: '🎰', boss: '👹',
-            boosts: '🚀', shiny: '✨', secret: '🔮', codes: '🎁', aura: '🌟',
-            trainer: '🏆', charms: '🔮', potions: '🧪', worlds: '🌍',
-            trader: '🛒', clans: '🏰', petscalc: '🐾',
-            settings: '⚙️', help: '🆘', peoples: '🙏'
         }
     };
 
@@ -149,315 +105,26 @@
         }
     };
 
-    // ========== MENU MANAGER ==========
-    class MenuManager {
-        constructor() {
-            this.clickHandler = this.handleDocumentClick.bind(this);
-        }
-
-        clearAll() {
-            document.getElementById('staticMenu')?.remove();
-            document.querySelectorAll('.category-dropdown').forEach(d => d.remove());
-            
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar?.classList.remove('open');
-            overlay?.classList.remove('show');
-            
-            ['left', 'right', 'up', 'down'].forEach(pos => {
-                document.body.classList.remove(`menu-${pos}`);
+    // ========== MENU MANAGER (використовує існуюче меню) ==========
+    const menuManager = {
+        apply(pos) {
+            // Видаляємо всі класи позицій
+            ['left', 'right', 'up', 'down'].forEach(p => {
+                document.body.classList.remove(`menu-${p}`);
             });
             
-            this.closeAll();
-            document.removeEventListener('click', this.clickHandler);
-        }
-
-        show(type) {
-            this.clearAll();
-            document.body.classList.add(`menu-${type}`);
-            state.currentMenuType = type;
+            // Додаємо новий клас
+            document.body.classList.add(`menu-${pos}`);
             
-            if (type === 'left' || type === 'right') {
-                this.setupSidebar(type);
-            } else {
-                this.createStatic(type);
-            }
-        }
-
-        setupSidebar(pos) {
-            const sidebar = document.getElementById('sidebar');
-            const toggle = document.querySelector('.mobile-menu-toggle');
-            
-            if (sidebar) {
-                sidebar.style[pos === 'right' ? 'right' : 'left'] = '-320px';
-                sidebar.style[pos === 'right' ? 'left' : 'right'] = 'auto';
-            }
-            
-            if (toggle) {
-                toggle.style[pos === 'right' ? 'right' : 'left'] = '20px';
-                toggle.style[pos === 'right' ? 'left' : 'right'] = 'auto';
-                setTimeout(() => createMenuButton(), 10);
-            }
-            
-            // Оновлюємо переклади для sidebar
-            setTimeout(() => {
-                if (typeof window.updateSidebarTranslations === 'function') {
-                    window.updateSidebarTranslations();
+            // Оновлюємо мобільну кнопку для left/right
+            if (pos === 'left' || pos === 'right') {
+                const toggle = document.querySelector('.mobile-menu-toggle');
+                if (toggle && typeof window.createMenuButton === 'function') {
+                    setTimeout(() => window.createMenuButton(), 10);
                 }
-            }, 100);
-        }
-
-        createStatic(pos) {
-            const menu = document.createElement('div');
-            menu.className = `static-menu menu-${pos === 'up' ? 'top' : 'bottom'}`;
-            menu.id = 'staticMenu';
-            
-            const categories = document.createElement('div');
-            categories.className = 'menu-categories';
-            
-            Object.keys(CONFIG.pageCategories).forEach(key => {
-                this.createCategoryBtn(categories, key);
-            });
-            
-            menu.appendChild(categories);
-            document.body.appendChild(menu);
-            
-            document.addEventListener('click', this.clickHandler);
-            
-            const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
-            this.updateActive(currentPage);
-            
-            // Оновлюємо переклади після створення
-            setTimeout(() => this.updateTranslations(), 50);
-        }
-
-        createCategoryBtn(container, catKey) {
-            const category = CONFIG.pageCategories[catKey];
-            if (!category) return;
-            
-            const div = document.createElement('div');
-            div.className = 'menu-category';
-            div.dataset.category = catKey;
-            
-            const btn = document.createElement('button');
-            btn.className = 'category-btn';
-            btn.innerHTML = `<span>${category.icon}</span><span class="category-name">${catKey.toUpperCase()}</span>`;
-            btn.onclick = (e) => {
-                e.stopPropagation();
-                this.toggle(catKey);
-            };
-            
-            div.appendChild(btn);
-            div.appendChild(this.createDropdown(category));
-            container.appendChild(div);
-        }
-
-        createDropdown(category) {
-            const dropdown = document.createElement('div');
-            dropdown.className = 'category-dropdown';
-            
-            if (category.subcategories) {
-                Object.entries(category.subcategories).forEach(([subKey, subData]) => {
-                    const header = document.createElement('div');
-                    header.className = 'dropdown-subcategory-header';
-                    header.innerHTML = `<span>${subData.icon}</span><span class="subcategory-name" data-key="${subKey}">${subKey}</span>`;
-                    header.dataset.subcategory = subKey;
-                    header.onclick = (e) => {
-                        e.stopPropagation();
-                        this.toggleSubcategory(header);
-                    };
-                    dropdown.appendChild(header);
-                    
-                    const items = document.createElement('div');
-                    items.className = 'subcategory-items collapsed';
-                    items.dataset.subcategory = subKey;
-                    
-                    subData.pages.forEach(page => {
-                        items.appendChild(this.createPageItem(page));
-                    });
-                    
-                    dropdown.appendChild(items);
-                });
-            } else {
-                category.pages.forEach(page => {
-                    dropdown.appendChild(this.createPageItem(page));
-                });
-            }
-            
-            return dropdown;
-        }
-
-        createPageItem(page) {
-            const item = document.createElement('div');
-            item.className = 'dropdown-item';
-            item.dataset.page = page;
-            item.innerHTML = `
-                <span class="dropdown-item-icon">${CONFIG.pageIcons[page] || '📄'}</span>
-                <span class="dropdown-item-name" data-page="${page}">${page.replace('_', ' ')}</span>
-            `;
-            item.onclick = (e) => {
-                e.stopPropagation();
-                this.handleNav(page);
-            };
-            return item;
-        }
-
-        toggleSubcategory(header) {
-            const dropdown = header.closest('.category-dropdown');
-            const targetSubcat = header.dataset.subcategory;
-            const targetItems = dropdown.querySelector(`.subcategory-items[data-subcategory="${targetSubcat}"]`);
-            
-            if (!targetItems) return;
-            
-            const wasOpen = !targetItems.classList.contains('collapsed');
-            
-            dropdown.querySelectorAll('.subcategory-items').forEach(items => {
-                items.classList.add('collapsed');
-            });
-            dropdown.querySelectorAll('.dropdown-subcategory-header').forEach(h => {
-                h.classList.remove('active');
-            });
-            
-            if (!wasOpen) {
-                targetItems.classList.remove('collapsed');
-                header.classList.add('active');
             }
         }
-
-        toggle(catKey) {
-            const catDiv = document.querySelector(`.menu-category[data-category="${catKey}"]`);
-            if (!catDiv) return;
-            
-            const dropdown = catDiv.querySelector('.category-dropdown');
-            const btn = catDiv.querySelector('.category-btn');
-            const isOpen = dropdown.classList.contains('show');
-            
-            this.closeAll();
-            
-            if (!isOpen) {
-                dropdown.classList.add('show');
-                btn.classList.add('active');
-                state.activeDropdown = dropdown;
-                state.activeCategory = catKey;
-                this.updateDropdownActive();
-            }
-        }
-
-        closeAll() {
-            document.querySelectorAll('.category-dropdown').forEach(d => {
-                d.classList.remove('show');
-                d.querySelectorAll('.subcategory-items').forEach(items => {
-                    items.classList.add('collapsed');
-                });
-                d.querySelectorAll('.dropdown-subcategory-header').forEach(h => {
-                    h.classList.remove('active');
-                });
-            });
-            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-            state.activeDropdown = null;
-            state.activeCategory = null;
-        }
-
-        handleDocumentClick(e) {
-            if (!e.target.closest('.menu-category')) {
-                this.closeAll();
-            }
-        }
-
-        updateDropdownActive() {
-            const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
-            document.querySelectorAll('.dropdown-item').forEach(item => {
-                item.classList.toggle('active', item.dataset.page === currentPage);
-            });
-        }
-
-        handleNav(page) {
-            if (typeof window.switchPage === 'function') {
-                window.switchPage(page);
-            }
-            this.updateActive(page);
-            this.closeAll();
-        }
-
-        updateActive(page) {
-            this.updateDropdownActive();
-        }
-
-        updateTranslations() {
-            const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-            if (!state.translations?.[lang]?.menu) return;
-            
-            const t = state.translations[lang].menu;
-            const menu = document.getElementById('staticMenu');
-            if (!menu) return;
-            
-            // Оновлюємо назви головних категорій
-            const catNames = { 
-                aws: t.awsCategory || 'AWS', 
-                rcu: t.rcuCategory || 'RCU', 
-                system: t.systemCategory || 'System' 
-            };
-            
-            Object.entries(catNames).forEach(([key, name]) => {
-                const el = menu.querySelector(`.menu-category[data-category="${key}"] .category-name`);
-                if (el) el.textContent = name;
-            });
-            
-            // Оновлюємо назви підкатегорій
-            menu.querySelectorAll('.subcategory-name[data-key]').forEach(nameEl => {
-                const subKey = nameEl.dataset.key;
-                if (subKey && t[subKey]) {
-                    nameEl.textContent = t[subKey];
-                }
-            });
-            
-            // Оновлюємо назви сторінок
-            if (t.pages) {
-                menu.querySelectorAll('.dropdown-item-name[data-page]').forEach(nameEl => {
-                    const page = nameEl.dataset.page;
-                    if (page && t.pages[page]) {
-                        nameEl.textContent = t.pages[page];
-                    }
-                });
-            }
-        }
-    }
-
-    const menuManager = new MenuManager();
-
-    // ========== MENU BUTTON ==========
-    function createMenuButton() {
-        const toggle = document.querySelector('.mobile-menu-toggle');
-        if (!toggle) return;
-        
-        toggle.innerHTML = '';
-        [-4, 0, 4].forEach(pos => {
-            const line = document.createElement('div');
-            line.className = 'menu-line';
-            line.style.transform = `translate(-50%, -50%) translateY(${pos}px)`;
-            toggle.appendChild(line);
-        });
-    }
-
-    function toggleMobileMenu() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        if (sidebar && overlay) {
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('show');
-            document.querySelector('.mobile-menu-toggle')?.classList.toggle('menu-open', sidebar.classList.contains('open'));
-        }
-    }
-
-    function closeSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        if (sidebar && overlay) {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('show');
-            document.querySelector('.mobile-menu-toggle')?.classList.remove('menu-open');
-        }
-    }
+    };
 
     // ========== TRANSLATIONS ==========
     async function loadTranslations() {
@@ -508,7 +175,6 @@
             });
             
             this.updateLanguageNames();
-            menuManager.updateTranslations();
         },
 
         updateLanguageNames() {
@@ -620,7 +286,7 @@
     function changeMenuPosition(pos) {
         if (!CONFIG.menuPositions[pos]) return;
         storage.set('menuPosition', pos);
-        menuManager.show(pos);
+        menuManager.apply(pos);
         ui.updateMenuPosition();
     }
 
@@ -740,7 +406,7 @@
         ui.updateBackground();
         
         const menuPos = storage.get('menuPosition', 'left');
-        menuManager.show(menuPos);
+        menuManager.apply(menuPos);
         ui.updateMenuPosition();
         
         if (typeof updateColorThemeUI === 'function') {
@@ -760,13 +426,7 @@
         await loadTranslations();
         
         const menuPos = storage.get('menuPosition', 'left');
-        menuManager.show(menuPos);
-        
-        setTimeout(() => {
-            if (typeof getCurrentAppLanguage === 'function') {
-                menuManager.updateTranslations();
-            }
-        }, 500);
+        menuManager.apply(menuPos);
     }
 
     // ========== EVENT LISTENERS ==========
@@ -775,17 +435,16 @@
             ui.updateSettings(e.detail.language);
             ui.updateColorThemeNames();
             ui.updateLanguageNames();
-            menuManager.updateTranslations();
         }
     });
 
     document.addEventListener('pageChanged', (e) => {
-        if (e.detail?.page) menuManager.updateActive(e.detail.page);
+        // Settings більше не керує активним станом сторінок
     });
 
     document.addEventListener('contentLoaded', () => {
         const pos = storage.get('menuPosition', 'left');
-        menuManager.show(pos);
+        menuManager.apply(pos);
     });
 
     // ========== GLOBAL EXPORTS ==========
@@ -796,10 +455,6 @@
         changeLanguage,
         toggleSettingsCategory: (name) => categories.toggle(name),
         updateSettingsLanguage: (lang) => ui.updateSettings(lang),
-        menuManager,
-        toggleMobileMenu,
-        closeSidebar,
-        createMenuButton,
         SETTINGS_BASE_PATH
     });
 
