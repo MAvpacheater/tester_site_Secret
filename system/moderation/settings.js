@@ -1,11 +1,8 @@
-// ========== OPTIMIZED SETTINGS MODULE WITH PAGE CATEGORIES ==========
+// ========== OPTIMIZED SETTINGS MODULE ==========
 (function() {
     'use strict';
     
-    if (window.settingsInitialized) {
-        console.log('⚠️ Settings already loaded');
-        return;
-    }
+    if (window.settingsInitialized) return;
 
     // ========== STATE ==========
     const state = {
@@ -13,24 +10,18 @@
         translations: null,
         categories: { background: false, menu: false, colors: false, language: false },
         activeDropdown: null,
+        activeCategory: null,
         currentMenuType: null
     };
 
     // ========== CONFIG ==========
     const getBasePath = () => {
         const { protocol, host, pathname } = window.location;
-        
-        if (host === 'mavpacheater.github.io') {
-            return `${protocol}//${host}/tester_site_Secret/`;
-        }
-        
+        if (host === 'mavpacheater.github.io') return `${protocol}//${host}/tester_site_Secret/`;
         if (host.includes('localhost') || host.includes('127.0.0.1')) {
             const parts = pathname.split('/').filter(Boolean);
-            if (parts.length && parts[0] !== 'AWS') {
-                return `${protocol}//${host}/${parts[0]}/`;
-            }
+            if (parts.length && parts[0] !== 'AWS') return `${protocol}//${host}/${parts[0]}/`;
         }
-        
         return '/';
     };
 
@@ -62,7 +53,6 @@
             ru: { icon: '🇷🇺', name: { en: 'Russian', uk: 'Російська', ru: 'Русский' } }
         },
         
-        // Категорії сторінок (як у бічному меню)
         pageCategories: {
             aws: { 
                 icon: '📦',
@@ -94,6 +84,14 @@
                 icon: '⚙️',
                 pages: ['settings', 'help', 'peoples']
             }
+        },
+        
+        pageIcons: {
+            calculator: '🐾', arm: '💪', grind: '🏋️‍♂️', roulette: '🎰', boss: '👹',
+            boosts: '🚀', shiny: '✨', secret: '🔮', codes: '🎁', aura: '🌟',
+            trainer: '🏆', charms: '🔮', potions: '🧪', worlds: '🌍',
+            trader: '🛒', clans: '🏰', petscalc: '🐾',
+            settings: '⚙️', help: '🆘', peoples: '🙏'
         }
     };
 
@@ -103,82 +101,66 @@
 
     // ========== STORAGE ==========
     const storage = {
-        get: (key, defaultValue) => localStorage.getItem(`armHelper_${key}`) || defaultValue,
-        set: (key, value) => localStorage.setItem(`armHelper_${key}`, value),
-        getJSON: (key, defaultValue) => {
+        get: (key, def) => localStorage.getItem(`armHelper_${key}`) || def,
+        set: (key, val) => localStorage.setItem(`armHelper_${key}`, val),
+        getJSON: (key, def) => {
             try {
                 const data = localStorage.getItem(`armHelper_${key}`);
-                return data ? JSON.parse(data) : defaultValue;
-            } catch {
-                return defaultValue;
-            }
+                return data ? JSON.parse(data) : def;
+            } catch { return def; }
         },
-        setJSON: (key, value) => localStorage.setItem(`armHelper_${key}`, JSON.stringify(value))
+        setJSON: (key, val) => localStorage.setItem(`armHelper_${key}`, JSON.stringify(val))
     };
 
     // ========== BACKGROUND MANAGER ==========
     const backgroundManager = {
-        async preload(background) {
+        cache: new Map(),
+        
+        async preload(bg) {
+            if (this.cache.has(bg)) return this.cache.get(bg);
+            
+            const config = CONFIG.backgrounds[bg];
+            if (!config) return null;
+            
             return new Promise((resolve) => {
-                const config = CONFIG.backgrounds[background];
-                if (!config) {
-                    resolve(false);
-                    return;
-                }
-                
                 const img = new Image();
                 img.onload = () => {
-                    console.log(`✅ Background loaded: ${background}`);
+                    this.cache.set(bg, config.url);
                     resolve(config.url);
                 };
-                img.onerror = () => {
-                    console.error(`❌ Failed to load: ${background}`);
-                    resolve(false);
-                };
+                img.onerror = () => resolve(null);
                 img.src = config.url;
             });
         },
 
-        async apply(background) {
-            const config = CONFIG.backgrounds[background];
-            if (!config) {
-                console.warn(`⚠️ Unknown background: ${background}`);
-                return;
-            }
-            
-            const imageUrl = await this.preload(background);
+        async apply(bg) {
+            const imageUrl = await this.preload(bg);
             const body = document.body;
             
-            if (imageUrl) {
-                body.style.background = `linear-gradient(135deg, rgba(41, 39, 35, 0.4) 0%, rgba(28, 26, 23, 0.6) 50%, rgba(20, 19, 17, 0.8) 100%), url('${imageUrl}') center center / cover no-repeat`;
-                body.style.backgroundAttachment = 'scroll';
-                console.log(`🎃 Background applied: ${background}`);
-            } else {
-                body.style.background = `linear-gradient(135deg, rgba(41, 39, 35, 0.9) 0%, rgba(28, 26, 23, 0.95) 50%, rgba(20, 19, 17, 1) 100%)`;
-            }
+            body.style.background = imageUrl 
+                ? `linear-gradient(135deg, rgba(41,39,35,0.4) 0%, rgba(28,26,23,0.6) 50%, rgba(20,19,17,0.8) 100%), url('${imageUrl}') center center / cover no-repeat`
+                : `linear-gradient(135deg, rgba(41,39,35,0.9) 0%, rgba(28,26,23,0.95) 50%, rgba(20,19,17,1) 100%)`;
+            body.style.backgroundAttachment = 'scroll';
         },
 
         async preloadAll() {
-            console.log('🖼️ Preloading backgrounds...');
             const promises = Object.keys(CONFIG.backgrounds).map(bg => this.preload(bg));
             await Promise.allSettled(promises);
-            console.log('✅ Backgrounds preloaded');
         }
     };
 
     // ========== MENU MANAGER ==========
     class MenuManager {
         constructor() {
-            this.activeDropdown = null;
+            this.clickHandler = this.handleDocumentClick.bind(this);
         }
 
         clearAll() {
             document.getElementById('staticMenu')?.remove();
-            document.querySelectorAll('.category-dropdown').forEach(dropdown => dropdown.remove());
+            document.querySelectorAll('.category-dropdown').forEach(d => d.remove());
             
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
-            
             sidebar?.classList.remove('open');
             overlay?.classList.remove('show');
             
@@ -186,238 +168,198 @@
                 document.body.classList.remove(`menu-${pos}`);
             });
             
-            this.closeAllDropdowns();
+            this.closeAll();
+            document.removeEventListener('click', this.clickHandler);
         }
 
-        show(menuType) {
+        show(type) {
             this.clearAll();
-            document.body.classList.add(`menu-${menuType}`);
+            document.body.classList.add(`menu-${type}`);
+            state.currentMenuType = type;
             
-            if (menuType === 'left' || menuType === 'right') {
-                this.setupSidebar(menuType);
+            if (type === 'left' || type === 'right') {
+                this.setupSidebar(type);
             } else {
-                this.createStatic(menuType);
+                this.createStatic(type);
             }
-            
-            state.currentMenuType = menuType;
         }
 
-        setupSidebar(position) {
+        setupSidebar(pos) {
             const sidebar = document.getElementById('sidebar');
             const toggle = document.querySelector('.mobile-menu-toggle');
             
             if (sidebar) {
-                sidebar.style.left = position === 'right' ? 'auto' : '-320px';
-                sidebar.style.right = position === 'right' ? '-320px' : 'auto';
+                sidebar.style[pos === 'right' ? 'right' : 'left'] = '-320px';
+                sidebar.style[pos === 'right' ? 'left' : 'right'] = 'auto';
             }
             
             if (toggle) {
-                toggle.style.left = position === 'right' ? 'auto' : '20px';
-                toggle.style.right = position === 'right' ? '20px' : 'auto';
+                toggle.style[pos === 'right' ? 'right' : 'left'] = '20px';
+                toggle.style[pos === 'right' ? 'left' : 'right'] = 'auto';
                 setTimeout(() => createMenuButton(), 10);
             }
         }
 
-        createStatic(position) {
-            const isTop = position === 'up';
+        createStatic(pos) {
             const menu = document.createElement('div');
-            menu.className = `static-menu menu-${isTop ? 'top' : 'bottom'}`;
+            menu.className = `static-menu menu-${pos === 'up' ? 'top' : 'bottom'}`;
             menu.id = 'staticMenu';
             
-            // Категорії сторінок
             const categories = document.createElement('div');
             categories.className = 'menu-categories';
             
-            // Додаємо кнопки категорій сторінок
-            Object.keys(CONFIG.pageCategories).forEach(categoryKey => {
-                const category = CONFIG.pageCategories[categoryKey];
-                this.createCategoryButton(categories, categoryKey, category.icon);
+            Object.keys(CONFIG.pageCategories).forEach(key => {
+                this.createCategoryBtn(categories, key);
             });
             
             menu.appendChild(categories);
-            
             document.body.appendChild(menu);
             
-            // Закриття дропдауну при кліку поза ним
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.menu-category')) {
-                    this.closeAllDropdowns();
-                }
-            });
+            document.addEventListener('click', this.clickHandler);
             
             const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
             this.updateActive(currentPage);
-            
-            console.log('✅ Static menu created with page categories');
         }
 
-        createCategoryButton(container, categoryKey, icon) {
-            const category = CONFIG.pageCategories[categoryKey];
+        createCategoryBtn(container, catKey) {
+            const category = CONFIG.pageCategories[catKey];
             if (!category) return;
             
-            const categoryDiv = document.createElement('div');
-            categoryDiv.className = 'menu-category';
-            categoryDiv.dataset.category = categoryKey;
+            const div = document.createElement('div');
+            div.className = 'menu-category';
+            div.dataset.category = catKey;
             
             const btn = document.createElement('button');
             btn.className = 'category-btn';
-            btn.innerHTML = `<span>${icon}</span><span class="category-name">${categoryKey.toUpperCase()}</span>`;
+            btn.innerHTML = `<span>${category.icon}</span><span class="category-name">${catKey.toUpperCase()}</span>`;
             btn.onclick = (e) => {
                 e.stopPropagation();
-                this.toggleDropdown(categoryKey);
+                this.toggle(catKey);
             };
             
-            categoryDiv.appendChild(btn);
+            div.appendChild(btn);
+            div.appendChild(this.createDropdown(category));
+            container.appendChild(div);
+        }
+
+        createDropdown(category) {
+            const dropdown = document.createElement('div');
+            dropdown.className = 'category-dropdown';
             
-            // Створюємо dropdown
-            let dropdown;
             if (category.subcategories) {
-                // Для AWS та RCU - з підкатегоріями
-                dropdown = this.createSubcategoriesDropdown(category.subcategories);
-            } else {
-                // Для System - прямі сторінки
-                dropdown = this.createPagesDropdown(category.pages);
-            }
-            categoryDiv.appendChild(dropdown);
-            
-            container.appendChild(categoryDiv);
-        }
-
-        createSubcategoriesDropdown(subcategories) {
-            const dropdown = document.createElement('div');
-            dropdown.className = 'category-dropdown';
-            
-            Object.entries(subcategories).forEach(([subKey, subData]) => {
-                // Заголовок підкатегорії
-                const subHeader = document.createElement('div');
-                subHeader.className = 'dropdown-subcategory-header';
-                subHeader.innerHTML = `<span>${subData.icon}</span><span class="subcategory-name">${subKey}</span>`;
-                dropdown.appendChild(subHeader);
-                
-                // Сторінки підкатегорії
-                subData.pages.forEach(page => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'dropdown-item';
-                    itemDiv.dataset.page = page;
-                    
-                    const pageInfo = this.getPageInfo(page);
-                    itemDiv.innerHTML = `
-                        <span class="dropdown-item-icon">${pageInfo.icon}</span>
-                        <span class="dropdown-item-name">${pageInfo.name}</span>
-                    `;
-                    itemDiv.onclick = (e) => {
+                Object.entries(category.subcategories).forEach(([subKey, subData]) => {
+                    const header = document.createElement('div');
+                    header.className = 'dropdown-subcategory-header';
+                    header.innerHTML = `<span>${subData.icon}</span><span class="subcategory-name">${subKey}</span>`;
+                    header.dataset.subcategory = subKey;
+                    header.onclick = (e) => {
                         e.stopPropagation();
-                        this.handleNav(page);
+                        this.toggleSubcategory(header);
                     };
-                    dropdown.appendChild(itemDiv);
+                    dropdown.appendChild(header);
+                    
+                    const items = document.createElement('div');
+                    items.className = 'subcategory-items collapsed';
+                    items.dataset.subcategory = subKey;
+                    
+                    subData.pages.forEach(page => {
+                        items.appendChild(this.createPageItem(page));
+                    });
+                    
+                    dropdown.appendChild(items);
                 });
-            });
+            } else {
+                category.pages.forEach(page => {
+                    dropdown.appendChild(this.createPageItem(page));
+                });
+            }
             
             return dropdown;
         }
 
-        createPagesDropdown(pages) {
-            const dropdown = document.createElement('div');
-            dropdown.className = 'category-dropdown';
+        createPageItem(page) {
+            const item = document.createElement('div');
+            item.className = 'dropdown-item';
+            item.dataset.page = page;
+            item.innerHTML = `
+                <span class="dropdown-item-icon">${CONFIG.pageIcons[page] || '📄'}</span>
+                <span class="dropdown-item-name">${page.replace('_', ' ')}</span>
+            `;
+            item.onclick = (e) => {
+                e.stopPropagation();
+                this.handleNav(page);
+            };
+            return item;
+        }
+
+        toggleSubcategory(header) {
+            const dropdown = header.closest('.category-dropdown');
+            const targetSubcat = header.dataset.subcategory;
+            const targetItems = dropdown.querySelector(`.subcategory-items[data-subcategory="${targetSubcat}"]`);
             
-            pages.forEach(page => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'dropdown-item';
-                itemDiv.dataset.page = page;
-                
-                const pageInfo = this.getPageInfo(page);
-                itemDiv.innerHTML = `
-                    <span class="dropdown-item-icon">${pageInfo.icon}</span>
-                    <span class="dropdown-item-name">${pageInfo.name}</span>
-                `;
-                itemDiv.onclick = (e) => {
-                    e.stopPropagation();
-                    this.handleNav(page);
-                };
-                dropdown.appendChild(itemDiv);
+            if (!targetItems) return;
+            
+            const wasOpen = !targetItems.classList.contains('collapsed');
+            
+            // Закрити всі підкатегорії в цьому dropdown
+            dropdown.querySelectorAll('.subcategory-items').forEach(items => {
+                items.classList.add('collapsed');
+            });
+            dropdown.querySelectorAll('.dropdown-subcategory-header').forEach(h => {
+                h.classList.remove('active');
             });
             
-            return dropdown;
+            // Відкрити цільову, якщо вона була закрита
+            if (!wasOpen) {
+                targetItems.classList.remove('collapsed');
+                header.classList.add('active');
+            }
         }
 
-        getPageInfo(page) {
-            const pageIcons = {
-                // AWS Calculator
-                calculator: '🐾',
-                arm: '💪',
-                grind: '🏋️‍♂️',
-                roulette: '🎰',
-                boss: '👹',
-                // AWS Info
-                boosts: '🚀',
-                shiny: '✨',
-                secret: '🔮',
-                codes: '🎁',
-                aura: '🌟',
-                trainer: '🏆',
-                charms: '🔮',
-                potions: '🧪',
-                worlds: '🌍',
-                // AWS Others
-                trader: '🛒',
-                clans: '🏰',
-                // RCU
-                petscalc: '🐾',
-                // System
-                settings: '⚙️',
-                help: '🆘',
-                peoples: '🙏'
-            };
+        toggle(catKey) {
+            const catDiv = document.querySelector(`.menu-category[data-category="${catKey}"]`);
+            if (!catDiv) return;
             
-            return {
-                icon: pageIcons[page] || '📄',
-                name: page.replace('_', ' ')
-            };
-        }
-
-        toggleDropdown(categoryKey) {
-            const categoryDiv = document.querySelector(`.menu-category[data-category="${categoryKey}"]`);
-            if (!categoryDiv) return;
+            const dropdown = catDiv.querySelector('.category-dropdown');
+            const btn = catDiv.querySelector('.category-btn');
+            const isOpen = dropdown.classList.contains('show');
             
-            const dropdown = categoryDiv.querySelector('.category-dropdown');
-            const btn = categoryDiv.querySelector('.category-btn');
+            this.closeAll();
             
-            const isCurrentlyOpen = dropdown.classList.contains('show');
-            
-            // Завжди спочатку закриваємо всі dropdown
-            this.closeAllDropdowns();
-            
-            // Якщо dropdown не був відкритий, відкриваємо його
-            if (!isCurrentlyOpen) {
+            if (!isOpen) {
                 dropdown.classList.add('show');
                 btn.classList.add('active');
-                this.activeDropdown = dropdown;
+                state.activeDropdown = dropdown;
+                state.activeCategory = catKey;
                 this.updateDropdownActive();
             }
         }
 
-        closeDropdown() {
-            if (this.activeDropdown) {
-                this.activeDropdown.classList.remove('show');
-                const btn = this.activeDropdown.parentElement.querySelector('.category-btn');
-                if (btn) btn.classList.remove('active');
-                this.activeDropdown = null;
-            }
+        closeAll() {
+            document.querySelectorAll('.category-dropdown').forEach(d => {
+                d.classList.remove('show');
+                // Закрити всі підкатегорії
+                d.querySelectorAll('.subcategory-items').forEach(items => {
+                    items.classList.add('collapsed');
+                });
+                d.querySelectorAll('.dropdown-subcategory-header').forEach(h => {
+                    h.classList.remove('active');
+                });
+            });
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            state.activeDropdown = null;
+            state.activeCategory = null;
         }
 
-        closeAllDropdowns() {
-            document.querySelectorAll('.category-dropdown').forEach(dropdown => {
-                dropdown.classList.remove('show');
-                const btn = dropdown.parentElement?.querySelector('.category-btn');
-                if (btn) btn.classList.remove('active');
-            });
-            this.activeDropdown = null;
+        handleDocumentClick(e) {
+            if (!e.target.closest('.menu-category')) {
+                this.closeAll();
+            }
         }
 
         updateDropdownActive() {
             const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
-            
-            document.querySelectorAll('.category-dropdown .dropdown-item').forEach(item => {
+            document.querySelectorAll('.dropdown-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.page === currentPage);
             });
         }
@@ -427,11 +369,10 @@
                 window.switchPage(page);
             }
             this.updateActive(page);
-            this.closeAllDropdowns();
+            this.closeAll();
         }
 
-        updateActive(activePage) {
-            // Оновлюємо активну сторінку в dropdown
+        updateActive(page) {
             this.updateDropdownActive();
         }
 
@@ -443,43 +384,31 @@
             const menu = document.getElementById('staticMenu');
             if (!menu) return;
             
-            // Оновлюємо назви головних категорій
-            const categoryNames = {
-                aws: t.awsCategory || 'AWS',
-                rcu: t.rcuCategory || 'RCU',
-                system: t.systemCategory || 'System'
-            };
-            
-            Object.entries(categoryNames).forEach(([categoryKey, name]) => {
-                const btn = menu.querySelector(`.menu-category[data-category="${categoryKey}"] .category-name`);
-                if (btn) btn.textContent = name;
+            const catNames = { aws: t.awsCategory || 'AWS', rcu: t.rcuCategory || 'RCU', system: t.systemCategory || 'System' };
+            Object.entries(catNames).forEach(([key, name]) => {
+                const el = menu.querySelector(`.menu-category[data-category="${key}"] .category-name`);
+                if (el) el.textContent = name;
             });
             
-            // Оновлюємо назви підкатегорій
-            const subcategoryNames = {
+            const subNames = {
                 calculator: t.calculator || 'Calculator',
                 info: t.info || 'Info',
                 others: t.others || 'Others',
                 rcuCalc: t.rcuCalc || 'Calculators'
             };
             
-            Object.entries(subcategoryNames).forEach(([subKey, name]) => {
-                const subHeaders = menu.querySelectorAll(`.dropdown-subcategory-header .subcategory-name`);
-                subHeaders.forEach(header => {
-                    if (header.textContent === subKey) {
-                        header.textContent = name;
-                    }
+            Object.entries(subNames).forEach(([key, name]) => {
+                const els = menu.querySelectorAll('.dropdown-subcategory-header .subcategory-name');
+                els.forEach(el => {
+                    if (el.textContent === key) el.textContent = name;
                 });
             });
             
-            // Оновлюємо назви сторінок
             if (t.pages) {
-                document.querySelectorAll('.category-dropdown .dropdown-item').forEach(item => {
+                document.querySelectorAll('.dropdown-item').forEach(item => {
                     const page = item.dataset.page;
                     const nameEl = item.querySelector('.dropdown-item-name');
-                    if (nameEl && t.pages[page]) {
-                        nameEl.textContent = t.pages[page];
-                    }
+                    if (nameEl && t.pages[page]) nameEl.textContent = t.pages[page];
                 });
             }
         }
@@ -501,34 +430,23 @@
         });
     }
 
-    function updateMenuButtonVisibility() {
-        const toggle = document.querySelector('.mobile-menu-toggle');
-        const sidebar = document.getElementById('sidebar');
-        
-        if (toggle && sidebar) {
-            toggle.classList.toggle('menu-open', sidebar.classList.contains('open'));
-        }
-    }
-
     function toggleMobileMenu() {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
-        
         if (sidebar && overlay) {
             sidebar.classList.toggle('open');
             overlay.classList.toggle('show');
-            updateMenuButtonVisibility();
+            document.querySelector('.mobile-menu-toggle')?.classList.toggle('menu-open', sidebar.classList.contains('open'));
         }
     }
 
     function closeSidebar() {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
-        
         if (sidebar && overlay) {
             sidebar.classList.remove('open');
             overlay.classList.remove('show');
-            updateMenuButtonVisibility();
+            document.querySelector('.mobile-menu-toggle')?.classList.remove('menu-open');
         }
     }
 
@@ -537,12 +455,9 @@
         if (state.translations) return state.translations;
         
         try {
-            const url = `${SETTINGS_BASE_PATH}system/moderation/menu.json`;
-            const response = await fetch(url);
+            const response = await fetch(`${SETTINGS_BASE_PATH}system/moderation/menu.json`);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            
             state.translations = await response.json();
-            console.log('✅ Translations loaded');
             return state.translations;
         } catch (error) {
             console.error('❌ Translation error:', error);
@@ -554,7 +469,6 @@
     const ui = {
         updateSettings(lang = null) {
             const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en');
-            
             if (!state.translations?.[currentLang]) return;
             
             const t = state.translations[currentLang].settings;
@@ -562,16 +476,16 @@
             if (!page) return;
             
             const updates = [
-                { selector: '.settings-title', text: t.title },
-                { selector: '[data-category="language"] .category-title span:last-child', text: t.language },
-                { selector: '[data-category="colors"] .category-title span:last-child', text: t.colors },
-                { selector: '[data-category="background"] .category-title span:last-child', text: t.background },
-                { selector: '[data-category="menu"] .category-title span:last-child', text: t.menu }
+                { sel: '.settings-title', txt: t.title },
+                { sel: '[data-category="language"] .category-title span:last-child', txt: t.language },
+                { sel: '[data-category="colors"] .category-title span:last-child', txt: t.colors },
+                { sel: '[data-category="background"] .category-title span:last-child', txt: t.background },
+                { sel: '[data-category="menu"] .category-title span:last-child', txt: t.menu }
             ];
             
-            updates.forEach(({ selector, text }) => {
-                const el = page.querySelector(selector);
-                if (el) el.textContent = text;
+            updates.forEach(({ sel, txt }) => {
+                const el = page.querySelector(sel);
+                if (el) el.textContent = txt;
             });
             
             Object.keys(CONFIG.backgrounds).forEach(bg => {
@@ -590,11 +504,10 @@
 
         updateLanguageNames() {
             const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-            
-            Object.keys(CONFIG.languages).forEach(langKey => {
-                const el = document.querySelector(`[data-language="${langKey}"] .language-option-name`);
-                if (el && CONFIG.languages[langKey].name[lang]) {
-                    el.textContent = CONFIG.languages[langKey].name[lang];
+            Object.keys(CONFIG.languages).forEach(key => {
+                const el = document.querySelector(`[data-language="${key}"] .language-option-name`);
+                if (el && CONFIG.languages[key].name[lang]) {
+                    el.textContent = CONFIG.languages[key].name[lang];
                 }
             });
         },
@@ -602,7 +515,6 @@
         updateColorThemeNames() {
             const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
             const themes = window.colorThemes || {};
-            
             Object.keys(themes).forEach(theme => {
                 const el = document.querySelector(`[data-theme="${theme}"] .color-option-name`);
                 if (el && themes[theme].name?.[lang]) {
@@ -639,7 +551,6 @@
             if (!state.categories.hasOwnProperty(name)) return;
             
             const wasOpen = state.categories[name];
-            
             Object.keys(state.categories).forEach(cat => {
                 state.categories[cat] = false;
                 this.updateUI(cat, false);
@@ -678,25 +589,20 @@
             const openCount = Object.values(saved).filter(Boolean).length;
             
             if (openCount > 1) {
-                Object.keys(state.categories).forEach(key => {
-                    state.categories[key] = false;
-                });
+                Object.keys(state.categories).forEach(key => state.categories[key] = false);
             } else {
                 state.categories = { ...state.categories, ...saved };
             }
         },
 
         apply() {
-            Object.keys(state.categories).forEach(cat => {
-                this.updateUI(cat, state.categories[cat]);
-            });
+            Object.keys(state.categories).forEach(cat => this.updateUI(cat, state.categories[cat]));
         }
     };
 
     // ========== CHANGE FUNCTIONS ==========
     async function changeBackground(bg) {
         if (!CONFIG.backgrounds[bg]) return;
-        
         storage.set('background', bg);
         await backgroundManager.apply(bg);
         ui.updateBackground();
@@ -704,7 +610,6 @@
 
     function changeMenuPosition(pos) {
         if (!CONFIG.menuPositions[pos]) return;
-        
         storage.set('menuPosition', pos);
         menuManager.show(pos);
         ui.updateMenuPosition();
@@ -712,11 +617,9 @@
 
     function changeLanguage(lang) {
         if (!CONFIG.languages[lang]) return;
-        
         if (typeof window.switchAppLanguage === 'function') {
             window.switchAppLanguage(lang);
         }
-        
         ui.updateLanguage();
     }
 
@@ -810,18 +713,10 @@
 
     // ========== INITIALIZATION ==========
     async function initSettings() {
-        if (state.initialized) {
-            console.log('⚠️ Already initialized');
-            return;
-        }
+        if (state.initialized) return;
         
         const page = document.getElementById('settingsPage');
-        if (!page) {
-            console.warn('⚠️ Settings page not found');
-            return;
-        }
-        
-        console.log('🔧 Initializing settings...');
+        if (!page) return;
         
         categories.load();
         page.innerHTML = createSettingsHTML();
@@ -847,12 +742,9 @@
         categories.apply();
         
         state.initialized = true;
-        console.log('✅ Settings initialized');
     }
 
     async function initOnStart() {
-        console.log('🚀 Startup initialization...');
-        
         const bg = storage.get('background', 'dodep');
         await backgroundManager.apply(bg);
         
@@ -866,8 +758,6 @@
                 menuManager.updateTranslations();
             }
         }, 500);
-        
-        console.log('✅ Startup complete');
     }
 
     // ========== EVENT LISTENERS ==========
@@ -881,13 +771,10 @@
     });
 
     document.addEventListener('pageChanged', (e) => {
-        if (e.detail?.page) {
-            menuManager.updateActive(e.detail.page);
-        }
+        if (e.detail?.page) menuManager.updateActive(e.detail.page);
     });
 
     document.addEventListener('contentLoaded', () => {
-        console.log('📦 Content loaded, re-initializing menu...');
         const pos = storage.get('menuPosition', 'left');
         menuManager.show(pos);
     });
@@ -903,7 +790,6 @@
         menuManager,
         toggleMobileMenu,
         closeSidebar,
-        updateMenuButtonVisibility,
         createMenuButton,
         SETTINGS_BASE_PATH
     });
@@ -918,9 +804,6 @@
         initOnStart();
         setTimeout(() => backgroundManager.preloadAll(), 1000);
     }
-
-    console.log('✅ Settings module loaded with page categories');
-    console.log('📍 Base path:', SETTINGS_BASE_PATH);
 
     window.settingsInitialized = true;
 
