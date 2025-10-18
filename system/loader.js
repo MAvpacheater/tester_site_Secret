@@ -26,7 +26,7 @@ async function loadSystemScripts() {
     updateLoadingText('Loading system modules...');
     
     try {
-        // STEP 1: System scripts (Settings only, no Auth/Profile)
+        // STEP 1: System scripts (Settings, Help, Peoples - NO AUTH)
         console.log('📦 Step 1: System scripts (NO AUTH)...');
         const systemScripts = [
             'system/moderation/settings.js',
@@ -74,40 +74,44 @@ async function initializeSystems() {
     try {
         console.log('🚀 ========== INITIALIZING ==========');
         
-        // STEP 1: AWS Router
+        // STEP 1: Menu Manager
+        updateLoadingText('Initializing menu manager...');
+        console.log('🎯 Menu Manager:', window.menuPositionManager ? '✅' : '⚠️ Not found');
+        
+        // STEP 2: AWS Router
         updateLoadingText('Initializing AWS router...');
         console.log('📦 AWS Router:', window.awsRouter ? '✅' : '⚠️ Not found');
         
-        // STEP 2: RCU Loader
+        // STEP 3: RCU Loader
         updateLoadingText('Initializing RCU loader...');
         console.log('🎮 RCU Loader:', window.rcuLoader ? '✅' : '⚠️ Not found');
         
-        // STEP 3: System Content Loader
+        // STEP 4: System Content Loader
         updateLoadingText('Initializing System modules...');
         console.log('🔧 System Content Loader:', window.systemContentLoader ? '✅' : '⚠️ Not found');
         
-        // STEP 4: AWS Modules (critical CSS only)
+        // STEP 5: AWS Modules (critical CSS only)
         updateLoadingText('Loading AWS modules...');
         if (typeof loadAllAWSModules === 'function') {
             await loadAllAWSModules();
             console.log('✅ Critical AWS modules loaded');
         }
         
-        // STEP 5: RCU Modules (critical CSS only)
+        // STEP 6: RCU Modules (critical CSS only)
         updateLoadingText('Loading RCU modules...');
         if (typeof loadAllRCUModules === 'function') {
             await loadAllRCUModules();
             console.log('✅ Critical RCU modules loaded');
         }
         
-        // STEP 6: URL Routing
+        // STEP 7: URL Routing
         updateLoadingText('Setting up routing...');
         if (typeof initURLRouting === 'function') {
             initURLRouting();
             console.log('✅ URL routing initialized');
         }
         
-        // STEP 7: Auto-Reload
+        // STEP 8: Auto-Reload
         updateLoadingText('Setting up auto-reload...');
         if (typeof initGitHubAutoReload === 'function') {
             initGitHubAutoReload({
@@ -119,7 +123,7 @@ async function initializeSystems() {
             console.log('✅ Auto-reload initialized');
         }
         
-        // STEP 8: Final setup
+        // STEP 9: Final setup
         updateLoadingText('Finalizing...');
         await new Promise(resolve => setTimeout(resolve, 300));
         
@@ -169,15 +173,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const maxAttempts = 50;
     
     function waitForCriticalScripts() {
-        const criticalFunctions = ['initializeApp', 'switchPage', 'getCurrentAppLanguage'];
-        const allLoaded = criticalFunctions.every(fn => typeof window[fn] === 'function');
+        const criticalFunctions = [
+            'initializeApp', 
+            'switchPage', 
+            'getCurrentAppLanguage',
+            'menuPositionManager'
+        ];
+        const allLoaded = criticalFunctions.every(fn => 
+            typeof window[fn] === 'function' || typeof window[fn] === 'object'
+        );
         
         if (allLoaded) {
             console.log('✅ Critical scripts loaded');
             loadSystemScripts();
         } else if (attempts >= maxAttempts) {
             console.error('❌ Critical scripts timeout');
-            console.error('Missing:', criticalFunctions.filter(fn => typeof window[fn] !== 'function'));
+            console.error('Missing:', criticalFunctions.filter(fn => 
+                typeof window[fn] !== 'function' && typeof window[fn] !== 'object'
+            ));
             updateLoadingText('Critical error - please refresh');
             setTimeout(() => alert('Critical scripts failed to load. Please refresh.'), 1000);
         } else {
@@ -203,6 +216,10 @@ function initDebugUtilities() {
             ['initializeApp', 'switchPage', 'getCurrentAppLanguage', 'initURLRouting', 'loadAllAWSModules', 'loadAllRCUModules'].forEach(fn => {
                 console.log(`${typeof window[fn] === 'function' ? '✅' : '❌'} ${fn}`);
             });
+            console.log('\n=== MENU MANAGER ===');
+            console.log('Position Manager:', typeof window.menuPositionManager);
+            console.log('Static Menu Manager:', typeof window.staticMenuManager);
+            console.log('Current Position:', localStorage.getItem('armHelper_menuPosition') || 'left');
             console.log('\n=== AWS ===');
             console.log('Loader:', typeof window.awsLoader);
             console.log('Router:', typeof window.awsRouter);
@@ -253,6 +270,18 @@ function initDebugUtilities() {
             }
         },
         
+        testMenuPositions: () => {
+            console.log('🎯 Testing menu positions...');
+            ['left', 'right', 'up', 'down'].forEach((pos, i) => {
+                setTimeout(() => {
+                    console.log(`Testing position: ${pos}`);
+                    if (window.menuPositionManager) {
+                        window.menuPositionManager.apply(pos);
+                    }
+                }, i * 2000);
+            });
+        },
+        
         quickReload: () => {
             console.log('🔄 Reloading');
             window.location.reload();
@@ -261,7 +290,12 @@ function initDebugUtilities() {
     
     window.debugSystemReady = true;
     console.log('✅ Debug utilities ready');
+    console.log('📖 Debug commands:');
+    console.log('  - window.debugSystem() - Show system status');
+    console.log('  - window.checkModules() - Show loaded modules');
+    console.log('  - window.testMenuPositions() - Test all menu positions');
+    console.log('  - window.forceRoute("page") - Navigate to page');
 }
 
-console.log('✅ System Loader ready (AWS + RCU + System - NO AUTH)');
-console.log('📖 Debug: window.debugSystem() | window.checkModules()');
+console.log('✅ System Loader ready (AWS + RCU + System + Menu Manager - NO AUTH)');
+console.log('📖 Debug: window.debugSystem() | window.checkModules() | window.testMenuPositions()');
