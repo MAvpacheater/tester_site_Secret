@@ -122,7 +122,7 @@ function createMainCategory(id, icon, subcategories) {
             <div class="main-category-header" data-main-category="${id}" onclick="toggleMainCategory('${id}')">
                 <div class="main-category-title">
                     <span class="main-category-icon">${icon}</span>
-                    <span></span>
+                    <span class="main-category-text"></span>
                 </div>
                 <span class="main-category-toggle">▼</span>
             </div>
@@ -139,13 +139,15 @@ function createMainCategoryDirect(id, icon, pages) {
             <div class="main-category-header" data-main-category="${id}" onclick="toggleMainCategory('${id}')">
                 <div class="main-category-title">
                     <span class="main-category-icon">${icon}</span>
-                    <span></span>
+                    <span class="main-category-text"></span>
                 </div>
                 <span class="main-category-toggle">▼</span>
             </div>
             <div class="main-category-content main-category-direct" id="${id}">
                 ${pages.map(page => 
-                    `<button class="nav-btn" data-page="${page}" onclick="switchPage('${page}')"></button>`
+                    `<button class="nav-btn" data-page="${page}" onclick="switchPage('${page}')">
+                        <span class="nav-btn-text"></span>
+                    </button>`
                 ).join('')}
             </div>
         </div>
@@ -158,13 +160,15 @@ function createNavCategory(id, icon, pages) {
             <div class="category-header" data-category="${id}" onclick="toggleCategory('${id}')">
                 <div class="category-title">
                     <span class="category-icon">${icon}</span>
-                    <span></span>
+                    <span class="category-text"></span>
                 </div>
                 <span class="category-toggle">▼</span>
             </div>
             <div class="category-buttons" id="${id}">
                 ${pages.map(page => 
-                    `<button class="nav-btn" data-page="${page}" onclick="switchPage('${page}')"></button>`
+                    `<button class="nav-btn" data-page="${page}" onclick="switchPage('${page}')">
+                        <span class="nav-btn-text"></span>
+                    </button>`
                 ).join('')}
             </div>
         </div>
