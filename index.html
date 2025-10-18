@@ -41,7 +41,12 @@
     <link rel="icon" type="image/png" sizes="32x32" href="AWS/image/bg/penguin.png">
     <link rel="preload" href="system/general.css" as="style">
     <link rel="preload" href="system/general.js" as="script">
+    
+    <!-- Core CSS -->
     <link rel="stylesheet" href="system/general.css">
+    <link rel="stylesheet" href="system/menu_manager.css">
+    <link rel="stylesheet" href="system/moderation/settings.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="system/system_content/system_content.css" media="print" onload="this.media='all'">
     
     <style>
         /* Loading screen styles */
@@ -117,10 +122,6 @@
         }
     </style>
     
-    <!-- CRITICAL: System CSS - завантажуються статично -->
-    <link rel="stylesheet" href="system/moderation/settings.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="system/system_content/system_content.css" media="print" onload="this.media='all'">
-    
     <!-- AWS CSS завантажуються динамічно через aws_loader.js -->
 </head>
 <body>
@@ -136,11 +137,10 @@
     <div id="app-content"></div>
     <div class="signature">Completely free</div>
     
-    <!-- NO Firebase - All auth code removed -->
-    
-    <!-- CRITICAL: Тільки системні скрипти, AWS завантажуються через loader.js -->
+    <!-- Core System Scripts -->
     <script src="system/general.js" defer></script>
     <script src="system/colors.js" defer></script>
+    <script src="system/menu_manager.js" defer></script>
     <script src="system/reload.js" defer></script>
     <script src="system/url.js" defer></script>
     <script src="system/loader.js" defer></script>
