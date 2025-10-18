@@ -74,9 +74,9 @@
             rcu: { 
                 icon: '🎮',
                 subcategories: {
-                    rcuCalc: {
+                    calculator: {
                         icon: '🧮',
-                        pages: ['petscalc']
+                        pages: ['calculator']
                     }
                 }
             },
