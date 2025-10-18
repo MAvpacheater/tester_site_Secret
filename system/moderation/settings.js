@@ -105,23 +105,17 @@
         }
     };
 
-    // ========== MENU MANAGER (використовує існуюче меню) ==========
+    // ========== MENU MANAGER (використовує menu_manager.js) ==========
     const menuManager = {
         apply(pos) {
-            // Видаляємо всі класи позицій
-            ['left', 'right', 'up', 'down'].forEach(p => {
-                document.body.classList.remove(`menu-${p}`);
-            });
-            
-            // Додаємо новий клас
-            document.body.classList.add(`menu-${pos}`);
-            
-            // Оновлюємо мобільну кнопку для left/right
-            if (pos === 'left' || pos === 'right') {
-                const toggle = document.querySelector('.mobile-menu-toggle');
-                if (toggle && typeof window.createMenuButton === 'function') {
-                    setTimeout(() => window.createMenuButton(), 10);
-                }
+            if (typeof window.menuPositionManager !== 'undefined') {
+                window.menuPositionManager.apply(pos);
+            } else {
+                console.warn('⚠️ menuPositionManager not found, falling back to basic implementation');
+                ['left', 'right', 'up', 'down'].forEach(p => {
+                    document.body.classList.remove(`menu-${p}`);
+                });
+                document.body.classList.add(`menu-${pos}`);
             }
         }
     };
