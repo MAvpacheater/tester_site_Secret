@@ -51,6 +51,7 @@ async function loadContent() {
         console.log('✅ Content structure created (AWS + RCU + System)');
 
         ensureMobileMenuButton();
+        attachSidebarCloseHandlers();
 
         setTimeout(() => {
             if (typeof window.initializeApp === 'function') {
@@ -77,7 +78,7 @@ function createAppStructure(contentHTML) {
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h3></h3>
-                <button class="close-sidebar" onclick="closeSidebar()">×</button>
+                <button class="close-sidebar" onclick="window.closeSidebar(); return false;">×</button>
             </div>
             <div class="nav-buttons">
                 ${createMainCategory('awsCategory', '📦', [
@@ -98,10 +99,64 @@ function createAppStructure(contentHTML) {
             </div>
         </div>
 
-        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="window.closeSidebar(); return false;"></div>
            
         <div class="container">${contentHTML}</div>
     `;
+}
+
+function attachSidebarCloseHandlers() {
+    console.log('🔗 Attaching sidebar close handlers...');
+    
+    // Обробник для overlay
+    const overlay = document.getElementById('sidebarOverlay');
+    if (overlay) {
+        // Видаляємо всі попередні обробники
+        const newOverlay = overlay.cloneNode(true);
+        overlay.parentNode.replaceChild(newOverlay, overlay);
+        
+        // Додаємо новий обробник
+        newOverlay.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🖱️ Overlay clicked - closing sidebar');
+            window.closeSidebar();
+        });
+        
+        // Також додаємо через addEventListener для надійності
+        newOverlay.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            console.log('👆 Overlay touched - closing sidebar');
+            window.closeSidebar();
+        });
+        
+        console.log('✅ Overlay handlers attached');
+    }
+    
+    // Обробник для кнопки закриття
+    const closeBtn = document.querySelector('.close-sidebar');
+    if (closeBtn) {
+        // Видаляємо всі попередні обробники
+        const newCloseBtn = closeBtn.cloneNode(true);
+        closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+        
+        // Додаємо новий обробник
+        newCloseBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🖱️ Close button clicked - closing sidebar');
+            window.closeSidebar();
+        });
+        
+        // Також додаємо через addEventListener для надійності
+        newCloseBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            console.log('👆 Close button touched - closing sidebar');
+            window.closeSidebar();
+        });
+        
+        console.log('✅ Close button handlers attached');
+    }
 }
 
 function ensureMobileMenuButton() {
@@ -426,6 +481,7 @@ Object.assign(window, {
     toggleMainCategory,
     toggleCategory,
     openCategoryForPage,
+    attachSidebarCloseHandlers,
     PAGE_ICONS
 });
 
