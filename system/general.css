@@ -221,7 +221,7 @@ body {
     margin-bottom: 8px;
 }
 
-/* Nav Category Styles */
+/* Nav Category Styles - ОНОВЛЕНО! */
 .nav-category { 
     margin-bottom: 15px; 
 }
@@ -232,8 +232,9 @@ body {
     justify-content: space-between;
     padding: 12px 15px;
     margin-bottom: 10px;
-    background: rgba(50,25,75,.5);
-    border: 2px solid rgba(138,43,226,.4);
+    /* ЗМІНЕНО: такі самі кольори як у main-category-header */
+    background: rgba(50,25,75,.6);
+    border: 2px solid rgba(138,43,226,.5);
     border-radius: 10px;
     color: #FF6600;
     font-size: 1.1em;
@@ -244,7 +245,7 @@ body {
 }
 
 .category-header:hover {
-    background: rgba(50,25,75,.7);
+    background: rgba(50,25,75,.8);
     transform: scale(1.02);
 }
 
