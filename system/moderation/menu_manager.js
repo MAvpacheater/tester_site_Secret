@@ -2,7 +2,10 @@
 (function() {
     'use strict';
     
-    if (window.menuManagerInitialized) return;
+    if (window.menuManagerInitialized) {
+        console.log('⚠️ Menu Manager already initialized, reinitializing...');
+        delete window.menuManagerInitialized;
+    }
 
     // ========== CONFIG ==========
     const PAGE_ICONS = window.PAGE_ICONS || {
@@ -51,21 +54,27 @@
         currentPosition: null,
         activeDropdown: null,
         activeCategory: null,
-        translations: null
+        translations: null,
+        staticMenuInstance: null
     };
 
     // ========== STATIC MENU CLASS ==========
     class StaticMenuManager {
         constructor() {
             this.clickHandler = this.handleDocumentClick.bind(this);
+            this.menuElement = null;
         }
 
         create(position) {
-            this.remove();
+            console.log('🔨 Creating static menu for position:', position);
+            
+            // Remove old menu completely
+            this.destroy();
             
             const menu = document.createElement('div');
             menu.className = `static-menu menu-${position === 'up' ? 'top' : 'bottom'}`;
             menu.id = 'staticMenu';
+            menu.setAttribute('data-menu-position', position);
             
             const categories = document.createElement('div');
             categories.className = 'menu-categories';
@@ -91,27 +100,47 @@
             settingsContainer.appendChild(settingsBtn);
             menu.appendChild(categories);
             menu.appendChild(settingsContainer);
-            document.body.appendChild(menu);
             
+            // Add to body
+            document.body.appendChild(menu);
+            this.menuElement = menu;
+            
+            // Add click listener
             document.addEventListener('click', this.clickHandler);
             
+            // Update active state
             const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
             this.updateActive(currentPage);
             
-            setTimeout(() => this.updateTranslations(), 50);
+            // Update translations
+            setTimeout(() => this.updateTranslations(), 100);
             
-            console.log('✅ Static menu created:', position);
+            console.log('✅ Static menu created successfully');
         }
 
-        remove() {
-            const menu = document.getElementById('staticMenu');
-            if (menu) {
-                console.log('🗑️ Removing static menu');
-                menu.remove();
+        destroy() {
+            console.log('🗑️ Destroying static menu');
+            
+            // Remove menu element
+            const oldMenu = document.getElementById('staticMenu');
+            if (oldMenu) {
+                oldMenu.remove();
+                console.log('   ✓ Removed old menu element');
             }
-            document.querySelectorAll('.category-dropdown').forEach(d => d.remove());
+            
+            // Remove all dropdowns
+            document.querySelectorAll('.category-dropdown').forEach(d => {
+                d.remove();
+            });
+            
+            // Close all
             this.closeAll();
+            
+            // Remove event listener
             document.removeEventListener('click', this.clickHandler);
+            
+            this.menuElement = null;
+            console.log('✅ Static menu destroyed');
         }
 
         createCategoryBtn(container, catKey) {
@@ -308,8 +337,6 @@
         }
     }
 
-    const staticMenuManager = new StaticMenuManager();
-
     // ========== MOBILE MENU BUTTON ==========
     function createMenuButton() {
         const toggle = document.querySelector('.mobile-menu-toggle');
@@ -347,21 +374,33 @@
     // ========== MAIN MENU MANAGER ==========
     class MenuPositionManager {
         apply(position) {
-            console.log('🎯 Applying menu position:', position);
+            console.log('🎯 MenuPositionManager.apply() called with:', position);
+            console.log('   Current state.currentPosition:', state.currentPosition);
+            
             state.currentPosition = position;
             
+            // Remove all position classes
             ['left', 'right', 'up', 'down'].forEach(pos => {
                 document.body.classList.remove(`menu-${pos}`);
             });
             
+            // Add new position class
             document.body.classList.add(`menu-${position}`);
+            console.log('   ✓ Applied body class: menu-' + position);
             
+            // Create or remove static menu
             if (position === 'up' || position === 'down') {
-                console.log('📋 Creating static menu for:', position);
-                staticMenuManager.create(position);
+                console.log('   → Creating static menu...');
+                if (!state.staticMenuInstance) {
+                    state.staticMenuInstance = new StaticMenuManager();
+                }
+                state.staticMenuInstance.create(position);
             } else {
-                console.log('📱 Using sidebar menu for:', position);
-                staticMenuManager.remove();
+                console.log('   → Using sidebar menu...');
+                if (state.staticMenuInstance) {
+                    state.staticMenuInstance.destroy();
+                    state.staticMenuInstance = null;
+                }
                 
                 const toggle = document.querySelector('.mobile-menu-toggle');
                 if (toggle) {
@@ -369,18 +408,18 @@
                 }
             }
             
-            console.log('✅ Menu position applied:', position);
+            console.log('✅ Menu position fully applied:', position);
         }
 
         updateActive(page) {
-            if (state.currentPosition === 'up' || state.currentPosition === 'down') {
-                staticMenuManager.updateActive(page);
+            if ((state.currentPosition === 'up' || state.currentPosition === 'down') && state.staticMenuInstance) {
+                state.staticMenuInstance.updateActive(page);
             }
         }
 
         updateTranslations() {
-            if (state.currentPosition === 'up' || state.currentPosition === 'down') {
-                staticMenuManager.updateTranslations();
+            if ((state.currentPosition === 'up' || state.currentPosition === 'down') && state.staticMenuInstance) {
+                state.staticMenuInstance.updateTranslations();
             }
         }
     }
@@ -408,15 +447,21 @@
 
     // ========== INITIALIZATION ==========
     async function init() {
+        console.log('🚀 Menu Manager init() started');
+        
         await loadTranslations();
         
         const savedPosition = localStorage.getItem('armHelper_menuPosition') || 'left';
-        console.log('🔄 Initializing with saved position:', savedPosition);
+        console.log('📂 Loaded saved position from localStorage:', savedPosition);
+        
         menuPositionManager.apply(savedPosition);
+        
+        console.log('✅ Menu Manager init() completed');
     }
 
     // ========== EVENT LISTENERS ==========
     document.addEventListener('languageChanged', () => {
+        console.log('🌍 Language changed, updating translations');
         menuPositionManager.updateTranslations();
     });
 
@@ -428,14 +473,15 @@
 
     document.addEventListener('contentLoaded', () => {
         const pos = localStorage.getItem('armHelper_menuPosition') || 'left';
-        console.log('📦 Content loaded, reapplying menu position:', pos);
-        menuPositionManager.apply(pos);
+        console.log('📦 Content loaded event, reapplying position:', pos);
+        setTimeout(() => {
+            menuPositionManager.apply(pos);
+        }, 100);
     });
 
     // ========== GLOBAL EXPORTS ==========
     Object.assign(window, {
         menuPositionManager,
-        staticMenuManager,
         toggleMobileMenu,
         closeSidebar,
         createMenuButton
@@ -449,6 +495,6 @@
     }
 
     window.menuManagerInitialized = true;
-    console.log('✅ Menu Manager initialized');
+    console.log('✅ Menu Manager fully initialized');
 
 })();
