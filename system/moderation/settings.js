@@ -1,4 +1,4 @@
-// ========== SETTINGS MODULE (FIXED MENU SWITCHING) ==========
+// ========== SETTINGS MODULE (FINAL FIX - COMPLETE CLEANUP) ==========
 (function() {
     'use strict';
     
@@ -254,7 +254,69 @@
         }
     };
 
-    // ========== CHANGE FUNCTIONS (FIXED) ==========
+    // ========== COMPLETE MENU CLEANUP FUNCTION ==========
+    function completeMenuCleanup() {
+        console.log('🧹 ========== COMPLETE MENU CLEANUP START ==========');
+        
+        // 1. Закриваємо і очищаємо sidebar
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggle = document.querySelector('.mobile-menu-toggle');
+        
+        if (sidebar) {
+            console.log('🗑️ Cleaning sidebar...');
+            sidebar.classList.remove('open');
+            sidebar.style.cssText = '';
+            
+            // Очищаємо всі inline стилі
+            sidebar.removeAttribute('style');
+        }
+        
+        if (overlay) {
+            console.log('🗑️ Cleaning overlay...');
+            overlay.classList.remove('show');
+            overlay.removeAttribute('style');
+        }
+        
+        if (toggle) {
+            console.log('🗑️ Cleaning toggle button...');
+            toggle.classList.remove('menu-open');
+            toggle.removeAttribute('style');
+        }
+        
+        // 2. Видаляємо всі static menu елементи
+        console.log('🗑️ Removing all static menu elements...');
+        document.querySelectorAll('.static-menu').forEach(menu => {
+            console.log('  → Removing static menu:', menu.id || 'unnamed');
+            menu.remove();
+        });
+        
+        // 3. Видаляємо всі dropdown елементи
+        console.log('🗑️ Removing all dropdown elements...');
+        document.querySelectorAll('.category-dropdown').forEach(dropdown => {
+            dropdown.remove();
+        });
+        
+        // 4. Прибираємо активні стани з кнопок
+        console.log('🗑️ Removing active states...');
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // 5. Видаляємо всі класи позицій з body
+        console.log('🗑️ Removing position classes from body...');
+        ['menu-left', 'menu-right', 'menu-up', 'menu-down'].forEach(cls => {
+            document.body.classList.remove(cls);
+        });
+        
+        // 6. Скидаємо padding body
+        document.body.style.paddingTop = '';
+        document.body.style.paddingBottom = '';
+        
+        console.log('✅ ========== COMPLETE MENU CLEANUP END ==========');
+    }
+
+    // ========== CHANGE FUNCTIONS (FINAL FIX) ==========
     async function changeBackground(bg) {
         if (!CONFIG.backgrounds[bg]) return;
         storage.set('background', bg);
@@ -263,7 +325,8 @@
     }
 
     function changeMenuPosition(pos) {
-        console.log('🔄 Settings: changeMenuPosition called with:', pos);
+        console.log('🔄 ========== CHANGE MENU POSITION START ==========');
+        console.log('🎯 New position:', pos);
         
         if (!CONFIG.menuPositions[pos]) {
             console.error('❌ Invalid menu position:', pos);
@@ -272,50 +335,30 @@
         
         const currentPos = storage.get('menuPosition', 'left');
         console.log('📍 Current position:', currentPos);
-        console.log('🎯 New position:', pos);
         
-        // CRITICAL: Закриваємо всі меню перед зміною позиції
-        console.log('🚪 Closing all menus...');
+        // STEP 1: Complete cleanup
+        completeMenuCleanup();
         
-        // 1. Закриваємо sidebar
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        if (sidebar) {
-            sidebar.classList.remove('open');
-            sidebar.style.left = '';
-            sidebar.style.right = '';
-        }
-        if (overlay) {
-            overlay.classList.remove('show');
-        }
-        
-        // 2. Закриваємо static menu dropdowns
-        document.querySelectorAll('.category-dropdown').forEach(d => {
-            d.classList.remove('show');
-        });
-        document.querySelectorAll('.category-btn').forEach(b => {
-            b.classList.remove('active');
-        });
-        
-        // 3. Зберігаємо нову позицію
+        // STEP 2: Save new position
         storage.set('menuPosition', pos);
         console.log('💾 Saved to storage:', pos);
         
-        // 4. Невелика затримка перед застосуванням нової позиції
+        // STEP 3: Wait and apply new position
         setTimeout(() => {
-            // 5. Викликаємо Menu Manager для застосування нової позиції
+            console.log('📞 Calling menuPositionManager.apply()...');
+            
             if (typeof window.menuPositionManager !== 'undefined' && window.menuPositionManager.apply) {
-                console.log('📞 Calling menuPositionManager.apply()');
                 window.menuPositionManager.apply(pos);
+                console.log('✅ Menu position applied');
             } else {
                 console.error('❌ menuPositionManager not available!');
             }
             
-            // 6. Оновлюємо UI
+            // STEP 4: Update UI
             ui.updateMenuPosition();
             
-            console.log('✅ Menu position changed successfully to:', pos);
-        }, 100);
+            console.log('✅ ========== CHANGE MENU POSITION END ==========');
+        }, 150);
     }
 
     function changeLanguage(lang) {
