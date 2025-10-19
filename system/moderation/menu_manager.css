@@ -329,13 +329,15 @@ body.menu-right .sidebar {
     width: 320px !important;
     z-index: 1002 !important;
     transition: right .3s !important;
-    border-left: 3px solid #8B00FF;
-    border-right: none;
-    border-radius: 15px 0 0 15px;
-    box-shadow: -2px 0 40px rgba(138,43,226,.6);
+    border-left: 3px solid #8B00FF !important;
+    border-right: none !important;
+    border-radius: 15px 0 0 15px !important;
+    box-shadow: -2px 0 40px rgba(138,43,226,.6) !important;
 }
 
-body.menu-right .sidebar.open { right: 0 !important; }
+body.menu-right .sidebar.open { 
+    right: 0 !important; 
+}
 
 body.menu-right .sidebar-overlay {
     display: block !important;
@@ -348,11 +350,20 @@ body.menu-right .sidebar-overlay {
     opacity: 0 !important;
     visibility: hidden !important;
     transition: opacity .3s, visibility .3s !important;
+    background: rgba(10,5,15,.8) !important;
+    cursor: pointer !important;
 }
 
 body.menu-right .sidebar-overlay.show { 
     opacity: 1 !important; 
     visibility: visible !important; 
+}
+
+/* Переконуємось що кнопка закриття працює */
+body.menu-right .close-sidebar {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 1003 !important;
 }
 
 body.menu-up .static-menu.menu-top { display: flex !important; }
