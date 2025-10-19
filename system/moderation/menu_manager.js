@@ -362,12 +362,14 @@
     }
 
     function closeSidebar() {
+        console.log('🔒 closeSidebar called');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         if (sidebar && overlay) {
             sidebar.classList.remove('open');
             overlay.classList.remove('show');
             document.querySelector('.mobile-menu-toggle')?.classList.remove('menu-open');
+            console.log('✅ Sidebar closed');
         }
     }
 
@@ -486,6 +488,28 @@
         closeSidebar,
         createMenuButton
     });
+    
+    // Додамо глобальні обробники для закриття sidebar
+    document.addEventListener('click', (e) => {
+        // Закриваємо sidebar при кліку на overlay
+        if (e.target.id === 'sidebarOverlay') {
+            console.log('🖱️ Clicked on overlay');
+            closeSidebar();
+        }
+    });
+    
+    // Обробник для кнопки закриття в sidebar
+    setTimeout(() => {
+        const closeBtn = document.querySelector('.close-sidebar');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log('🖱️ Clicked close button');
+                closeSidebar();
+            });
+            console.log('✅ Close button listener attached');
+        }
+    }, 1000);
 
     // ========== AUTO INIT ==========
     if (document.readyState === 'loading') {
