@@ -165,10 +165,10 @@ body {
     justify-content: space-between;
     padding: 15px;
     margin-bottom: 10px;
-    background: rgba(50,25,75,.6);
-    border: 2px solid rgba(138,43,226,.5);
+    background: rgba(50,25,75,.6) !important;
+    border: 2px solid rgba(138,43,226,.5) !important;
     border-radius: 12px;
-    color: #FF6600;
+    color: #FF6600 !important;
     font-size: 1.2em;
     font-weight: 700;
     cursor: pointer;
@@ -177,7 +177,7 @@ body {
 }
 
 .main-category-header:hover {
-    background: rgba(50,25,75,.8);
+    background: rgba(50,25,75,.8) !important;
     transform: scale(1.02);
 }
 
@@ -221,7 +221,7 @@ body {
     margin-bottom: 8px;
 }
 
-/* Nav Category Styles - ОНОВЛЕНО! */
+/* Nav Category Styles - IDENTICAL TO MAIN CATEGORY! */
 .nav-category { 
     margin-bottom: 15px; 
 }
@@ -232,11 +232,11 @@ body {
     justify-content: space-between;
     padding: 12px 15px;
     margin-bottom: 10px;
-    /* ЗМІНЕНО: такі самі кольори як у main-category-header */
-    background: rgba(50,25,75,.6);
-    border: 2px solid rgba(138,43,226,.5);
+    /* SAME COLORS AS MAIN-CATEGORY-HEADER */
+    background: rgba(50,25,75,.6) !important;
+    border: 2px solid rgba(138,43,226,.5) !important;
     border-radius: 10px;
-    color: #FF6600;
+    color: #FF6600 !important;
     font-size: 1.1em;
     font-weight: 700;
     cursor: pointer;
@@ -245,7 +245,7 @@ body {
 }
 
 .category-header:hover {
-    background: rgba(50,25,75,.8);
+    background: rgba(50,25,75,.8) !important;
     transform: scale(1.02);
 }
 
@@ -258,6 +258,7 @@ body {
     align-items: center; 
     gap: 8px; 
     pointer-events: none;
+    color: #FF6600 !important;
 }
 
 .category-icon { 
