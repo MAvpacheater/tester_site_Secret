@@ -1,4 +1,4 @@
-// ========== MENU MANAGER MODULE (COMPLETE) ==========
+// ========== MENU MANAGER MODULE (FIXED RIGHT MENU) ==========
 (function() {
     'use strict';
     
@@ -321,24 +321,74 @@
         }
     }
 
-    // ========== SIDEBAR MENU CLASS ==========
+    // ========== SIDEBAR MENU CLASS (FIXED) ==========
     class SidebarMenuManager {
         constructor() {
             this.closeHandler = this.handleClose.bind(this);
+            this.currentPosition = null;
         }
 
         init(position) {
             console.log('🔨 Initializing sidebar for position:', position);
             
+            this.currentPosition = position;
+            this.updateSidebarPosition(position);
             this.attachHandlers();
-            this.createMenuButton();
+            this.createMenuButton(position);
             
-            console.log('✅ Sidebar initialized');
+            console.log('✅ Sidebar initialized for:', position);
         }
 
         destroy() {
             console.log('🗑️ Destroying sidebar handlers');
             this.removeHandlers();
+            this.currentPosition = null;
+        }
+
+        updateSidebarPosition(position) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (!sidebar) return;
+            
+            // Скидаємо всі позиційні класи та стилі
+            sidebar.style.left = '';
+            sidebar.style.right = '';
+            sidebar.style.transform = '';
+            sidebar.style.borderLeft = '';
+            sidebar.style.borderRight = '';
+            sidebar.style.borderRadius = '';
+            sidebar.style.boxShadow = '';
+            
+            if (position === 'right') {
+                // Праве меню
+                sidebar.style.right = '-320px';
+                sidebar.style.left = 'auto';
+                sidebar.style.borderLeft = '3px solid #8B00FF';
+                sidebar.style.borderRight = 'none';
+                sidebar.style.borderRadius = '15px 0 0 15px';
+                sidebar.style.boxShadow = '-2px 0 40px rgba(138,43,226,0.6)';
+                
+                if (toggle) {
+                    toggle.style.right = '15px';
+                    toggle.style.left = 'auto';
+                }
+            } else {
+                // Ліве меню
+                sidebar.style.left = '-320px';
+                sidebar.style.right = 'auto';
+                sidebar.style.borderRight = '3px solid #8B00FF';
+                sidebar.style.borderLeft = 'none';
+                sidebar.style.borderRadius = '0 15px 15px 0';
+                sidebar.style.boxShadow = '2px 0 40px rgba(138,43,226,0.6)';
+                
+                if (toggle) {
+                    toggle.style.left = '15px';
+                    toggle.style.right = 'auto';
+                }
+            }
+            
+            console.log('✅ Sidebar position updated:', position);
         }
 
         attachHandlers() {
@@ -376,7 +426,16 @@
             const overlay = document.getElementById('sidebarOverlay');
             const toggle = document.querySelector('.mobile-menu-toggle');
             
-            if (sidebar) sidebar.classList.remove('open');
+            if (sidebar) {
+                sidebar.classList.remove('open');
+                // Повертаємо початкову позицію
+                if (this.currentPosition === 'right') {
+                    sidebar.style.right = '-320px';
+                } else {
+                    sidebar.style.left = '-320px';
+                }
+            }
+            
             if (overlay) overlay.classList.remove('show');
             if (toggle) toggle.classList.remove('menu-open');
             
@@ -396,12 +455,20 @@
                 this.close();
             } else {
                 sidebar.classList.add('open');
+                
+                // Відкриваємо меню в потрібний бік
+                if (this.currentPosition === 'right') {
+                    sidebar.style.right = '0';
+                } else {
+                    sidebar.style.left = '0';
+                }
+                
                 overlay.classList.add('show');
                 if (toggle) toggle.classList.add('menu-open');
             }
         }
 
-        createMenuButton() {
+        createMenuButton(position) {
             const toggle = document.querySelector('.mobile-menu-toggle');
             if (!toggle) return;
             
@@ -412,6 +479,15 @@
                 line.style.transform = `translate(-50%, -50%) translateY(${pos}px)`;
                 toggle.appendChild(line);
             });
+            
+            // Оновлюємо позицію кнопки
+            if (position === 'right') {
+                toggle.style.right = '15px';
+                toggle.style.left = 'auto';
+            } else {
+                toggle.style.left = '15px';
+                toggle.style.right = 'auto';
+            }
         }
     }
 
