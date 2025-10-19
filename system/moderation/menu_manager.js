@@ -1,4 +1,4 @@
-// ========== MENU MANAGER MODULE (FIXED RIGHT MENU) ==========
+// ========== MENU MANAGER MODULE (FINAL FIX) ==========
 (function() {
     'use strict';
     
@@ -118,7 +118,10 @@
             console.log('🗑️ Destroying static menu');
             
             const oldMenu = document.getElementById('staticMenu');
-            if (oldMenu) oldMenu.remove();
+            if (oldMenu) {
+                oldMenu.remove();
+                console.log('✅ Old static menu removed');
+            }
             
             document.querySelectorAll('.category-dropdown').forEach(d => d.remove());
             this.closeAll();
@@ -342,7 +345,37 @@
         destroy() {
             console.log('🗑️ Destroying sidebar handlers');
             this.removeHandlers();
+            this.resetSidebarStyles();
             this.currentPosition = null;
+        }
+
+        resetSidebarStyles() {
+            console.log('🧹 Resetting sidebar styles');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar) {
+                sidebar.classList.remove('open');
+                sidebar.style.left = '';
+                sidebar.style.right = '';
+                sidebar.style.transform = '';
+                sidebar.style.borderLeft = '';
+                sidebar.style.borderRight = '';
+                sidebar.style.borderRadius = '';
+                sidebar.style.boxShadow = '';
+                console.log('✅ Sidebar styles reset');
+            }
+            
+            if (overlay) {
+                overlay.classList.remove('show');
+            }
+            
+            if (toggle) {
+                toggle.classList.remove('menu-open');
+                toggle.style.left = '';
+                toggle.style.right = '';
+            }
         }
 
         updateSidebarPosition(position) {
@@ -351,14 +384,8 @@
             
             if (!sidebar) return;
             
-            // Скидаємо всі позиційні класи та стилі
-            sidebar.style.left = '';
-            sidebar.style.right = '';
-            sidebar.style.transform = '';
-            sidebar.style.borderLeft = '';
-            sidebar.style.borderRight = '';
-            sidebar.style.borderRadius = '';
-            sidebar.style.boxShadow = '';
+            // Спочатку скидаємо всі стилі
+            this.resetSidebarStyles();
             
             if (position === 'right') {
                 // Праве меню
@@ -422,6 +449,7 @@
         }
 
         close() {
+            console.log('🚪 Sidebar close() called');
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
             const toggle = document.querySelector('.mobile-menu-toggle');
@@ -508,36 +536,35 @@
             
             if (position === 'up' || position === 'down') {
                 // Static menu
+                console.log('📊 Switching to static menu');
+                
+                // ВАЖЛИВО: Спочатку знищуємо sidebar
                 if (state.sidebarInstance) {
                     state.sidebarInstance.destroy();
                     state.sidebarInstance = null;
                 }
                 
+                // Потім створюємо static menu
                 if (!state.staticMenuInstance) {
                     state.staticMenuInstance = new StaticMenuManager();
                 }
                 state.staticMenuInstance.create(position);
                 
-                // Close sidebar
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('sidebarOverlay');
-                if (sidebar) sidebar.classList.remove('open');
-                if (overlay) overlay.classList.remove('show');
-                
             } else {
                 // Sidebar menu
+                console.log('📱 Switching to sidebar menu');
+                
+                // ВАЖЛИВО: Спочатку знищуємо static menu
                 if (state.staticMenuInstance) {
                     state.staticMenuInstance.destroy();
                     state.staticMenuInstance = null;
                 }
                 
+                // Потім створюємо sidebar
                 if (!state.sidebarInstance) {
                     state.sidebarInstance = new SidebarMenuManager();
                 }
                 state.sidebarInstance.init(position);
-                
-                // Close sidebar on position change
-                state.sidebarInstance.close();
             }
             
             console.log('✅ Menu position fully applied:', position);
