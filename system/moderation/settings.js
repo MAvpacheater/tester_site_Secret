@@ -1,4 +1,4 @@
-// ========== OPTIMIZED SETTINGS MODULE ==========
+// ========== SETTINGS MODULE (ONLY SWITCHER) ==========
 (function() {
     'use strict';
     
@@ -102,26 +102,6 @@
         async preloadAll() {
             const promises = Object.keys(CONFIG.backgrounds).map(bg => this.preload(bg));
             await Promise.allSettled(promises);
-        }
-    };
-
-    // ========== MENU MANAGER ==========
-    const menuManager = {
-        apply(pos) {
-            console.log('🎯 Settings: Applying menu position:', pos);
-            
-            if (typeof window.menuPositionManager !== 'undefined') {
-                console.log('   ✓ Using menuPositionManager');
-                window.menuPositionManager.apply(pos);
-            } else {
-                console.warn('⚠️ menuPositionManager not found, using fallback');
-                ['left', 'right', 'up', 'down'].forEach(p => {
-                    document.body.classList.remove(`menu-${p}`);
-                });
-                document.body.classList.add(`menu-${pos}`);
-            }
-            
-            console.log('✅ Menu position applied:', pos);
         }
     };
 
@@ -274,7 +254,7 @@
         }
     };
 
-    // ========== CHANGE FUNCTIONS ==========
+    // ========== CHANGE FUNCTIONS (ONLY STORAGE + CALL MENU MANAGER) ==========
     async function changeBackground(bg) {
         if (!CONFIG.backgrounds[bg]) return;
         storage.set('background', bg);
@@ -283,7 +263,7 @@
     }
 
     function changeMenuPosition(pos) {
-        console.log('🔄 changeMenuPosition called with:', pos);
+        console.log('🔄 Settings: changeMenuPosition called with:', pos);
         
         if (!CONFIG.menuPositions[pos]) {
             console.error('❌ Invalid menu position:', pos);
@@ -293,7 +273,14 @@
         storage.set('menuPosition', pos);
         console.log('💾 Saved to storage:', pos);
         
-        menuManager.apply(pos);
+        // Call Menu Manager
+        if (typeof window.menuPositionManager !== 'undefined' && window.menuPositionManager.apply) {
+            console.log('📞 Calling menuPositionManager.apply()');
+            window.menuPositionManager.apply(pos);
+        } else {
+            console.error('❌ menuPositionManager not available!');
+        }
+        
         ui.updateMenuPosition();
         
         console.log('✅ Menu position changed to:', pos);
@@ -415,7 +402,6 @@
         ui.updateBackground();
         
         const menuPos = storage.get('menuPosition', 'left');
-        menuManager.apply(menuPos);
         ui.updateMenuPosition();
         
         if (typeof updateColorThemeUI === 'function') {
@@ -433,9 +419,6 @@
         await backgroundManager.apply(bg);
         
         await loadTranslations();
-        
-        const menuPos = storage.get('menuPosition', 'left');
-        menuManager.apply(menuPos);
     }
 
     // ========== EVENT LISTENERS ==========
@@ -445,12 +428,6 @@
             ui.updateColorThemeNames();
             ui.updateLanguageNames();
         }
-    });
-
-    document.addEventListener('contentLoaded', () => {
-        const pos = storage.get('menuPosition', 'left');
-        console.log('📦 Settings: Content loaded, reapplying menu position:', pos);
-        menuManager.apply(pos);
     });
 
     // ========== GLOBAL EXPORTS ==========
