@@ -221,7 +221,7 @@ body {
     margin-bottom: 8px;
 }
 
-/* Nav Category Styles - IDENTICAL TO MAIN CATEGORY! */
+/* Nav Category Styles - BLUE-GREEN COLORS */
 .nav-category { 
     margin-bottom: 15px; 
 }
@@ -232,21 +232,23 @@ body {
     justify-content: space-between;
     padding: 12px 15px;
     margin-bottom: 10px;
-    /* SAME COLORS AS MAIN-CATEGORY-HEADER */
-    background: rgba(50,25,75,.6) !important;
-    border: 2px solid rgba(138,43,226,.5) !important;
+    /* BLUE-GREEN GRADIENT */
+    background: linear-gradient(135deg, rgba(30,144,255,0.3) 0%, rgba(0,206,209,0.4) 100%) !important;
+    border: 2px solid rgba(0,191,255,0.6) !important;
     border-radius: 10px;
-    color: #FF6600 !important;
+    color: #00FFFF !important;
     font-size: 1.1em;
     font-weight: 700;
     cursor: pointer;
     user-select: none;
     transition: transform 0.2s ease, background 0.2s ease;
+    box-shadow: 0 2px 10px rgba(0,191,255,0.3);
 }
 
 .category-header:hover {
-    background: rgba(50,25,75,.8) !important;
+    background: linear-gradient(135deg, rgba(30,144,255,0.5) 0%, rgba(0,206,209,0.6) 100%) !important;
     transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0,191,255,0.5);
 }
 
 .category-header:active {
@@ -258,12 +260,13 @@ body {
     align-items: center; 
     gap: 8px; 
     pointer-events: none;
-    color: #FF6600 !important;
+    color: #00FFFF !important;
 }
 
 .category-icon { 
     font-size: 1.2em; 
     pointer-events: none;
+    filter: drop-shadow(0 0 5px rgba(0,255,255,0.6));
 }
 
 .category-toggle { 
