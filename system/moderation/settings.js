@@ -105,18 +105,23 @@
         }
     };
 
-    // ========== MENU MANAGER (використовує menu_manager.js) ==========
+    // ========== MENU MANAGER ==========
     const menuManager = {
         apply(pos) {
+            console.log('🎯 Settings: Applying menu position:', pos);
+            
             if (typeof window.menuPositionManager !== 'undefined') {
+                console.log('   ✓ Using menuPositionManager');
                 window.menuPositionManager.apply(pos);
             } else {
-                console.warn('⚠️ menuPositionManager not found, falling back to basic implementation');
+                console.warn('⚠️ menuPositionManager not found, using fallback');
                 ['left', 'right', 'up', 'down'].forEach(p => {
                     document.body.classList.remove(`menu-${p}`);
                 });
                 document.body.classList.add(`menu-${pos}`);
             }
+            
+            console.log('✅ Menu position applied:', pos);
         }
     };
 
@@ -278,10 +283,20 @@
     }
 
     function changeMenuPosition(pos) {
-        if (!CONFIG.menuPositions[pos]) return;
+        console.log('🔄 changeMenuPosition called with:', pos);
+        
+        if (!CONFIG.menuPositions[pos]) {
+            console.error('❌ Invalid menu position:', pos);
+            return;
+        }
+        
         storage.set('menuPosition', pos);
+        console.log('💾 Saved to storage:', pos);
+        
         menuManager.apply(pos);
         ui.updateMenuPosition();
+        
+        console.log('✅ Menu position changed to:', pos);
     }
 
     function changeLanguage(lang) {
@@ -432,12 +447,9 @@
         }
     });
 
-    document.addEventListener('pageChanged', (e) => {
-        // Settings більше не керує активним станом сторінок
-    });
-
     document.addEventListener('contentLoaded', () => {
         const pos = storage.get('menuPosition', 'left');
+        console.log('📦 Settings: Content loaded, reapplying menu position:', pos);
         menuManager.apply(pos);
     });
 
