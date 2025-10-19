@@ -498,18 +498,61 @@
         }
     });
     
-    // Обробник для кнопки закриття в sidebar
-    setTimeout(() => {
+    // Перевіряємо та додаємо обробники після завантаження контенту
+    document.addEventListener('contentLoaded', () => {
+        console.log('📦 Content loaded, attaching sidebar handlers');
+        
+        // Обробник для overlay
+        const overlay = document.getElementById('sidebarOverlay');
+        if (overlay) {
+            overlay.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log('🖱️ Overlay clicked');
+                closeSidebar();
+            });
+            console.log('✅ Overlay listener attached');
+        }
+        
+        // Обробник для кнопки закриття
         const closeBtn = document.querySelector('.close-sidebar');
         if (closeBtn) {
-            closeBtn.addEventListener('click', (e) => {
+            // Видаляємо старі обробники
+            const newCloseBtn = closeBtn.cloneNode(true);
+            closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+            
+            // Додаємо новий обробник
+            newCloseBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                console.log('🖱️ Clicked close button');
+                console.log('🖱️ Close button clicked');
                 closeSidebar();
             });
             console.log('✅ Close button listener attached');
         }
-    }, 1000);
+    });
+    
+    // Також додаємо обробник з затримкою для надійності
+    setTimeout(() => {
+        const overlay = document.getElementById('sidebarOverlay');
+        const closeBtn = document.querySelector('.close-sidebar');
+        
+        if (overlay && !overlay.hasAttribute('data-listener')) {
+            overlay.setAttribute('data-listener', 'true');
+            overlay.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log('🖱️ Overlay clicked (delayed)');
+                closeSidebar();
+            });
+        }
+        
+        if (closeBtn && !closeBtn.hasAttribute('data-listener')) {
+            closeBtn.setAttribute('data-listener', 'true');
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log('🖱️ Close button clicked (delayed)');
+                closeSidebar();
+            });
+        }
+    }, 2000);
 
     // ========== AUTO INIT ==========
     if (document.readyState === 'loading') {
