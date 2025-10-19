@@ -1,4 +1,4 @@
-// ========== SETTINGS MODULE (ONLY SWITCHER) ==========
+// ========== SETTINGS MODULE (FIXED MENU SWITCHING) ==========
 (function() {
     'use strict';
     
@@ -254,7 +254,7 @@
         }
     };
 
-    // ========== CHANGE FUNCTIONS (ONLY STORAGE + CALL MENU MANAGER) ==========
+    // ========== CHANGE FUNCTIONS (FIXED) ==========
     async function changeBackground(bg) {
         if (!CONFIG.backgrounds[bg]) return;
         storage.set('background', bg);
@@ -270,20 +270,52 @@
             return;
         }
         
+        const currentPos = storage.get('menuPosition', 'left');
+        console.log('📍 Current position:', currentPos);
+        console.log('🎯 New position:', pos);
+        
+        // CRITICAL: Закриваємо всі меню перед зміною позиції
+        console.log('🚪 Closing all menus...');
+        
+        // 1. Закриваємо sidebar
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        if (sidebar) {
+            sidebar.classList.remove('open');
+            sidebar.style.left = '';
+            sidebar.style.right = '';
+        }
+        if (overlay) {
+            overlay.classList.remove('show');
+        }
+        
+        // 2. Закриваємо static menu dropdowns
+        document.querySelectorAll('.category-dropdown').forEach(d => {
+            d.classList.remove('show');
+        });
+        document.querySelectorAll('.category-btn').forEach(b => {
+            b.classList.remove('active');
+        });
+        
+        // 3. Зберігаємо нову позицію
         storage.set('menuPosition', pos);
         console.log('💾 Saved to storage:', pos);
         
-        // Call Menu Manager
-        if (typeof window.menuPositionManager !== 'undefined' && window.menuPositionManager.apply) {
-            console.log('📞 Calling menuPositionManager.apply()');
-            window.menuPositionManager.apply(pos);
-        } else {
-            console.error('❌ menuPositionManager not available!');
-        }
-        
-        ui.updateMenuPosition();
-        
-        console.log('✅ Menu position changed to:', pos);
+        // 4. Невелика затримка перед застосуванням нової позиції
+        setTimeout(() => {
+            // 5. Викликаємо Menu Manager для застосування нової позиції
+            if (typeof window.menuPositionManager !== 'undefined' && window.menuPositionManager.apply) {
+                console.log('📞 Calling menuPositionManager.apply()');
+                window.menuPositionManager.apply(pos);
+            } else {
+                console.error('❌ menuPositionManager not available!');
+            }
+            
+            // 6. Оновлюємо UI
+            ui.updateMenuPosition();
+            
+            console.log('✅ Menu position changed successfully to:', pos);
+        }, 100);
     }
 
     function changeLanguage(lang) {
