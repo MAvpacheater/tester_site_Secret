@@ -250,9 +250,6 @@
         console.log('✅ ========== switchAppLanguage END ==========');
     };
 
-    // Menu position
-    const getCurrentMenuPosition = () => localStorage.getItem('armHelper_menuPosition') || 'left';
-
     // Page switching
     const switchPage = page => {
         console.log('📄 Switching to page:', page);
@@ -298,13 +295,10 @@
             window.menuManager.updateActiveState(page);
         }
         
-        closeSidebar();
-        
-        setTimeout(() => {
-            if (typeof window.ensureMobileMenuButton === 'function') {
-                window.ensureMobileMenuButton();
-            }
-        }, 100);
+        // Close sidebar via Menu Manager
+        if (typeof window.closeSidebar === 'function') {
+            window.closeSidebar();
+        }
         
         const pageChangeEvent = new CustomEvent('pageChanged', {
             detail: { page, previousPage: getCurrentPage() }
@@ -406,13 +400,6 @@
         });
         
         setTimeout(() => {
-            if (typeof window.menuManager !== 'undefined') {
-                const currentMenuPos = getCurrentMenuPosition();
-                if (typeof window.applyMenuPosition === 'function') {
-                    window.applyMenuPosition(currentMenuPos);
-                }
-            }
-            
             const lastPage = getCurrentPage();
             setTimeout(() => switchPage(lastPage), 200);
         }, 300);
@@ -439,79 +426,6 @@
         appInitialized = true;
         console.log('✅ App initialized with language:', currentAppLanguage);
         console.log('✅ ========== initializeApp END ==========');
-    };
-
-    // Category management
-    const toggleCategory = categoryId => {
-        const categoryButtons = document.getElementById(categoryId);
-        const toggleIcon = document.querySelector(`[data-category="${categoryId}"] .category-toggle`);
-        
-        if (categoryButtons && toggleIcon) {
-            const isExpanded = categoryButtons.classList.contains('expanded');
-            
-            if (!isExpanded) {
-                document.querySelectorAll('.category-buttons').forEach(el => {
-                    if (el !== categoryButtons) el.classList.remove('expanded');
-                });
-                document.querySelectorAll('.category-toggle').forEach(el => {
-                    if (el !== toggleIcon) el.classList.remove('expanded');
-                });
-                
-                categoryButtons.classList.add('expanded');
-                toggleIcon.classList.add('expanded');
-            } else {
-                categoryButtons.classList.remove('expanded');
-                toggleIcon.classList.remove('expanded');
-            }
-        }
-    };
-
-    const initializeCategories = () => {
-        console.log('📂 Categories will be initialized by URL Router');
-    };
-
-    // Sidebar management
-    const toggleMobileMenu = () => {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        
-        if (sidebar && overlay) {
-            const isOpen = sidebar.classList.contains('open');
-            
-            if (isOpen) {
-                sidebar.classList.remove('open');
-                overlay.classList.remove('show');
-            } else {
-                sidebar.classList.add('open');
-                overlay.classList.add('show');
-            }
-            
-            if (window.urlRouter) {
-                const r = window.urlRouter();
-                if (r?.updateURL) {
-                    const currentPage = getCurrentPage();
-                    r.updateURL(currentPage, false);
-                }
-            }
-        }
-    };
-
-    const closeSidebar = () => {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        
-        if (sidebar && overlay) {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('show');
-            
-            if (window.urlRouter) {
-                const r = window.urlRouter();
-                if (r?.updateURL) {
-                    const currentPage = getCurrentPage();
-                    r.updateURL(currentPage, false);
-                }
-            }
-        }
     };
 
     // Utilities
@@ -552,22 +466,17 @@
     // Global exports
     Object.assign(window, {
         switchPage,
-        toggleMobileMenu,
-        closeSidebar,
         initializeApp,
         debugPageStates,
         saveSettingsToStorage,
         loadSettingsFromStorage,
-        toggleCategory,
-        initializeCategories,
         forceReinitializeModule,
         switchAppLanguage,
         getCurrentAppLanguage,
         updateMenuTranslations,
         updatePageTitles,
         saveCurrentPage,
-        getCurrentPage,
-        getCurrentMenuPosition
+        getCurrentPage
     });
 
     // Early language initialization
@@ -584,6 +493,6 @@
         });
     })();
 
-    console.log('✅ General.js loaded (NO AUTH - System Pages Integration + RCU)');
+    console.log('✅ General.js loaded (CLEANED - No Menu Logic)');
     console.log('📍 Initial localStorage language:', localStorage.getItem('armHelper_language'));
 })();
