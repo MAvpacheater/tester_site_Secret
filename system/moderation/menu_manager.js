@@ -80,10 +80,12 @@
             const settingsBtn = document.createElement('button');
             settingsBtn.className = 'settings-btn-static';
             settingsBtn.innerHTML = '⚙️';
-            settingsBtn.onclick = () => {
+            settingsBtn.onclick = (e) => {
+                e.stopPropagation();
                 if (typeof window.switchPage === 'function') {
                     window.switchPage('settings');
                 }
+                this.closeAll();
             };
             
             settingsContainer.appendChild(settingsBtn);
@@ -97,10 +99,16 @@
             this.updateActive(currentPage);
             
             setTimeout(() => this.updateTranslations(), 50);
+            
+            console.log('✅ Static menu created:', position);
         }
 
         remove() {
-            document.getElementById('staticMenu')?.remove();
+            const menu = document.getElementById('staticMenu');
+            if (menu) {
+                console.log('🗑️ Removing static menu');
+                menu.remove();
+            }
             document.querySelectorAll('.category-dropdown').forEach(d => d.remove());
             this.closeAll();
             document.removeEventListener('click', this.clickHandler);
@@ -245,7 +253,6 @@
                 item.classList.toggle('active', item.dataset.page === currentPage);
             });
             
-            // Оновлюємо settings кнопку
             const settingsBtn = document.querySelector('.settings-btn-static');
             if (settingsBtn) {
                 settingsBtn.classList.toggle('active', currentPage === 'settings');
@@ -272,7 +279,6 @@
             const menu = document.getElementById('staticMenu');
             if (!menu) return;
             
-            // Оновлюємо назви головних категорій
             const catNames = { 
                 aws: t.awsCategory || 'AWS', 
                 rcu: t.rcuCategory || 'RCU', 
@@ -284,7 +290,6 @@
                 if (el) el.textContent = name;
             });
             
-            // Оновлюємо назви підкатегорій
             menu.querySelectorAll('.subcategory-name[data-key]').forEach(nameEl => {
                 const subKey = nameEl.dataset.key;
                 if (subKey && t[subKey]) {
@@ -292,7 +297,6 @@
                 }
             });
             
-            // Оновлюємо назви сторінок
             if (t.pages) {
                 menu.querySelectorAll('.dropdown-item-name[data-page]').forEach(nameEl => {
                     const page = nameEl.dataset.page;
@@ -343,29 +347,29 @@
     // ========== MAIN MENU MANAGER ==========
     class MenuPositionManager {
         apply(position) {
+            console.log('🎯 Applying menu position:', position);
             state.currentPosition = position;
             
-            // Видаляємо всі класи позицій
             ['left', 'right', 'up', 'down'].forEach(pos => {
                 document.body.classList.remove(`menu-${pos}`);
             });
             
-            // Додаємо новий клас
             document.body.classList.add(`menu-${position}`);
             
-            // Якщо верхнє або нижнє меню - створюємо static menu
             if (position === 'up' || position === 'down') {
+                console.log('📋 Creating static menu for:', position);
                 staticMenuManager.create(position);
             } else {
-                // Якщо ліве або праве - видаляємо static menu
+                console.log('📱 Using sidebar menu for:', position);
                 staticMenuManager.remove();
                 
-                // Оновлюємо мобільну кнопку
                 const toggle = document.querySelector('.mobile-menu-toggle');
                 if (toggle) {
                     setTimeout(() => createMenuButton(), 10);
                 }
             }
+            
+            console.log('✅ Menu position applied:', position);
         }
 
         updateActive(page) {
@@ -407,6 +411,7 @@
         await loadTranslations();
         
         const savedPosition = localStorage.getItem('armHelper_menuPosition') || 'left';
+        console.log('🔄 Initializing with saved position:', savedPosition);
         menuPositionManager.apply(savedPosition);
     }
 
@@ -423,6 +428,7 @@
 
     document.addEventListener('contentLoaded', () => {
         const pos = localStorage.getItem('armHelper_menuPosition') || 'left';
+        console.log('📦 Content loaded, reapplying menu position:', pos);
         menuPositionManager.apply(pos);
     });
 
