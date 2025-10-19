@@ -1,4 +1,4 @@
-// ========== CONTENT LOADER (AWS + RCU + System - NO AUTH) ==========
+// ========== CONTENT LOADER (AWS + RCU + System - NO MENU LOGIC) ==========
 
 // Конфігурація іконок для сторінок
 const PAGE_ICONS = {
@@ -50,9 +50,6 @@ async function loadContent() {
         appContent.innerHTML = createAppStructure(combinedContent);
         console.log('✅ Content structure created (AWS + RCU + System)');
 
-        ensureMobileMenuButton();
-        attachSidebarCloseHandlers();
-
         setTimeout(() => {
             if (typeof window.initializeApp === 'function') {
                 window.initializeApp();
@@ -100,84 +97,11 @@ function createAppStructure(contentHTML) {
         </div>
 
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="window.closeSidebar(); return false;"></div>
+        
+        <button class="mobile-menu-toggle" onclick="window.toggleMobileMenu(); return false;">☰</button>
            
         <div class="container">${contentHTML}</div>
     `;
-}
-
-function attachSidebarCloseHandlers() {
-    console.log('🔗 Attaching sidebar close handlers...');
-    
-    // Обробник для overlay
-    const overlay = document.getElementById('sidebarOverlay');
-    if (overlay) {
-        // Видаляємо всі попередні обробники
-        const newOverlay = overlay.cloneNode(true);
-        overlay.parentNode.replaceChild(newOverlay, overlay);
-        
-        // Додаємо новий обробник
-        newOverlay.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('🖱️ Overlay clicked - closing sidebar');
-            window.closeSidebar();
-        });
-        
-        // Також додаємо через addEventListener для надійності
-        newOverlay.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            console.log('👆 Overlay touched - closing sidebar');
-            window.closeSidebar();
-        });
-        
-        console.log('✅ Overlay handlers attached');
-    }
-    
-    // Обробник для кнопки закриття
-    const closeBtn = document.querySelector('.close-sidebar');
-    if (closeBtn) {
-        // Видаляємо всі попередні обробники
-        const newCloseBtn = closeBtn.cloneNode(true);
-        closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
-        
-        // Додаємо новий обробник
-        newCloseBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('🖱️ Close button clicked - closing sidebar');
-            window.closeSidebar();
-        });
-        
-        // Також додаємо через addEventListener для надійності
-        newCloseBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            console.log('👆 Close button touched - closing sidebar');
-            window.closeSidebar();
-        });
-        
-        console.log('✅ Close button handlers attached');
-    }
-}
-
-function ensureMobileMenuButton() {
-    const oldButton = document.querySelector('.mobile-menu-toggle');
-    if (oldButton) oldButton.remove();
-
-    const menuButton = document.createElement('button');
-    menuButton.className = 'mobile-menu-toggle';
-    menuButton.onclick = toggleMobileMenu;
-    menuButton.textContent = '☰';
-
-    const appContent = document.getElementById('app-content');
-    const header = document.querySelector('header');
-    
-    if (header) {
-        header.after(menuButton);
-    } else {
-        appContent.before(menuButton);
-    }
-
-    console.log('✅ Mobile menu button ensured');
 }
 
 function createMainCategory(id, icon, subcategories) {
@@ -441,48 +365,22 @@ document.addEventListener('pageChanged', (e) => {
     }
 });
 
-// ========== PAGE SWITCH OBSERVER ==========
-
-const observeAppContent = () => {
-    const appContent = document.getElementById('app-content');
-    if (!appContent) return;
-
-    const observer = new MutationObserver((mutations) => {
-        const menuButton = document.querySelector('.mobile-menu-toggle');
-        if (!menuButton) {
-            console.warn('⚠️ Mobile menu button missing, restoring...');
-            ensureMobileMenuButton();
-        }
-    });
-
-    observer.observe(appContent, {
-        childList: true,
-        subtree: false
-    });
-
-    console.log('✅ App content observer started');
-};
-
 // ========== INITIALIZATION ==========
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         loadContent();
-        setTimeout(observeAppContent, 1000);
     });
 } else {
     loadContent();
-    setTimeout(observeAppContent, 1000);
 }
 
 // Exports
 Object.assign(window, { 
-    ensureMobileMenuButton,
     toggleMainCategory,
     toggleCategory,
     openCategoryForPage,
-    attachSidebarCloseHandlers,
     PAGE_ICONS
 });
 
-console.log('✅ Content Loader ready (AWS + RCU + System - NO AUTH)');
+console.log('✅ Content Loader ready (CLEANED - No Menu Logic)');
