@@ -37,25 +37,30 @@ async function loadSystemScripts() {
         await Promise.all(systemScripts.map(createScript));
         console.log('✅ System scripts loaded (NO AUTH)');
         
-        // STEP 2: AWS system
-        console.log('📦 Step 2: AWS system...');
+        // STEP 2: Menu Manager (JS ONLY - CSS буде в index.html)
+        console.log('📦 Step 2: Menu Manager...');
+        await createScript('system/moderation/menu_manager.js');
+        console.log('✅ Menu Manager loaded');
+        
+        // STEP 3: AWS system
+        console.log('📦 Step 3: AWS system...');
         await createScript('AWS/system/aws_utils.js');
         await createScript('AWS/system/aws_router.js');
         await createScript('AWS/system/aws_loader.js');
         console.log('✅ AWS system loaded');
         
-        // STEP 3: RCU system
-        console.log('📦 Step 3: RCU system...');
+        // STEP 4: RCU system
+        console.log('📦 Step 4: RCU system...');
         await createScript('RCU/system/RCU_loader.js');
         console.log('✅ RCU system loaded');
         
-        // STEP 4: System Content Loader
-        console.log('📦 Step 4: System Content Loader...');
+        // STEP 5: System Content Loader
+        console.log('📦 Step 5: System Content Loader...');
         await createScript('system/system_content/system_content.js');
         console.log('✅ System Content Loader loaded');
         
-        // STEP 5: Content loader (combines AWS + RCU + System)
-        console.log('📦 Step 5: Content loader...');
+        // STEP 6: Content loader (combines AWS + RCU + System)
+        console.log('📦 Step 6: Content loader...');
         await createScript('system/content_loader.js');
         console.log('✅ Content loader loaded');
         
@@ -173,7 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const maxAttempts = 50;
     
     function waitForCriticalScripts() {
-        // Мінімальний набір критичних функцій (menu_manager завантажиться пізніше)
         const criticalFunctions = [
             'initializeApp', 
             'switchPage', 
@@ -215,7 +219,6 @@ function initDebugUtilities() {
             });
             console.log('\n=== MENU MANAGER ===');
             console.log('Position Manager:', typeof window.menuPositionManager);
-            console.log('Static Menu Manager:', typeof window.staticMenuManager);
             console.log('Current Position:', localStorage.getItem('armHelper_menuPosition') || 'left');
             console.log('\n=== AWS ===');
             console.log('Loader:', typeof window.awsLoader);
@@ -294,5 +297,4 @@ function initDebugUtilities() {
     console.log('  - window.forceRoute("page") - Navigate to page');
 }
 
-console.log('✅ System Loader ready (AWS + RCU + System + Menu Manager - NO AUTH)');
-console.log('📖 Debug: window.debugSystem() | window.checkModules() | window.testMenuPositions()');
+console.log('✅ System Loader ready (FIXED - menu_manager.css removed)');
