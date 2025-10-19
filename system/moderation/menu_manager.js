@@ -1,4 +1,4 @@
-// ========== MENU MANAGER MODULE ==========
+// ========== MENU MANAGER MODULE (COMPLETE) ==========
 (function() {
     'use strict';
     
@@ -55,7 +55,8 @@
         activeDropdown: null,
         activeCategory: null,
         translations: null,
-        staticMenuInstance: null
+        staticMenuInstance: null,
+        sidebarInstance: null
     };
 
     // ========== STATIC MENU CLASS ==========
@@ -68,7 +69,6 @@
         create(position) {
             console.log('🔨 Creating static menu for position:', position);
             
-            // Remove old menu completely
             this.destroy();
             
             const menu = document.createElement('div');
@@ -101,18 +101,14 @@
             menu.appendChild(categories);
             menu.appendChild(settingsContainer);
             
-            // Add to body
             document.body.appendChild(menu);
             this.menuElement = menu;
             
-            // Add click listener
             document.addEventListener('click', this.clickHandler);
             
-            // Update active state
             const currentPage = typeof window.getCurrentPage === 'function' ? window.getCurrentPage() : 'calculator';
             this.updateActive(currentPage);
             
-            // Update translations
             setTimeout(() => this.updateTranslations(), 100);
             
             console.log('✅ Static menu created successfully');
@@ -121,26 +117,14 @@
         destroy() {
             console.log('🗑️ Destroying static menu');
             
-            // Remove menu element
             const oldMenu = document.getElementById('staticMenu');
-            if (oldMenu) {
-                oldMenu.remove();
-                console.log('   ✓ Removed old menu element');
-            }
+            if (oldMenu) oldMenu.remove();
             
-            // Remove all dropdowns
-            document.querySelectorAll('.category-dropdown').forEach(d => {
-                d.remove();
-            });
-            
-            // Close all
+            document.querySelectorAll('.category-dropdown').forEach(d => d.remove());
             this.closeAll();
-            
-            // Remove event listener
             document.removeEventListener('click', this.clickHandler);
             
             this.menuElement = null;
-            console.log('✅ Static menu destroyed');
         }
 
         createCategoryBtn(container, catKey) {
@@ -337,39 +321,97 @@
         }
     }
 
-    // ========== MOBILE MENU BUTTON ==========
-    function createMenuButton() {
-        const toggle = document.querySelector('.mobile-menu-toggle');
-        if (!toggle) return;
-        
-        toggle.innerHTML = '';
-        [-4, 0, 4].forEach(pos => {
-            const line = document.createElement('div');
-            line.className = 'menu-line';
-            line.style.transform = `translate(-50%, -50%) translateY(${pos}px)`;
-            toggle.appendChild(line);
-        });
-    }
-
-    function toggleMobileMenu() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        if (sidebar && overlay) {
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('show');
-            document.querySelector('.mobile-menu-toggle')?.classList.toggle('menu-open', sidebar.classList.contains('open'));
+    // ========== SIDEBAR MENU CLASS ==========
+    class SidebarMenuManager {
+        constructor() {
+            this.closeHandler = this.handleClose.bind(this);
         }
-    }
 
-    function closeSidebar() {
-        console.log('🔒 closeSidebar called');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        if (sidebar && overlay) {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('show');
-            document.querySelector('.mobile-menu-toggle')?.classList.remove('menu-open');
+        init(position) {
+            console.log('🔨 Initializing sidebar for position:', position);
+            
+            this.attachHandlers();
+            this.createMenuButton();
+            
+            console.log('✅ Sidebar initialized');
+        }
+
+        destroy() {
+            console.log('🗑️ Destroying sidebar handlers');
+            this.removeHandlers();
+        }
+
+        attachHandlers() {
+            const overlay = document.getElementById('sidebarOverlay');
+            const closeBtn = document.querySelector('.close-sidebar');
+            
+            if (overlay) {
+                overlay.removeEventListener('click', this.closeHandler);
+                overlay.addEventListener('click', this.closeHandler);
+            }
+            
+            if (closeBtn) {
+                closeBtn.removeEventListener('click', this.closeHandler);
+                closeBtn.addEventListener('click', this.closeHandler);
+            }
+        }
+
+        removeHandlers() {
+            const overlay = document.getElementById('sidebarOverlay');
+            const closeBtn = document.querySelector('.close-sidebar');
+            
+            if (overlay) overlay.removeEventListener('click', this.closeHandler);
+            if (closeBtn) closeBtn.removeEventListener('click', this.closeHandler);
+        }
+
+        handleClose(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🖱️ Sidebar close triggered');
+            this.close();
+        }
+
+        close() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar) sidebar.classList.remove('open');
+            if (overlay) overlay.classList.remove('show');
+            if (toggle) toggle.classList.remove('menu-open');
+            
             console.log('✅ Sidebar closed');
+        }
+
+        toggle() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (!sidebar || !overlay) return;
+            
+            const isOpen = sidebar.classList.contains('open');
+            
+            if (isOpen) {
+                this.close();
+            } else {
+                sidebar.classList.add('open');
+                overlay.classList.add('show');
+                if (toggle) toggle.classList.add('menu-open');
+            }
+        }
+
+        createMenuButton() {
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            if (!toggle) return;
+            
+            toggle.innerHTML = '';
+            [-4, 0, 4].forEach(pos => {
+                const line = document.createElement('div');
+                line.className = 'menu-line';
+                line.style.transform = `translate(-50%, -50%) translateY(${pos}px)`;
+                toggle.appendChild(line);
+            });
         }
     }
 
@@ -377,7 +419,6 @@
     class MenuPositionManager {
         apply(position) {
             console.log('🎯 MenuPositionManager.apply() called with:', position);
-            console.log('   Current state.currentPosition:', state.currentPosition);
             
             state.currentPosition = position;
             
@@ -388,36 +429,39 @@
             
             // Add new position class
             document.body.classList.add(`menu-${position}`);
-            console.log('   ✓ Applied body class: menu-' + position);
             
-            // Create or remove static menu
             if (position === 'up' || position === 'down') {
-                console.log('   → Creating static menu...');
+                // Static menu
+                if (state.sidebarInstance) {
+                    state.sidebarInstance.destroy();
+                    state.sidebarInstance = null;
+                }
+                
                 if (!state.staticMenuInstance) {
                     state.staticMenuInstance = new StaticMenuManager();
                 }
                 state.staticMenuInstance.create(position);
+                
+                // Close sidebar
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                if (sidebar) sidebar.classList.remove('open');
+                if (overlay) overlay.classList.remove('show');
+                
             } else {
-                console.log('   → Using sidebar menu...');
+                // Sidebar menu
                 if (state.staticMenuInstance) {
                     state.staticMenuInstance.destroy();
                     state.staticMenuInstance = null;
                 }
                 
-                // ВАЖЛИВО: Закриваємо sidebar при зміні на left/right
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('sidebarOverlay');
-                if (sidebar && overlay) {
-                    sidebar.classList.remove('open');
-                    overlay.classList.remove('show');
-                    console.log('   ✓ Closed sidebar on position change');
+                if (!state.sidebarInstance) {
+                    state.sidebarInstance = new SidebarMenuManager();
                 }
+                state.sidebarInstance.init(position);
                 
-                const toggle = document.querySelector('.mobile-menu-toggle');
-                if (toggle) {
-                    toggle.classList.remove('menu-open');
-                    setTimeout(() => createMenuButton(), 10);
-                }
+                // Close sidebar on position change
+                state.sidebarInstance.close();
             }
             
             console.log('✅ Menu position fully applied:', position);
@@ -454,6 +498,19 @@
         } catch (error) {
             console.error('❌ Menu translations error:', error);
             return null;
+        }
+    }
+
+    // ========== GLOBAL FUNCTIONS ==========
+    function toggleMobileMenu() {
+        if (state.sidebarInstance) {
+            state.sidebarInstance.toggle();
+        }
+    }
+
+    function closeSidebar() {
+        if (state.sidebarInstance) {
+            state.sidebarInstance.close();
         }
     }
 
@@ -495,74 +552,8 @@
     Object.assign(window, {
         menuPositionManager,
         toggleMobileMenu,
-        closeSidebar,
-        createMenuButton
+        closeSidebar
     });
-    
-    // Додаємо глобальні обробники для закриття sidebar
-    document.addEventListener('click', (e) => {
-        // Закриваємо sidebar при кліку на overlay
-        if (e.target.id === 'sidebarOverlay') {
-            console.log('🖱️ Clicked on overlay');
-            closeSidebar();
-        }
-    });
-    
-    // Перевіряємо та додаємо обробники після завантаження контенту
-    document.addEventListener('contentLoaded', () => {
-        console.log('📦 Content loaded, attaching sidebar handlers');
-        
-        // Обробник для overlay
-        const overlay = document.getElementById('sidebarOverlay');
-        if (overlay) {
-            overlay.addEventListener('click', (e) => {
-                e.stopPropagation();
-                console.log('🖱️ Overlay clicked');
-                closeSidebar();
-            });
-            console.log('✅ Overlay listener attached');
-        }
-        
-        // Обробник для кнопки закриття
-        const closeBtn = document.querySelector('.close-sidebar');
-        if (closeBtn) {
-            // Видаляємо старі обробники
-            const newCloseBtn = closeBtn.cloneNode(true);
-            closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
-            
-            // Додаємо новий обробник
-            newCloseBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                console.log('🖱️ Close button clicked');
-                closeSidebar();
-            });
-            console.log('✅ Close button listener attached');
-        }
-    });
-    
-    // Також додаємо обробник з затримкою для надійності
-    setTimeout(() => {
-        const overlay = document.getElementById('sidebarOverlay');
-        const closeBtn = document.querySelector('.close-sidebar');
-        
-        if (overlay && !overlay.hasAttribute('data-listener')) {
-            overlay.setAttribute('data-listener', 'true');
-            overlay.addEventListener('click', (e) => {
-                e.stopPropagation();
-                console.log('🖱️ Overlay clicked (delayed)');
-                closeSidebar();
-            });
-        }
-        
-        if (closeBtn && !closeBtn.hasAttribute('data-listener')) {
-            closeBtn.setAttribute('data-listener', 'true');
-            closeBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                console.log('🖱️ Close button clicked (delayed)');
-                closeSidebar();
-            });
-        }
-    }, 2000);
 
     // ========== AUTO INIT ==========
     if (document.readyState === 'loading') {
