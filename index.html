@@ -44,7 +44,6 @@
     
     <!-- Core CSS -->
     <link rel="stylesheet" href="system/general.css">
-    <link rel="stylesheet" href="system/menu_manager.css">
     <link rel="stylesheet" href="system/moderation/settings.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="system/system_content/system_content.css" media="print" onload="this.media='all'">
     
@@ -120,9 +119,231 @@
             transform: translateY(0);
             pointer-events: auto;
         }
+        
+        /* ========== INLINE MENU MANAGER CSS (замість menu_manager.css) ========== */
+        
+        /* STATIC MENU (TOP/BOTTOM) */
+        .static-menu {
+            position: fixed;
+            z-index: 1002;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            background: linear-gradient(135deg, rgba(25,5,45,.98) 0%, rgba(50,10,70,.99) 50%, rgba(20,0,40,1) 100%);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 2px 25px rgba(138,43,226,.6), 0 0 30px rgba(255,107,0,.3);
+            overflow: visible;
+        }
+
+        .menu-top { 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 60px; 
+            border-bottom: 3px solid #8B00FF; 
+        }
+
+        .menu-bottom { 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 60px; 
+            border-top: 3px solid #8B00FF; 
+        }
+
+        .static-menu .menu-categories {
+            display: flex !important;
+            gap: 12px;
+            align-items: center;
+            flex: 1;
+        }
+
+        .static-menu .menu-category {
+            position: relative;
+            display: block !important;
+        }
+
+        .static-menu .category-btn {
+            display: flex !important;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            height: 44px;
+            background: linear-gradient(135deg, rgba(25,5,45,.6) 0%, rgba(50,10,70,.5) 100%);
+            border: 2px solid rgba(138,43,226,.6);
+            border-radius: 12px;
+            color: #FFB84D;
+            font-size: 1.3em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+            text-shadow: 2px 2px 4px rgba(0,0,0,.9);
+        }
+
+        .static-menu .category-btn:hover {
+            background: linear-gradient(135deg, rgba(255,107,0,.4) 0%, rgba(138,43,226,.5) 100%);
+            border-color: #FF6B00;
+            color: #FF6B00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255,107,0,.4);
+        }
+
+        .static-menu .category-btn.active {
+            background: linear-gradient(135deg, rgba(255,107,0,.5) 0%, rgba(138,43,226,.6) 100%);
+            border-color: #FF6B00;
+            color: #FFF;
+        }
+
+        .static-menu .category-dropdown {
+            display: none;
+            position: absolute;
+            left: 0;
+            min-width: 280px;
+            background: linear-gradient(135deg, rgba(25,5,45,.98) 0%, rgba(50,10,70,.99) 100%);
+            border: 3px solid #8B00FF;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 10px 40px rgba(138,43,226,.6), 0 0 30px rgba(255,107,0,.4);
+            backdrop-filter: blur(15px);
+            z-index: 1003;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .menu-top .category-dropdown { top: 65px; }
+        .menu-bottom .category-dropdown { bottom: 65px; }
+
+        .static-menu .category-dropdown.show { display: block !important; }
+
+        .static-menu .dropdown-item {
+            display: flex !important;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: linear-gradient(135deg, rgba(25,5,45,.5) 0%, rgba(50,10,70,.4) 100%);
+            border: 2px solid rgba(138,43,226,.5);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all .2s;
+            color: #FFB84D;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0,0,0,.9);
+        }
+
+        .static-menu .dropdown-item:last-child { margin-bottom: 0; }
+
+        .static-menu .dropdown-item:hover {
+            background: linear-gradient(135deg, rgba(255,107,0,.3) 0%, rgba(138,43,226,.4) 100%);
+            border-color: #FF6B00;
+            transform: translateX(5px) scale(1.02);
+            box-shadow: 0 4px 20px rgba(255,107,0,.4);
+        }
+
+        .static-menu .dropdown-item.active {
+            background: linear-gradient(135deg, rgba(255,107,0,.4) 0%, rgba(138,43,226,.5) 100%);
+            border-color: #FF6B00;
+            box-shadow: 0 4px 20px rgba(255,107,0,.5);
+        }
+
+        .static-menu .dropdown-item-icon {
+            font-size: 1.6em;
+            filter: drop-shadow(0 0 8px rgba(255,107,0,.6));
+        }
+
+        .static-menu .dropdown-subcategory-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            margin: 8px 0 6px 0;
+            background: linear-gradient(135deg, rgba(138,43,226,.3) 0%, rgba(255,107,0,.2) 100%);
+            border-radius: 10px;
+            color: #FF6B00;
+            font-size: 1em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,.9);
+            border: 1px solid rgba(138,43,226,.4);
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .static-menu .dropdown-subcategory-header:hover {
+            background: linear-gradient(135deg, rgba(138,43,226,.5) 0%, rgba(255,107,0,.4) 100%);
+            border-color: #FF6B00;
+            transform: translateX(3px);
+        }
+
+        .static-menu .dropdown-subcategory-header.active {
+            background: linear-gradient(135deg, rgba(255,107,0,.5) 0%, rgba(138,43,226,.4) 100%);
+            border-color: #FFB84D;
+        }
+
+        .static-menu .subcategory-items {
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height .3s ease, opacity .3s ease;
+            opacity: 1;
+        }
+
+        .static-menu .subcategory-items.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .settings-btn-static {
+            flex-shrink: 0;
+            padding: 10px 12px;
+            font-size: 1.6em;
+            width: 48px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(25,5,45,.6) 0%, rgba(50,10,70,.5) 100%);
+            border: 2px solid rgba(138,43,226,.6);
+            color: #FFB84D;
+            cursor: pointer;
+            transition: all .2s;
+            text-shadow: 2px 2px 4px rgba(0,0,0,.9);
+        }
+
+        .settings-btn-static:hover {
+            background: linear-gradient(135deg, rgba(255,107,0,.4) 0%, rgba(138,43,226,.5) 100%);
+            border-color: #FF6B00;
+            color: #FF6B00;
+            transform: translateY(-2px) scale(1.05) rotate(90deg);
+        }
+
+        /* MENU VISIBILITY */
+        .mobile-menu-toggle, .sidebar, .sidebar-overlay, .static-menu { 
+            display: none !important; 
+        }
+
+        body.menu-left .mobile-menu-toggle,
+        body.menu-right .mobile-menu-toggle { 
+            display: block !important; 
+        }
+
+        body.menu-left .sidebar,
+        body.menu-right .sidebar {
+            display: flex !important;
+        }
+
+        body.menu-left .sidebar-overlay,
+        body.menu-right .sidebar-overlay {
+            display: block !important;
+        }
+
+        body.menu-up .static-menu.menu-top { display: flex !important; }
+        body.menu-down .static-menu.menu-bottom { display: flex !important; }
+
+        body.menu-up { padding-top: 75px !important; }
+        body.menu-down { padding-bottom: 75px !important; }
     </style>
-    
-    <!-- AWS CSS завантажуються динамічно через aws_loader.js -->
 </head>
 <body>
     <div id="loading-screen">
@@ -142,7 +363,6 @@
     <script src="system/colors.js" defer></script>
     <script src="system/reload.js" defer></script>
     <script src="system/url.js" defer></script>
-    <script src="system/menu_manager.js" defer></script>
     <script src="system/loader.js" defer></script>
 </body>
 </html>
