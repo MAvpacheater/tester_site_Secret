@@ -404,8 +404,18 @@
                     state.staticMenuInstance = null;
                 }
                 
+                // ВАЖЛИВО: Закриваємо sidebar при зміні на left/right
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                if (sidebar && overlay) {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('show');
+                    console.log('   ✓ Closed sidebar on position change');
+                }
+                
                 const toggle = document.querySelector('.mobile-menu-toggle');
                 if (toggle) {
+                    toggle.classList.remove('menu-open');
                     setTimeout(() => createMenuButton(), 10);
                 }
             }
@@ -489,7 +499,7 @@
         createMenuButton
     });
     
-    // Додамо глобальні обробники для закриття sidebar
+    // Додаємо глобальні обробники для закриття sidebar
     document.addEventListener('click', (e) => {
         // Закриваємо sidebar при кліку на overlay
         if (e.target.id === 'sidebarOverlay') {
