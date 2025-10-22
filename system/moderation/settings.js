@@ -1,4 +1,4 @@
-// ========== SETTINGS MODULE (FIXED HIGHLIGHTING) ==========
+// ========== SETTINGS MODULE (ОПТИМІЗОВАНО БЕЗ ЛАГІВ) ==========
 (function() {
     'use strict';
     
@@ -120,7 +120,7 @@
         }
     }
 
-    // ========== UI UPDATES ==========
+    // ========== UI UPDATES (ОПТИМІЗОВАНО) ==========
     const ui = {
         updateSettings(lang = null) {
             const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en');
@@ -130,6 +130,7 @@
             const page = document.getElementById('settingsPage');
             if (!page) return;
             
+            // Batch DOM updates
             const updates = [
                 { sel: '.settings-title', txt: t.title },
                 { sel: '[data-category="language"] .category-title span:last-child', txt: t.language },
@@ -138,22 +139,24 @@
                 { sel: '[data-category="menu"] .category-title span:last-child', txt: t.menu }
             ];
             
-            updates.forEach(({ sel, txt }) => {
-                const el = page.querySelector(sel);
-                if (el) el.textContent = txt;
+            requestAnimationFrame(() => {
+                updates.forEach(({ sel, txt }) => {
+                    const el = page.querySelector(sel);
+                    if (el) el.textContent = txt;
+                });
+                
+                Object.keys(CONFIG.backgrounds).forEach(bg => {
+                    const el = page.querySelector(`[data-background="${bg}"] .option-name`);
+                    if (el && t[bg]) el.textContent = t[bg];
+                });
+                
+                Object.keys(CONFIG.menuPositions).forEach(pos => {
+                    const el = page.querySelector(`[data-position="${pos}"] .menu-option-name`);
+                    if (el && t[pos]) el.textContent = t[pos];
+                });
+                
+                this.updateLanguageNames();
             });
-            
-            Object.keys(CONFIG.backgrounds).forEach(bg => {
-                const el = page.querySelector(`[data-background="${bg}"] .option-name`);
-                if (el && t[bg]) el.textContent = t[bg];
-            });
-            
-            Object.keys(CONFIG.menuPositions).forEach(pos => {
-                const el = page.querySelector(`[data-position="${pos}"] .menu-option-name`);
-                if (el && t[pos]) el.textContent = t[pos];
-            });
-            
-            this.updateLanguageNames();
         },
 
         updateLanguageNames() {
@@ -179,28 +182,28 @@
 
         updateBackground() {
             const current = storage.get('background', 'dodep');
-            console.log('🖼️ Updating background UI, current:', current);
-            document.querySelectorAll('.background-option').forEach(opt => {
-                const isActive = opt.dataset.background === current;
-                opt.classList.toggle('active', isActive);
+            requestAnimationFrame(() => {
+                document.querySelectorAll('.background-option').forEach(opt => {
+                    opt.classList.toggle('active', opt.dataset.background === current);
+                });
             });
         },
 
         updateMenuPosition() {
             const current = storage.get('menuPosition', 'left');
-            console.log('📍 Updating menu position UI, current:', current);
-            document.querySelectorAll('.menu-option').forEach(opt => {
-                const isActive = opt.dataset.position === current;
-                opt.classList.toggle('active', isActive);
+            requestAnimationFrame(() => {
+                document.querySelectorAll('.menu-option').forEach(opt => {
+                    opt.classList.toggle('active', opt.dataset.position === current);
+                });
             });
         },
 
         updateLanguage() {
             const current = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-            console.log('🌍 Updating language UI, current:', current);
-            document.querySelectorAll('.language-option').forEach(opt => {
-                const isActive = opt.dataset.language === current;
-                opt.classList.toggle('active', isActive);
+            requestAnimationFrame(() => {
+                document.querySelectorAll('.language-option').forEach(opt => {
+                    opt.classList.toggle('active', opt.dataset.language === current);
+                });
             });
         },
 
@@ -220,11 +223,14 @@
             if (!state.categories.hasOwnProperty(name)) return;
             
             const wasOpen = state.categories[name];
+            
+            // Close all first
             Object.keys(state.categories).forEach(cat => {
                 state.categories[cat] = false;
                 this.updateUI(cat, false);
             });
             
+            // Open current if was closed
             if (!wasOpen) {
                 state.categories[name] = true;
                 this.updateUI(name, true);
@@ -248,8 +254,10 @@
             const options = page.querySelector(`.${classMap[name]}`);
             
             if (header && options) {
-                header.classList.toggle('collapsed', !isOpen);
-                options.classList.toggle('collapsed', !isOpen);
+                requestAnimationFrame(() => {
+                    header.classList.toggle('collapsed', !isOpen);
+                    options.classList.toggle('collapsed', !isOpen);
+                });
             }
         },
 
@@ -269,100 +277,33 @@
         }
     };
 
-    // ========== COMPLETE MENU CLEANUP ==========
-    function completeMenuCleanup() {
-        console.log('🧹 ========== COMPLETE MENU CLEANUP START ==========');
-        
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        const toggle = document.querySelector('.mobile-menu-toggle');
-        
-        if (sidebar) {
-            sidebar.classList.remove('open');
-            sidebar.style.cssText = '';
-        }
-        
-        if (overlay) {
-            overlay.classList.remove('show');
-            overlay.removeAttribute('style');
-        }
-        
-        if (toggle) {
-            toggle.classList.remove('menu-open');
-            toggle.removeAttribute('style');
-        }
-        
-        document.querySelectorAll('.static-menu').forEach(menu => menu.remove());
-        document.querySelectorAll('.category-dropdown').forEach(dropdown => dropdown.remove());
-        document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-        
-        ['menu-left', 'menu-right', 'menu-up', 'menu-down'].forEach(cls => {
-            document.body.classList.remove(cls);
-        });
-        
-        document.body.style.paddingTop = '';
-        document.body.style.paddingBottom = '';
-        
-        console.log('✅ ========== COMPLETE MENU CLEANUP END ==========');
-    }
-
-    // ========== CHANGE FUNCTIONS ==========
+    // ========== CHANGE FUNCTIONS (ОПТИМІЗОВАНО) ==========
     async function changeBackground(bg) {
         if (!CONFIG.backgrounds[bg]) return;
-        console.log('🖼️ Changing background to:', bg);
         storage.set('background', bg);
         await backgroundManager.apply(bg);
         ui.updateBackground();
     }
 
     function changeMenuPosition(pos) {
-        console.log('🔄 ========== CHANGE MENU POSITION START ==========');
-        console.log('🎯 New position:', pos);
-        
-        if (!CONFIG.menuPositions[pos]) {
-            console.error('❌ Invalid menu position:', pos);
-            return;
-        }
-        
-        const currentPos = storage.get('menuPosition', 'left');
-        console.log('📍 Current position:', currentPos);
-        
-        completeMenuCleanup();
+        if (!CONFIG.menuPositions[pos]) return;
         
         storage.set('menuPosition', pos);
-        console.log('💾 Saved to storage:', pos);
-        
-        // Оновлюємо UI негайно
         ui.updateMenuPosition();
         
-        setTimeout(() => {
-            console.log('📞 Calling menuPositionManager.apply()...');
-            
-            if (typeof window.menuPositionManager !== 'undefined' && window.menuPositionManager.apply) {
+        requestAnimationFrame(() => {
+            if (window.menuPositionManager?.apply) {
                 window.menuPositionManager.apply(pos);
-                console.log('✅ Menu position applied');
-                
-                // Повторно оновлюємо UI після застосування
-                setTimeout(() => {
-                    ui.updateMenuPosition();
-                }, 200);
-            } else {
-                console.error('❌ menuPositionManager not available!');
             }
-            
-            console.log('✅ ========== CHANGE MENU POSITION END ==========');
-        }, 150);
+        });
     }
 
     function changeLanguage(lang) {
         if (!CONFIG.languages[lang]) return;
-        console.log('🌍 Changing language to:', lang);
         if (typeof window.switchAppLanguage === 'function') {
             window.switchAppLanguage(lang);
         }
-        setTimeout(() => {
-            ui.updateLanguage();
-        }, 100);
+        ui.updateLanguage();
     }
 
     // ========== HTML GENERATION ==========
@@ -460,26 +401,23 @@
         const page = document.getElementById('settingsPage');
         if (!page) return;
         
-        console.log('⚙️ Initializing Settings...');
-        
         categories.load();
         page.innerHTML = createSettingsHTML();
         
         await loadTranslations();
-        ui.updateSettings();
-        ui.updateColorThemeNames();
-        ui.updateLanguageNames();
+        
+        requestAnimationFrame(() => {
+            ui.updateSettings();
+            ui.updateColorThemeNames();
+            ui.updateLanguageNames();
+            ui.updateAllUI();
+            categories.apply();
+        });
         
         const bg = storage.get('background', 'dodep');
         await backgroundManager.apply(bg);
         
-        // Оновлюємо весь UI
-        ui.updateAllUI();
-        
-        categories.apply();
-        
         state.initialized = true;
-        console.log('✅ Settings initialized');
     }
 
     async function initOnStart() {
@@ -488,20 +426,19 @@
         await loadTranslations();
     }
 
-    // ========== EVENT LISTENERS ==========
+    // ========== EVENT LISTENERS (ОПТИМІЗОВАНО) ==========
+    let languageChangeTimeout = null;
     document.addEventListener('languageChanged', (e) => {
-        if (state.initialized && e.detail?.language) {
-            ui.updateSettings(e.detail.language);
-            ui.updateColorThemeNames();
-            ui.updateLanguageNames();
-        }
-    });
-
-    // Слухаємо зміни позиції меню від menuPositionManager
-    document.addEventListener('menuPositionChanged', (e) => {
-        console.log('📍 Settings received menu position change:', e.detail?.position);
-        setTimeout(() => {
-            ui.updateMenuPosition();
+        if (!state.initialized || !e.detail?.language) return;
+        
+        // Debounce language changes
+        clearTimeout(languageChangeTimeout);
+        languageChangeTimeout = setTimeout(() => {
+            requestAnimationFrame(() => {
+                ui.updateSettings(e.detail.language);
+                ui.updateColorThemeNames();
+                ui.updateLanguageNames();
+            });
         }, 100);
     });
 
@@ -520,14 +457,14 @@
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
             initOnStart();
-            setTimeout(() => backgroundManager.preloadAll(), 1000);
+            // Preload backgrounds in background
+            setTimeout(() => backgroundManager.preloadAll(), 2000);
         });
     } else {
         initOnStart();
-        setTimeout(() => backgroundManager.preloadAll(), 1000);
+        setTimeout(() => backgroundManager.preloadAll(), 2000);
     }
 
     window.settingsInitialized = true;
-    console.log('✅ settings.js loaded (FIXED HIGHLIGHTING)');
 
 })();
