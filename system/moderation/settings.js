@@ -39,6 +39,7 @@
         
         menuPositions: {
             left: { icon: '⬅️' },
+            right: { icon: '➡️' },
             up: { icon: '⬆️' },
             down: { icon: '⬇️' }
         },
