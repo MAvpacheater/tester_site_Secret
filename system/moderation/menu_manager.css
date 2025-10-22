@@ -1,3 +1,15 @@
+/* ========== PERFORMANCE OPTIMIZATION ========== */
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.static-menu, .sidebar, .category-dropdown, .mobile-menu-toggle {
+    will-change: auto;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
 /* ========== STATIC MENU (TOP/BOTTOM) ========== */
 .static-menu {
     position: fixed;
@@ -50,18 +62,24 @@
     border: 2px solid rgba(138,43,226,.6);
     border-radius: 12px;
     color: #FFB84D;
-    font-size: 1.3em;
+    font-size: 1.1em;
     font-weight: 600;
     cursor: pointer;
-    transition: all .2s;
+    transition: all .2s ease;
     text-shadow: 2px 2px 4px rgba(0,0,0,.9);
+    white-space: nowrap;
+}
+
+.static-menu .category-btn span:last-child {
+    display: inline-block;
+    font-size: 1em;
 }
 
 .static-menu .category-btn:hover {
     background: linear-gradient(135deg, rgba(255,107,0,.4) 0%, rgba(138,43,226,.5) 100%);
     border-color: #FF6B00;
     color: #FF6B00;
-    transform: translateY(-2px);
+    transform: translateY(-2px) translateZ(0);
     box-shadow: 0 4px 20px rgba(255,107,0,.4);
 }
 
@@ -102,7 +120,7 @@
     border-radius: 12px;
     margin-bottom: 10px;
     cursor: pointer;
-    transition: all .2s;
+    transition: all .2s ease;
     color: #FFB84D;
     font-size: 1.1em;
     font-weight: 600;
@@ -114,7 +132,7 @@
 .static-menu .dropdown-item:hover {
     background: linear-gradient(135deg, rgba(255,107,0,.3) 0%, rgba(138,43,226,.4) 100%);
     border-color: #FF6B00;
-    transform: translateX(5px) scale(1.02);
+    transform: translateX(5px) scale(1.02) translateZ(0);
     box-shadow: 0 4px 20px rgba(255,107,0,.4);
 }
 
@@ -125,8 +143,14 @@
 }
 
 .static-menu .dropdown-item-icon {
-    font-size: 1.6em;
+    font-size: 1.4em;
     filter: drop-shadow(0 0 8px rgba(255,107,0,.6));
+    flex-shrink: 0;
+}
+
+.static-menu .dropdown-item-text {
+    display: inline-block;
+    font-size: 1em;
 }
 
 .static-menu .dropdown-subcategory-header {
@@ -143,13 +167,13 @@
     text-shadow: 2px 2px 4px rgba(0,0,0,.9);
     border: 1px solid rgba(138,43,226,.4);
     cursor: pointer;
-    transition: all .2s;
+    transition: all .2s ease;
 }
 
 .static-menu .dropdown-subcategory-header:hover {
     background: linear-gradient(135deg, rgba(138,43,226,.5) 0%, rgba(255,107,0,.4) 100%);
     border-color: #FF6B00;
-    transform: translateX(3px);
+    transform: translateX(3px) translateZ(0);
 }
 
 .static-menu .dropdown-subcategory-header.active {
@@ -160,8 +184,14 @@
 .static-menu .dropdown-subcategory-header:first-child { margin-top: 0; }
 
 .static-menu .dropdown-subcategory-header span:first-child {
-    font-size: 1.4em;
+    font-size: 1.2em;
     filter: drop-shadow(0 0 6px rgba(255,107,0,.5));
+    flex-shrink: 0;
+}
+
+.static-menu .dropdown-subcategory-header span:last-child {
+    display: inline-block;
+    font-size: 1em;
 }
 
 .static-menu .subcategory-items {
@@ -206,7 +236,7 @@
     border: 2px solid rgba(138,43,226,.6);
     color: #FFB84D;
     cursor: pointer;
-    transition: all .2s;
+    transition: all .2s ease;
     text-shadow: 2px 2px 4px rgba(0,0,0,.9);
 }
 
@@ -214,7 +244,7 @@
     background: linear-gradient(135deg, rgba(255,107,0,.4) 0%, rgba(138,43,226,.5) 100%);
     border-color: #FF6B00;
     color: #FF6B00;
-    transform: translateY(-2px) scale(1.05) rotate(90deg);
+    transform: translateY(-2px) scale(1.05) rotate(90deg) translateZ(0);
 }
 
 .settings-btn-static.active {
@@ -236,7 +266,7 @@
     border-radius: 12px;
     cursor: pointer;
     z-index: 1003;
-    transition: all .3s;
+    transition: all .3s ease;
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 20px rgba(138,43,226,.5);
     display: none;
@@ -248,13 +278,13 @@
     background: linear-gradient(135deg, rgba(255,107,0,.3) 0%, rgba(138,43,226,.8) 100%);
     border-color: #FF6B00;
     box-shadow: 0 6px 25px rgba(255,107,0,.4);
-    transform: scale(1.05);
+    transform: scale(1.05) translateZ(0);
 }
 
 .mobile-menu-toggle.menu-open {
     opacity: 0;
     visibility: hidden;
-    transform: scale(.8);
+    transform: scale(.8) translateZ(0);
     pointer-events: none;
 }
 
@@ -264,7 +294,7 @@
     background: linear-gradient(90deg, #FF6B00, #8B00FF);
     border-radius: 2px;
     position: absolute;
-    transition: all .2s;
+    transition: all .2s ease;
     box-shadow: 0 0 8px rgba(255,107,0,.7);
     left: 50%;
     top: 50%;
@@ -272,7 +302,6 @@
 }
 
 /* ========== MENU VISIBILITY (LEFT + RIGHT) ========== */
-/* За замовчуванням все приховано */
 .mobile-menu-toggle, 
 .sidebar, 
 .sidebar-overlay, 
@@ -409,7 +438,7 @@ body.menu-left, body.menu-right { padding-top: 0 !important; padding-bottom: 0 !
     .menu-top, .menu-bottom { height: 50px; }
     
     .static-menu .category-btn { 
-        font-size: 1.2em; 
+        font-size: 1em; 
         height: 36px; 
         padding: 8px 14px; 
         gap: 6px; 
@@ -449,7 +478,7 @@ body.menu-left, body.menu-right { padding-top: 0 !important; padding-bottom: 0 !
     .menu-top, .menu-bottom { height: 45px; }
     
     .static-menu .category-btn { 
-        font-size: 1.1em; 
+        font-size: 0.95em; 
         height: 32px; 
         padding: 6px 12px; 
         gap: 4px; 
