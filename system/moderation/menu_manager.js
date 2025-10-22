@@ -1,108 +1,54 @@
-// ========== SETTINGS MODULE (WITHOUT RIGHT MENU) ==========
+// ========== MENU MANAGER (COMPLETE WITH POSITION LOGIC) ==========
 (function() {
     'use strict';
     
-    if (window.settingsInitialized) return;
+    if (window.menuManagerInitialized) return;
 
     // ========== STATE ==========
     const state = {
-        initialized: false,
-        translations: null,
-        categories: { background: false, menu: false, colors: false, language: false }
+        currentPosition: null,
+        mobileMenuOpen: false,
+        activeDropdown: null,
+        translations: null
     };
 
     // ========== CONFIG ==========
-    const getBasePath = () => {
-        const { protocol, host, pathname } = window.location;
-        if (host === 'mavpacheater.github.io') return `${protocol}//${host}/tester_site_Secret/`;
-        if (host.includes('localhost') || host.includes('127.0.0.1')) {
-            const parts = pathname.split('/').filter(Boolean);
-            if (parts.length && parts[0] !== 'AWS') return `${protocol}//${host}/${parts[0]}/`;
-        }
-        return '/';
+    const PAGE_ICONS = {
+        calculator: '🐾', arm: '💪', grind: '🏋️‍♂️', roulette: '🎰', boss: '👹',
+        boosts: '🚀', shiny: '✨', secret: '🔮', codes: '🎁', aura: '🌟',
+        trainer: '🏆', charms: '🔮', potions: '🧪', worlds: '🌍',
+        trader: '🛒', clans: '🏰', petscalc: '🐾',
+        settings: '⚙️', help: '🆘', peoples: '🙏'
     };
 
-    const SETTINGS_BASE_PATH = getBasePath();
-
-    const CONFIG = {
-        backgrounds: {
-            dodep: { icon: '🕸️', filename: 'h1.png' },
-            game: { icon: '🎃', filename: 'h2.png' },
-            code: { icon: '👻', filename: 'h3.png' },
-            prison: { icon: '🦇', filename: 'h4.png' },
-            forest: { icon: '🌲', filename: 'h5.png' },
-            space: { icon: '🌌', filename: 'h6.png' },
-            ocean: { icon: '🌊', filename: 'h7.png' },
-            desert: { icon: '🏜️', filename: 'h8.png' },
-            castle: { icon: '🏰', filename: 'h9.png' }
+    const MENU_STRUCTURE = {
+        aws: {
+            id: 'awsCategory',
+            icon: '📦',
+            subcategories: {
+                calculator: { id: 'calculatorButtons', icon: '🧮', pages: ['calculator', 'arm', 'grind', 'roulette', 'boss'] },
+                info: { id: 'infoButtons', icon: '📋', pages: ['boosts', 'shiny', 'secret', 'codes', 'aura', 'trainer', 'charms', 'potions', 'worlds'] },
+                others: { id: 'othersAWSButtons', icon: '🔧', pages: ['trader', 'clans'] }
+            }
         },
-        
-        menuPositions: {
-            left: { icon: '⬅️' },
-            right: { icon: '➡️' },
-            up: { icon: '⬆️' },
-            down: { icon: '⬇️' }
+        rcu: {
+            id: 'rcuCategory',
+            icon: '🎮',
+            subcategories: {
+                calculator: { id: 'rcuCalculatorButtons', icon: '🧮', pages: ['petscalc'] }
+            }
         },
-        
-        languages: {
-            en: { icon: '🇺🇸', name: { en: 'English', uk: 'Англійська', ru: 'Английский' } },
-            uk: { icon: '🇺🇦', name: { en: 'Ukrainian', uk: 'Українська', ru: 'Украинский' } },
-            ru: { icon: '🇷🇺', name: { en: 'Russian', uk: 'Російська', ru: 'Русский' } }
+        system: {
+            id: 'systemCategory',
+            icon: '⚙️',
+            pages: ['settings', 'help', 'peoples']
         }
     };
-
-    Object.keys(CONFIG.backgrounds).forEach(key => {
-        CONFIG.backgrounds[key].url = `AWS/image/bg/${CONFIG.backgrounds[key].filename}`;
-    });
 
     // ========== STORAGE ==========
     const storage = {
         get: (key, def) => localStorage.getItem(`armHelper_${key}`) || def,
-        set: (key, val) => localStorage.setItem(`armHelper_${key}`, val),
-        getJSON: (key, def) => {
-            try {
-                const data = localStorage.getItem(`armHelper_${key}`);
-                return data ? JSON.parse(data) : def;
-            } catch { return def; }
-        },
-        setJSON: (key, val) => localStorage.setItem(`armHelper_${key}`, JSON.stringify(val))
-    };
-
-    // ========== BACKGROUND MANAGER ==========
-    const backgroundManager = {
-        cache: new Map(),
-        
-        async preload(bg) {
-            if (this.cache.has(bg)) return this.cache.get(bg);
-            
-            const config = CONFIG.backgrounds[bg];
-            if (!config) return null;
-            
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => {
-                    this.cache.set(bg, config.url);
-                    resolve(config.url);
-                };
-                img.onerror = () => resolve(null);
-                img.src = config.url;
-            });
-        },
-
-        async apply(bg) {
-            const imageUrl = await this.preload(bg);
-            const body = document.body;
-            
-            body.style.background = imageUrl 
-                ? `linear-gradient(135deg, rgba(41,39,35,0.4) 0%, rgba(28,26,23,0.6) 50%, rgba(20,19,17,0.8) 100%), url('${imageUrl}') center center / cover no-repeat`
-                : `linear-gradient(135deg, rgba(41,39,35,0.9) 0%, rgba(28,26,23,0.95) 50%, rgba(20,19,17,1) 100%)`;
-            body.style.backgroundAttachment = 'scroll';
-        },
-
-        async preloadAll() {
-            const promises = Object.keys(CONFIG.backgrounds).map(bg => this.preload(bg));
-            await Promise.allSettled(promises);
-        }
+        set: (key, val) => localStorage.setItem(`armHelper_${key}`, val)
     };
 
     // ========== TRANSLATIONS ==========
@@ -110,411 +56,375 @@
         if (state.translations) return state.translations;
         
         try {
-            const response = await fetch(`${SETTINGS_BASE_PATH}system/moderation/menu.json`);
+            const response = await fetch('system/moderation/menu.json');
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             state.translations = await response.json();
             return state.translations;
         } catch (error) {
-            console.error('❌ Translation error:', error);
+            console.error('❌ Menu translation error:', error);
             return null;
         }
     }
 
-    // ========== UI UPDATES ==========
-    const ui = {
-        updateSettings(lang = null) {
-            const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en');
-            if (!state.translations?.[currentLang]) return;
-            
-            const t = state.translations[currentLang].settings;
-            const page = document.getElementById('settingsPage');
-            if (!page) return;
-            
-            const updates = [
-                { sel: '.settings-title', txt: t.title },
-                { sel: '[data-category="language"] .category-title span:last-child', txt: t.language },
-                { sel: '[data-category="colors"] .category-title span:last-child', txt: t.colors },
-                { sel: '[data-category="background"] .category-title span:last-child', txt: t.background },
-                { sel: '[data-category="menu"] .category-title span:last-child', txt: t.menu }
-            ];
-            
-            updates.forEach(({ sel, txt }) => {
-                const el = page.querySelector(sel);
-                if (el) el.textContent = txt;
-            });
-            
-            Object.keys(CONFIG.backgrounds).forEach(bg => {
-                const el = page.querySelector(`[data-background="${bg}"] .option-name`);
-                if (el && t[bg]) el.textContent = t[bg];
-            });
-            
-            Object.keys(CONFIG.menuPositions).forEach(pos => {
-                const el = page.querySelector(`[data-position="${pos}"] .menu-option-name`);
-                if (el && t[pos]) el.textContent = t[pos];
-            });
-            
-            this.updateLanguageNames();
+    function getTranslation(key) {
+        const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
+        if (!state.translations?.[lang]?.menu) return key;
+        
+        const parts = key.split('.');
+        let value = state.translations[lang].menu;
+        
+        for (const part of parts) {
+            value = value?.[part];
+            if (!value) return key;
+        }
+        
+        return value;
+    }
+
+    // ========== MOBILE MENU (LEFT/RIGHT) ==========
+    const mobileMenu = {
+        init() {
+            this.setupToggleButton();
+            this.setupSidebar();
+            this.setupOverlay();
+            this.attachEvents();
         },
 
-        updateLanguageNames() {
-            const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-            Object.keys(CONFIG.languages).forEach(key => {
-                const el = document.querySelector(`[data-language="${key}"] .language-option-name`);
-                if (el && CONFIG.languages[key].name[lang]) {
-                    el.textContent = CONFIG.languages[key].name[lang];
+        setupToggleButton() {
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            if (!toggle) return;
+
+            toggle.innerHTML = `
+                <div class="menu-line" style="top: calc(50% - 8px); transform: translateX(-50%)"></div>
+                <div class="menu-line" style="top: 50%; transform: translateX(-50%)"></div>
+                <div class="menu-line" style="top: calc(50% + 8px); transform: translateX(-50%)"></div>
+            `;
+        },
+
+        setupSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar) return;
+
+            sidebar.style.display = 'flex';
+        },
+
+        setupOverlay() {
+            const overlay = document.getElementById('sidebarOverlay');
+            if (overlay) {
+                overlay.style.display = 'block';
+            }
+        },
+
+        attachEvents() {
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            if (toggle) {
+                toggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.toggle();
+                });
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', () => this.close());
+            }
+        },
+
+        toggle() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+
+            if (!sidebar) return;
+
+            const isOpen = sidebar.classList.contains('open');
+
+            if (isOpen) {
+                this.close();
+            } else {
+                sidebar.classList.add('open');
+                overlay?.classList.add('show');
+                toggle?.classList.add('menu-open');
+                state.mobileMenuOpen = true;
+            }
+        },
+
+        close() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+
+            sidebar?.classList.remove('open');
+            overlay?.classList.remove('show');
+            toggle?.classList.remove('menu-open');
+            state.mobileMenuOpen = false;
+        },
+
+        cleanup() {
+            this.close();
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+
+            if (sidebar) sidebar.style.display = 'none';
+            if (overlay) overlay.style.display = 'none';
+            if (toggle) toggle.style.display = 'none';
+        }
+    };
+
+    // ========== STATIC MENU (TOP/BOTTOM) ==========
+    const staticMenu = {
+        create(position) {
+            const isTop = position === 'up';
+            const menuId = isTop ? 'staticMenuTop' : 'staticMenuBottom';
+
+            // Remove existing
+            document.querySelectorAll('.static-menu').forEach(m => m.remove());
+
+            const menu = document.createElement('div');
+            menu.id = menuId;
+            menu.className = `static-menu menu-${isTop ? 'top' : 'bottom'}`;
+
+            menu.innerHTML = `
+                <div class="menu-categories">
+                    ${this.createCategories()}
+                </div>
+                <div class="settings-container-static">
+                    <button class="settings-btn-static" onclick="switchPage('settings')" title="Settings">⚙️</button>
+                </div>
+            `;
+
+            document.body.appendChild(menu);
+            this.attachEvents(menuId);
+            this.updateTranslations();
+        },
+
+        createCategories() {
+            let html = '';
+
+            // AWS
+            html += this.createCategory('aws', MENU_STRUCTURE.aws);
+
+            // RCU
+            html += this.createCategory('rcu', MENU_STRUCTURE.rcu);
+
+            // System
+            html += this.createCategoryDirect('system', MENU_STRUCTURE.system);
+
+            return html;
+        },
+
+        createCategory(key, config) {
+            const subcatsHTML = Object.entries(config.subcategories).map(([subKey, subConfig]) => {
+                const pagesHTML = subConfig.pages.map(page => 
+                    `<div class="dropdown-item" data-page="${page}" onclick="switchPage('${page}')">
+                        <span class="dropdown-item-icon">${PAGE_ICONS[page] || '📄'}</span>
+                        <span class="dropdown-item-text" data-translate="pages.${page}"></span>
+                    </div>`
+                ).join('');
+
+                return `
+                    <div class="dropdown-subcategory-header" data-translate="${subKey}">
+                        <span>${subConfig.icon}</span>
+                        <span></span>
+                    </div>
+                    <div class="subcategory-items">${pagesHTML}</div>
+                `;
+            }).join('');
+
+            return `
+                <div class="menu-category" data-category="${config.id}">
+                    <button class="category-btn" data-translate="${config.id}">
+                        <span>${config.icon}</span>
+                        <span></span>
+                    </button>
+                    <div class="category-dropdown">${subcatsHTML}</div>
+                </div>
+            `;
+        },
+
+        createCategoryDirect(key, config) {
+            const pagesHTML = config.pages.map(page => 
+                `<div class="dropdown-item" data-page="${page}" onclick="switchPage('${page}')">
+                    <span class="dropdown-item-icon">${PAGE_ICONS[page] || '📄'}</span>
+                    <span class="dropdown-item-text" data-translate="pages.${page}"></span>
+                </div>`
+            ).join('');
+
+            return `
+                <div class="menu-category" data-category="${config.id}">
+                    <button class="category-btn" data-translate="${config.id}">
+                        <span>${config.icon}</span>
+                        <span></span>
+                    </button>
+                    <div class="category-dropdown">${pagesHTML}</div>
+                </div>
+            `;
+        },
+
+        attachEvents(menuId) {
+            const menu = document.getElementById(menuId);
+            if (!menu) return;
+
+            menu.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const category = btn.closest('.menu-category');
+                    const dropdown = category.querySelector('.category-dropdown');
+                    
+                    // Close others
+                    menu.querySelectorAll('.category-dropdown').forEach(d => {
+                        if (d !== dropdown) d.classList.remove('show');
+                    });
+                    menu.querySelectorAll('.category-btn').forEach(b => {
+                        if (b !== btn) b.classList.remove('active');
+                    });
+
+                    // Toggle current
+                    dropdown.classList.toggle('show');
+                    btn.classList.toggle('active');
+                });
+            });
+
+            // Close on outside click
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.static-menu')) {
+                    menu.querySelectorAll('.category-dropdown').forEach(d => d.classList.remove('show'));
+                    menu.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                }
+            });
+
+            // Update active page
+            this.updateActiveState();
+        },
+
+        updateTranslations() {
+            if (!state.translations) return;
+
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                const text = getTranslation(key);
+                
+                const textSpan = el.querySelector('span:last-child');
+                if (textSpan) {
+                    textSpan.textContent = text;
                 }
             });
         },
 
-        updateColorThemeNames() {
-            const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-            const themes = window.colorThemes || {};
-            Object.keys(themes).forEach(theme => {
-                const el = document.querySelector(`[data-theme="${theme}"] .color-option-name`);
-                if (el && themes[theme].name?.[lang]) {
-                    el.textContent = themes[theme].name[lang];
-                }
+        updateActiveState(page) {
+            const currentPage = page || (typeof getCurrentPage === 'function' ? getCurrentPage() : null);
+            if (!currentPage) return;
+
+            document.querySelectorAll('.static-menu .dropdown-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.page === currentPage);
             });
         },
 
-        updateBackground() {
-            const current = storage.get('background', 'dodep');
-            document.querySelectorAll('.background-option').forEach(opt => {
-                opt.classList.toggle('active', opt.dataset.background === current);
-            });
-        },
-
-        updateMenuPosition() {
-            const current = storage.get('menuPosition', 'left');
-            document.querySelectorAll('.menu-option').forEach(opt => {
-                opt.classList.toggle('active', opt.dataset.position === current);
-            });
-        },
-
-        updateLanguage() {
-            const current = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-            document.querySelectorAll('.language-option').forEach(opt => {
-                opt.classList.toggle('active', opt.dataset.language === current);
-            });
+        cleanup() {
+            document.querySelectorAll('.static-menu').forEach(m => m.remove());
+            document.body.style.paddingTop = '';
+            document.body.style.paddingBottom = '';
         }
     };
 
-    // ========== CATEGORIES ==========
-    const categories = {
-        toggle(name) {
-            if (!state.categories.hasOwnProperty(name)) return;
-            
-            const wasOpen = state.categories[name];
-            Object.keys(state.categories).forEach(cat => {
-                state.categories[cat] = false;
-                this.updateUI(cat, false);
-            });
-            
-            if (!wasOpen) {
-                state.categories[name] = true;
-                this.updateUI(name, true);
+    // ========== POSITION MANAGER ==========
+    const menuPositionManager = {
+        apply(position) {
+            console.log('📍 Menu Position Manager: Applying position:', position);
+
+            // Cleanup first
+            mobileMenu.cleanup();
+            staticMenu.cleanup();
+            document.body.classList.remove('menu-left', 'menu-right', 'menu-up', 'menu-down');
+
+            state.currentPosition = position;
+
+            switch(position) {
+                case 'left':
+                case 'right':
+                    document.body.classList.add(`menu-${position}`);
+                    mobileMenu.init();
+                    break;
+                
+                case 'up':
+                case 'down':
+                    document.body.classList.add(`menu-${position}`);
+                    staticMenu.create(position);
+                    break;
             }
-            
-            storage.setJSON('categoriesState', state.categories);
+
+            console.log('✅ Menu position applied:', position);
         },
 
-        updateUI(name, isOpen) {
-            const page = document.getElementById('settingsPage');
-            if (!page) return;
-            
-            const classMap = {
-                colors: 'color-options',
-                background: 'background-options',
-                language: 'language-options',
-                menu: 'menu-options'
-            };
-            
-            const header = page.querySelector(`[data-category="${name}"] .category-header`);
-            const options = page.querySelector(`.${classMap[name]}`);
-            
-            if (header && options) {
-                header.classList.toggle('collapsed', !isOpen);
-                options.classList.toggle('collapsed', !isOpen);
-            }
+        init() {
+            const savedPosition = storage.get('menuPosition', 'left');
+            this.apply(savedPosition);
         },
 
-        load() {
-            const saved = storage.getJSON('categoriesState', {});
-            const openCount = Object.values(saved).filter(Boolean).length;
+        updateActiveState(page) {
+            const position = state.currentPosition;
             
-            if (openCount > 1) {
-                Object.keys(state.categories).forEach(key => state.categories[key] = false);
+            if (position === 'left' || position === 'right') {
+                // Update sidebar buttons
+                document.querySelectorAll('.sidebar .nav-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.page === page);
+                });
             } else {
-                state.categories = { ...state.categories, ...saved };
+                // Update static menu
+                staticMenu.updateActiveState(page);
             }
-        },
-
-        apply() {
-            Object.keys(state.categories).forEach(cat => this.updateUI(cat, state.categories[cat]));
         }
     };
 
-    // ========== COMPLETE MENU CLEANUP FUNCTION ==========
-    function completeMenuCleanup() {
-        console.log('🧹 ========== COMPLETE MENU CLEANUP START ==========');
-        
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        const toggle = document.querySelector('.mobile-menu-toggle');
-        
-        if (sidebar) {
-            console.log('🗑️ Cleaning sidebar...');
-            sidebar.classList.remove('open');
-            sidebar.style.cssText = '';
-            sidebar.removeAttribute('style');
-        }
-        
-        if (overlay) {
-            console.log('🗑️ Cleaning overlay...');
-            overlay.classList.remove('show');
-            overlay.removeAttribute('style');
-        }
-        
-        if (toggle) {
-            console.log('🗑️ Cleaning toggle button...');
-            toggle.classList.remove('menu-open');
-            toggle.removeAttribute('style');
-        }
-        
-        console.log('🗑️ Removing all static menu elements...');
-        document.querySelectorAll('.static-menu').forEach(menu => {
-            console.log('  → Removing static menu:', menu.id || 'unnamed');
-            menu.remove();
-        });
-        
-        console.log('🗑️ Removing all dropdown elements...');
-        document.querySelectorAll('.category-dropdown').forEach(dropdown => {
-            dropdown.remove();
-        });
-        
-        console.log('🗑️ Removing active states...');
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        
-        console.log('🗑️ Removing position classes from body...');
-        ['menu-left', 'menu-up', 'menu-down'].forEach(cls => {
-            document.body.classList.remove(cls);
-        });
-        
-        document.body.style.paddingTop = '';
-        document.body.style.paddingBottom = '';
-        
-        console.log('✅ ========== COMPLETE MENU CLEANUP END ==========');
-    }
+    // ========== GLOBAL FUNCTIONS ==========
+    window.toggleMobileMenu = function() {
+        mobileMenu.toggle();
+    };
 
-    // ========== CHANGE FUNCTIONS ==========
-    async function changeBackground(bg) {
-        if (!CONFIG.backgrounds[bg]) return;
-        storage.set('background', bg);
-        await backgroundManager.apply(bg);
-        ui.updateBackground();
-    }
-
-    function changeMenuPosition(pos) {
-        console.log('🔄 ========== CHANGE MENU POSITION START ==========');
-        console.log('🎯 New position:', pos);
-        
-        if (!CONFIG.menuPositions[pos]) {
-            console.error('❌ Invalid menu position:', pos);
-            return;
-        }
-        
-        const currentPos = storage.get('menuPosition', 'left');
-        console.log('📍 Current position:', currentPos);
-        
-        completeMenuCleanup();
-        
-        storage.set('menuPosition', pos);
-        console.log('💾 Saved to storage:', pos);
-        
-        setTimeout(() => {
-            console.log('📞 Calling menuPositionManager.apply()...');
-            
-            if (typeof window.menuPositionManager !== 'undefined' && window.menuPositionManager.apply) {
-                window.menuPositionManager.apply(pos);
-                console.log('✅ Menu position applied');
-            } else {
-                console.error('❌ menuPositionManager not available!');
-            }
-            
-            ui.updateMenuPosition();
-            
-            console.log('✅ ========== CHANGE MENU POSITION END ==========');
-        }, 150);
-    }
-
-    function changeLanguage(lang) {
-        if (!CONFIG.languages[lang]) return;
-        if (typeof window.switchAppLanguage === 'function') {
-            window.switchAppLanguage(lang);
-        }
-        ui.updateLanguage();
-    }
-
-    // ========== HTML GENERATION ==========
-    function createSettingsHTML() {
-        const bgHTML = Object.entries(CONFIG.backgrounds).map(([key, bg]) => `
-            <div class="background-option" data-background="${key}" onclick="changeBackground('${key}')">
-                <div class="option-icon">${bg.icon}</div>
-                <div class="option-name">Loading...</div>
-                <div class="background-preview" style="background-image: url('${bg.url}')"></div>
-            </div>
-        `).join('');
-
-        const menuHTML = Object.entries(CONFIG.menuPositions).map(([key, pos]) => `
-            <div class="menu-option" data-position="${key}" onclick="changeMenuPosition('${key}')">
-                <div class="menu-option-icon">${pos.icon}</div>
-                <div class="menu-option-name">Loading...</div>
-            </div>
-        `).join('');
-
-        const themes = window.colorThemes || {};
-        const colorHTML = Object.entries(themes).map(([key, theme]) => `
-            <div class="color-option" data-theme="${key}" onclick="changeColorTheme('${key}')">
-                <div class="color-preview">
-                    <div class="color-preview-split">
-                        <div class="color-preview-left" style="background: ${theme.primary}"></div>
-                        <div class="color-preview-right" style="background: ${theme.secondary}"></div>
-                    </div>
-                </div>
-                <div class="color-option-name">${theme.name.en}</div>
-            </div>
-        `).join('');
-
-        const langHTML = Object.entries(CONFIG.languages).map(([key, lang]) => `
-            <div class="language-option" data-language="${key}" onclick="changeLanguage('${key}')">
-                <div class="language-option-icon">${lang.icon}</div>
-                <div class="language-option-name">${lang.name.en}</div>
-            </div>
-        `).join('');
-
-        return `
-            <div class="settings-container">
-                <h1 class="settings-title">Settings</h1>
-                
-                <div class="settings-section" data-category="language">
-                    <div class="category-header collapsed" onclick="toggleSettingsCategory('language')">
-                        <div class="category-title">
-                            <span class="section-icon">🌍</span>
-                            <span>Language</span>
-                        </div>
-                        <span class="category-toggle">▼</span>
-                    </div>
-                    <div class="language-options collapsed">${langHTML}</div>
-                </div>
-                
-                <div class="settings-section" data-category="colors">
-                    <div class="category-header collapsed" onclick="toggleSettingsCategory('colors')">
-                        <div class="category-title">
-                            <span class="section-icon">🎨</span>
-                            <span>Color Theme</span>
-                        </div>
-                        <span class="category-toggle">▼</span>
-                    </div>
-                    <div class="color-options collapsed">${colorHTML}</div>
-                </div>
-                
-                <div class="settings-section" data-category="background">
-                    <div class="category-header collapsed" onclick="toggleSettingsCategory('background')">
-                        <div class="category-title">
-                            <span class="section-icon">🎃</span>
-                            <span>Background</span>
-                        </div>
-                        <span class="category-toggle">▼</span>
-                    </div>
-                    <div class="background-options collapsed">${bgHTML}</div>
-                </div>
-                
-                <div class="settings-section" data-category="menu">
-                    <div class="category-header collapsed" onclick="toggleSettingsCategory('menu')">
-                        <div class="category-title">
-                            <span class="section-icon">👻</span>
-                            <span>Menu Position</span>
-                        </div>
-                        <span class="category-toggle">▼</span>
-                    </div>
-                    <div class="menu-options collapsed">${menuHTML}</div>
-                </div>
-            </div>
-        `;
-    }
+    window.closeSidebar = function() {
+        mobileMenu.close();
+    };
 
     // ========== INITIALIZATION ==========
-    async function initSettings() {
-        if (state.initialized) return;
-        
-        const page = document.getElementById('settingsPage');
-        if (!page) return;
-        
-        categories.load();
-        page.innerHTML = createSettingsHTML();
-        
+    async function init() {
+        console.log('🎯 Menu Manager: Initializing...');
+
         await loadTranslations();
-        ui.updateSettings();
-        ui.updateColorThemeNames();
-        ui.updateLanguageNames();
-        
-        const bg = storage.get('background', 'dodep');
-        await backgroundManager.apply(bg);
-        ui.updateBackground();
-        
-        const menuPos = storage.get('menuPosition', 'left');
-        ui.updateMenuPosition();
-        
-        if (typeof updateColorThemeUI === 'function') {
-            updateColorThemeUI();
-        }
-        
-        ui.updateLanguage();
-        categories.apply();
-        
-        state.initialized = true;
+        menuPositionManager.init();
+
+        // Listen for language changes
+        document.addEventListener('languageChanged', () => {
+            staticMenu.updateTranslations();
+        });
+
+        // Listen for page changes
+        document.addEventListener('pageChanged', (e) => {
+            if (e.detail?.page) {
+                menuPositionManager.updateActiveState(e.detail.page);
+                mobileMenu.close();
+            }
+        });
+
+        console.log('✅ Menu Manager: Initialized');
     }
 
-    async function initOnStart() {
-        const bg = storage.get('background', 'dodep');
-        await backgroundManager.apply(bg);
-        
-        await loadTranslations();
-    }
-
-    // ========== EVENT LISTENERS ==========
-    document.addEventListener('languageChanged', (e) => {
-        if (state.initialized && e.detail?.language) {
-            ui.updateSettings(e.detail.language);
-            ui.updateColorThemeNames();
-            ui.updateLanguageNames();
-        }
-    });
-
-    // ========== GLOBAL EXPORTS ==========
+    // ========== EXPORTS ==========
     Object.assign(window, {
-        initializeSettings: initSettings,
-        changeBackground,
-        changeMenuPosition,
-        changeLanguage,
-        toggleSettingsCategory: (name) => categories.toggle(name),
-        updateSettingsLanguage: (lang) => ui.updateSettings(lang),
-        SETTINGS_BASE_PATH
+        menuPositionManager,
+        toggleMobileMenu: window.toggleMobileMenu,
+        closeSidebar: window.closeSidebar
     });
 
     // ========== AUTO INIT ==========
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            initOnStart();
-            setTimeout(() => backgroundManager.preloadAll(), 1000);
-        });
+        document.addEventListener('DOMContentLoaded', init);
     } else {
-        initOnStart();
-        setTimeout(() => backgroundManager.preloadAll(), 1000);
+        setTimeout(init, 100);
     }
 
-    window.settingsInitialized = true;
-
+    window.menuManagerInitialized = true;
+    console.log('✅ Menu Manager loaded');
 })();
