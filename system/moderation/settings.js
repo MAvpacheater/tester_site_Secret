@@ -1,4 +1,4 @@
-// ========== SETTINGS MODULE (ОПТИМІЗОВАНО БЕЗ ЛАГІВ) ==========
+// ========== SETTINGS MODULE (ВИПРАВЛЕНО ПІДСВІЧУВАННЯ) ==========
 (function() {
     'use strict';
     
@@ -120,7 +120,7 @@
         }
     }
 
-    // ========== UI UPDATES (ОПТИМІЗОВАНО) ==========
+    // ========== UI UPDATES ==========
     const ui = {
         updateSettings(lang = null) {
             const currentLang = lang || (typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en');
@@ -130,7 +130,6 @@
             const page = document.getElementById('settingsPage');
             if (!page) return;
             
-            // Batch DOM updates
             const updates = [
                 { sel: '.settings-title', txt: t.title },
                 { sel: '[data-category="language"] .category-title span:last-child', txt: t.language },
@@ -182,28 +181,28 @@
 
         updateBackground() {
             const current = storage.get('background', 'dodep');
-            requestAnimationFrame(() => {
-                document.querySelectorAll('.background-option').forEach(opt => {
-                    opt.classList.toggle('active', opt.dataset.background === current);
-                });
+            console.log('🖼️ Updating background UI, current:', current);
+            document.querySelectorAll('.background-option').forEach(opt => {
+                const isActive = opt.dataset.background === current;
+                opt.classList.toggle('active', isActive);
             });
         },
 
         updateMenuPosition() {
             const current = storage.get('menuPosition', 'left');
-            requestAnimationFrame(() => {
-                document.querySelectorAll('.menu-option').forEach(opt => {
-                    opt.classList.toggle('active', opt.dataset.position === current);
-                });
+            console.log('📍 Updating menu position UI, current:', current);
+            document.querySelectorAll('.menu-option').forEach(opt => {
+                const isActive = opt.dataset.position === current;
+                opt.classList.toggle('active', isActive);
             });
         },
 
         updateLanguage() {
             const current = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-            requestAnimationFrame(() => {
-                document.querySelectorAll('.language-option').forEach(opt => {
-                    opt.classList.toggle('active', opt.dataset.language === current);
-                });
+            console.log('🌍 Updating language UI, current:', current);
+            document.querySelectorAll('.language-option').forEach(opt => {
+                const isActive = opt.dataset.language === current;
+                opt.classList.toggle('active', isActive);
             });
         },
 
@@ -224,13 +223,11 @@
             
             const wasOpen = state.categories[name];
             
-            // Close all first
             Object.keys(state.categories).forEach(cat => {
                 state.categories[cat] = false;
                 this.updateUI(cat, false);
             });
             
-            // Open current if was closed
             if (!wasOpen) {
                 state.categories[name] = true;
                 this.updateUI(name, true);
@@ -277,9 +274,10 @@
         }
     };
 
-    // ========== CHANGE FUNCTIONS (ОПТИМІЗОВАНО) ==========
+    // ========== CHANGE FUNCTIONS ==========
     async function changeBackground(bg) {
         if (!CONFIG.backgrounds[bg]) return;
+        console.log('🖼️ Changing background to:', bg);
         storage.set('background', bg);
         await backgroundManager.apply(bg);
         ui.updateBackground();
@@ -287,19 +285,23 @@
 
     function changeMenuPosition(pos) {
         if (!CONFIG.menuPositions[pos]) return;
+        console.log('📍 Changing menu position to:', pos);
         
+        // 1. Зберігаємо в storage
         storage.set('menuPosition', pos);
+        
+        // 2. Оновлюємо UI негайно
         ui.updateMenuPosition();
         
-        requestAnimationFrame(() => {
-            if (window.menuPositionManager?.apply) {
-                window.menuPositionManager.apply(pos);
-            }
-        });
+        // 3. Застосовуємо позицію меню
+        if (window.menuPositionManager?.apply) {
+            window.menuPositionManager.apply(pos);
+        }
     }
 
     function changeLanguage(lang) {
         if (!CONFIG.languages[lang]) return;
+        console.log('🌍 Changing language to:', lang);
         if (typeof window.switchAppLanguage === 'function') {
             window.switchAppLanguage(lang);
         }
@@ -401,6 +403,8 @@
         const page = document.getElementById('settingsPage');
         if (!page) return;
         
+        console.log('⚙️ Initializing Settings...');
+        
         categories.load();
         page.innerHTML = createSettingsHTML();
         
@@ -418,6 +422,7 @@
         await backgroundManager.apply(bg);
         
         state.initialized = true;
+        console.log('✅ Settings initialized');
     }
 
     async function initOnStart() {
@@ -426,12 +431,11 @@
         await loadTranslations();
     }
 
-    // ========== EVENT LISTENERS (ОПТИМІЗОВАНО) ==========
+    // ========== EVENT LISTENERS ==========
     let languageChangeTimeout = null;
     document.addEventListener('languageChanged', (e) => {
         if (!state.initialized || !e.detail?.language) return;
         
-        // Debounce language changes
         clearTimeout(languageChangeTimeout);
         languageChangeTimeout = setTimeout(() => {
             requestAnimationFrame(() => {
@@ -440,6 +444,16 @@
                 ui.updateLanguageNames();
             });
         }, 100);
+    });
+
+    // Слухаємо зміни сторінки - оновлюємо UI при поверненні на settings
+    document.addEventListener('pageChanged', (e) => {
+        if (e.detail?.page === 'settings' && state.initialized) {
+            console.log('📄 Returned to settings, updating UI...');
+            setTimeout(() => {
+                ui.updateAllUI();
+            }, 100);
+        }
     });
 
     // ========== GLOBAL EXPORTS ==========
@@ -457,7 +471,6 @@
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
             initOnStart();
-            // Preload backgrounds in background
             setTimeout(() => backgroundManager.preloadAll(), 2000);
         });
     } else {
