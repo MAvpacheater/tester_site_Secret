@@ -1,252 +1,224 @@
-// ========== MENU MANAGER (COMPLETE WITH POSITION LOGIC) ==========
+========== MENU MANAGER (COMPLETE WITH POSITION LOGIC - FIXED) ==========
 (function() {
     'use strict';
+if (window.menuManagerInitialized) return;
+
+// ========== STATE ==========
+const state = {
+    currentPosition: null,
+    mobileMenuOpen: false,
+    activeDropdown: null,
+    translations: null
+};
+
+// ========== CONFIG ==========
+const PAGE_ICONS = {
+    calculator: '🐾', arm: '💪', grind: '🏋️‍♂️', roulette: '🎰', boss: '👹',
+    boosts: '🚀', shiny: '✨', secret: '🔮', codes: '🎁', aura: '🌟',
+    trainer: '🏆', charms: '🔮', potions: '🧪', worlds: '🌍',
+    trader: '🛒', clans: '🏰', petscalc: '🐾',
+    settings: '⚙️', help: '🆘', peoples: '🙏'
+};
+
+const MENU_STRUCTURE = {
+    aws: {
+        id: 'awsCategory',
+        icon: '📦',
+        subcategories: {
+            calculator: { id: 'calculatorButtons', icon: '🧮', pages: ['calculator', 'arm', 'grind', 'roulette', 'boss'] },
+            info: { id: 'infoButtons', icon: '📋', pages: ['boosts', 'shiny', 'secret', 'codes', 'aura', 'trainer', 'charms', 'potions', 'worlds'] },
+            others: { id: 'othersAWSButtons', icon: '🔧', pages: ['trader', 'clans'] }
+        }
+    },
+    rcu: {
+        id: 'rcuCategory',
+        icon: '🎮',
+        subcategories: {
+            calculator: { id: 'rcuCalculatorButtons', icon: '🧮', pages: ['petscalc'] }
+        }
+    },
+    system: {
+        id: 'systemCategory',
+        icon: '⚙️',
+        pages: ['settings', 'help', 'peoples']
+    }
+};
+
+// ========== STORAGE ==========
+const storage = {
+    get: (key, def) => localStorage.getItem(`armHelper_${key}`) || def,
+    set: (key, val) => localStorage.setItem(`armHelper_${key}`, val)
+};
+
+// ========== TRANSLATIONS ==========
+async function loadTranslations() {
+    if (state.translations) return state.translations;
     
-    if (window.menuManagerInitialized) return;
-
-    // ========== STATE ==========
-    const state = {
-        currentPosition: null,
-        mobileMenuOpen: false,
-        activeDropdown: null,
-        translations: null
-    };
-
-    // ========== CONFIG ==========
-    const PAGE_ICONS = {
-        calculator: '🐾', arm: '💪', grind: '🏋️‍♂️', roulette: '🎰', boss: '👹',
-        boosts: '🚀', shiny: '✨', secret: '🔮', codes: '🎁', aura: '🌟',
-        trainer: '🏆', charms: '🔮', potions: '🧪', worlds: '🌍',
-        trader: '🛒', clans: '🏰', petscalc: '🐾',
-        settings: '⚙️', help: '🆘', peoples: '🙏'
-    };
-
-    const MENU_STRUCTURE = {
-        aws: {
-            id: 'awsCategory',
-            icon: '📦',
-            subcategories: {
-                calculator: { id: 'calculatorButtons', icon: '🧮', pages: ['calculator', 'arm', 'grind', 'roulette', 'boss'] },
-                info: { id: 'infoButtons', icon: '📋', pages: ['boosts', 'shiny', 'secret', 'codes', 'aura', 'trainer', 'charms', 'potions', 'worlds'] },
-                others: { id: 'othersAWSButtons', icon: '🔧', pages: ['trader', 'clans'] }
-            }
-        },
-        rcu: {
-            id: 'rcuCategory',
-            icon: '🎮',
-            subcategories: {
-                calculator: { id: 'rcuCalculatorButtons', icon: '🧮', pages: ['petscalc'] }
-            }
-        },
-        system: {
-            id: 'systemCategory',
-            icon: '⚙️',
-            pages: ['settings', 'help', 'peoples']
-        }
-    };
-
-    // ========== STORAGE ==========
-    const storage = {
-        get: (key, def) => localStorage.getItem(`armHelper_${key}`) || def,
-        set: (key, val) => localStorage.setItem(`armHelper_${key}`, val)
-    };
-
-    // ========== TRANSLATIONS ==========
-    async function loadTranslations() {
-        if (state.translations) return state.translations;
-        
-        try {
-            const response = await fetch('system/moderation/menu.json');
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            state.translations = await response.json();
-            return state.translations;
-        } catch (error) {
-            console.error('❌ Menu translation error:', error);
-            return null;
-        }
+    try {
+        const response = await fetch('system/moderation/menu.json');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        state.translations = await response.json();
+        return state.translations;
+    } catch (error) {
+        console.error('❌ Menu translation error:', error);
+        return null;
     }
+}
 
-    function getTranslation(key) {
-        const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-        if (!state.translations?.[lang]?.menu) return key;
-        
-        const parts = key.split('.');
-        let value = state.translations[lang].menu;
-        
-        for (const part of parts) {
-            value = value?.[part];
-            if (!value) return key;
-        }
-        
-        return value;
+function getTranslation(key) {
+    const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
+    if (!state.translations?.[lang]?.menu) return key;
+    
+    const parts = key.split('.');
+    let value = state.translations[lang].menu;
+    
+    for (const part of parts) {
+        value = value?.[part];
+        if (!value) return key;
     }
+    
+    return value;
+}
 
-    // ========== MOBILE MENU (LEFT/RIGHT) ==========
-    const mobileMenu = {
-        init() {
-            this.setupToggleButton();
-            this.setupSidebar();
-            this.setupOverlay();
-            this.attachEvents();
-        },
+// ========== MOBILE MENU (LEFT/RIGHT) ========== 
+const mobileMenu = {
+    init() {
+        console.log('📱 Initializing mobile menu...');
+        this.setupToggleButton();
+        this.attachEvents();
+    },
 
-        setupToggleButton() {
-            const toggle = document.querySelector('.mobile-menu-toggle');
-            if (!toggle) return;
+    setupToggleButton() {
+        const toggle = document.querySelector('.mobile-menu-toggle');
+        if (!toggle) return;
 
-            toggle.innerHTML = `
-                <div class="menu-line" style="top: calc(50% - 8px); transform: translateX(-50%)"></div>
-                <div class="menu-line" style="top: 50%; transform: translateX(-50%)"></div>
-                <div class="menu-line" style="top: calc(50% + 8px); transform: translateX(-50%)"></div>
-            `;
-        },
+        toggle.innerHTML = `
+            <div class="menu-line" style="top: calc(50% - 8px); transform: translateX(-50%)"></div>
+            <div class="menu-line" style="top: 50%; transform: translateX(-50%)"></div>
+            <div class="menu-line" style="top: calc(50% + 8px); transform: translateX(-50%)"></div>
+        `;
+    },
 
-        setupSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            if (!sidebar) return;
+    attachEvents() {
+        const toggle = document.querySelector('.mobile-menu-toggle');
+        const overlay = document.getElementById('sidebarOverlay');
 
-            sidebar.style.display = 'flex';
-        },
+        if (toggle) {
+            toggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.toggle();
+            });
+        }
 
-        setupOverlay() {
-            const overlay = document.getElementById('sidebarOverlay');
-            if (overlay) {
-                overlay.style.display = 'block';
-            }
-        },
+        if (overlay) {
+            overlay.addEventListener('click', () => this.close());
+        }
+    },
 
-        attachEvents() {
-            const toggle = document.querySelector('.mobile-menu-toggle');
-            const overlay = document.getElementById('sidebarOverlay');
+    toggle() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggle = document.querySelector('.mobile-menu-toggle');
 
-            if (toggle) {
-                toggle.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.toggle();
-                });
-            }
+        if (!sidebar) return;
 
-            if (overlay) {
-                overlay.addEventListener('click', () => this.close());
-            }
-        },
+        const isOpen = sidebar.classList.contains('open');
 
-        toggle() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const toggle = document.querySelector('.mobile-menu-toggle');
-
-            if (!sidebar) return;
-
-            const isOpen = sidebar.classList.contains('open');
-
-            if (isOpen) {
-                this.close();
-            } else {
-                sidebar.classList.add('open');
-                overlay?.classList.add('show');
-                toggle?.classList.add('menu-open');
-                state.mobileMenuOpen = true;
-            }
-        },
-
-        close() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const toggle = document.querySelector('.mobile-menu-toggle');
-
-            sidebar?.classList.remove('open');
-            overlay?.classList.remove('show');
-            toggle?.classList.remove('menu-open');
-            state.mobileMenuOpen = false;
-        },
-
-        cleanup() {
+        if (isOpen) {
             this.close();
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const toggle = document.querySelector('.mobile-menu-toggle');
-
-            if (sidebar) sidebar.style.display = 'none';
-            if (overlay) overlay.style.display = 'none';
-            if (toggle) toggle.style.display = 'none';
+        } else {
+            sidebar.classList.add('open');
+            overlay?.classList.add('show');
+            toggle?.classList.add('menu-open');
+            state.mobileMenuOpen = true;
+            console.log('📱 Mobile menu opened');
         }
-    };
+    },
 
-    // ========== STATIC MENU (TOP/BOTTOM) ==========
-    const staticMenu = {
-        create(position) {
-            const isTop = position === 'up';
-            const menuId = isTop ? 'staticMenuTop' : 'staticMenuBottom';
+    close() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggle = document.querySelector('.mobile-menu-toggle');
 
-            // Remove existing
-            document.querySelectorAll('.static-menu').forEach(m => m.remove());
+        sidebar?.classList.remove('open');
+        overlay?.classList.remove('show');
+        toggle?.classList.remove('menu-open');
+        state.mobileMenuOpen = false;
+        console.log('📱 Mobile menu closed');
+    },
 
-            const menu = document.createElement('div');
-            menu.id = menuId;
-            menu.className = `static-menu menu-${isTop ? 'top' : 'bottom'}`;
+    cleanup() {
+        console.log('🧹 Cleaning up mobile menu...');
+        this.close();
+        
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggle = document.querySelector('.mobile-menu-toggle');
 
-            menu.innerHTML = `
-                <div class="menu-categories">
-                    ${this.createCategories()}
-                </div>
-                <div class="settings-container-static">
-                    <button class="settings-btn-static" onclick="switchPage('settings')" title="Settings">⚙️</button>
-                </div>
-            `;
+        // Видаляємо всі inline стилі - нехай CSS керує
+        if (sidebar) {
+            sidebar.style.cssText = '';
+            sidebar.removeAttribute('style');
+        }
+        
+        if (overlay) {
+            overlay.style.cssText = '';
+            overlay.removeAttribute('style');
+        }
+        
+        if (toggle) {
+            toggle.style.cssText = '';
+            toggle.removeAttribute('style');
+        }
+    }
+};
 
-            document.body.appendChild(menu);
-            this.attachEvents(menuId);
-            this.updateTranslations();
-        },
+// ========== STATIC MENU (TOP/BOTTOM) ==========
+const staticMenu = {
+    create(position) {
+        const isTop = position === 'up';
+        const menuId = isTop ? 'staticMenuTop' : 'staticMenuBottom';
 
-        createCategories() {
-            let html = '';
+        // Remove existing
+        document.querySelectorAll('.static-menu').forEach(m => m.remove());
 
-            // AWS
-            html += this.createCategory('aws', MENU_STRUCTURE.aws);
+        const menu = document.createElement('div');
+        menu.id = menuId;
+        menu.className = `static-menu menu-${isTop ? 'top' : 'bottom'}`;
 
-            // RCU
-            html += this.createCategory('rcu', MENU_STRUCTURE.rcu);
+        menu.innerHTML = `
+            <div class="menu-categories">
+                ${this.createCategories()}
+            </div>
+            <div class="settings-container-static">
+                <button class="settings-btn-static" onclick="switchPage('settings')" title="Settings">⚙️</button>
+            </div>
+        `;
 
-            // System
-            html += this.createCategoryDirect('system', MENU_STRUCTURE.system);
+        document.body.appendChild(menu);
+        this.attachEvents(menuId);
+        this.updateTranslations();
+    },
 
-            return html;
-        },
+    createCategories() {
+        let html = '';
 
-        createCategory(key, config) {
-            const subcatsHTML = Object.entries(config.subcategories).map(([subKey, subConfig]) => {
-                const pagesHTML = subConfig.pages.map(page => 
-                    `<div class="dropdown-item" data-page="${page}" onclick="switchPage('${page}')">
-                        <span class="dropdown-item-icon">${PAGE_ICONS[page] || '📄'}</span>
-                        <span class="dropdown-item-text" data-translate="pages.${page}"></span>
-                    </div>`
-                ).join('');
+        // AWS
+        html += this.createCategory('aws', MENU_STRUCTURE.aws);
 
-                return `
-                    <div class="dropdown-subcategory-header" data-translate="${subKey}">
-                        <span>${subConfig.icon}</span>
-                        <span></span>
-                    </div>
-                    <div class="subcategory-items">${pagesHTML}</div>
-                `;
-            }).join('');
+        // RCU
+        html += this.createCategory('rcu', MENU_STRUCTURE.rcu);
 
-            return `
-                <div class="menu-category" data-category="${config.id}">
-                    <button class="category-btn" data-translate="${config.id}">
-                        <span>${config.icon}</span>
-                        <span></span>
-                    </button>
-                    <div class="category-dropdown">${subcatsHTML}</div>
-                </div>
-            `;
-        },
+        // System
+        html += this.createCategoryDirect('system', MENU_STRUCTURE.system);
 
-        createCategoryDirect(key, config) {
-            const pagesHTML = config.pages.map(page => 
+        return html;
+    },
+
+    createCategory(key, config) {
+        const subcatsHTML = Object.entries(config.subcategories).map(([subKey, subConfig]) => {
+            const pagesHTML = subConfig.pages.map(page => 
                 `<div class="dropdown-item" data-page="${page}" onclick="switchPage('${page}')">
                     <span class="dropdown-item-icon">${PAGE_ICONS[page] || '📄'}</span>
                     <span class="dropdown-item-text" data-translate="pages.${page}"></span>
@@ -254,113 +226,172 @@
             ).join('');
 
             return `
-                <div class="menu-category" data-category="${config.id}">
-                    <button class="category-btn" data-translate="${config.id}">
-                        <span>${config.icon}</span>
-                        <span></span>
-                    </button>
-                    <div class="category-dropdown">${pagesHTML}</div>
+                <div class="dropdown-subcategory-header" data-translate="${subKey}">
+                    <span>${subConfig.icon}</span>
+                    <span></span>
                 </div>
+                <div class="subcategory-items">${pagesHTML}</div>
             `;
-        },
+        }).join('');
 
-        attachEvents(menuId) {
-            const menu = document.getElementById(menuId);
-            if (!menu) return;
+        return `
+            <div class="menu-category" data-category="${config.id}">
+                <button class="category-btn" data-translate="${config.id}">
+                    <span>${config.icon}</span>
+                    <span></span>
+                </button>
+                <div class="category-dropdown">${subcatsHTML}</div>
+            </div>
+        `;
+    },
 
-            menu.querySelectorAll('.category-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const category = btn.closest('.menu-category');
-                    const dropdown = category.querySelector('.category-dropdown');
-                    
-                    // Close others
-                    menu.querySelectorAll('.category-dropdown').forEach(d => {
-                        if (d !== dropdown) d.classList.remove('show');
-                    });
-                    menu.querySelectorAll('.category-btn').forEach(b => {
-                        if (b !== btn) b.classList.remove('active');
-                    });
+    createCategoryDirect(key, config) {
+        const pagesHTML = config.pages.map(page => 
+            `<div class="dropdown-item" data-page="${page}" onclick="switchPage('${page}')">
+                <span class="dropdown-item-icon">${PAGE_ICONS[page] || '📄'}</span>
+                <span class="dropdown-item-text" data-translate="pages.${page}"></span>
+            </div>`
+        ).join('');
 
-                    // Toggle current
-                    dropdown.classList.toggle('show');
-                    btn.classList.toggle('active');
-                });
-            });
+        return `
+            <div class="menu-category" data-category="${config.id}">
+                <button class="category-btn" data-translate="${config.id}">
+                    <span>${config.icon}</span>
+                    <span></span>
+                </button>
+                <div class="category-dropdown">${pagesHTML}</div>
+            </div>
+        `;
+    },
 
-            // Close on outside click
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.static-menu')) {
-                    menu.querySelectorAll('.category-dropdown').forEach(d => d.classList.remove('show'));
-                    menu.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                }
-            });
+    attachEvents(menuId) {
+        const menu = document.getElementById(menuId);
+        if (!menu) return;
 
-            // Update active page
-            this.updateActiveState();
-        },
-
-        updateTranslations() {
-            if (!state.translations) return;
-
-            document.querySelectorAll('[data-translate]').forEach(el => {
-                const key = el.getAttribute('data-translate');
-                const text = getTranslation(key);
+        menu.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const category = btn.closest('.menu-category');
+                const dropdown = category.querySelector('.category-dropdown');
                 
-                const textSpan = el.querySelector('span:last-child');
-                if (textSpan) {
-                    textSpan.textContent = text;
-                }
+                // Close others
+                menu.querySelectorAll('.category-dropdown').forEach(d => {
+                    if (d !== dropdown) d.classList.remove('show');
+                });
+                menu.querySelectorAll('.category-btn').forEach(b => {
+                    if (b !== btn) b.classList.remove('active');
+                });
+
+                // Toggle current
+                dropdown.classList.toggle('show');
+                btn.classList.toggle('active');
             });
-        },
+        });
 
-        updateActiveState(page) {
-            const currentPage = page || (typeof getCurrentPage === 'function' ? getCurrentPage() : null);
-            if (!currentPage) return;
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.static-menu')) {
+                menu.querySelectorAll('.category-dropdown').forEach(d => d.classList.remove('show'));
+                menu.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            }
+        });
 
-            document.querySelectorAll('.static-menu .dropdown-item').forEach(item => {
-                item.classList.toggle('active', item.dataset.page === currentPage);
-            });
-        },
+        // Update active page
+        this.updateActiveState();
+    },
 
-        cleanup() {
-            document.querySelectorAll('.static-menu').forEach(m => m.remove());
-            document.body.style.paddingTop = '';
-            document.body.style.paddingBottom = '';
-        }
-    };
+    updateTranslations() {
+        if (!state.translations) return;
 
-    // ========== POSITION MANAGER ==========
-    const menuPositionManager = {
-        apply(position) {
-            console.log('📍 Menu Position Manager: Applying position:', position);
+        document.querySelectorAll('[data-translate]').forEach(el => {
+            const key = el.getAttribute('data-translate');
+            const text = getTranslation(key);
+            
+            const textSpan = el.querySelector('span:last-child');
+            if (textSpan) {
+                textSpan.textContent = text;
+            }
+        });
+    },
 
-            // Cleanup first
-            mobileMenu.cleanup();
-            staticMenu.cleanup();
+    updateActiveState(page) {
+        const currentPage = page || (typeof getCurrentPage === 'function' ? getCurrentPage() : null);
+        if (!currentPage) return;
+
+        document.querySelectorAll('.static-menu .dropdown-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.page === currentPage);
+        });
+    },
+
+    cleanup() {
+        document.querySelectorAll('.static-menu').forEach(m => m.remove());
+        document.body.style.paddingTop = '';
+        document.body.style.paddingBottom = '';
+    }
+};
+
+// ========== POSITION MANAGER ========== 
+const menuPositionManager = {
+    apply(position) {
+        console.log('📍 ========== MENU POSITION CHANGE START ==========');
+        console.log('🎯 Target position:', position);
+        console.log('📍 Current position:', state.currentPosition);
+
+        // 1. ПОВНЕ ОЧИЩЕННЯ
+        this.completeCleanup();
+
+// 2. Видаляємо всі класи позицій
             document.body.classList.remove('menu-left', 'menu-right', 'menu-up', 'menu-down');
 
+            // 3. Встановлюємо новий стан
             state.currentPosition = position;
 
+            // 4. Застосовуємо нову позицію
             switch(position) {
                 case 'left':
                 case 'right':
+                    console.log(`📱 Applying ${position} mobile menu...`);
                     document.body.classList.add(`menu-${position}`);
-                    mobileMenu.init();
+                    setTimeout(() => {
+                        mobileMenu.init();
+                    }, 50);
                     break;
                 
                 case 'up':
                 case 'down':
+                    console.log(`📊 Applying ${position} static menu...`);
                     document.body.classList.add(`menu-${position}`);
-                    staticMenu.create(position);
+                    setTimeout(() => {
+                        staticMenu.create(position);
+                    }, 50);
                     break;
             }
 
-            console.log('✅ Menu position applied:', position);
+            console.log('✅ ========== MENU POSITION CHANGE END ==========');
+        },
+
+        completeCleanup() {
+            console.log('🧹 ========== COMPLETE CLEANUP START ==========');
+            
+            // Очищення mobile menu
+            mobileMenu.cleanup();
+            
+            // Очищення static menu
+            staticMenu.cleanup();
+            
+            // Видалення всіх класів позицій
+            document.body.classList.remove('menu-left', 'menu-right', 'menu-up', 'menu-down');
+            
+            // Скидання padding
+            document.body.style.paddingTop = '';
+            document.body.style.paddingBottom = '';
+            
+            console.log('✅ ========== COMPLETE CLEANUP END ==========');
         },
 
         init() {
             const savedPosition = storage.get('menuPosition', 'left');
+            console.log('🔧 Initializing menu with saved position:', savedPosition);
             this.apply(savedPosition);
         },
 
@@ -426,5 +457,6 @@
     }
 
     window.menuManagerInitialized = true;
-    console.log('✅ Menu Manager loaded');
+    console.log('✅ Menu Manager loaded (FIXED - No duplication)');
 })();
+
