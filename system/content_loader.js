@@ -23,7 +23,7 @@ async function loadContent() {
         const awsHTML = await awsResponse.text();
         
         // Load RCU content
-        const rcuContentURL = basePath ? `${basePath}RCU/system/RCU_content.html` : 'RCU/system/content.html';
+        const rcuContentURL = basePath ? `${basePath}RCU/system/RCU_content.html` : 'RCU/system/RCU_content.html';
         console.log('📦 Loading RCU content from:', rcuContentURL);
         
         const rcuResponse = await fetch(rcuContentURL);
@@ -72,6 +72,7 @@ async function loadContent() {
 
 function createAppStructure(contentHTML) {
     return `
+        <!-- LEFT SIDEBAR -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h3></h3>
@@ -96,9 +97,38 @@ function createAppStructure(contentHTML) {
             </div>
         </div>
 
+        <!-- RIGHT SIDEBAR (IDENTICAL TO LEFT) -->
+        <div class="sidebar sidebar-right" id="sidebarRight">
+            <div class="sidebar-header">
+                <h3></h3>
+                <button class="close-sidebar" onclick="window.closeSidebarRight(); return false;">×</button>
+            </div>
+            <div class="nav-buttons">
+                ${createMainCategory('awsCategoryRight', '📦', [
+                    { id: 'calculatorButtonsRight', icon: '🧮', pages: ['calculator', 'arm', 'grind', 'roulette', 'boss'] },
+                    { id: 'infoButtonsRight', icon: '📋', pages: ['boosts', 'shiny', 'secret', 'codes', 'aura', 'trainer', 'charms', 'potions', 'worlds'] },
+                    { id: 'othersAWSButtonsRight', icon: '🔧', pages: ['trader', 'clans'] }
+                ])}
+
+                ${createMainCategory('rcuCategoryRight', '🎮', [
+                    { id: 'rcuCalculatorButtonsRight', icon: '🧮', pages: ['petscalc'] }
+                ])}
+
+                ${createMainCategoryDirect('systemCategoryRight', '⚙️', ['settings', 'help', 'peoples'])}
+            </div>
+            
+            <div class="sidebar-controls" id="sidebarControlsRight">
+                <button class="settings-btn-sidebar" onclick="switchPage('settings')" title="Settings">⚙️</button>
+            </div>
+        </div>
+
+        <!-- OVERLAYS -->
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="window.closeSidebar(); return false;"></div>
+        <div class="sidebar-overlay sidebar-overlay-right" id="sidebarOverlayRight" onclick="window.closeSidebarRight(); return false;"></div>
         
+        <!-- TOGGLE BUTTONS -->
         <button class="mobile-menu-toggle" onclick="window.toggleMobileMenu(); return false;">☰</button>
+        <button class="mobile-menu-toggle mobile-menu-toggle-right" onclick="window.toggleMobileMenuRight(); return false;">☰</button>
            
         <div class="container">${contentHTML}</div>
     `;
@@ -175,10 +205,14 @@ function toggleMainCategory(mainCategoryId) {
         const isExpanded = mainContent.classList.contains('expanded');
         
         if (!isExpanded) {
-            document.querySelectorAll('.main-category-content').forEach(el => {
+            // Get parent sidebar
+            const sidebar = mainContent.closest('.sidebar');
+            
+            // Close all categories in this sidebar
+            sidebar.querySelectorAll('.main-category-content').forEach(el => {
                 if (el !== mainContent) el.classList.remove('expanded');
             });
-            document.querySelectorAll('.main-category-toggle').forEach(el => {
+            sidebar.querySelectorAll('.main-category-toggle').forEach(el => {
                 if (el !== toggleIcon) el.classList.remove('expanded');
             });
             
@@ -263,6 +297,7 @@ function openCategoryForPage(page) {
     
     const [mainCategoryId, subCategoryId] = categories;
     
+    // Close all in both sidebars
     document.querySelectorAll('.main-category-content').forEach(el => {
         el.classList.remove('expanded');
     });
@@ -276,13 +311,13 @@ function openCategoryForPage(page) {
         el.classList.remove('expanded');
     });
     
+    // Open in LEFT sidebar
     const mainContent = document.getElementById(mainCategoryId);
     const mainToggle = document.querySelector(`[data-main-category="${mainCategoryId}"] .main-category-toggle`);
     
     if (mainContent && mainToggle) {
         mainContent.classList.add('expanded');
         mainToggle.classList.add('expanded');
-        console.log('✅ Opened main category:', mainCategoryId);
     }
     
     if (subCategoryId) {
@@ -292,7 +327,25 @@ function openCategoryForPage(page) {
         if (subContent && subToggle) {
             subContent.classList.add('expanded');
             subToggle.classList.add('expanded');
-            console.log('✅ Opened subcategory:', subCategoryId);
+        }
+    }
+    
+    // Open in RIGHT sidebar
+    const mainContentRight = document.getElementById(mainCategoryId + 'Right');
+    const mainToggleRight = document.querySelector(`[data-main-category="${mainCategoryId}Right"] .main-category-toggle`);
+    
+    if (mainContentRight && mainToggleRight) {
+        mainContentRight.classList.add('expanded');
+        mainToggleRight.classList.add('expanded');
+    }
+    
+    if (subCategoryId) {
+        const subContentRight = document.getElementById(subCategoryId + 'Right');
+        const subToggleRight = document.querySelector(`[data-category="${subCategoryId}Right"] .category-toggle`);
+        
+        if (subContentRight && subToggleRight) {
+            subContentRight.classList.add('expanded');
+            subToggleRight.classList.add('expanded');
         }
     }
 }
@@ -383,4 +436,4 @@ Object.assign(window, {
     PAGE_ICONS
 });
 
-console.log('✅ Content Loader ready (CLEANED - No Menu Logic)');
+console.log('✅ Content Loader ready (WITH RIGHT SIDEBAR)');
