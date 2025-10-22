@@ -1,19 +1,4 @@
-// ========== GLOBAL FUNCTIONS ==========
-    window.toggleMobileMenu = function() {
-        mobileMenu.toggle(false);
-    };
-
-    window.toggleMobileMenuRight = function() {
-        mobileMenu.toggle(true);
-    };
-
-    window.closeSidebar = function() {
-        mobileMenu.close(false);
-    };
-
-    window.closeSidebarRight = function() {
-        mobileMenu.close(true);
-    };// ========== MENU MANAGER (COMPLETE WITH POSITION LOGIC) ==========
+// ========== MENU MANAGER (COMPLETE WITH POSITION LOGIC) ==========
 (function() {
     'use strict';
     
@@ -98,17 +83,15 @@
 
     // ========== MOBILE MENU (LEFT/RIGHT) ==========
     const mobileMenu = {
-        init(position) {
-            const isRight = position === 'right';
-            
-            this.setupToggleButton(isRight);
-            this.setupSidebar(isRight);
-            this.setupOverlay(isRight);
-            this.attachEvents(isRight);
+        init() {
+            this.setupToggleButton();
+            this.setupSidebar();
+            this.setupOverlay();
+            this.attachEvents();
         },
 
-        setupToggleButton(isRight) {
-            const toggle = document.querySelector(isRight ? '.mobile-menu-toggle-right' : '.mobile-menu-toggle');
+        setupToggleButton() {
+            const toggle = document.querySelector('.mobile-menu-toggle');
             if (!toggle) return;
 
             toggle.innerHTML = `
@@ -116,51 +99,50 @@
                 <div class="menu-line" style="top: 50%; transform: translateX(-50%)"></div>
                 <div class="menu-line" style="top: calc(50% + 8px); transform: translateX(-50%)"></div>
             `;
-            toggle.style.display = 'block';
         },
 
-        setupSidebar(isRight) {
-            const sidebar = document.getElementById(isRight ? 'sidebarRight' : 'sidebar');
+        setupSidebar() {
+            const sidebar = document.getElementById('sidebar');
             if (!sidebar) return;
 
             sidebar.style.display = 'flex';
         },
 
-        setupOverlay(isRight) {
-            const overlay = document.getElementById(isRight ? 'sidebarOverlayRight' : 'sidebarOverlay');
+        setupOverlay() {
+            const overlay = document.getElementById('sidebarOverlay');
             if (overlay) {
                 overlay.style.display = 'block';
             }
         },
 
-        attachEvents(isRight) {
-            const toggle = document.querySelector(isRight ? '.mobile-menu-toggle-right' : '.mobile-menu-toggle');
-            const overlay = document.getElementById(isRight ? 'sidebarOverlayRight' : 'sidebarOverlay');
+        attachEvents() {
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            const overlay = document.getElementById('sidebarOverlay');
 
             if (toggle) {
                 toggle.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    this.toggle(isRight);
+                    this.toggle();
                 });
             }
 
             if (overlay) {
-                overlay.addEventListener('click', () => this.close(isRight));
+                overlay.addEventListener('click', () => this.close());
             }
         },
 
-        toggle(isRight) {
-            const sidebar = document.getElementById(isRight ? 'sidebarRight' : 'sidebar');
-            const overlay = document.getElementById(isRight ? 'sidebarOverlayRight' : 'sidebarOverlay');
-            const toggle = document.querySelector(isRight ? '.mobile-menu-toggle-right' : '.mobile-menu-toggle');
+        toggle() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
 
             if (!sidebar) return;
 
             const isOpen = sidebar.classList.contains('open');
 
             if (isOpen) {
-                this.close(isRight);
+                this.close();
             } else {
                 sidebar.classList.add('open');
                 overlay?.classList.add('show');
@@ -169,10 +151,10 @@
             }
         },
 
-        close(isRight) {
-            const sidebar = document.getElementById(isRight ? 'sidebarRight' : 'sidebar');
-            const overlay = document.getElementById(isRight ? 'sidebarOverlayRight' : 'sidebarOverlay');
-            const toggle = document.querySelector(isRight ? '.mobile-menu-toggle-right' : '.mobile-menu-toggle');
+        close() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
 
             sidebar?.classList.remove('open');
             overlay?.classList.remove('show');
@@ -181,27 +163,14 @@
         },
 
         cleanup() {
-            // Close both
-            this.close(false);
-            this.close(true);
-            
-            // Hide both sidebars
-            ['sidebar', 'sidebarRight'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = 'none';
-            });
-            
-            // Hide both overlays
-            ['sidebarOverlay', 'sidebarOverlayRight'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = 'none';
-            });
-            
-            // Hide both toggles
-            ['.mobile-menu-toggle', '.mobile-menu-toggle-right'].forEach(sel => {
-                const el = document.querySelector(sel);
-                if (el) el.style.display = 'none';
-            });
+            this.close();
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+
+            if (sidebar) sidebar.style.display = 'none';
+            if (overlay) overlay.style.display = 'none';
+            if (toggle) toggle.style.display = 'none';
         }
     };
 
@@ -375,13 +344,9 @@
 
             switch(position) {
                 case 'left':
-                    document.body.classList.add('menu-left');
-                    mobileMenu.init(false);
-                    break;
-                
                 case 'right':
-                    document.body.classList.add('menu-right');
-                    mobileMenu.init(true);
+                    document.body.classList.add(`menu-${position}`);
+                    mobileMenu.init();
                     break;
                 
                 case 'up':
@@ -403,7 +368,7 @@
             const position = state.currentPosition;
             
             if (position === 'left' || position === 'right') {
-                // Update both sidebars
+                // Update sidebar buttons
                 document.querySelectorAll('.sidebar .nav-btn').forEach(btn => {
                     btn.classList.toggle('active', btn.dataset.page === page);
                 });
@@ -416,19 +381,11 @@
 
     // ========== GLOBAL FUNCTIONS ==========
     window.toggleMobileMenu = function() {
-        mobileMenu.toggle(false);
-    };
-
-    window.toggleMobileMenuRight = function() {
-        mobileMenu.toggle(true);
+        mobileMenu.toggle();
     };
 
     window.closeSidebar = function() {
-        mobileMenu.close(false);
-    };
-
-    window.closeSidebarRight = function() {
-        mobileMenu.close(true);
+        mobileMenu.close();
     };
 
     // ========== INITIALIZATION ==========
@@ -447,8 +404,7 @@
         document.addEventListener('pageChanged', (e) => {
             if (e.detail?.page) {
                 menuPositionManager.updateActiveState(e.detail.page);
-                mobileMenu.close(false);
-                mobileMenu.close(true);
+                mobileMenu.close();
             }
         });
 
