@@ -1,4 +1,4 @@
-// ========== MENU MANAGER (ПОВНІСТЮ ВИПРАВЛЕНО) ==========
+// ========== MENU MANAGER (ОПТИМІЗОВАНО БЕЗ ЛАГІВ) ==========
 (function() {
     'use strict';
     
@@ -8,7 +8,6 @@
     const state = {
         currentPosition: null,
         mobileMenuOpen: false,
-        activeDropdown: null,
         translations: null,
         initialized: false
     };
@@ -60,7 +59,6 @@
             const response = await fetch('system/moderation/menu.json');
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             state.translations = await response.json();
-            console.log('✅ Menu translations loaded');
             return state.translations;
         } catch (error) {
             console.error('❌ Menu translation error:', error);
@@ -70,14 +68,14 @@
 
     function getTranslation(key) {
         const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-        if (!state.translations?.[lang]?.menu) return key;
+        if (!state.translations?.[lang]?.menu) return '';
         
         const parts = key.split('.');
         let value = state.translations[lang].menu;
         
         for (const part of parts) {
             value = value?.[part];
-            if (!value) return key;
+            if (!value) return '';
         }
         
         return value;
@@ -85,8 +83,10 @@
 
     // ========== MOBILE MENU (LEFT/RIGHT) ========== 
     const mobileMenu = {
+        toggleHandler: null,
+        overlayHandler: null,
+
         init() {
-            console.log('📱 Initializing mobile menu...');
             this.setupToggleButton();
             this.attachEvents();
         },
@@ -106,47 +106,44 @@
             const toggle = document.querySelector('.mobile-menu-toggle');
             const overlay = document.getElementById('sidebarOverlay');
 
-            if (toggle) {
-                // Видаляємо старі обробники
-                const newToggle = toggle.cloneNode(true);
-                toggle.parentNode.replaceChild(newToggle, toggle);
-                
-                newToggle.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.toggle();
-                });
+            // Видаляємо старі обробники
+            if (this.toggleHandler) {
+                toggle?.removeEventListener('click', this.toggleHandler);
+            }
+            if (this.overlayHandler) {
+                overlay?.removeEventListener('click', this.overlayHandler);
             }
 
-            if (overlay) {
-                const newOverlay = overlay.cloneNode(true);
-                overlay.parentNode.replaceChild(newOverlay, overlay);
-                
-                newOverlay.addEventListener('click', () => this.close());
-            }
+            // Створюємо нові обробники
+            this.toggleHandler = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.toggle();
+            };
+
+            this.overlayHandler = () => this.close();
+
+            toggle?.addEventListener('click', this.toggleHandler);
+            overlay?.addEventListener('click', this.overlayHandler);
         },
 
         toggle() {
             const sidebar = document.getElementById('sidebar');
+            if (!sidebar) return;
+
+            const isOpen = sidebar.classList.contains('open');
+            isOpen ? this.close() : this.open();
+        },
+
+        open() {
+            const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
             const toggle = document.querySelector('.mobile-menu-toggle');
 
-            if (!sidebar) {
-                console.error('❌ Sidebar not found!');
-                return;
-            }
-
-            const isOpen = sidebar.classList.contains('open');
-
-            if (isOpen) {
-                this.close();
-            } else {
-                sidebar.classList.add('open');
-                overlay?.classList.add('show');
-                toggle?.classList.add('menu-open');
-                state.mobileMenuOpen = true;
-                console.log('📱 Mobile menu opened');
-            }
+            sidebar?.classList.add('open');
+            overlay?.classList.add('show');
+            toggle?.classList.add('menu-open');
+            state.mobileMenuOpen = true;
         },
 
         close() {
@@ -158,36 +155,35 @@
             overlay?.classList.remove('show');
             toggle?.classList.remove('menu-open');
             state.mobileMenuOpen = false;
-            console.log('📱 Mobile menu closed');
         },
 
         cleanup() {
-            console.log('🧹 Cleaning up mobile menu...');
             this.close();
             
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
             const toggle = document.querySelector('.mobile-menu-toggle');
 
-            if (sidebar) {
-                sidebar.style.cssText = '';
-                sidebar.classList.remove('open');
+            if (sidebar) sidebar.style.cssText = '';
+            if (overlay) overlay.style.cssText = '';
+            if (toggle) toggle.style.cssText = '';
+
+            // Видаляємо обробники
+            if (this.toggleHandler) {
+                toggle?.removeEventListener('click', this.toggleHandler);
+                this.toggleHandler = null;
             }
-            
-            if (overlay) {
-                overlay.style.cssText = '';
-                overlay.classList.remove('show');
-            }
-            
-            if (toggle) {
-                toggle.style.cssText = '';
-                toggle.classList.remove('menu-open');
+            if (this.overlayHandler) {
+                overlay?.removeEventListener('click', this.overlayHandler);
+                this.overlayHandler = null;
             }
         }
     };
 
     // ========== STATIC MENU (TOP/BOTTOM) ==========
     const staticMenu = {
+        outsideClickHandler: null,
+
         create(position) {
             const isTop = position === 'up';
             const menuId = isTop ? 'staticMenuTop' : 'staticMenuBottom';
@@ -210,25 +206,18 @@
 
             document.body.appendChild(menu);
             
-            // Чекаємо, поки елемент додасться в DOM
-            setTimeout(() => {
-                this.attachEvents(menuId);
+            // Одразу оновлюємо переклади без затримки
+            requestAnimationFrame(() => {
                 this.updateTranslations();
-            }, 50);
+                this.attachEvents(menuId);
+            });
         },
 
         createCategories() {
             let html = '';
-
-            // AWS
             html += this.createCategory('aws', MENU_STRUCTURE.aws);
-
-            // RCU
             html += this.createCategory('rcu', MENU_STRUCTURE.rcu);
-
-            // System
             html += this.createCategoryDirect('system', MENU_STRUCTURE.system);
-
             return html;
         },
 
@@ -237,14 +226,14 @@
                 const pagesHTML = subConfig.pages.map(page => 
                     `<div class="dropdown-item" data-page="${page}" onclick="switchPage('${page}')">
                         <span class="dropdown-item-icon">${PAGE_ICONS[page] || '📄'}</span>
-                        <span class="dropdown-item-text" data-translate="pages.${page}">${page}</span>
+                        <span class="dropdown-item-text" data-translate="pages.${page}">${getTranslation('pages.' + page) || page}</span>
                     </div>`
                 ).join('');
 
                 return `
-                    <div class="dropdown-subcategory-header" data-translate="${subKey}">
+                    <div class="dropdown-subcategory-header">
                         <span>${subConfig.icon}</span>
-                        <span data-translate="${subKey}">${subKey}</span>
+                        <span data-translate="${subKey}">${getTranslation(subKey) || subKey}</span>
                     </div>
                     <div class="subcategory-items">${pagesHTML}</div>
                 `;
@@ -252,9 +241,9 @@
 
             return `
                 <div class="menu-category" data-category="${config.id}">
-                    <button class="category-btn" data-translate="${config.id}">
+                    <button class="category-btn">
                         <span>${config.icon}</span>
-                        <span data-translate="${config.id}">${config.id}</span>
+                        <span data-translate="${config.id}">${getTranslation(config.id) || config.id}</span>
                     </button>
                     <div class="category-dropdown">${subcatsHTML}</div>
                 </div>
@@ -265,15 +254,15 @@
             const pagesHTML = config.pages.map(page => 
                 `<div class="dropdown-item" data-page="${page}" onclick="switchPage('${page}')">
                     <span class="dropdown-item-icon">${PAGE_ICONS[page] || '📄'}</span>
-                    <span class="dropdown-item-text" data-translate="pages.${page}">${page}</span>
+                    <span class="dropdown-item-text" data-translate="pages.${page}">${getTranslation('pages.' + page) || page}</span>
                 </div>`
             ).join('');
 
             return `
                 <div class="menu-category" data-category="${config.id}">
-                    <button class="category-btn" data-translate="${config.id}">
+                    <button class="category-btn">
                         <span>${config.icon}</span>
-                        <span data-translate="${config.id}">${config.id}</span>
+                        <span data-translate="${config.id}">${getTranslation(config.id) || config.id}</span>
                     </button>
                     <div class="category-dropdown">${pagesHTML}</div>
                 </div>
@@ -282,90 +271,69 @@
 
         attachEvents(menuId) {
             const menu = document.getElementById(menuId);
-            if (!menu) {
-                console.error('❌ Menu not found:', menuId);
-                return;
-            }
+            if (!menu) return;
 
             menu.querySelectorAll('.category-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const category = btn.closest('.menu-category');
                     const dropdown = category.querySelector('.category-dropdown');
+                    const isOpen = dropdown.classList.contains('show');
                     
-                    // Close others
-                    menu.querySelectorAll('.category-dropdown').forEach(d => {
-                        if (d !== dropdown) d.classList.remove('show');
-                    });
-                    menu.querySelectorAll('.category-btn').forEach(b => {
-                        if (b !== btn) b.classList.remove('active');
-                    });
+                    // Close all
+                    menu.querySelectorAll('.category-dropdown').forEach(d => d.classList.remove('show'));
+                    menu.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
 
-                    // Toggle current
-                    dropdown.classList.toggle('show');
-                    btn.classList.toggle('active');
+                    // Open current if was closed
+                    if (!isOpen) {
+                        dropdown.classList.add('show');
+                        btn.classList.add('active');
+                    }
                 });
             });
 
-            // Close on outside click
-            document.addEventListener('click', (e) => {
+            // Outside click handler
+            if (this.outsideClickHandler) {
+                document.removeEventListener('click', this.outsideClickHandler);
+            }
+
+            this.outsideClickHandler = (e) => {
                 if (!e.target.closest('.static-menu')) {
                     menu.querySelectorAll('.category-dropdown').forEach(d => d.classList.remove('show'));
                     menu.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
                 }
-            });
+            };
 
-            // Update active page
+            document.addEventListener('click', this.outsideClickHandler);
             this.updateActiveState();
         },
 
         updateTranslations() {
-            if (!state.translations) {
-                console.warn('⚠️ Translations not loaded yet');
-                return;
-            }
+            if (!state.translations) return;
 
             const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
             const menuTranslations = state.translations[lang]?.menu;
-            
-            if (!menuTranslations) {
-                console.warn('⚠️ Menu translations not found for language:', lang);
-                return;
-            }
+            if (!menuTranslations) return;
 
-            console.log('🌍 Updating static menu translations for language:', lang);
-
-            // Update category buttons
+            // Batch DOM updates using DocumentFragment
             document.querySelectorAll('.static-menu [data-translate]').forEach(el => {
                 const key = el.getAttribute('data-translate');
                 let text = '';
                 
-                // Для кнопок категорій
                 if (key === 'awsCategory') text = menuTranslations.awsCategory;
                 else if (key === 'rcuCategory') text = menuTranslations.rcuCategory;
                 else if (key === 'systemCategory') text = menuTranslations.systemCategory;
-                
-                // Для підкатегорій
                 else if (key === 'calculator') text = menuTranslations.calculator;
                 else if (key === 'rcuCalc') text = menuTranslations.rcuCalc;
                 else if (key === 'info') text = menuTranslations.info;
                 else if (key === 'others') text = menuTranslations.others;
-                
-                // Для сторінок
                 else if (key.startsWith('pages.')) {
                     const pageKey = key.replace('pages.', '');
-                    text = menuTranslations.pages?.[pageKey] || pageKey;
+                    text = menuTranslations.pages?.[pageKey] || '';
                 }
                 
-                if (text && el.tagName === 'SPAN') {
-                    el.textContent = text;
-                } else if (text && el.tagName === 'BUTTON') {
-                    const textSpan = el.querySelector('span:last-child');
-                    if (textSpan) textSpan.textContent = text;
-                }
+                if (text) el.textContent = text;
             });
-
-            console.log('✅ Static menu translations updated');
         },
 
         updateActiveState(page) {
@@ -381,71 +349,49 @@
             document.querySelectorAll('.static-menu').forEach(m => m.remove());
             document.body.style.paddingTop = '';
             document.body.style.paddingBottom = '';
+            
+            if (this.outsideClickHandler) {
+                document.removeEventListener('click', this.outsideClickHandler);
+                this.outsideClickHandler = null;
+            }
         }
     };
 
     // ========== POSITION MANAGER ========== 
     const menuPositionManager = {
         apply(position) {
-            console.log('📍 ========== MENU POSITION CHANGE START ==========');
-            console.log('🎯 Target position:', position);
-            console.log('📍 Current position:', state.currentPosition);
-
-            // 1. ПОВНЕ ОЧИЩЕННЯ
+            // 1. Cleanup
             this.completeCleanup();
 
-            // 2. Видаляємо всі класи позицій
+            // 2. Remove all position classes
             document.body.classList.remove('menu-left', 'menu-right', 'menu-up', 'menu-down');
 
-            // 3. Встановлюємо новий стан
+            // 3. Set new state
             state.currentPosition = position;
 
-            // 4. Застосовуємо нову позицію
-            switch(position) {
-                case 'left':
-                case 'right':
-                    console.log(`📱 Applying ${position} mobile menu...`);
-                    document.body.classList.add(`menu-${position}`);
-                    setTimeout(() => {
-                        mobileMenu.init();
-                    }, 50);
-                    break;
-                
-                case 'up':
-                case 'down':
-                    console.log(`📊 Applying ${position} static menu...`);
-                    document.body.classList.add(`menu-${position}`);
-                    setTimeout(() => {
-                        staticMenu.create(position);
-                    }, 50);
-                    break;
-            }
+            // 4. Apply new position
+            document.body.classList.add(`menu-${position}`);
 
-            console.log('✅ ========== MENU POSITION CHANGE END ==========');
+            // 5. Initialize menu (without setTimeout - instant)
+            requestAnimationFrame(() => {
+                if (position === 'left' || position === 'right') {
+                    mobileMenu.init();
+                } else {
+                    staticMenu.create(position);
+                }
+            });
         },
 
         completeCleanup() {
-            console.log('🧹 ========== COMPLETE CLEANUP START ==========');
-            
-            // Очищення mobile menu
             mobileMenu.cleanup();
-            
-            // Очищення static menu
             staticMenu.cleanup();
-            
-            // Видалення всіх класів позицій
             document.body.classList.remove('menu-left', 'menu-right', 'menu-up', 'menu-down');
-            
-            // Скидання padding
             document.body.style.paddingTop = '';
             document.body.style.paddingBottom = '';
-            
-            console.log('✅ ========== COMPLETE CLEANUP END ==========');
         },
 
         init() {
             const savedPosition = storage.get('menuPosition', 'left');
-            console.log('🔧 Initializing menu with saved position:', savedPosition);
             this.apply(savedPosition);
         },
 
@@ -453,45 +399,32 @@
             const position = state.currentPosition;
             
             if (position === 'left' || position === 'right') {
-                // Update sidebar buttons
                 document.querySelectorAll('.sidebar .nav-btn').forEach(btn => {
                     btn.classList.toggle('active', btn.dataset.page === page);
                 });
             } else {
-                // Update static menu
                 staticMenu.updateActiveState(page);
             }
         }
     };
 
     // ========== GLOBAL FUNCTIONS ==========
-    window.toggleMobileMenu = function() {
-        mobileMenu.toggle();
-    };
-
-    window.closeSidebar = function() {
-        mobileMenu.close();
-    };
+    window.toggleMobileMenu = () => mobileMenu.toggle();
+    window.closeSidebar = () => mobileMenu.close();
 
     // ========== INITIALIZATION ==========
     async function init() {
-        if (state.initialized) {
-            console.log('⚠️ Menu Manager already initialized');
-            return;
-        }
-
-        console.log('🎯 Menu Manager: Initializing...');
+        if (state.initialized) return;
 
         await loadTranslations();
         menuPositionManager.init();
 
-        // Listen for language changes
-        document.addEventListener('languageChanged', (e) => {
-            console.log('🌍 Menu Manager: Language changed to', e.detail?.language);
+        // Language changes
+        document.addEventListener('languageChanged', () => {
             staticMenu.updateTranslations();
         });
 
-        // Listen for page changes
+        // Page changes
         document.addEventListener('pageChanged', (e) => {
             if (e.detail?.page) {
                 menuPositionManager.updateActiveState(e.detail.page);
@@ -500,23 +433,18 @@
         });
 
         state.initialized = true;
-        console.log('✅ Menu Manager: Initialized');
     }
 
     // ========== EXPORTS ==========
-    Object.assign(window, {
-        menuPositionManager,
-        toggleMobileMenu: window.toggleMobileMenu,
-        closeSidebar: window.closeSidebar
-    });
+    window.menuPositionManager = menuPositionManager;
 
     // ========== AUTO INIT ==========
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
-        setTimeout(init, 100);
+        init();
     }
 
     window.menuManagerInitialized = true;
-    console.log('✅ Menu Manager loaded (FIXED - Translations & Sidebar)');
+
 })();
