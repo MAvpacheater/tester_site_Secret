@@ -1,4 +1,4 @@
-// ========== MENU MANAGER (COMPLETE WITH POSITION LOGIC - FIXED) ==========
+// ========== MENU MANAGER (ПОВНІСТЮ ВИПРАВЛЕНО) ==========
 (function() {
     'use strict';
     
@@ -9,7 +9,8 @@
         currentPosition: null,
         mobileMenuOpen: false,
         activeDropdown: null,
-        translations: null
+        translations: null,
+        initialized: false
     };
 
     // ========== CONFIG ==========
@@ -59,6 +60,7 @@
             const response = await fetch('system/moderation/menu.json');
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             state.translations = await response.json();
+            console.log('✅ Menu translations loaded');
             return state.translations;
         } catch (error) {
             console.error('❌ Menu translation error:', error);
@@ -105,7 +107,11 @@
             const overlay = document.getElementById('sidebarOverlay');
 
             if (toggle) {
-                toggle.addEventListener('click', (e) => {
+                // Видаляємо старі обробники
+                const newToggle = toggle.cloneNode(true);
+                toggle.parentNode.replaceChild(newToggle, toggle);
+                
+                newToggle.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     this.toggle();
@@ -113,7 +119,10 @@
             }
 
             if (overlay) {
-                overlay.addEventListener('click', () => this.close());
+                const newOverlay = overlay.cloneNode(true);
+                overlay.parentNode.replaceChild(newOverlay, overlay);
+                
+                newOverlay.addEventListener('click', () => this.close());
             }
         },
 
@@ -122,7 +131,10 @@
             const overlay = document.getElementById('sidebarOverlay');
             const toggle = document.querySelector('.mobile-menu-toggle');
 
-            if (!sidebar) return;
+            if (!sidebar) {
+                console.error('❌ Sidebar not found!');
+                return;
+            }
 
             const isOpen = sidebar.classList.contains('open');
 
@@ -159,17 +171,17 @@
 
             if (sidebar) {
                 sidebar.style.cssText = '';
-                sidebar.removeAttribute('style');
+                sidebar.classList.remove('open');
             }
             
             if (overlay) {
                 overlay.style.cssText = '';
-                overlay.removeAttribute('style');
+                overlay.classList.remove('show');
             }
             
             if (toggle) {
                 toggle.style.cssText = '';
-                toggle.removeAttribute('style');
+                toggle.classList.remove('menu-open');
             }
         }
     };
@@ -197,8 +209,12 @@
             `;
 
             document.body.appendChild(menu);
-            this.attachEvents(menuId);
-            this.updateTranslations();
+            
+            // Чекаємо, поки елемент додасться в DOM
+            setTimeout(() => {
+                this.attachEvents(menuId);
+                this.updateTranslations();
+            }, 50);
         },
 
         createCategories() {
@@ -221,14 +237,14 @@
                 const pagesHTML = subConfig.pages.map(page => 
                     `<div class="dropdown-item" data-page="${page}" onclick="switchPage('${page}')">
                         <span class="dropdown-item-icon">${PAGE_ICONS[page] || '📄'}</span>
-                        <span class="dropdown-item-text" data-translate="pages.${page}"></span>
+                        <span class="dropdown-item-text" data-translate="pages.${page}">${page}</span>
                     </div>`
                 ).join('');
 
                 return `
                     <div class="dropdown-subcategory-header" data-translate="${subKey}">
                         <span>${subConfig.icon}</span>
-                        <span></span>
+                        <span data-translate="${subKey}">${subKey}</span>
                     </div>
                     <div class="subcategory-items">${pagesHTML}</div>
                 `;
@@ -238,7 +254,7 @@
                 <div class="menu-category" data-category="${config.id}">
                     <button class="category-btn" data-translate="${config.id}">
                         <span>${config.icon}</span>
-                        <span></span>
+                        <span data-translate="${config.id}">${config.id}</span>
                     </button>
                     <div class="category-dropdown">${subcatsHTML}</div>
                 </div>
@@ -249,7 +265,7 @@
             const pagesHTML = config.pages.map(page => 
                 `<div class="dropdown-item" data-page="${page}" onclick="switchPage('${page}')">
                     <span class="dropdown-item-icon">${PAGE_ICONS[page] || '📄'}</span>
-                    <span class="dropdown-item-text" data-translate="pages.${page}"></span>
+                    <span class="dropdown-item-text" data-translate="pages.${page}">${page}</span>
                 </div>`
             ).join('');
 
@@ -257,7 +273,7 @@
                 <div class="menu-category" data-category="${config.id}">
                     <button class="category-btn" data-translate="${config.id}">
                         <span>${config.icon}</span>
-                        <span></span>
+                        <span data-translate="${config.id}">${config.id}</span>
                     </button>
                     <div class="category-dropdown">${pagesHTML}</div>
                 </div>
@@ -266,7 +282,10 @@
 
         attachEvents(menuId) {
             const menu = document.getElementById(menuId);
-            if (!menu) return;
+            if (!menu) {
+                console.error('❌ Menu not found:', menuId);
+                return;
+            }
 
             menu.querySelectorAll('.category-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -301,17 +320,52 @@
         },
 
         updateTranslations() {
-            if (!state.translations) return;
+            if (!state.translations) {
+                console.warn('⚠️ Translations not loaded yet');
+                return;
+            }
 
-            document.querySelectorAll('[data-translate]').forEach(el => {
+            const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
+            const menuTranslations = state.translations[lang]?.menu;
+            
+            if (!menuTranslations) {
+                console.warn('⚠️ Menu translations not found for language:', lang);
+                return;
+            }
+
+            console.log('🌍 Updating static menu translations for language:', lang);
+
+            // Update category buttons
+            document.querySelectorAll('.static-menu [data-translate]').forEach(el => {
                 const key = el.getAttribute('data-translate');
-                const text = getTranslation(key);
+                let text = '';
                 
-                const textSpan = el.querySelector('span:last-child');
-                if (textSpan) {
-                    textSpan.textContent = text;
+                // Для кнопок категорій
+                if (key === 'awsCategory') text = menuTranslations.awsCategory;
+                else if (key === 'rcuCategory') text = menuTranslations.rcuCategory;
+                else if (key === 'systemCategory') text = menuTranslations.systemCategory;
+                
+                // Для підкатегорій
+                else if (key === 'calculator') text = menuTranslations.calculator;
+                else if (key === 'rcuCalc') text = menuTranslations.rcuCalc;
+                else if (key === 'info') text = menuTranslations.info;
+                else if (key === 'others') text = menuTranslations.others;
+                
+                // Для сторінок
+                else if (key.startsWith('pages.')) {
+                    const pageKey = key.replace('pages.', '');
+                    text = menuTranslations.pages?.[pageKey] || pageKey;
+                }
+                
+                if (text && el.tagName === 'SPAN') {
+                    el.textContent = text;
+                } else if (text && el.tagName === 'BUTTON') {
+                    const textSpan = el.querySelector('span:last-child');
+                    if (textSpan) textSpan.textContent = text;
                 }
             });
+
+            console.log('✅ Static menu translations updated');
         },
 
         updateActiveState(page) {
@@ -421,13 +475,19 @@
 
     // ========== INITIALIZATION ==========
     async function init() {
+        if (state.initialized) {
+            console.log('⚠️ Menu Manager already initialized');
+            return;
+        }
+
         console.log('🎯 Menu Manager: Initializing...');
 
         await loadTranslations();
         menuPositionManager.init();
 
         // Listen for language changes
-        document.addEventListener('languageChanged', () => {
+        document.addEventListener('languageChanged', (e) => {
+            console.log('🌍 Menu Manager: Language changed to', e.detail?.language);
             staticMenu.updateTranslations();
         });
 
@@ -439,6 +499,7 @@
             }
         });
 
+        state.initialized = true;
         console.log('✅ Menu Manager: Initialized');
     }
 
@@ -457,5 +518,5 @@
     }
 
     window.menuManagerInitialized = true;
-    console.log('✅ Menu Manager loaded (FIXED - No duplication)');
+    console.log('✅ Menu Manager loaded (FIXED - Translations & Sidebar)');
 })();
