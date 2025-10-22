@@ -1,4 +1,4 @@
-// ========== SETTINGS MODULE (WITHOUT RIGHT MENU) ==========
+// ========== SETTINGS MODULE (FIXED HIGHLIGHTING) ==========
 (function() {
     'use strict';
     
@@ -179,23 +179,38 @@
 
         updateBackground() {
             const current = storage.get('background', 'dodep');
+            console.log('🖼️ Updating background UI, current:', current);
             document.querySelectorAll('.background-option').forEach(opt => {
-                opt.classList.toggle('active', opt.dataset.background === current);
+                const isActive = opt.dataset.background === current;
+                opt.classList.toggle('active', isActive);
             });
         },
 
         updateMenuPosition() {
             const current = storage.get('menuPosition', 'left');
+            console.log('📍 Updating menu position UI, current:', current);
             document.querySelectorAll('.menu-option').forEach(opt => {
-                opt.classList.toggle('active', opt.dataset.position === current);
+                const isActive = opt.dataset.position === current;
+                opt.classList.toggle('active', isActive);
             });
         },
 
         updateLanguage() {
             const current = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
+            console.log('🌍 Updating language UI, current:', current);
             document.querySelectorAll('.language-option').forEach(opt => {
-                opt.classList.toggle('active', opt.dataset.language === current);
+                const isActive = opt.dataset.language === current;
+                opt.classList.toggle('active', isActive);
             });
+        },
+
+        updateAllUI() {
+            this.updateBackground();
+            this.updateMenuPosition();
+            this.updateLanguage();
+            if (typeof updateColorThemeUI === 'function') {
+                updateColorThemeUI();
+            }
         }
     };
 
@@ -254,7 +269,7 @@
         }
     };
 
-    // ========== COMPLETE MENU CLEANUP FUNCTION ==========
+    // ========== COMPLETE MENU CLEANUP ==========
     function completeMenuCleanup() {
         console.log('🧹 ========== COMPLETE MENU CLEANUP START ==========');
         
@@ -263,42 +278,25 @@
         const toggle = document.querySelector('.mobile-menu-toggle');
         
         if (sidebar) {
-            console.log('🗑️ Cleaning sidebar...');
             sidebar.classList.remove('open');
             sidebar.style.cssText = '';
-            sidebar.removeAttribute('style');
         }
         
         if (overlay) {
-            console.log('🗑️ Cleaning overlay...');
             overlay.classList.remove('show');
             overlay.removeAttribute('style');
         }
         
         if (toggle) {
-            console.log('🗑️ Cleaning toggle button...');
             toggle.classList.remove('menu-open');
             toggle.removeAttribute('style');
         }
         
-        console.log('🗑️ Removing all static menu elements...');
-        document.querySelectorAll('.static-menu').forEach(menu => {
-            console.log('  → Removing static menu:', menu.id || 'unnamed');
-            menu.remove();
-        });
+        document.querySelectorAll('.static-menu').forEach(menu => menu.remove());
+        document.querySelectorAll('.category-dropdown').forEach(dropdown => dropdown.remove());
+        document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
         
-        console.log('🗑️ Removing all dropdown elements...');
-        document.querySelectorAll('.category-dropdown').forEach(dropdown => {
-            dropdown.remove();
-        });
-        
-        console.log('🗑️ Removing active states...');
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        
-        console.log('🗑️ Removing position classes from body...');
-        ['menu-left', 'menu-up', 'menu-down'].forEach(cls => {
+        ['menu-left', 'menu-right', 'menu-up', 'menu-down'].forEach(cls => {
             document.body.classList.remove(cls);
         });
         
@@ -311,6 +309,7 @@
     // ========== CHANGE FUNCTIONS ==========
     async function changeBackground(bg) {
         if (!CONFIG.backgrounds[bg]) return;
+        console.log('🖼️ Changing background to:', bg);
         storage.set('background', bg);
         await backgroundManager.apply(bg);
         ui.updateBackground();
@@ -333,17 +332,23 @@
         storage.set('menuPosition', pos);
         console.log('💾 Saved to storage:', pos);
         
+        // Оновлюємо UI негайно
+        ui.updateMenuPosition();
+        
         setTimeout(() => {
             console.log('📞 Calling menuPositionManager.apply()...');
             
             if (typeof window.menuPositionManager !== 'undefined' && window.menuPositionManager.apply) {
                 window.menuPositionManager.apply(pos);
                 console.log('✅ Menu position applied');
+                
+                // Повторно оновлюємо UI після застосування
+                setTimeout(() => {
+                    ui.updateMenuPosition();
+                }, 200);
             } else {
                 console.error('❌ menuPositionManager not available!');
             }
-            
-            ui.updateMenuPosition();
             
             console.log('✅ ========== CHANGE MENU POSITION END ==========');
         }, 150);
@@ -351,10 +356,13 @@
 
     function changeLanguage(lang) {
         if (!CONFIG.languages[lang]) return;
+        console.log('🌍 Changing language to:', lang);
         if (typeof window.switchAppLanguage === 'function') {
             window.switchAppLanguage(lang);
         }
-        ui.updateLanguage();
+        setTimeout(() => {
+            ui.updateLanguage();
+        }, 100);
     }
 
     // ========== HTML GENERATION ==========
@@ -452,6 +460,8 @@
         const page = document.getElementById('settingsPage');
         if (!page) return;
         
+        console.log('⚙️ Initializing Settings...');
+        
         categories.load();
         page.innerHTML = createSettingsHTML();
         
@@ -462,25 +472,19 @@
         
         const bg = storage.get('background', 'dodep');
         await backgroundManager.apply(bg);
-        ui.updateBackground();
         
-        const menuPos = storage.get('menuPosition', 'left');
-        ui.updateMenuPosition();
+        // Оновлюємо весь UI
+        ui.updateAllUI();
         
-        if (typeof updateColorThemeUI === 'function') {
-            updateColorThemeUI();
-        }
-        
-        ui.updateLanguage();
         categories.apply();
         
         state.initialized = true;
+        console.log('✅ Settings initialized');
     }
 
     async function initOnStart() {
         const bg = storage.get('background', 'dodep');
         await backgroundManager.apply(bg);
-        
         await loadTranslations();
     }
 
@@ -491,6 +495,14 @@
             ui.updateColorThemeNames();
             ui.updateLanguageNames();
         }
+    });
+
+    // Слухаємо зміни позиції меню від menuPositionManager
+    document.addEventListener('menuPositionChanged', (e) => {
+        console.log('📍 Settings received menu position change:', e.detail?.position);
+        setTimeout(() => {
+            ui.updateMenuPosition();
+        }, 100);
     });
 
     // ========== GLOBAL EXPORTS ==========
@@ -516,5 +528,6 @@
     }
 
     window.settingsInitialized = true;
+    console.log('✅ settings.js loaded (FIXED HIGHLIGHTING)');
 
 })();
