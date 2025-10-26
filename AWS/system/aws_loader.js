@@ -1,16 +1,17 @@
-// ========== AWS MODULE LOADER (System Pages Removed) ==========
+// ========== AWS MODULE LOADER (Optimized with Shared Styles) ==========
 
 class AWSModuleLoader {
     constructor() {
         this.loadedModules = new Set();
         this.loadingModules = new Map();
+        this.sharedStylesLoaded = false;
         this.moduleConfigs = {
             // Калькулятори
-            calculator: { path: 'calc/calculator.js', css: 'calc/calculator.css' },
-            arm: { path: 'calc/arm.js', css: 'calc/arm.css' },
-            grind: { path: 'calc/grind.js', css: 'calc/grind.css' },
-            roulette: { path: 'calc/roulette.js', css: 'calc/roulette.css' },
-            boss: { path: 'calc/boss.js', css: 'calc/boss.css' },
+            calculator: { path: 'calc/calculator.js', css: 'calc/calculator-unique.css' },
+            arm: { path: 'calc/arm.js' }, // Немає CSS - все в shared
+            grind: { path: 'calc/grind.js', css: 'calc/grind-unique.css' },
+            roulette: { path: 'calc/roulette.js' }, // Немає CSS - все в shared
+            boss: { path: 'calc/boss.js', css: 'calc/boss-unique.css' },
             
             // Інформація
             boosts: { path: 'info/boosts.js', css: 'info/boosts.css' },
@@ -56,7 +57,20 @@ class AWSModuleLoader {
         return '/AWS/';
     }
 
+    async loadSharedStyles() {
+        if (this.sharedStylesLoaded) return true;
+        
+        console.log('🎨 Loading shared AWS styles...');
+        await this.loadCSS(this.basePath + 'system/shared-styles.css');
+        this.sharedStylesLoaded = true;
+        console.log('✅ Shared AWS styles loaded');
+        return true;
+    }
+
     async loadModule(moduleName) {
+        // Завантажити спільні стилі першими
+        await this.loadSharedStyles();
+
         if (this.loadedModules.has(moduleName)) {
             return true;
         }
@@ -90,10 +104,12 @@ class AWSModuleLoader {
     async _loadModuleFiles(moduleName, config) {
         const promises = [];
 
+        // Завантажити унікальний CSS якщо є
         if (config.css) {
             promises.push(this.loadCSS(this.basePath + config.css));
         }
 
+        // Завантажити JS
         promises.push(this.loadScript(this.basePath + config.path));
 
         await Promise.all(promises);
@@ -132,17 +148,23 @@ class AWSModuleLoader {
     }
 
     async preloadCriticalModules() {
-        console.log('📦 Preloading critical AWS CSS...');
+        console.log('📦 Preloading critical AWS resources...');
+        
+        // 1. Спочатку завантажити спільні стилі
+        await this.loadSharedStyles();
+        
+        // 2. Потім критичні модулі
         const critical = ['calculator', 'arm', 'grind'];
         
         await Promise.all(
             critical.map(name => {
                 const config = this.moduleConfigs[name];
+                // Завантажити тільки унікальний CSS якщо є
                 return config?.css ? this.loadCSS(this.basePath + config.css) : Promise.resolve();
             })
         );
         
-        console.log('✅ Critical AWS CSS preloaded');
+        console.log('✅ Critical AWS resources preloaded');
     }
 
     isModuleLoaded(moduleName) {
@@ -181,5 +203,5 @@ Object.assign(window, {
     getAWSModulesByCategory: () => awsLoader.getModulesByCategory()
 });
 
-console.log('✅ AWS Module Loader initialized (System pages removed)');
+console.log('✅ AWS Module Loader initialized (Optimized with shared styles)');
 console.log('📍 Base path:', awsLoader.basePath);
