@@ -7,11 +7,11 @@ class AWSModuleLoader {
         this.sharedStylesLoaded = false;
         this.moduleConfigs = {
             // Калькулятори
-            calculator: { path: 'calc/calculator.js', css: 'calc/calculator-unique.css' },
+            calculator: { path: 'calc/calculator.js', css: 'calc/calculator.css' },
             arm: { path: 'calc/arm.js' }, // Немає CSS - все в shared
-            grind: { path: 'calc/grind.js', css: 'calc/grind-unique.css' },
+            grind: { path: 'calc/grind.js', css: 'calc/grind.css' },
             roulette: { path: 'calc/roulette.js' }, // Немає CSS - все в shared
-            boss: { path: 'calc/boss.js', css: 'calc/boss-unique.css' },
+            boss: { path: 'calc/boss.js', css: 'calc/boss.css' },
             
             // Інформація
             boosts: { path: 'info/boosts.js', css: 'info/boosts.css' },
