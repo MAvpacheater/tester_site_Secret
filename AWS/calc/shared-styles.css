@@ -1,0 +1,611 @@
+/* ========================================
+   SHARED CALCULATOR STYLES - HALLOWEEN THEME
+   Оптимізовані спільні стилі для всіх калькуляторів
+   ======================================== */
+
+/* === БАЗОВІ ЗМІННІ === */
+:root {
+    --color-primary: #FF6B00;
+    --color-primary-light: #FF8C00;
+    --color-primary-bright: #FFA500;
+    --color-secondary: #8B008B;
+    --color-secondary-dark: #4B0082;
+    --color-background: #1a0a0a;
+    --color-text-primary: #F5DEB3;
+    --color-text-secondary: rgba(245, 222, 179, 0.7);
+    --color-error: #FF6347;
+    
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 15px;
+    --border-radius-xl: 20px;
+    
+    --spacing-xs: 5px;
+    --spacing-sm: 10px;
+    --spacing-md: 15px;
+    --spacing-lg: 20px;
+    --spacing-xl: 30px;
+    
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* === ЗАГАЛЬНІ СТИЛІ СТОРІНОК === */
+.arm-page,
+.boss-page,
+.calculator-page,
+.grind-page,
+.roulette-page {
+    display: none !important;
+}
+
+.arm-page.active,
+.boss-page.active,
+.calculator-page.active,
+.grind-page.active,
+.roulette-page.active {
+    display: block !important;
+}
+
+/* === ЗАГОЛОВКИ === */
+.arm-page h1,
+.boss-page h1,
+.calculator-page h1,
+.grind-page h1,
+.roulette-page h1 {
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-xl);
+    font-size: clamp(1.8em, 5vw, 2.2em);
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 
+                 0 0 20px rgba(255, 107, 0, 0.5);
+    font-family: 'Orbitron', 'Arial Black', sans-serif;
+    background: linear-gradient(135deg, 
+                var(--color-primary), 
+                var(--color-primary-light), 
+                var(--color-primary-bright));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* === КОНТЕЙНЕР ХЕДЕРА === */
+.arm-page .header-controls,
+.boss-page .header-controls,
+.calculator-page .header-controls,
+.grind-page .header-controls,
+.roulette-page .header-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* === КНОПКА НАЛАШТУВАНЬ === */
+.arm-page .settings-btn,
+.calculator-page .settings-btn,
+.grind-page .settings-btn {
+    background: linear-gradient(135deg, 
+                rgba(139, 0, 139, 0.3), 
+                rgba(75, 0, 130, 0.4));
+    border: 2px solid var(--color-secondary);
+    color: var(--color-primary);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: all var(--transition-normal);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8), 
+                 0 0 10px rgba(255, 107, 0, 0.3);
+    backdrop-filter: blur(5px);
+}
+
+.arm-page .settings-btn:hover,
+.calculator-page .settings-btn:hover,
+.grind-page .settings-btn:hover {
+    background: linear-gradient(135deg, 
+                var(--color-primary), 
+                var(--color-primary-light));
+    color: var(--color-background);
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 107, 0, 0.6);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* === ПАНЕЛЬ НАЛАШТУВАНЬ === */
+.arm-page .settings-panel,
+.calculator-page .settings-panel,
+.grind-page .settings-panel {
+    display: none;
+    background: linear-gradient(135deg, 
+                rgba(26, 10, 10, 0.9) 0%, 
+                rgba(75, 0, 130, 0.85) 50%, 
+                rgba(139, 0, 139, 0.9) 100%);
+    border: 3px solid var(--color-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 15px 35px rgba(255, 107, 0, 0.3), 
+                inset 0 2px 10px rgba(255, 107, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.arm-page .settings-panel::before,
+.calculator-page .settings-panel::before,
+.grind-page .settings-panel::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(255, 107, 0, 0.05) 50%, 
+                transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.arm-page .settings-panel > *,
+.calculator-page .settings-panel > *,
+.grind-page .settings-panel > * {
+    position: relative;
+    z-index: 1;
+}
+
+.arm-page .settings-panel.show,
+.calculator-page .settings-panel.show,
+.grind-page .settings-panel.show {
+    display: block;
+    animation: slideDown var(--transition-normal);
+}
+
+/* === ЗАГОЛОВОК НАЛАШТУВАНЬ === */
+.arm-page .settings-title,
+.calculator-page .settings-title,
+.grind-page .settings-title {
+    color: var(--color-primary);
+    font-size: 1.3em;
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 
+                 0 0 15px rgba(255, 107, 0, 0.4);
+    font-family: 'Orbitron', Arial, sans-serif;
+}
+
+/* === ПЕРЕМИКАЧІ === */
+.arm-page .simple-toggle,
+.calculator-page .simple-toggle,
+.grind-page .simple-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md) 0;
+    border-bottom: 2px solid rgba(139, 0, 139, 0.5);
+}
+
+.arm-page .simple-toggle:last-child,
+.calculator-page .simple-toggle:last-child,
+.grind-page .simple-toggle:last-child {
+    border-bottom: none;
+}
+
+.arm-page .toggle-info,
+.calculator-page .toggle-info,
+.grind-page .toggle-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.arm-page .toggle-label,
+.calculator-page .toggle-label,
+.grind-page .toggle-label {
+    color: var(--color-text-primary);
+    font-size: 1.1em;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.arm-page .toggle-multiplier,
+.calculator-page .toggle-multiplier,
+.grind-page .toggle-multiplier {
+    color: rgba(255, 107, 0, 0.9);
+    font-size: 0.9em;
+    font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8), 
+                 0 0 10px rgba(255, 107, 0, 0.3);
+}
+
+/* === SWITCH КОМПОНЕНТИ === */
+.arm-page .switch,
+.calculator-page .switch,
+.grind-page .switch,
+.boss-page .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+}
+
+.arm-page .switch input,
+.calculator-page .switch input,
+.grind-page .switch input,
+.boss-page .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.arm-page .slider,
+.calculator-page .slider,
+.grind-page .slider,
+.boss-page .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: linear-gradient(135deg, 
+                rgba(75, 0, 130, 0.8), 
+                rgba(139, 0, 139, 0.9));
+    transition: var(--transition-normal);
+    border-radius: 25px;
+    border: 2px solid var(--color-secondary);
+}
+
+.arm-page .slider:before,
+.calculator-page .slider:before,
+.grind-page .slider:before,
+.boss-page .slider:before {
+    position: absolute;
+    content: "";
+    height: 19px;
+    width: 19px;
+    left: 2px;
+    bottom: 2px;
+    background: linear-gradient(135deg, #1a0a0a, #2a1a1a);
+    transition: var(--transition-normal);
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(255, 107, 0, 0.3);
+}
+
+.arm-page input:checked + .slider,
+.calculator-page input:checked + .slider,
+.grind-page input:checked + .slider,
+.boss-page input:checked + .slider {
+    background: linear-gradient(135deg, 
+                var(--color-primary), 
+                var(--color-primary-light));
+    border-color: var(--color-primary);
+    box-shadow: 0 0 15px rgba(255, 107, 0, 0.5);
+}
+
+.arm-page input:checked + .slider:before,
+.calculator-page input:checked + .slider:before,
+.grind-page input:checked + .slider:before,
+.boss-page input:checked + .slider:before {
+    transform: translateX(21px);
+    background: linear-gradient(135deg, #1a0a0a, #0a0a0a);
+    box-shadow: 0 2px 8px rgba(255, 107, 0, 0.6);
+}
+
+/* === СЕКЦІЯ ВВОДУ === */
+.arm-page .input-section,
+.boss-page .input-section,
+.calculator-page .input-section,
+.grind-page .input-section,
+.roulette-page .input-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.arm-page .input-label,
+.boss-page .input-label,
+.calculator-page .input-label,
+.grind-page .input-label,
+.roulette-page .input-label {
+    display: block;
+    color: var(--color-text-primary);
+    font-size: 1.1em;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* === ПОЛЯ ВВОДУ === */
+.arm-page .number-input,
+.boss-page .number-input,
+.calculator-page .number-input,
+.grind-page .number-input,
+.roulette-page .number-input {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1.2em;
+    border: 3px solid var(--color-secondary);
+    border-radius: var(--border-radius-md);
+    outline: none;
+    transition: all var(--transition-normal);
+    background: linear-gradient(135deg, 
+                rgba(139, 0, 139, 0.2), 
+                rgba(75, 0, 130, 0.3));
+    color: var(--color-text-primary);
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    box-sizing: border-box;
+}
+
+.arm-page .number-input::placeholder,
+.boss-page .number-input::placeholder,
+.calculator-page .number-input::placeholder,
+.grind-page .number-input::placeholder,
+.roulette-page .number-input::placeholder {
+    color: var(--color-text-secondary);
+    text-shadow: none;
+}
+
+.arm-page .number-input:focus,
+.boss-page .number-input:focus,
+.calculator-page .number-input:focus,
+.grind-page .number-input:focus,
+.roulette-page .number-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.3), 
+                0 8px 20px rgba(255, 107, 0, 0.4);
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, 
+                rgba(255, 107, 0, 0.1), 
+                rgba(139, 0, 139, 0.3));
+}
+
+/* === КНОПКА РОЗРАХУНКУ === */
+.arm-page .calculate-btn,
+.boss-page .calculate-btn,
+.calculator-page .calculate-btn,
+.grind-page .calculate-btn,
+.roulette-page .calculate-btn {
+    width: 100%;
+    background: linear-gradient(135deg, 
+                var(--color-primary), 
+                var(--color-primary-light));
+    color: var(--color-background);
+    border: 3px solid var(--color-secondary);
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1.1em;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    margin-top: var(--spacing-lg);
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(255, 107, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.arm-page .calculate-btn::before,
+.boss-page .calculate-btn::before,
+.calculator-page .calculate-btn::before,
+.grind-page .calculate-btn::before,
+.roulette-page .calculate-btn::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                transparent);
+    transform: rotate(45deg);
+    transition: all var(--transition-slow);
+    opacity: 0;
+}
+
+.arm-page .calculate-btn:hover::before,
+.boss-page .calculate-btn:hover::before,
+.calculator-page .calculate-btn:hover::before,
+.grind-page .calculate-btn:hover::before,
+.roulette-page .calculate-btn:hover::before {
+    opacity: 1;
+    animation: shine 0.8s ease-in-out;
+}
+
+.arm-page .calculate-btn:hover,
+.boss-page .calculate-btn:hover,
+.calculator-page .calculate-btn:hover,
+.grind-page .calculate-btn:hover,
+.roulette-page .calculate-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(255, 107, 0, 0.6), 
+                inset 0 2px 10px rgba(255, 255, 255, 0.2);
+    border-color: var(--color-primary);
+}
+
+.arm-page .calculate-btn:active,
+.boss-page .calculate-btn:active,
+.calculator-page .calculate-btn:active,
+.grind-page .calculate-btn:active,
+.roulette-page .calculate-btn:active {
+    transform: translateY(-1px);
+}
+
+/* === СЕКЦІЯ РЕЗУЛЬТАТІВ === */
+.arm-page .result-section,
+.boss-page .result-section,
+.calculator-page .result-section,
+.grind-page .result-section,
+.roulette-page .result-section {
+    margin-top: var(--spacing-xl);
+    padding: 25px;
+    background: linear-gradient(135deg, 
+                rgba(26, 10, 10, 0.9) 0%, 
+                rgba(75, 0, 130, 0.85) 50%, 
+                rgba(139, 0, 139, 0.9) 100%);
+    border-radius: var(--border-radius-lg);
+    border: 3px solid var(--color-secondary);
+    display: none;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 15px 35px rgba(255, 107, 0, 0.3), 
+                inset 0 2px 10px rgba(255, 107, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.arm-page .result-section::before,
+.boss-page .result-section::before,
+.calculator-page .result-section::before,
+.grind-page .result-section::before,
+.roulette-page .result-section::before {
+    content: '🎃👻';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5em;
+    opacity: 0.6;
+    animation: floatGhost 4s ease-in-out infinite;
+}
+
+.arm-page .result-section.show,
+.boss-page .result-section.show,
+.calculator-page .result-section.show,
+.grind-page .result-section.show,
+.roulette-page .result-section.show-result {
+    display: block;
+    animation: slideIn var(--transition-slow);
+}
+
+.arm-page .stats-label,
+.boss-page .stats-label,
+.calculator-page .stats-label,
+.grind-page .stats-label,
+.roulette-page .stats-label {
+    color: var(--color-primary);
+    font-size: 1.2em;
+    margin-bottom: var(--spacing-md);
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 
+                 0 0 15px rgba(255, 107, 0, 0.4);
+    font-family: 'Orbitron', Arial, sans-serif;
+}
+
+.arm-page .result-value,
+.boss-page .result-value,
+.calculator-page .result-value,
+.grind-page .result-value,
+.roulette-page .result-value {
+    font-size: clamp(1.6em, 5vw, 2.5em);
+    color: var(--color-primary);
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    background: linear-gradient(135deg, 
+                var(--color-primary), 
+                var(--color-primary-light), 
+                var(--color-primary-bright));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: resultGlow 2s ease-in-out infinite alternate;
+}
+
+/* === ПОВІДОМЛЕННЯ ПРО ПОМИЛКИ === */
+.arm-page .error,
+.boss-page .error,
+.calculator-page .error,
+.grind-page .error,
+.roulette-page .error {
+    color: var(--color-error);
+    font-size: 0.9em;
+    margin-top: var(--spacing-sm);
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* === АНІМАЦІЇ === */
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+@keyframes floatGhost {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-5px) rotate(10deg); }
+}
+
+@keyframes resultGlow {
+    0% { filter: drop-shadow(0 0 10px rgba(255, 107, 0, 0.7)); }
+    100% { filter: drop-shadow(0 0 20px rgba(255, 107, 0, 1)); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* === АДАПТИВНІСТЬ === */
+@media (max-width: 768px) {
+    :root {
+        --spacing-xl: 20px;
+        --spacing-lg: 15px;
+    }
+    
+    .arm-page .header-controls,
+    .calculator-page .header-controls,
+    .grind-page .header-controls {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .arm-page .settings-panel,
+    .calculator-page .settings-panel,
+    .grind-page .settings-panel {
+        padding: var(--spacing-md);
+    }
+    
+    .arm-page .simple-toggle,
+    .calculator-page .simple-toggle,
+    .grind-page .simple-toggle {
+        padding: 12px 0;
+    }
+    
+    .arm-page .toggle-label,
+    .calculator-page .toggle-label,
+    .grind-page .toggle-label {
+        font-size: 1em;
+    }
+    
+    .arm-page .number-input,
+    .boss-page .number-input,
+    .calculator-page .number-input,
+    .grind-page .number-input,
+    .roulette-page .number-input {
+        font-size: 1.1em;
+        padding: 12px var(--spacing-md);
+    }
+    
+    .arm-page .calculate-btn,
+    .boss-page .calculate-btn,
+    .calculator-page .calculate-btn,
+    .grind-page .calculate-btn,
+    .roulette-page .calculate-btn {
+        padding: 12px 25px;
+        font-size: 1em;
+    }
+}
