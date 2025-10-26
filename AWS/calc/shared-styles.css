@@ -1,34 +1,60 @@
 /* ========================================
-   SHARED CALCULATOR STYLES - HALLOWEEN THEME
-   Оптимізовані спільні стилі для всіх калькуляторів
+   SHARED CALCULATOR STYLES - MODERN PROFESSIONAL
+   Оновлені стилі з сучасним дизайном
    ======================================== */
 
 /* === БАЗОВІ ЗМІННІ === */
 :root {
-    --color-primary: #FF6B00;
-    --color-primary-light: #FF8C00;
-    --color-primary-bright: #FFA500;
-    --color-secondary: #8B008B;
-    --color-secondary-dark: #4B0082;
-    --color-background: #1a0a0a;
-    --color-text-primary: #F5DEB3;
-    --color-text-secondary: rgba(245, 222, 179, 0.7);
-    --color-error: #FF6347;
+    /* Halloween Theme Colors */
+    --color-primary-halloween: #FF6B00;
+    --color-primary-light-halloween: #FF8C00;
+    --color-primary-bright-halloween: #FFA500;
+    --color-secondary-halloween: #8B008B;
+    --color-secondary-dark-halloween: #4B0082;
     
+    /* Cyan Theme Colors (Modern) */
+    --color-primary: #00D9FF;
+    --color-primary-light: #00F5FF;
+    --color-primary-bright: #00FFFF;
+    --color-secondary: #0096C7;
+    --color-secondary-dark: #0077B6;
+    
+    /* Neutral Colors */
+    --color-background: #0a0e1a;
+    --color-surface: rgba(10, 20, 40, 0.95);
+    --color-text-primary: #E0F7FF;
+    --color-text-secondary: rgba(224, 247, 255, 0.7);
+    --color-error: #FF6B6B;
+    
+    /* Border Radius */
     --border-radius-sm: 8px;
-    --border-radius-md: 12px;
-    --border-radius-lg: 15px;
-    --border-radius-xl: 20px;
+    --border-radius-md: 16px;
+    --border-radius-lg: 20px;
+    --border-radius-xl: 24px;
+    --border-radius-full: 9999px;
     
-    --spacing-xs: 5px;
-    --spacing-sm: 10px;
-    --spacing-md: 15px;
-    --spacing-lg: 20px;
-    --spacing-xl: 30px;
+    /* Spacing */
+    --spacing-xs: 6px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
     
-    --transition-fast: 0.2s ease;
-    --transition-normal: 0.3s ease;
-    --transition-slow: 0.5s ease;
+    /* Transitions */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 217, 255, 0.1);
+    --shadow-md: 0 4px 16px rgba(0, 217, 255, 0.2);
+    --shadow-lg: 0 8px 32px rgba(0, 217, 255, 0.3);
+    --shadow-xl: 0 16px 48px rgba(0, 217, 255, 0.4);
+    
+    /* Glassmorphism */
+    --glass-bg: rgba(10, 30, 60, 0.7);
+    --glass-border: rgba(0, 217, 255, 0.2);
+    --glass-blur: 16px;
 }
 
 /* === ЗАГАЛЬНІ СТИЛІ СТОРІНОК === */
@@ -38,6 +64,7 @@
 .grind-page,
 .roulette-page {
     display: none !important;
+    padding: var(--spacing-lg);
 }
 
 .arm-page.active,
@@ -46,6 +73,7 @@
 .grind-page.active,
 .roulette-page.active {
     display: block !important;
+    animation: fadeIn var(--transition-normal);
 }
 
 /* === ЗАГОЛОВКИ === */
@@ -56,10 +84,10 @@
 .roulette-page h1 {
     color: var(--color-primary);
     margin-bottom: var(--spacing-xl);
-    font-size: clamp(1.8em, 5vw, 2.2em);
-    font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 
-                 0 0 20px rgba(255, 107, 0, 0.5);
+    font-size: clamp(2em, 6vw, 2.5em);
+    font-weight: 800;
+    text-shadow: 0 0 30px rgba(0, 217, 255, 0.5),
+                 0 0 60px rgba(0, 217, 255, 0.3);
     font-family: 'Orbitron', 'Arial Black', sans-serif;
     background: linear-gradient(135deg, 
                 var(--color-primary), 
@@ -68,6 +96,8 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    letter-spacing: -0.02em;
+    text-align: center;
 }
 
 /* === КОНТЕЙНЕР ХЕДЕРА === */
@@ -80,26 +110,28 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--spacing-xl);
+    gap: var(--spacing-md);
 }
 
 /* === КНОПКА НАЛАШТУВАНЬ === */
 .arm-page .settings-btn,
 .calculator-page .settings-btn,
 .grind-page .settings-btn {
-    background: linear-gradient(135deg, 
-                rgba(139, 0, 139, 0.3), 
-                rgba(75, 0, 130, 0.4));
-    border: 2px solid var(--color-secondary);
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
     color: var(--color-primary);
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius-full);
     cursor: pointer;
     font-size: 1em;
     font-weight: 600;
     transition: all var(--transition-normal);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8), 
-                 0 0 10px rgba(255, 107, 0, 0.3);
-    backdrop-filter: blur(5px);
+    text-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+    backdrop-filter: blur(var(--glass-blur));
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
 }
 
 .arm-page .settings-btn:hover,
@@ -110,9 +142,9 @@
                 var(--color-primary-light));
     color: var(--color-background);
     border-color: var(--color-primary);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(255, 107, 0, 0.6);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--shadow-lg);
+    text-shadow: none;
 }
 
 /* === ПАНЕЛЬ НАЛАШТУВАНЬ === */
@@ -120,17 +152,13 @@
 .calculator-page .settings-panel,
 .grind-page .settings-panel {
     display: none;
-    background: linear-gradient(135deg, 
-                rgba(26, 10, 10, 0.9) 0%, 
-                rgba(75, 0, 130, 0.85) 50%, 
-                rgba(139, 0, 139, 0.9) 100%);
-    border: 3px solid var(--color-secondary);
-    border-radius: var(--border-radius-lg);
-    padding: var(--spacing-lg);
-    margin-bottom: var(--spacing-lg);
-    backdrop-filter: blur(15px);
-    box-shadow: 0 15px 35px rgba(255, 107, 0, 0.3), 
-                inset 0 2px 10px rgba(255, 107, 0, 0.1);
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    backdrop-filter: blur(var(--glass-blur));
+    box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
 }
@@ -140,15 +168,11 @@
 .grind-page .settings-panel::before {
     content: '';
     position: absolute;
-    inset: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, 
-                transparent 30%, 
-                rgba(255, 107, 0, 0.05) 50%, 
-                transparent 70%);
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, 
+                rgba(0, 217, 255, 0.1) 0%, 
+                transparent 50%);
     pointer-events: none;
-    z-index: 0;
 }
 
 .arm-page .settings-panel > *,
@@ -170,13 +194,13 @@
 .calculator-page .settings-title,
 .grind-page .settings-title {
     color: var(--color-primary);
-    font-size: 1.3em;
+    font-size: 1.5em;
     font-weight: 700;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
     text-align: center;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 
-                 0 0 15px rgba(255, 107, 0, 0.4);
+    text-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
     font-family: 'Orbitron', Arial, sans-serif;
+    letter-spacing: -0.01em;
 }
 
 /* === ПЕРЕМИКАЧІ === */
@@ -187,7 +211,7 @@
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-md) 0;
-    border-bottom: 2px solid rgba(139, 0, 139, 0.5);
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .arm-page .simple-toggle:last-child,
@@ -208,19 +232,18 @@
 .calculator-page .toggle-label,
 .grind-page .toggle-label {
     color: var(--color-text-primary);
-    font-size: 1.1em;
+    font-size: 1.05em;
     font-weight: 600;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .arm-page .toggle-multiplier,
 .calculator-page .toggle-multiplier,
 .grind-page .toggle-multiplier {
-    color: rgba(255, 107, 0, 0.9);
+    color: var(--color-primary);
     font-size: 0.9em;
     font-weight: 500;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8), 
-                 0 0 10px rgba(255, 107, 0, 0.3);
+    text-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
 }
 
 /* === SWITCH КОМПОНЕНТИ === */
@@ -230,8 +253,8 @@
 .boss-page .switch {
     position: relative;
     display: inline-block;
-    width: 50px;
-    height: 25px;
+    width: 52px;
+    height: 28px;
 }
 
 .arm-page .switch input,
@@ -250,12 +273,11 @@
     position: absolute;
     cursor: pointer;
     inset: 0;
-    background: linear-gradient(135deg, 
-                rgba(75, 0, 130, 0.8), 
-                rgba(139, 0, 139, 0.9));
-    transition: var(--transition-normal);
-    border-radius: 25px;
-    border: 2px solid var(--color-secondary);
+    background: rgba(20, 40, 80, 0.6);
+    transition: all var(--transition-normal);
+    border-radius: var(--border-radius-full);
+    border: 2px solid var(--glass-border);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .arm-page .slider:before,
@@ -264,14 +286,14 @@
 .boss-page .slider:before {
     position: absolute;
     content: "";
-    height: 19px;
-    width: 19px;
-    left: 2px;
-    bottom: 2px;
-    background: linear-gradient(135deg, #1a0a0a, #2a1a1a);
-    transition: var(--transition-normal);
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: linear-gradient(135deg, #1a2a4a, #2a3a5a);
+    transition: all var(--transition-normal);
     border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(255, 107, 0, 0.3);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .arm-page input:checked + .slider,
@@ -282,16 +304,17 @@
                 var(--color-primary), 
                 var(--color-primary-light));
     border-color: var(--color-primary);
-    box-shadow: 0 0 15px rgba(255, 107, 0, 0.5);
+    box-shadow: 0 0 16px rgba(0, 217, 255, 0.6), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .arm-page input:checked + .slider:before,
 .calculator-page input:checked + .slider:before,
 .grind-page input:checked + .slider:before,
 .boss-page input:checked + .slider:before {
-    transform: translateX(21px);
-    background: linear-gradient(135deg, #1a0a0a, #0a0a0a);
-    box-shadow: 0 2px 8px rgba(255, 107, 0, 0.6);
+    transform: translateX(24px);
+    background: linear-gradient(135deg, #ffffff, #e0f7ff);
+    box-shadow: 0 3px 8px rgba(0, 217, 255, 0.6);
 }
 
 /* === СЕКЦІЯ ВВОДУ === */
@@ -310,10 +333,10 @@
 .roulette-page .input-label {
     display: block;
     color: var(--color-text-primary);
-    font-size: 1.1em;
+    font-size: 1.05em;
     margin-bottom: var(--spacing-sm);
     font-weight: 600;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* === ПОЛЯ ВВОДУ === */
@@ -324,19 +347,17 @@
 .roulette-page .number-input {
     width: 100%;
     padding: var(--spacing-md) var(--spacing-lg);
-    font-size: 1.2em;
-    border: 3px solid var(--color-secondary);
+    font-size: 1.15em;
+    border: 2px solid var(--glass-border);
     border-radius: var(--border-radius-md);
     outline: none;
     transition: all var(--transition-normal);
-    background: linear-gradient(135deg, 
-                rgba(139, 0, 139, 0.2), 
-                rgba(75, 0, 130, 0.3));
+    background: var(--glass-bg);
     color: var(--color-text-primary);
     font-weight: 600;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(var(--glass-blur));
     box-sizing: border-box;
+    box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .arm-page .number-input::placeholder,
@@ -345,7 +366,6 @@
 .grind-page .number-input::placeholder,
 .roulette-page .number-input::placeholder {
     color: var(--color-text-secondary);
-    text-shadow: none;
 }
 
 .arm-page .number-input:focus,
@@ -354,12 +374,10 @@
 .grind-page .number-input:focus,
 .roulette-page .number-input:focus {
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.3), 
-                0 8px 20px rgba(255, 107, 0, 0.4);
+    box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.2), 
+                var(--shadow-lg);
     transform: translateY(-2px);
-    background: linear-gradient(135deg, 
-                rgba(255, 107, 0, 0.1), 
-                rgba(139, 0, 139, 0.3));
+    background: rgba(0, 217, 255, 0.05);
 }
 
 /* === КНОПКА РОЗРАХУНКУ === */
@@ -370,21 +388,23 @@
 .roulette-page .calculate-btn {
     width: 100%;
     background: linear-gradient(135deg, 
-                var(--color-primary), 
-                var(--color-primary-light));
+                var(--color-primary) 0%, 
+                var(--color-primary-light) 100%);
     color: var(--color-background);
-    border: 3px solid var(--color-secondary);
+    border: none;
     padding: var(--spacing-md) var(--spacing-xl);
-    font-size: 1.1em;
-    border-radius: var(--border-radius-md);
+    font-size: 1.15em;
+    border-radius: var(--border-radius-full);
     cursor: pointer;
     transition: all var(--transition-normal);
     margin-top: var(--spacing-lg);
     font-weight: 700;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 8px 20px rgba(255, 107, 0, 0.4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-lg), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
     position: relative;
     overflow: hidden;
+    letter-spacing: 0.02em;
 }
 
 .arm-page .calculate-btn::before,
@@ -394,16 +414,13 @@
 .roulette-page .calculate-btn::before {
     content: '';
     position: absolute;
-    inset: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.2), 
-                transparent);
-    transform: rotate(45deg);
-    transition: all var(--transition-slow);
-    opacity: 0;
+    inset: 0;
+    background: linear-gradient(135deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                transparent 100%);
+    transform: translateX(-100%);
+    transition: transform var(--transition-slow);
 }
 
 .arm-page .calculate-btn:hover::before,
@@ -411,8 +428,7 @@
 .calculator-page .calculate-btn:hover::before,
 .grind-page .calculate-btn:hover::before,
 .roulette-page .calculate-btn:hover::before {
-    opacity: 1;
-    animation: shine 0.8s ease-in-out;
+    transform: translateX(100%);
 }
 
 .arm-page .calculate-btn:hover,
@@ -421,9 +437,8 @@
 .grind-page .calculate-btn:hover,
 .roulette-page .calculate-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 15px 35px rgba(255, 107, 0, 0.6), 
-                inset 0 2px 10px rgba(255, 255, 255, 0.2);
-    border-color: var(--color-primary);
+    box-shadow: var(--shadow-xl), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .arm-page .calculate-btn:active,
@@ -441,17 +456,13 @@
 .grind-page .result-section,
 .roulette-page .result-section {
     margin-top: var(--spacing-xl);
-    padding: 25px;
-    background: linear-gradient(135deg, 
-                rgba(26, 10, 10, 0.9) 0%, 
-                rgba(75, 0, 130, 0.85) 50%, 
-                rgba(139, 0, 139, 0.9) 100%);
-    border-radius: var(--border-radius-lg);
-    border: 3px solid var(--color-secondary);
+    padding: var(--spacing-xl);
+    background: var(--glass-bg);
+    border-radius: var(--border-radius-xl);
+    border: 2px solid var(--glass-border);
     display: none;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 15px 35px rgba(255, 107, 0, 0.3), 
-                inset 0 2px 10px rgba(255, 107, 0, 0.1);
+    backdrop-filter: blur(var(--glass-blur));
+    box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
     text-align: center;
@@ -464,10 +475,10 @@
 .roulette-page .result-section::before {
     content: '🎃👻';
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
     font-size: 1.5em;
-    opacity: 0.6;
+    opacity: 0.4;
     animation: floatGhost 4s ease-in-out infinite;
 }
 
@@ -489,8 +500,7 @@
     font-size: 1.2em;
     margin-bottom: var(--spacing-md);
     font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 
-                 0 0 15px rgba(255, 107, 0, 0.4);
+    text-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
     font-family: 'Orbitron', Arial, sans-serif;
 }
 
@@ -499,10 +509,9 @@
 .calculator-page .result-value,
 .grind-page .result-value,
 .roulette-page .result-value {
-    font-size: clamp(1.6em, 5vw, 2.5em);
-    color: var(--color-primary);
-    font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-size: clamp(2em, 6vw, 3em);
+    font-weight: 800;
+    text-shadow: 0 0 30px rgba(0, 217, 255, 0.6);
     background: linear-gradient(135deg, 
                 var(--color-primary), 
                 var(--color-primary-light), 
@@ -511,6 +520,7 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: resultGlow 2s ease-in-out infinite alternate;
+    letter-spacing: -0.02em;
 }
 
 /* === ПОВІДОМЛЕННЯ ПРО ПОМИЛКИ === */
@@ -520,75 +530,76 @@
 .grind-page .error,
 .roulette-page .error {
     color: var(--color-error);
-    font-size: 0.9em;
+    font-size: 0.95em;
     margin-top: var(--spacing-sm);
     font-weight: 600;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* === АНІМАЦІЇ === */
-@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes shine {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-}
-
-@keyframes floatGhost {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-5px) rotate(10deg); }
-}
-
-@keyframes resultGlow {
-    0% { filter: drop-shadow(0 0 10px rgba(255, 107, 0, 0.7)); }
-    100% { filter: drop-shadow(0 0 20px rgba(255, 107, 0, 1)); }
-}
-
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes floatGhost {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(5deg); }
+}
+
+@keyframes resultGlow {
+    0% { filter: drop-shadow(0 0 15px rgba(0, 217, 255, 0.7)); }
+    100% { filter: drop-shadow(0 0 30px rgba(0, 217, 255, 1)); }
+}
+
 /* === АДАПТИВНІСТЬ === */
 @media (max-width: 768px) {
     :root {
-        --spacing-xl: 20px;
-        --spacing-lg: 15px;
+        --spacing-xl: 24px;
+        --spacing-lg: 20px;
     }
     
     .arm-page .header-controls,
     .calculator-page .header-controls,
     .grind-page .header-controls {
         flex-direction: column;
-        gap: var(--spacing-md);
+    }
+    
+    .arm-page h1,
+    .boss-page h1,
+    .calculator-page h1,
+    .grind-page h1,
+    .roulette-page h1 {
+        font-size: 2em;
     }
 }
 
 @media (max-width: 480px) {
+    :root {
+        --spacing-xl: 20px;
+        --spacing-lg: 16px;
+    }
+    
     .arm-page .settings-panel,
     .calculator-page .settings-panel,
     .grind-page .settings-panel {
-        padding: var(--spacing-md);
+        padding: var(--spacing-lg);
     }
     
     .arm-page .simple-toggle,
     .calculator-page .simple-toggle,
     .grind-page .simple-toggle {
-        padding: 12px 0;
-    }
-    
-    .arm-page .toggle-label,
-    .calculator-page .toggle-label,
-    .grind-page .toggle-label {
-        font-size: 1em;
+        padding: var(--spacing-sm) 0;
     }
     
     .arm-page .number-input,
@@ -596,8 +607,8 @@
     .calculator-page .number-input,
     .grind-page .number-input,
     .roulette-page .number-input {
-        font-size: 1.1em;
-        padding: 12px var(--spacing-md);
+        font-size: 1.05em;
+        padding: var(--spacing-sm) var(--spacing-md);
     }
     
     .arm-page .calculate-btn,
@@ -605,7 +616,7 @@
     .calculator-page .calculate-btn,
     .grind-page .calculate-btn,
     .roulette-page .calculate-btn {
-        padding: 12px 25px;
-        font-size: 1em;
+        padding: var(--spacing-sm) var(--spacing-lg);
+        font-size: 1.05em;
     }
 }
