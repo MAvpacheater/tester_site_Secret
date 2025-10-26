@@ -1,27 +1,27 @@
 /* ========================================
-   BOSS UNIQUE STYLES
-   Збільшені розміри (1.3x scale)
+   BOSS UNIQUE STYLES - MODERN
+   Збільшені розміри (1.3x scale) з сучасним дизайном
    ======================================== */
 
 /* === ЗАГОЛОВОК === */
 .boss-page h1 {
-    margin-bottom: 39px;
-    font-size: 2.86em;
+    margin-bottom: 40px;
+    font-size: clamp(2.2em, 7vw, 3em);
 }
 
 /* === ХЕДЕР === */
 .boss-page .header-controls {
-    margin-bottom: 39px;
+    margin-bottom: 40px;
 }
 
 /* === СЕКЦІЯ ВВОДУ === */
 .boss-page .input-section {
-    margin-bottom: 39px;
+    margin-bottom: 40px;
 }
 
 .boss-page .input-label {
     font-size: 1.43em;
-    margin: 19.5px 0 13px;
+    margin: 20px 0 14px;
 }
 
 .boss-page .input-label:first-of-type {
@@ -29,27 +29,27 @@
 }
 
 .boss-page .number-input {
-    padding: 19.5px 26px;
-    font-size: 1.56em;
-    border: 3.9px solid #8B008B;
-    border-radius: 15.6px;
+    padding: 20px 26px;
+    font-size: 1.5em;
+    border-width: 2.6px;
+    border-radius: 20px;
 }
 
 .boss-page .number-input:focus {
-    border: 3.9px solid #FF6B00;
-    box-shadow: 0 0 0 3.9px rgba(255, 107, 0, 0.3), 
-                0 10.4px 26px rgba(255, 107, 0, 0.4);
+    border-width: 2.6px;
+    box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.2), 
+                0 12px 32px rgba(0, 217, 255, 0.4);
 }
 
 /* === ПЕРЕМИКАЧІ === */
 .boss-page .simple-toggle {
-    padding: 19.5px 0;
+    padding: 20px 0;
     margin-top: 26px;
-    border-top: 2.6px solid rgba(139, 0, 139, 0.5);
+    border-top-width: 1.3px;
 }
 
 .boss-page .toggle-info {
-    gap: 5.2px;
+    gap: 6px;
 }
 
 .boss-page .toggle-label {
@@ -62,79 +62,79 @@
 
 /* === SWITCH РОЗМІРИ === */
 .boss-page .switch {
-    width: 65px;
-    height: 32.5px;
+    width: 68px;
+    height: 36px;
 }
 
 .boss-page .slider {
-    border-radius: 32.5px;
-    border: 2.6px solid #8B008B;
+    border-radius: 36px;
+    border-width: 2.6px;
 }
 
 .boss-page .slider:before {
-    height: 24.7px;
-    width: 24.7px;
-    left: 2.6px;
-    bottom: 2.6px;
-    box-shadow: 0 2.6px 6.5px rgba(255, 107, 0, 0.3);
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
 .boss-page input:checked + .slider {
-    box-shadow: 0 0 19.5px rgba(255, 107, 0, 0.5);
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .boss-page input:checked + .slider:before {
-    transform: translateX(27.3px);
-    box-shadow: 0 2.6px 10.4px rgba(255, 107, 0, 0.6);
+    transform: translateX(32px);
+    box-shadow: 0 3px 10px rgba(0, 217, 255, 0.6);
 }
 
 /* === КНОПКА РОЗРАХУНКУ === */
 .boss-page .calculate-btn {
-    border: 3.9px solid #8B008B;
-    padding: 19.5px 39px;
+    border: none;
+    padding: 20px 40px;
     font-size: 1.43em;
-    border-radius: 15.6px;
-    margin-top: 26px;
-    min-width: 195px;
-    box-shadow: 0 10.4px 26px rgba(255, 107, 0, 0.4);
+    margin-top: 28px;
+    min-width: 200px;
+    box-shadow: 0 12px 32px rgba(0, 217, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .boss-page .calculate-btn:hover {
-    transform: translateY(-3.9px);
-    box-shadow: 0 19.5px 45.5px rgba(255, 107, 0, 0.6), 
-                inset 0 2.6px 13px rgba(255, 255, 255, 0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 48px rgba(0, 217, 255, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .boss-page .calculate-btn:active {
-    transform: translateY(-1.3px);
+    transform: translateY(-2px);
 }
 
 /* === ПОМИЛКИ === */
 .boss-page .error {
     font-size: 1.17em;
-    margin-top: 13px;
+    margin-top: 14px;
 }
 
 /* === РЕЗУЛЬТАТИ === */
 .boss-page .result-section {
-    margin-top: 39px;
-    padding: 32.5px;
-    border-radius: 19.5px;
-    border: 3.9px solid #8B008B;
-    backdrop-filter: blur(19.5px);
-    box-shadow: 0 19.5px 45.5px rgba(255, 107, 0, 0.3), 
-                inset 0 2.6px 13px rgba(255, 107, 0, 0.1);
+    margin-top: 40px;
+    padding: 36px;
+    border-radius: 24px;
+    border-width: 2.6px;
+    box-shadow: 0 20px 52px rgba(0, 217, 255, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .boss-page .result-section::before {
-    top: 13px;
-    right: 19.5px;
-    font-size: 1.95em;
+    top: 16px;
+    right: 20px;
+    font-size: 2em;
 }
 
 @keyframes floatGhostBoss {
     0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-6.5px) rotate(10deg); }
+    50% { transform: translateY(-8px) rotate(5deg); }
 }
 
 .boss-page .result-section::before {
@@ -143,16 +143,16 @@
 
 .boss-page .stats-label {
     font-size: 1.56em;
-    margin-bottom: 19.5px;
+    margin-bottom: 20px;
 }
 
 .boss-page .result-value {
-    font-size: 2.6em;
+    font-size: clamp(2.2em, 7vw, 3.4em);
 }
 
 @keyframes resultGlowBoss {
-    0% { filter: drop-shadow(0 0 13px rgba(255, 107, 0, 0.7)); }
-    100% { filter: drop-shadow(0 0 26px rgba(255, 107, 0, 1)); }
+    0% { filter: drop-shadow(0 0 18px rgba(0, 217, 255, 0.7)); }
+    100% { filter: drop-shadow(0 0 36px rgba(0, 217, 255, 1)); }
 }
 
 .boss-page .result-value {
@@ -166,54 +166,64 @@
 
 /* === АНІМАЦІЇ === */
 @keyframes slideInBoss {
-    from { opacity: 0; transform: translateY(26px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(36px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .boss-page .result-section.show {
-    animation: slideInBoss 0.5s ease-out;
+    animation: slideInBoss 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* === АДАПТИВНІСТЬ === */
+@media (max-width: 768px) {
+    .boss-page h1 {
+        font-size: 2.4em;
+    }
+}
+
 @media (max-width: 480px) {
     .boss-page h1 {
-        font-size: 2.34em;
+        font-size: 2em;
     }
     
     .boss-page .result-value {
-        font-size: 2.08em;
+        font-size: 2.2em;
     }
     
     .boss-page .header-controls {
         flex-direction: column;
-        gap: 19.5px;
+        gap: 20px;
     }
     
     .boss-page .simple-toggle {
-        padding: 15.6px 0;
+        padding: 16px 0;
     }
     
     .boss-page .number-input {
-        font-size: 1.43em;
-        padding: 15.6px 19.5px;
+        font-size: 1.3em;
+        padding: 16px 20px;
     }
     
     .boss-page .calculate-btn {
-        padding: 15.6px 32.5px;
-        font-size: 1.3em;
+        padding: 16px 34px;
+        font-size: 1.25em;
     }
     
     .boss-page .switch {
-        width: 58.5px;
-        height: 29.25px;
+        width: 60px;
+        height: 32px;
     }
     
     .boss-page .slider:before {
-        height: 22.23px;
-        width: 22.23px;
+        height: 23px;
+        width: 23px;
     }
     
     .boss-page input:checked + .slider:before {
-        transform: translateX(24.57px);
+        transform: translateX(28px);
+    }
+    
+    .boss-page .result-section {
+        padding: 28px;
     }
 }
