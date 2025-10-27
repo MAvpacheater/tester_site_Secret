@@ -1,92 +1,9 @@
-/* Optimized Codes Page - Halloween Theme */
+/* ========================================
+   CODES PAGE - UNIQUE STYLES ONLY
+   Тільки унікальні стилі (спільні в info-shared-styles.css)
+   ======================================== */
 
-.codes-page {
-    display: none !important;
-}
-
-.codes-page.active {
-    display: block !important;
-}
-
-.codes-page .title {
-    font-family: 'Creepster', 'Orbitron', monospace;
-    font-size: 2.5em;
-    font-weight: 900;
-    color: #FF6B00;
-    text-align: center;
-    margin-bottom: 20px;
-    text-shadow: 0 0 20px rgba(255, 107, 0, 0.8), 2px 2px 8px rgba(0, 0, 0, 0.8);
-    background: linear-gradient(45deg, #FF6B00, #8B00FF, #1a0033);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-/* Loading & Error States */
-.codes-loading,
-.codes-error {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-    min-height: 150px;
-    background: linear-gradient(135deg, 
-        rgba(26, 0, 51, 0.6) 0%, 
-        rgba(51, 0, 102, 0.5) 100%);
-    border-radius: 16px;
-    border: 2px solid rgba(139, 0, 255, 0.4);
-    margin: 20px 0;
-    backdrop-filter: blur(5px);
-    flex-direction: column;
-    gap: 15px;
-    box-shadow: 0 0 20px rgba(139, 0, 255, 0.2);
-}
-
-.codes-loading {
-    color: #FF6B00;
-    font-size: 1.1em;
-    font-weight: 600;
-}
-
-.codes-error {
-    color: #FF4500;
-}
-
-.codes-loading::after {
-    content: '';
-    width: 20px;
-    height: 20px;
-    border: 3px solid #8B00FF;
-    border-top: 3px solid #FF6B00;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    box-shadow: 0 0 15px rgba(255, 107, 0, 0.4);
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.retry-btn {
-    padding: 12px 24px;
-    background: linear-gradient(135deg, #FF6B00, #8B00FF);
-    border: 2px solid #8B00FF;
-    color: white;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 20px rgba(139, 0, 255, 0.3);
-}
-
-.retry-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(255, 107, 0, 0.4), 0 0 25px rgba(139, 0, 255, 0.4);
-}
-
-/* Header Stats */
+/* === HEADER STATS (унікальні) === */
 .codes-header {
     display: flex;
     justify-content: center;
@@ -154,81 +71,7 @@
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-/* Codes Container */
-.codes-container {
-    max-height: 400px;
-    overflow-y: auto;
-    padding-right: 10px;
-}
-
-.codes-container::-webkit-scrollbar { 
-    width: 8px; 
-}
-
-.codes-container::-webkit-scrollbar-track { 
-    background: rgba(26, 0, 51, 0.3); 
-    border-radius: 10px; 
-}
-
-.codes-container::-webkit-scrollbar-thumb { 
-    background: linear-gradient(135deg, #FF6B00, #8B00FF); 
-    border-radius: 10px; 
-}
-
-/* Code Items */
-.code-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    margin-bottom: 12px;
-    background: linear-gradient(135deg, 
-        rgba(26, 0, 51, 0.6) 0%, 
-        rgba(51, 0, 102, 0.5) 50%, 
-        rgba(139, 0, 255, 0.2) 100%);
-    border-radius: 15px;
-    border: 2px solid rgba(139, 0, 255, 0.4);
-    transition: all 0.2s ease;
-    position: relative;
-    min-height: 70px;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 0 15px rgba(139, 0, 255, 0.2);
-}
-
-.code-item:hover {
-    background: linear-gradient(135deg, 
-        rgba(255, 107, 0, 0.2) 0%, 
-        rgba(139, 0, 255, 0.4) 100%);
-    border-color: #FF6B00;
-    transform: translateX(3px);
-    box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3), 0 0 25px rgba(139, 0, 255, 0.3);
-}
-
-.code-content {
-    flex: 1;
-    margin-right: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.code-name {
-    font-weight: 700;
-    color: #FF6B00;
-    font-size: 1.2em;
-    margin: 0;
-    font-family: 'Orbitron', monospace;
-    text-shadow: 0 0 15px rgba(255, 107, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.code-description {
-    color: #E6E6FA;
-    font-size: 0.95em;
-    line-height: 1.4;
-    margin: 0;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-}
-
+/* === CODE ACTIONS (унікальні) === */
 .code-actions {
     display: flex;
     align-items: center;
@@ -236,7 +79,7 @@
     flex-shrink: 0;
 }
 
-/* Toggle Switch */
+/* === TOGGLE SWITCH (унікальні) === */
 .code-toggle {
     background: rgba(26, 0, 51, 0.6);
     border: 2px solid #8B00FF;
@@ -278,7 +121,7 @@
     box-shadow: 0 0 12px rgba(0, 255, 0, 0.6);
 }
 
-/* Used code styles */
+/* === USED CODE STYLES (унікальні) === */
 .code-item.used .code-name,
 .code-item.used .code-description {
     text-decoration: line-through;
@@ -290,7 +133,7 @@
     opacity: 0.7;
 }
 
-/* Copy Button */
+/* === COPY BUTTON (унікальні) === */
 .copy-btn {
     background: linear-gradient(135deg, #FF6B00, #8B00FF);
     color: white;
@@ -323,7 +166,7 @@
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
 }
 
-/* Success Message */
+/* === SUCCESS MESSAGE (унікальні) === */
 .copy-success-message {
     position: fixed;
     top: 50%;
@@ -357,12 +200,8 @@
     100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
 }
 
-/* Mobile Styles */
+/* === MOBILE АДАПТАЦІЯ === */
 @media (max-width: 768px) {
-    .codes-page .title {
-        font-size: 2em;
-    }
-    
     .codes-header {
         padding: 12px 15px;
     }
@@ -380,7 +219,6 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 12px;
-        padding: 14px 16px;
     }
     
     .code-content {
@@ -396,24 +234,22 @@
 }
 
 @media (max-width: 480px) {
-    .codes-loading,
-    .codes-error {
-        padding: 30px 15px;
-        min-height: 120px;
-    }
-    
-    .code-item {
-        padding: 12px 14px;
-    }
-    
-    .code-name {
-        font-size: 1.1em;
-    }
-    
     .copy-btn {
         min-width: 60px;
         height: 32px;
         padding: 6px 12px;
         font-size: 0.8em;
+    }
+    
+    .copy-success-message {
+        right: 10px;
+        left: 10px;
+        transform: translateY(-100%);
+        font-size: 0.85em;
+        padding: 10px 15px;
+    }
+    
+    .copy-success-message.show {
+        transform: translateY(0);
     }
 }
