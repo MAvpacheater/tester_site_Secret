@@ -1,0 +1,885 @@
+/* ========================================
+   INFO PAGES SHARED STYLES - Halloween Theme
+   Спільні стилі для всіх інформаційних сторінок
+   ======================================== */
+
+/* === БАЗОВІ ЗМІННІ === */
+:root {
+    /* Halloween Theme Colors */
+    --color-orange: #FF6B00;
+    --color-purple: #8B00FF;
+    --color-dark-purple: #4B0082;
+    --color-crimson: #DC143C;
+    --color-violet: #9400D3;
+    
+    /* Backgrounds */
+    --bg-dark-primary: rgba(26, 0, 51, 0.6);
+    --bg-dark-secondary: rgba(51, 0, 102, 0.5);
+    --bg-dark-tertiary: rgba(75, 0, 130, 0.4);
+    
+    /* Text */
+    --text-primary: #E6E6FA;
+    --text-secondary: #C8A2C8;
+    --text-highlight: #FFB84D;
+    
+    /* Effects */
+    --shadow-glow-orange: 0 0 20px rgba(255, 107, 0, 0.8);
+    --shadow-glow-purple: 0 0 25px rgba(139, 0, 255, 0.3);
+    --shadow-text: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* === ЗАГАЛЬНІ СТИЛІ СТОРІНОК === */
+.aura-page,
+.boosts-page,
+.charms-page,
+.codes-page,
+.potions-page,
+.secret-page,
+.shiny-page,
+.trainer-page,
+.worlds-page {
+    display: none;
+    padding: 20px;
+    min-height: auto;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.aura-page.active,
+.boosts-page.active,
+.charms-page.active,
+.codes-page.active,
+.potions-page.active,
+.secret-page.active,
+.shiny-page.active,
+.trainer-page.active,
+.worlds-page.active {
+    display: block !important;
+}
+
+/* === ЗАГОЛОВКИ === */
+.aura-page .title,
+.boosts-page .title,
+.charms-page .title,
+.codes-page .title,
+.potions-page .title,
+.secret-page .title,
+.shiny-page .title,
+.trainer-page .title,
+.worlds-page .title {
+    font-family: 'Creepster', 'Orbitron', monospace;
+    font-size: 2.5em;
+    font-weight: 900;
+    color: #FF6B00;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: var(--shadow-glow-orange), var(--shadow-text);
+    background: linear-gradient(45deg, #FF6B00, #8B00FF, #1a0033);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* === КОНТЕЙНЕРИ === */
+.aura-container,
+.boosts-container,
+.charms-container,
+.codes-container,
+.potions-container,
+.secret-container,
+.trainer-container,
+.worlds-container {
+    max-height: 450px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.aura-container::-webkit-scrollbar,
+.boosts-container::-webkit-scrollbar,
+.charms-container::-webkit-scrollbar,
+.codes-container::-webkit-scrollbar,
+.potions-container::-webkit-scrollbar,
+.secret-container::-webkit-scrollbar,
+.trainer-container::-webkit-scrollbar,
+.worlds-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.aura-container::-webkit-scrollbar-track,
+.boosts-container::-webkit-scrollbar-track,
+.charms-container::-webkit-scrollbar-track,
+.codes-container::-webkit-scrollbar-track,
+.potions-container::-webkit-scrollbar-track,
+.secret-container::-webkit-scrollbar-track,
+.trainer-container::-webkit-scrollbar-track,
+.worlds-container::-webkit-scrollbar-track {
+    background: rgba(26, 0, 51, 0.3);
+    border-radius: 10px;
+}
+
+.aura-container::-webkit-scrollbar-thumb,
+.boosts-container::-webkit-scrollbar-thumb,
+.charms-container::-webkit-scrollbar-thumb,
+.codes-container::-webkit-scrollbar-thumb,
+.potions-container::-webkit-scrollbar-thumb,
+.secret-container::-webkit-scrollbar-thumb,
+.trainer-container::-webkit-scrollbar-thumb,
+.worlds-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #FF6B00, #8B00FF);
+    border-radius: 10px;
+}
+
+/* === LOADING STATES === */
+.aura-loading,
+.boosts-loading,
+.charms-loading,
+.codes-loading,
+.potions-loading,
+.secret-loading,
+.trainer-loading,
+.worlds-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    color: #FF6B00;
+    font-size: 1.1em;
+    font-weight: 600;
+    min-height: 150px;
+    background: linear-gradient(135deg, var(--bg-dark-primary), var(--bg-dark-secondary));
+    border-radius: 16px;
+    border: 2px solid #8B00FF;
+    margin: 20px 0;
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-glow-purple);
+}
+
+.aura-loading::after,
+.charms-loading::after,
+.codes-loading::after,
+.potions-loading::after,
+.secret-loading::after,
+.trainer-loading::after,
+.worlds-loading::after {
+    content: '';
+    margin-left: 15px;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #FF6B00;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 0 15px rgba(255, 107, 0, 0.5);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* === ERROR STATES === */
+.aura-error,
+.boosts-error,
+.charms-error,
+.codes-error,
+.potions-error,
+.secret-error,
+.trainer-error,
+.worlds-error {
+    text-align: center;
+    padding: 40px 30px;
+    color: #FF4500;
+    font-size: 1.1em;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--bg-dark-primary), var(--bg-dark-secondary));
+    border-radius: 16px;
+    border: 3px solid rgba(220, 20, 60, 0.6);
+    margin: 20px 0;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-shadow: var(--shadow-text);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 25px rgba(220, 20, 60, 0.3);
+}
+
+/* === EMPTY STATES === */
+.aura-empty,
+.charms-empty,
+.codes-empty,
+.worlds-empty {
+    text-align: center;
+    padding: 60px 30px;
+    color: #B794F4;
+    font-size: 1.1em;
+    font-weight: 500;
+    background: linear-gradient(135deg, var(--bg-dark-primary), var(--bg-dark-secondary));
+    border-radius: 16px;
+    border: 2px solid rgba(139, 0, 255, 0.4);
+    margin: 20px 0;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(8px);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* === RETRY BUTTON === */
+.retry-btn {
+    margin-top: 20px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #FF6B00, #8B00FF);
+    border: 2px solid #8B00FF;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    font-family: 'Orbitron', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 20px rgba(139, 0, 255, 0.3);
+}
+
+.retry-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 107, 0, 0.5), 0 0 30px rgba(139, 0, 255, 0.5);
+}
+
+.retry-btn:active {
+    transform: translateY(0);
+}
+
+/* === ITEM CARDS (спільні стилі для всіх айтемів) === */
+.aura-item,
+.boost-item,
+.charm-item,
+.code-item,
+.potion-item,
+.secret-pet-item,
+.trainer-item,
+.world-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--bg-dark-primary), var(--bg-dark-secondary));
+    border-radius: 12px;
+    border: 2px solid rgba(139, 0, 255, 0.4);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), var(--shadow-glow-purple);
+}
+
+.aura-item:hover,
+.boost-item:hover,
+.charm-item:hover,
+.code-item:hover,
+.potion-item:hover,
+.secret-pet-item:hover,
+.trainer-item:hover,
+.world-item:hover {
+    background: linear-gradient(135deg, rgba(255, 107, 0, 0.3), rgba(139, 0, 255, 0.4));
+    border-color: #FF6B00;
+    transform: translateX(5px);
+    box-shadow: 0 8px 25px rgba(255, 107, 0, 0.4), 0 0 30px rgba(139, 0, 255, 0.3);
+}
+
+/* === IMAGES === */
+.aura-photo,
+.charm-image-container,
+.hatch-reward-image,
+.potion-image,
+.secret-pet-image {
+    border-radius: 12px;
+    border: 2px solid rgba(139, 0, 255, 0.6);
+    background: linear-gradient(135deg, rgba(139, 0, 255, 0.3), rgba(75, 0, 130, 0.4));
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(139, 0, 255, 0.3);
+}
+
+.aura-photo:hover,
+.charm-image-container:hover,
+.hatch-reward-image:hover,
+.potion-image:hover,
+.secret-pet-image:hover {
+    border-color: #FF6B00;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4), 0 0 20px rgba(139, 0, 255, 0.3);
+}
+
+/* Specific image sizes */
+.aura-photo {
+    width: 120px;
+    height: 90px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.aura-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.charm-image-container {
+    width: 150px;
+    height: 112px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.charm-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* === TEXT STYLES === */
+.aura-name,
+.boost-name,
+.charm-title,
+.code-name,
+.potion-name,
+.secret-pet-name,
+.trainer-name,
+.world-title {
+    font-weight: 700;
+    color: #FF6B00;
+    font-size: 1.1em;
+    font-family: 'Orbitron', monospace;
+    text-shadow: 0 0 15px rgba(255, 107, 0, 0.6), var(--shadow-text);
+}
+
+.aura-description,
+.boost-description,
+.charm-description,
+.code-description,
+.potion-boost,
+.secret-pet-boosts,
+.trainer-description,
+.world-description {
+    color: var(--text-primary);
+    font-size: 0.9em;
+    line-height: 1.4;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.charm-details,
+.world-details {
+    color: var(--text-secondary);
+    font-size: 0.95em;
+    line-height: 1.5;
+    font-style: italic;
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* === CONTENT AREAS === */
+.aura-content,
+.boost-content,
+.charm-content,
+.code-content,
+.potion-main-content,
+.secret-pet-content,
+.trainer-content {
+    flex: 1;
+    min-width: 0;
+}
+
+/* === RARITY BADGES === */
+.aura-rarity,
+.charm-category,
+.potion-rarity,
+.secret-pet-world,
+.trainer-type {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    min-width: 80px;
+    text-align: center;
+    border: 1px solid;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Rarity Colors - Common */
+.aura-rarity.common,
+.potion-rarity.common {
+    background: rgba(139, 0, 255, 0.3);
+    color: #9D4EDD;
+    border-color: #8B00FF;
+    box-shadow: 0 0 10px rgba(139, 0, 255, 0.3);
+}
+
+/* Rarity Colors - Uncommon */
+.aura-rarity.uncommon,
+.potion-rarity.uncommon {
+    background: rgba(255, 107, 0, 0.3);
+    color: #FF6B00;
+    border-color: #FF6B00;
+    box-shadow: 0 0 10px rgba(255, 107, 0, 0.3);
+}
+
+/* Rarity Colors - Rare */
+.aura-rarity.rare,
+.potion-rarity.rare {
+    background: rgba(220, 20, 60, 0.3);
+    color: #DC143C;
+    border-color: #DC143C;
+    box-shadow: 0 0 10px rgba(220, 20, 60, 0.3);
+}
+
+/* Rarity Colors - Epic */
+.aura-rarity.epic,
+.potion-rarity.epic {
+    background: rgba(75, 0, 130, 0.4);
+    color: #BA55D3;
+    border-color: #BA55D3;
+    box-shadow: 0 0 12px rgba(186, 85, 211, 0.4);
+}
+
+/* Rarity Colors - Legendary */
+.aura-rarity.legendary,
+.potion-rarity.legendary {
+    background: rgba(255, 69, 0, 0.4);
+    color: #FF4500;
+    border-color: #FF4500;
+    box-shadow: 0 0 15px rgba(255, 69, 0, 0.5);
+}
+
+/* Rarity Colors - Mythic */
+.aura-rarity.mythic,
+.potion-rarity.mythic {
+    background: rgba(148, 0, 211, 0.4);
+    color: #FF00FF;
+    border-color: #FF00FF;
+    box-shadow: 0 0 18px rgba(255, 0, 255, 0.5);
+}
+
+/* Rarity Colors - Limited */
+.potion-rarity.limited {
+    background: rgba(255, 0, 255, 0.3);
+    color: #FF00FF;
+    border-color: #FF1493;
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+}
+
+/* Rarity Colors - Exclusive */
+.potion-rarity.exclusive {
+    background: rgba(0, 206, 209, 0.3);
+    color: #00CED1;
+    border-color: #20B2AA;
+    box-shadow: 0 0 15px rgba(0, 206, 209, 0.4);
+}
+
+/* === CATEGORY BADGES === */
+.charm-category.gameplay {
+    background: linear-gradient(135deg, #FF6B00, #FF4500);
+    color: white;
+    border-color: #FF6B00;
+    box-shadow: 0 0 15px rgba(255, 107, 0, 0.4);
+}
+
+.charm-category.info {
+    background: linear-gradient(135deg, #8B00FF, #4B0082);
+    color: white;
+    border-color: #8B00FF;
+    box-shadow: 0 0 15px rgba(139, 0, 255, 0.4);
+}
+
+.charm-category.tips {
+    background: linear-gradient(135deg, #DC143C, #8B0000);
+    color: white;
+    border-color: #DC143C;
+    box-shadow: 0 0 15px rgba(220, 20, 60, 0.4);
+}
+
+.charm-category.charm {
+    background: linear-gradient(135deg, #BA55D3, #9400D3);
+    color: white;
+    border-color: #BA55D3;
+    box-shadow: 0 0 15px rgba(186, 85, 211, 0.4);
+}
+
+.charm-category.general {
+    background: linear-gradient(135deg, #8B00FF, #4B0082);
+    color: #FF6B00;
+    border-color: #8B00FF;
+    box-shadow: 0 0 15px rgba(139, 0, 255, 0.4);
+}
+
+/* === TRAINER TYPE BADGES === */
+.trainer-type.free {
+    background: linear-gradient(135deg, rgba(0, 255, 0, 0.3), rgba(34, 139, 34, 0.4));
+    color: #00FF00;
+    border-color: rgba(0, 255, 0, 0.6);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+}
+
+.trainer-type.donate {
+    background: linear-gradient(135deg, rgba(255, 107, 0, 0.3), rgba(139, 0, 255, 0.4));
+    color: #FF6B00;
+    border-color: rgba(255, 107, 0, 0.6);
+    box-shadow: 0 0 15px rgba(255, 107, 0, 0.4);
+}
+
+/* === BOOST SECTIONS === */
+.boost-section {
+    margin-bottom: 25px;
+    background: linear-gradient(135deg, var(--bg-dark-primary), var(--bg-dark-secondary));
+    border-radius: 15px;
+    padding: 20px;
+    border: 2px solid rgba(139, 0, 255, 0.4);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), var(--shadow-glow-purple);
+}
+
+.section-title {
+    font-family: 'Creepster', 'Orbitron', monospace;
+    font-size: 1.4em;
+    font-weight: 700;
+    color: #FF6B00;
+    margin-bottom: 15px;
+    text-align: center;
+    text-shadow: 0 0 15px rgba(255, 107, 0, 0.6), var(--shadow-text);
+    background: linear-gradient(45deg, #FF6B00, #8B00FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.boost-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.boost-multiplier {
+    font-weight: 700;
+    color: #FF6B00;
+    font-size: 1.1em;
+    background: rgba(26, 0, 51, 0.5);
+    padding: 3px 8px;
+    border-radius: 12px;
+    border: 1px solid #8B00FF;
+    text-shadow: 0 0 10px rgba(255, 107, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 0 12px rgba(139, 0, 255, 0.2);
+}
+
+.boost-separator {
+    grid-column: 1 / -1;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #FF6B00, #8B00FF, transparent);
+    margin: 10px 0;
+    border-radius: 2px;
+    box-shadow: 0 1px 8px rgba(139, 0, 255, 0.4);
+}
+
+/* === SHINY STATS GRID === */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-bottom: 30px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, rgba(139, 0, 255, 0.3), rgba(75, 0, 130, 0.4));
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+    border: 1px solid rgba(139, 0, 255, 0.4);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(139, 0, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-row::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 107, 0, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.stat-row:hover::before {
+    left: 100%;
+}
+
+.stat-row:hover {
+    background: linear-gradient(135deg, rgba(255, 107, 0, 0.3), rgba(139, 0, 255, 0.4));
+    border-left-color: #FF6B00;
+    border-color: rgba(255, 107, 0, 0.6);
+    transform: translateX(5px);
+    box-shadow: 0 6px 20px rgba(255, 107, 0, 0.4), 0 0 25px rgba(139, 0, 255, 0.3);
+}
+
+.stat-row:nth-child(odd) { 
+    background: linear-gradient(135deg, rgba(75, 0, 130, 0.3), rgba(51, 0, 102, 0.4));
+}
+
+.stat-row:nth-child(odd):hover {
+    background: linear-gradient(135deg, rgba(255, 69, 0, 0.3), rgba(75, 0, 130, 0.4));
+    border-left-color: #FF4500;
+    border-color: rgba(255, 69, 0, 0.6);
+}
+
+.left-value { 
+    font-weight: 700; 
+    color: #FF6B00;
+    text-shadow: 0 0 15px rgba(255, 107, 0, 0.6), var(--shadow-text);
+    font-family: 'Orbitron', monospace;
+    position: relative;
+    z-index: 1;
+}
+
+.right-value { 
+    font-weight: 500; 
+    color: var(--text-primary);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    position: relative;
+    z-index: 1;
+}
+
+/* === PLACEHOLDER STYLES === */
+.aura-photo-placeholder,
+.charm-image-container.error,
+.potion-image.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FF4500;
+    font-size: 0.7em;
+    font-weight: 600;
+    text-align: center;
+    background: rgba(139, 0, 255, 0.4);
+    border-color: #DC143C;
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes floatGhost {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(5deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* === MOBILE АДАПТАЦІЯ === */
+@media (max-width: 768px) {
+    .aura-page,
+    .boosts-page,
+    .charms-page,
+    .codes-page,
+    .potions-page,
+    .secret-page,
+    .shiny-page,
+    .trainer-page,
+    .worlds-page {
+        padding: 15px;
+    }
+    
+    .aura-page .title,
+    .boosts-page .title,
+    .charms-page .title,
+    .codes-page .title,
+    .potions-page .title,
+    .secret-page .title,
+    .shiny-page .title,
+    .trainer-page .title,
+    .worlds-page .title {
+        font-size: 2em;
+        margin-bottom: 25px;
+    }
+    
+    .aura-container,
+    .boosts-container,
+    .charms-container,
+    .codes-container,
+    .potions-container,
+    .secret-container,
+    .trainer-container,
+    .worlds-container {
+        max-height: 400px;
+    }
+    
+    .aura-item,
+    .boost-item,
+    .charm-item,
+    .code-item,
+    .potion-item,
+    .secret-pet-item,
+    .trainer-item,
+    .world-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+        padding: 14px 18px;
+    }
+    
+    .aura-photo {
+        width: 100px;
+        height: 75px;
+    }
+    
+    .charm-image-container {
+        width: 120px;
+        height: 90px;
+        align-self: center;
+    }
+    
+    .boost-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        max-height: 350px;
+    }
+}
+
+@media (max-width: 480px) {
+    .aura-page,
+    .boosts-page,
+    .charms-page,
+    .codes-page,
+    .potions-page,
+    .secret-page,
+    .shiny-page,
+    .trainer-page,
+    .worlds-page {
+        padding: 12px;
+    }
+    
+    .aura-page .title,
+    .boosts-page .title,
+    .charms-page .title,
+    .codes-page .title,
+    .potions-page .title,
+    .secret-page .title,
+    .shiny-page .title,
+    .trainer-page .title,
+    .worlds-page .title {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+    
+    .aura-container,
+    .boosts-container,
+    .charms-container,
+    .codes-container,
+    .potions-container,
+    .secret-container,
+    .trainer-container,
+    .worlds-container {
+        max-height: 350px;
+        padding-right: 5px;
+    }
+    
+    .aura-item,
+    .boost-item,
+    .charm-item,
+    .code-item,
+    .potion-item,
+    .secret-pet-item,
+    .trainer-item,
+    .world-item {
+        padding: 12px 16px;
+        margin-bottom: 10px;
+    }
+    
+    .aura-item:hover,
+    .boost-item:hover,
+    .charm-item:hover,
+    .code-item:hover,
+    .potion-item:hover,
+    .secret-pet-item:hover,
+    .trainer-item:hover,
+    .world-item:hover {
+        transform: translateY(-2px);
+    }
+    
+    .aura-photo {
+        width: 80px;
+        height: 60px;
+    }
+    
+    .charm-image-container {
+        width: 100px;
+        height: 75px;
+    }
+    
+    .aura-name,
+    .boost-name,
+    .charm-title,
+    .code-name,
+    .potion-name,
+    .secret-pet-name,
+    .trainer-name,
+    .world-title {
+        font-size: 1em;
+    }
+    
+    .aura-description,
+    .boost-description,
+    .charm-description,
+    .code-description,
+    .potion-boost,
+    .secret-pet-boosts,
+    .trainer-description,
+    .world-description {
+        font-size: 0.85em;
+    }
+    
+    .boost-section {
+        padding: 15px;
+    }
+    
+    .stat-row {
+        padding: 10px 14px;
+    }
+    
+    .stat-row:hover {
+        transform: translateY(-2px);
+    }
+}
