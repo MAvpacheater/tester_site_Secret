@@ -5,24 +5,25 @@ class AWSModuleLoader {
         this.loadedModules = new Set();
         this.loadingModules = new Map();
         this.sharedStylesLoaded = false;
+        this.infoSharedStylesLoaded = false;
         this.moduleConfigs = {
-            // Калькулятори
-            calculator: { path: 'calc/calculator.js', css: 'calc/calculator.css' },
-            arm: { path: 'calc/arm.js' }, // Немає CSS - все в shared
-            grind: { path: 'calc/grind.js', css: 'calc/grind.css' },
-            roulette: { path: 'calc/roulette.js' }, // Немає CSS - все в shared
-            boss: { path: 'calc/boss.js', css: 'calc/boss.css' },
+            // Калькулятори - БЕЗ власних CSS (все в shared)
+            calculator: { path: 'calc/calculator.js', css: 'calc/calculator.css' }, // має унікальні стилі
+            arm: { path: 'calc/arm.js' },
+            grind: { path: 'calc/grind.js', css: 'calc/grind.css' }, // має унікальні стилі
+            roulette: { path: 'calc/roulette.js' },
+            boss: { path: 'calc/boss.js', css: 'calc/boss.css' }, // має унікальні стилі
             
-            // Інформація
-            boosts: { path: 'info/boosts.js', css: 'info/boosts.css' },
-            shiny: { path: 'info/shiny.js', css: 'info/shiny.css' },
-            secret: { path: 'info/secret.js', css: 'info/secret.css' },
-            codes: { path: 'info/codes.js', css: 'info/codes.css' },
-            aura: { path: 'info/aura.js', css: 'info/aura.css' },
-            trainer: { path: 'info/trainer.js', css: 'info/trainer.css' },
-            charms: { path: 'info/charms.js', css: 'info/charms.css' },
-            potions: { path: 'info/potions.js', css: 'info/potions.css' },
-            worlds: { path: 'info/worlds.js', css: 'info/worlds.css' },
+            // Інформація - БЕЗ власних CSS (все в shared)
+            boosts: { path: 'info/boosts.js' },
+            shiny: { path: 'info/shiny.js' },
+            secret: { path: 'info/secret.js', css: 'info/secret.css' }, // має унікальні стилі
+            codes: { path: 'info/codes.js', css: 'info/codes.css' }, // має унікальні стилі
+            aura: { path: 'info/aura.js' },
+            trainer: { path: 'info/trainer.js', css: 'info/trainer.css' }, // має унікальні стилі
+            charms: { path: 'info/charms.js' },
+            potions: { path: 'info/potions.js', css: 'info/potions.css' }, // має унікальні стилі
+            worlds: { path: 'info/worlds.js' },
             
             // Інше (AWS)
             trader: { path: 'other/sell.js', css: 'other/sell.css' },
@@ -60,16 +61,33 @@ class AWSModuleLoader {
     async loadSharedStyles() {
         if (this.sharedStylesLoaded) return true;
         
-        console.log('🎨 Loading shared AWS styles...');
-        await this.loadCSS(this.basePath + 'system/shared-styles.css');
+        console.log('🎨 Loading shared CALC styles...');
+        await this.loadCSS(this.basePath + 'calc/shared-styles.css');
         this.sharedStylesLoaded = true;
-        console.log('✅ Shared AWS styles loaded');
+        console.log('✅ Shared CALC styles loaded');
+        return true;
+    }
+
+    async loadInfoSharedStyles() {
+        if (this.infoSharedStylesLoaded) return true;
+        
+        console.log('🎨 Loading shared INFO styles...');
+        await this.loadCSS(this.basePath + 'info/info-shared-styles.css');
+        this.infoSharedStylesLoaded = true;
+        console.log('✅ Shared INFO styles loaded');
         return true;
     }
 
     async loadModule(moduleName) {
         // Завантажити спільні стилі першими
-        await this.loadSharedStyles();
+        const calcModules = ['calculator', 'arm', 'grind', 'roulette', 'boss'];
+        const infoModules = ['boosts', 'shiny', 'secret', 'codes', 'aura', 'trainer', 'charms', 'potions', 'worlds'];
+        
+        if (calcModules.includes(moduleName)) {
+            await this.loadSharedStyles();
+        } else if (infoModules.includes(moduleName)) {
+            await this.loadInfoSharedStyles();
+        }
 
         if (this.loadedModules.has(moduleName)) {
             return true;
@@ -150,14 +168,16 @@ class AWSModuleLoader {
     async preloadCriticalModules() {
         console.log('📦 Preloading critical AWS resources...');
         
-        // 1. Спочатку завантажити спільні стилі
+        // 1. Спочатку завантажити спільні стилі для калькуляторів
         await this.loadSharedStyles();
         
-        // 2. Потім критичні модулі
-        const critical = ['calculator', 'arm', 'grind'];
+        // 2. Потім спільні стилі для інфо
+        await this.loadInfoSharedStyles();
         
+        // 3. Потім критичні модулі calc
+        const criticalCalc = ['calculator', 'arm', 'grind'];
         await Promise.all(
-            critical.map(name => {
+            criticalCalc.map(name => {
                 const config = this.moduleConfigs[name];
                 // Завантажити тільки унікальний CSS якщо є
                 return config?.css ? this.loadCSS(this.basePath + config.css) : Promise.resolve();
