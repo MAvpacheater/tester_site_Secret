@@ -1,35 +1,9 @@
-/* Improved Potions & Food Page - Halloween Theme */
+/* ========================================
+   POTIONS PAGE - UNIQUE STYLES ONLY
+   Тільки унікальні стилі (спільні в info-shared-styles.css)
+   ======================================== */
 
-.potions-page {
-    display: none;
-    padding: 20px;
-    min-height: 100vh;
-    background: linear-gradient(135deg, 
-        rgba(26, 0, 51, 0.95) 0%, 
-        rgba(51, 0, 102, 0.9) 50%, 
-        rgba(75, 0, 130, 0.95) 100%);
-}
-
-.potions-page.active {
-    display: block !important;
-}
-
-.potions-page .title {
-    color: #FF6B00;
-    font-size: 2.8em;
-    font-weight: 700;
-    margin-bottom: 30px;
-    text-align: center;
-    text-shadow: 0 0 25px rgba(255, 107, 0, 0.8), 3px 3px 6px rgba(0, 0, 0, 0.9);
-    background: linear-gradient(135deg, #FF6B00, #8B00FF, #FF4500);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-family: 'Creepster', 'Orbitron', monospace;
-    letter-spacing: 2px;
-}
-
-/* Type Switcher - Halloween Style */
+/* === TYPE SWITCHER (унікальні) === */
 .potions-switcher {
     display: flex;
     justify-content: center;
@@ -86,7 +60,7 @@
     font-weight: 700;
 }
 
-/* Rarity Filter - Halloween Style */
+/* === RARITY FILTER (унікальні) === */
 .rarity-filter-controls {
     display: flex;
     justify-content: center;
@@ -120,7 +94,7 @@
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
 }
 
-/* Rarity colors - Halloween themed */
+/* Rarity filter colors */
 .rarity-filter-btn.common {
     background: linear-gradient(135deg, #8B00FF, #4B0082);
     border-color: #8B00FF;
@@ -180,29 +154,7 @@
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* Container */
-.potions-container {
-    max-height: 650px;
-    overflow-y: auto;
-    padding-right: 10px;
-    scroll-behavior: smooth;
-}
-
-.potions-container::-webkit-scrollbar { 
-    width: 8px; 
-}
-
-.potions-container::-webkit-scrollbar-track { 
-    background: rgba(26, 0, 51, 0.3); 
-    border-radius: 10px; 
-}
-
-.potions-container::-webkit-scrollbar-thumb { 
-    background: linear-gradient(135deg, #FF6B00, #8B00FF); 
-    border-radius: 10px;
-}
-
-/* Sections */
+/* === SECTIONS (унікальні) === */
 .potions-section {
     display: none;
     opacity: 0;
@@ -216,78 +168,16 @@
     transform: translateY(0);
 }
 
-/* Items - Halloween Design */
-.potion-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px 20px;
-    margin-bottom: 10px;
-    background: linear-gradient(135deg, 
-        rgba(139, 0, 255, 0.2) 0%, 
-        rgba(75, 0, 130, 0.3) 50%,
-        rgba(139, 0, 255, 0.15) 100%);
-    border-radius: 15px;
-    border: 1px solid rgba(139, 0, 255, 0.5);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: 'Roboto', sans-serif;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1),
-                0 0 20px rgba(139, 0, 255, 0.2);
-    position: relative;
-    overflow: hidden;
-    opacity: 0;
-    animation: fadeInUp 0.6s ease forwards;
-    min-height: 80px;
-    backdrop-filter: blur(8px);
-}
-
+/* === POTION SPECIFIC === */
 .potion-item.hidden {
     display: none !important;
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.potion-item:hover {
-    background: linear-gradient(135deg, 
-        rgba(255, 107, 0, 0.3) 0%, 
-        rgba(139, 0, 255, 0.4) 50%,
-        rgba(255, 107, 0, 0.2) 100%);
-    border-color: #FF6B00;
-    transform: translateX(5px) translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 107, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2),
-                0 0 30px rgba(139, 0, 255, 0.3);
-}
-
-/* Image - Halloween style */
 .potion-image {
     width: 70px;
     height: 70px;
     object-fit: cover;
-    border-radius: 12px;
-    border: 2px solid rgba(139, 0, 255, 0.6);
-    background: linear-gradient(135deg, 
-        rgba(139, 0, 255, 0.3), 
-        rgba(75, 0, 130, 0.4));
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(139, 0, 255, 0.3);
-}
-
-.potion-image:hover {
-    transform: scale(1.05);
-    border-color: #FF6B00;
-    box-shadow: 0 5px 15px rgba(255, 107, 0, 0.5), 0 0 20px rgba(139, 0, 255, 0.4);
 }
 
 .potion-image.loading {
@@ -304,138 +194,12 @@
     100% { background-position: 200% 0; }
 }
 
-.potion-image.error {
-    background: rgba(139, 0, 255, 0.4);
-    border-color: #DC143C;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #FF4500;
-    font-size: 0.7em;
-    font-weight: 600;
-    text-align: center;
-}
-
-/* Content */
-.potion-main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-height: 70px;
-    justify-content: center;
-    padding-right: 10px;
-}
-
-.potion-name {
-    font-weight: 700;
-    color: #FF6B00;
-    font-size: 1.1em;
-    font-family: 'Orbitron', monospace;
-    margin-bottom: 4px;
-    text-shadow: 0 0 15px rgba(255, 107, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.9);
-    letter-spacing: 0.5px;
-    background: linear-gradient(135deg, #FF6B00, #8B00FF);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1.2;
-    word-wrap: break-word;
-    hyphens: auto;
-}
-
-.potion-boost {
-    color: #E6E6FA;
-    font-size: 0.9em;
-    line-height: 1.4;
-    font-weight: 500;
-    opacity: 0.95;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
-    font-family: 'Roboto', sans-serif;
-    word-wrap: break-word;
-    hyphens: auto;
-}
-
-/* Meta */
 .potion-meta {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 8px;
     min-width: 100px;
-}
-
-.potion-rarity {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.75em;
-    font-weight: 700;
-    text-transform: uppercase;
-    text-align: center;
-    min-width: 80px;
-    letter-spacing: 0.5px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
-    border: 1px solid transparent;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
-}
-
-/* Rarity colors - Halloween themed */
-.potion-rarity.common {
-    background: linear-gradient(135deg, #8B00FF, #4B0082);
-    color: white;
-    border-color: #8B00FF;
-    box-shadow: 0 1px 5px rgba(139, 0, 255, 0.5), 0 0 10px rgba(139, 0, 255, 0.3);
-}
-
-.potion-rarity.uncommon {
-    background: linear-gradient(135deg, #00FF00, #32CD32);
-    color: white;
-    border-color: #00FF00;
-    box-shadow: 0 1px 5px rgba(0, 255, 0, 0.5), 0 0 10px rgba(0, 255, 0, 0.3);
-}
-
-.potion-rarity.rare {
-    background: linear-gradient(135deg, #FF6B00, #FF4500);
-    color: white;
-    border-color: #FF6B00;
-    box-shadow: 0 1px 5px rgba(255, 107, 0, 0.5), 0 0 10px rgba(255, 107, 0, 0.3);
-}
-
-.potion-rarity.epic {
-    background: linear-gradient(135deg, #DC143C, #8B0000);
-    color: white;
-    border-color: #DC143C;
-    box-shadow: 0 1px 5px rgba(220, 20, 60, 0.5), 0 0 10px rgba(220, 20, 60, 0.3);
-}
-
-.potion-rarity.legendary {
-    background: linear-gradient(135deg, #FF6B00, #8B00FF);
-    color: white;
-    border-color: #FF6B00;
-    box-shadow: 0 1px 8px rgba(255, 107, 0, 0.6), 0 0 15px rgba(139, 0, 255, 0.4);
-}
-
-.potion-rarity.mythic {
-    background: linear-gradient(135deg, #9400D3, #4B0082);
-    color: white;
-    border-color: #9400D3;
-    box-shadow: 0 1px 10px rgba(148, 0, 211, 0.7), 0 0 18px rgba(148, 0, 211, 0.4);
-}
-
-.potion-rarity.limited {
-    background: linear-gradient(135deg, #FF00FF, #FF1493);
-    color: white;
-    border-color: #FF00FF;
-    box-shadow: 0 1px 8px rgba(255, 0, 255, 0.5), 0 0 15px rgba(255, 0, 255, 0.3);
-}
-
-.potion-rarity.exclusive {
-    background: linear-gradient(135deg, #00CED1, #20B2AA);
-    color: white;
-    border-color: #00CED1;
-    box-shadow: 0 1px 8px rgba(0, 206, 209, 0.5), 0 0 15px rgba(0, 206, 209, 0.3);
 }
 
 .potion-time {
@@ -456,7 +220,7 @@
     min-width: 60px;
 }
 
-/* Notifications */
+/* === NOTIFICATIONS (унікальні) === */
 .potions-notification {
     position: fixed;
     top: 20px;
@@ -488,17 +252,8 @@
     box-shadow: 0 0 25px rgba(139, 0, 255, 0.4);
 }
 
-/* Mobile Responsiveness */
+/* === MOBILE АДАПТАЦІЯ === */
 @media (max-width: 768px) {
-    .potions-page {
-        padding: 15px;
-    }
-    
-    .potions-page .title {
-        font-size: 2em;
-        margin-bottom: 20px;
-    }
-    
     .potions-switcher {
         flex-direction: column;
         gap: 6px;
@@ -533,10 +288,6 @@
         min-height: auto;
     }
     
-    .potion-item:hover {
-        transform: translateY(-2px);
-    }
-    
     .potion-image {
         width: 80px;
         height: 80px;
@@ -550,14 +301,6 @@
         padding-right: 0;
     }
     
-    .potion-name {
-        font-size: 1em;
-    }
-    
-    .potion-boost {
-        font-size: 0.85em;
-    }
-    
     .potion-meta {
         flex-direction: row;
         justify-content: center;
@@ -566,19 +309,9 @@
         min-width: auto;
         gap: 10px;
     }
-    
-    .potions-container {
-        max-height: 500px;
-        padding-right: 5px;
-    }
 }
 
 @media (max-width: 480px) {
-    .potions-page .title {
-        font-size: 1.6em;
-        letter-spacing: 1px;
-    }
-    
     .potions-switch-btn {
         font-size: 0.85em;
         padding: 8px 12px;
@@ -600,20 +333,6 @@
         height: 70px;
     }
     
-    .potion-name {
-        font-size: 0.95em;
-    }
-    
-    .potion-boost {
-        font-size: 0.8em;
-    }
-    
-    .potion-rarity {
-        padding: 3px 8px;
-        font-size: 0.7em;
-        min-width: 70px;
-    }
-    
     .potion-time {
         padding: 3px 8px;
         font-size: 0.7em;
@@ -630,35 +349,5 @@
     
     .potions-notification.show {
         transform: translateY(0);
-    }
-}
-
-/* Extra small screens */
-@media (max-width: 360px) {
-    .potions-page {
-        padding: 10px;
-    }
-    
-    .potion-item {
-        padding: 10px;
-    }
-    
-    .potion-image {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .potion-name {
-        font-size: 0.9em;
-    }
-    
-    .potion-boost {
-        font-size: 0.75em;
-    }
-    
-    .potion-rarity,
-    .potion-time {
-        font-size: 0.65em;
-        padding: 2px 6px;
     }
 }
