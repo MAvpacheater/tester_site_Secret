@@ -1,18 +1,70 @@
 /* ========================================
-   MODERN CALCULATOR SHARED STYLES
-   Universal Styles for All Calculators
+   SHARED CALCULATOR STYLES - MODERN PROFESSIONAL
+   Оновлені стилі з сучасним дизайном
    ======================================== */
 
-/* === BASE CALCULATOR PAGES === */
+/* === БАЗОВІ ЗМІННІ === */
+:root {
+    /* Halloween Theme Colors */
+    --color-primary-halloween: #FF6B00;
+    --color-primary-light-halloween: #FF8C00;
+    --color-primary-bright-halloween: #FFA500;
+    --color-secondary-halloween: #8B008B;
+    --color-secondary-dark-halloween: #4B0082;
+    
+    /* Cyan Theme Colors (Modern) */
+    --color-primary: #00D9FF;
+    --color-primary-light: #00F5FF;
+    --color-primary-bright: #00FFFF;
+    --color-secondary: #0096C7;
+    --color-secondary-dark: #0077B6;
+    
+    /* Neutral Colors */
+    --color-background: #0a0e1a;
+    --color-surface: rgba(10, 20, 40, 0.95);
+    --color-text-primary: #E0F7FF;
+    --color-text-secondary: rgba(224, 247, 255, 0.7);
+    --color-error: #FF6B6B;
+    
+    /* Border Radius */
+    --border-radius-sm: 8px;
+    --border-radius-md: 16px;
+    --border-radius-lg: 20px;
+    --border-radius-xl: 24px;
+    --border-radius-full: 9999px;
+    
+    /* Spacing */
+    --spacing-xs: 6px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* Transitions */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 217, 255, 0.1);
+    --shadow-md: 0 4px 16px rgba(0, 217, 255, 0.2);
+    --shadow-lg: 0 8px 32px rgba(0, 217, 255, 0.3);
+    --shadow-xl: 0 16px 48px rgba(0, 217, 255, 0.4);
+    
+    /* Glassmorphism */
+    --glass-bg: rgba(10, 30, 60, 0.7);
+    --glass-border: rgba(0, 217, 255, 0.2);
+    --glass-blur: 16px;
+}
+
+/* === ЗАГАЛЬНІ СТИЛІ СТОРІНОК === */
 .arm-page,
 .boss-page,
 .calculator-page,
 .grind-page,
 .roulette-page {
     display: none !important;
-    padding: var(--space-lg);
-    max-width: 800px;
-    margin: 0 auto;
+    padding: var(--spacing-lg);
 }
 
 .arm-page.active,
@@ -21,62 +73,34 @@
 .grind-page.active,
 .roulette-page.active {
     display: block !important;
-    animation: fadeInPage var(--transition-base);
+    animation: fadeIn var(--transition-normal);
 }
 
-@keyframes fadeInPage {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* === PAGE HEADERS === */
+/* === ЗАГОЛОВКИ === */
 .arm-page h1,
 .boss-page h1,
 .calculator-page h1,
 .grind-page h1,
 .roulette-page h1 {
-    font-family: var(--font-display);
-    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-xl);
+    font-size: clamp(2em, 6vw, 2.5em);
     font-weight: 800;
-    text-align: center;
-    margin: 0 0 var(--space-2xl);
+    text-shadow: 0 0 30px rgba(0, 217, 255, 0.5),
+                 0 0 60px rgba(0, 217, 255, 0.3);
+    font-family: 'Orbitron', 'Arial Black', sans-serif;
     background: linear-gradient(135deg, 
-                var(--color-accent-primary), 
-                var(--color-accent-secondary));
+                var(--color-primary), 
+                var(--color-primary-light), 
+                var(--color-primary-bright));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    letter-spacing: -0.025em;
-    position: relative;
-    padding-bottom: var(--space-md);
+    letter-spacing: -0.02em;
+    text-align: center;
 }
 
-.arm-page h1::after,
-.boss-page h1::after,
-.calculator-page h1::after,
-.grind-page h1::after,
-.roulette-page h1::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(90deg, 
-                transparent, 
-                var(--color-accent-primary), 
-                transparent);
-    border-radius: var(--radius-full);
-}
-
-/* === HEADER CONTROLS === */
+/* === КОНТЕЙНЕР ХЕДЕРА === */
 .arm-page .header-controls,
 .boss-page .header-controls,
 .calculator-page .header-controls,
@@ -85,98 +109,109 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: var(--space-md);
-    margin-bottom: var(--space-2xl);
+    margin-bottom: var(--spacing-xl);
+    gap: var(--spacing-md);
 }
 
-/* === SETTINGS BUTTON === */
+/* === КНОПКА НАЛАШТУВАНЬ === */
 .arm-page .settings-btn,
 .calculator-page .settings-btn,
 .grind-page .settings-btn {
-    padding: var(--space-sm) var(--space-lg);
     background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-full);
-    color: var(--color-accent-primary);
-    font-size: 0.875rem;
-    font-weight: 600;
+    border: 2px solid var(--glass-border);
+    color: var(--color-primary);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius-full);
     cursor: pointer;
-    transition: all var(--transition-base);
-    backdrop-filter: blur(12px);
+    font-size: 1em;
+    font-weight: 600;
+    transition: all var(--transition-normal);
+    text-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+    backdrop-filter: blur(var(--glass-blur));
     box-shadow: var(--shadow-sm);
     display: flex;
     align-items: center;
-    gap: var(--space-sm);
+    gap: var(--spacing-xs);
 }
 
 .arm-page .settings-btn:hover,
 .calculator-page .settings-btn:hover,
 .grind-page .settings-btn:hover {
-    background: rgba(0, 217, 255, 0.08);
-    border-color: rgba(0, 217, 255, 0.3);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md), var(--shadow-glow);
+    background: linear-gradient(135deg, 
+                var(--color-primary), 
+                var(--color-primary-light));
+    color: var(--color-background);
+    border-color: var(--color-primary);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--shadow-lg);
+    text-shadow: none;
 }
 
-.arm-page .settings-btn:active,
-.calculator-page .settings-btn:active,
-.grind-page .settings-btn:active {
-    transform: translateY(0);
-}
-
-/* === SETTINGS PANEL === */
+/* === ПАНЕЛЬ НАЛАШТУВАНЬ === */
 .arm-page .settings-panel,
 .calculator-page .settings-panel,
 .grind-page .settings-panel {
     display: none;
     background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-2xl);
-    padding: var(--space-xl);
-    margin-bottom: var(--space-2xl);
-    backdrop-filter: blur(16px);
-    box-shadow: var(--shadow-xl);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    backdrop-filter: blur(var(--glass-blur));
+    box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.arm-page .settings-panel::before,
+.calculator-page .settings-panel::before,
+.grind-page .settings-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, 
+                rgba(0, 217, 255, 0.1) 0%, 
+                transparent 50%);
+    pointer-events: none;
+}
+
+.arm-page .settings-panel > *,
+.calculator-page .settings-panel > *,
+.grind-page .settings-panel > * {
+    position: relative;
+    z-index: 1;
 }
 
 .arm-page .settings-panel.show,
 .calculator-page .settings-panel.show,
 .grind-page .settings-panel.show {
     display: block;
-    animation: slideDown var(--transition-base);
+    animation: slideDown var(--transition-normal);
 }
 
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-16px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
+/* === ЗАГОЛОВОК НАЛАШТУВАНЬ === */
 .arm-page .settings-title,
 .calculator-page .settings-title,
 .grind-page .settings-title {
-    font-family: var(--font-display);
-    font-size: 1.25rem;
+    color: var(--color-primary);
+    font-size: 1.5em;
     font-weight: 700;
-    color: var(--color-accent-primary);
+    margin-bottom: var(--spacing-lg);
     text-align: center;
-    margin-bottom: var(--space-xl);
+    text-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+    font-family: 'Orbitron', Arial, sans-serif;
     letter-spacing: -0.01em;
 }
 
-/* === TOGGLE CONTROLS === */
+/* === ПЕРЕМИКАЧІ === */
 .arm-page .simple-toggle,
 .calculator-page .simple-toggle,
 .grind-page .simple-toggle {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--space-md) 0;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .arm-page .simple-toggle:last-child,
@@ -190,35 +225,36 @@
 .grind-page .toggle-info {
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs);
+    gap: 4px;
 }
 
 .arm-page .toggle-label,
 .calculator-page .toggle-label,
 .grind-page .toggle-label {
-    font-size: 0.9375rem;
-    font-weight: 600;
     color: var(--color-text-primary);
-    line-height: 1.4;
+    font-size: 1.05em;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .arm-page .toggle-multiplier,
 .calculator-page .toggle-multiplier,
 .grind-page .toggle-multiplier {
-    font-size: 0.8125rem;
+    color: var(--color-primary);
+    font-size: 0.9em;
     font-weight: 500;
-    color: var(--color-accent-primary);
+    text-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
 }
 
-/* === SWITCH COMPONENT === */
+/* === SWITCH КОМПОНЕНТИ === */
 .arm-page .switch,
 .calculator-page .switch,
 .grind-page .switch,
 .boss-page .switch {
     position: relative;
-    width: 48px;
-    height: 26px;
-    flex-shrink: 0;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
 }
 
 .arm-page .switch input,
@@ -235,28 +271,29 @@
 .grind-page .slider,
 .boss-page .slider {
     position: absolute;
-    inset: 0;
-    background: rgba(31, 41, 55, 0.8);
-    border: 1px solid rgba(148, 163, 184, 0.15);
-    border-radius: var(--radius-full);
     cursor: pointer;
-    transition: all var(--transition-base);
+    inset: 0;
+    background: rgba(20, 40, 80, 0.6);
+    transition: all var(--transition-normal);
+    border-radius: var(--border-radius-full);
+    border: 2px solid var(--glass-border);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.arm-page .slider::before,
-.calculator-page .slider::before,
-.grind-page .slider::before,
-.boss-page .slider::before {
-    content: '';
+.arm-page .slider:before,
+.calculator-page .slider:before,
+.grind-page .slider:before,
+.boss-page .slider:before {
     position: absolute;
+    content: "";
     height: 20px;
     width: 20px;
     left: 3px;
-    bottom: 2px;
-    background: linear-gradient(135deg, #F3F4F6, #E5E7EB);
+    bottom: 3px;
+    background: linear-gradient(135deg, #1a2a4a, #2a3a5a);
+    transition: all var(--transition-normal);
     border-radius: 50%;
-    transition: all var(--transition-base);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .arm-page input:checked + .slider,
@@ -264,28 +301,29 @@
 .grind-page input:checked + .slider,
 .boss-page input:checked + .slider {
     background: linear-gradient(135deg, 
-                rgba(0, 217, 255, 0.8), 
-                rgba(0, 150, 255, 0.9));
-    border-color: var(--color-accent-primary);
-    box-shadow: 0 0 16px rgba(0, 217, 255, 0.4);
+                var(--color-primary), 
+                var(--color-primary-light));
+    border-color: var(--color-primary);
+    box-shadow: 0 0 16px rgba(0, 217, 255, 0.6), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-.arm-page input:checked + .slider::before,
-.calculator-page input:checked + .slider::before,
-.grind-page input:checked + .slider::before,
-.boss-page input:checked + .slider::before {
-    transform: translateX(22px);
-    background: linear-gradient(135deg, #FFFFFF, #F0F9FF);
-    box-shadow: 0 2px 8px rgba(0, 217, 255, 0.5);
+.arm-page input:checked + .slider:before,
+.calculator-page input:checked + .slider:before,
+.grind-page input:checked + .slider:before,
+.boss-page input:checked + .slider:before {
+    transform: translateX(24px);
+    background: linear-gradient(135deg, #ffffff, #e0f7ff);
+    box-shadow: 0 3px 8px rgba(0, 217, 255, 0.6);
 }
 
-/* === INPUT SECTION === */
+/* === СЕКЦІЯ ВВОДУ === */
 .arm-page .input-section,
 .boss-page .input-section,
 .calculator-page .input-section,
 .grind-page .input-section,
 .roulette-page .input-section {
-    margin-bottom: var(--space-2xl);
+    margin-bottom: var(--spacing-xl);
 }
 
 .arm-page .input-label,
@@ -294,41 +332,32 @@
 .grind-page .input-label,
 .roulette-page .input-label {
     display: block;
-    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+    font-size: 1.05em;
+    margin-bottom: var(--spacing-sm);
     font-weight: 600;
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-sm);
-    letter-spacing: 0.01em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.arm-page .input-label:first-of-type,
-.boss-page .input-label:first-of-type,
-.calculator-page .input-label:first-of-type,
-.grind-page .input-label:first-of-type,
-.roulette-page .input-label:first-of-type {
-    margin-top: 0;
-}
-
-/* === NUMBER INPUTS === */
+/* === ПОЛЯ ВВОДУ === */
 .arm-page .number-input,
 .boss-page .number-input,
 .calculator-page .number-input,
 .grind-page .number-input,
 .roulette-page .number-input {
     width: 100%;
-    padding: var(--space-md) var(--space-lg);
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--color-text-primary);
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1.15em;
+    border: 2px solid var(--glass-border);
+    border-radius: var(--border-radius-md);
     outline: none;
-    transition: all var(--transition-base);
-    backdrop-filter: blur(12px);
-    box-shadow: var(--shadow-sm);
-    font-variant-numeric: tabular-nums;
+    transition: all var(--transition-normal);
+    background: var(--glass-bg);
+    color: var(--color-text-primary);
+    font-weight: 600;
+    backdrop-filter: blur(var(--glass-blur));
     box-sizing: border-box;
+    box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .arm-page .number-input::placeholder,
@@ -336,16 +365,7 @@
 .calculator-page .number-input::placeholder,
 .grind-page .number-input::placeholder,
 .roulette-page .number-input::placeholder {
-    color: var(--color-text-muted);
-}
-
-.arm-page .number-input:hover,
-.boss-page .number-input:hover,
-.calculator-page .number-input:hover,
-.grind-page .number-input:hover,
-.roulette-page .number-input:hover {
-    border-color: rgba(0, 217, 255, 0.2);
-    background: rgba(15, 20, 25, 0.95);
+    color: var(--color-text-secondary);
 }
 
 .arm-page .number-input:focus,
@@ -353,35 +373,38 @@
 .calculator-page .number-input:focus,
 .grind-page .number-input:focus,
 .roulette-page .number-input:focus {
-    border-color: var(--color-accent-primary);
-    background: var(--color-bg-secondary);
-    box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.15), var(--shadow-md);
-    transform: translateY(-1px);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.2), 
+                var(--shadow-lg);
+    transform: translateY(-2px);
+    background: rgba(0, 217, 255, 0.05);
 }
 
-/* === CALCULATE BUTTON === */
+/* === КНОПКА РОЗРАХУНКУ === */
 .arm-page .calculate-btn,
 .boss-page .calculate-btn,
 .calculator-page .calculate-btn,
 .grind-page .calculate-btn,
 .roulette-page .calculate-btn {
     width: 100%;
-    padding: var(--space-md) var(--space-xl);
-    margin-top: var(--space-lg);
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--color-bg-primary);
     background: linear-gradient(135deg, 
-                var(--color-accent-primary), 
-                var(--color-accent-secondary));
+                var(--color-primary) 0%, 
+                var(--color-primary-light) 100%);
+    color: var(--color-background);
     border: none;
-    border-radius: var(--radius-lg);
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1.15em;
+    border-radius: var(--border-radius-full);
     cursor: pointer;
-    transition: all var(--transition-base);
-    box-shadow: var(--shadow-md), 0 0 20px rgba(0, 217, 255, 0.25);
+    transition: all var(--transition-normal);
+    margin-top: var(--spacing-lg);
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-lg), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
     position: relative;
     overflow: hidden;
-    letter-spacing: 0.025em;
+    letter-spacing: 0.02em;
 }
 
 .arm-page .calculate-btn::before,
@@ -393,23 +416,11 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.2), 
-                transparent);
+                transparent 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                transparent 100%);
     transform: translateX(-100%);
-    transition: transform 0.6s;
-}
-
-.arm-page .calculate-btn:hover,
-.boss-page .calculate-btn:hover,
-.calculator-page .calculate-btn:hover,
-.grind-page .calculate-btn:hover,
-.roulette-page .calculate-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg), 0 0 32px rgba(0, 217, 255, 0.5);
-    background: linear-gradient(135deg, 
-                var(--color-accent-secondary), 
-                var(--color-accent-primary));
+    transition: transform var(--transition-slow);
 }
 
 .arm-page .calculate-btn:hover::before,
@@ -420,34 +431,41 @@
     transform: translateX(100%);
 }
 
+.arm-page .calculate-btn:hover,
+.boss-page .calculate-btn:hover,
+.calculator-page .calculate-btn:hover,
+.grind-page .calculate-btn:hover,
+.roulette-page .calculate-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-xl), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
 .arm-page .calculate-btn:active,
 .boss-page .calculate-btn:active,
 .calculator-page .calculate-btn:active,
 .grind-page .calculate-btn:active,
 .roulette-page .calculate-btn:active {
-    transform: translateY(0);
-    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
 }
 
-/* === RESULT SECTION === */
+/* === СЕКЦІЯ РЕЗУЛЬТАТІВ === */
 .arm-page .result-section,
 .boss-page .result-section,
 .calculator-page .result-section,
 .grind-page .result-section,
 .roulette-page .result-section {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-xl);
+    background: var(--glass-bg);
+    border-radius: var(--border-radius-xl);
+    border: 2px solid var(--glass-border);
     display: none;
-    margin-top: var(--space-2xl);
-    padding: var(--space-2xl);
-    background: linear-gradient(135deg, 
-                rgba(15, 20, 25, 0.95), 
-                rgba(21, 27, 38, 0.9));
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-2xl);
-    backdrop-filter: blur(16px);
-    box-shadow: var(--shadow-xl);
-    text-align: center;
+    backdrop-filter: blur(var(--glass-blur));
+    box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
+    text-align: center;
 }
 
 .arm-page .result-section::before,
@@ -455,16 +473,13 @@
 .calculator-page .result-section::before,
 .grind-page .result-section::before,
 .roulette-page .result-section::before {
-    content: '';
+    content: '🎃👻';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, 
-                transparent, 
-                var(--color-accent-primary), 
-                transparent);
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    font-size: 1.5em;
+    opacity: 0.4;
+    animation: floatGhost 4s ease-in-out infinite;
 }
 
 .arm-page .result-section.show,
@@ -473,18 +488,7 @@
 .grind-page .result-section.show,
 .roulette-page .result-section.show-result {
     display: block;
-    animation: slideInResult var(--transition-slow);
-}
-
-@keyframes slideInResult {
-    from {
-        opacity: 0;
-        transform: translateY(24px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+    animation: slideIn var(--transition-slow);
 }
 
 .arm-page .stats-label,
@@ -492,12 +496,12 @@
 .calculator-page .stats-label,
 .grind-page .stats-label,
 .roulette-page .stats-label {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-md);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    color: var(--color-primary);
+    font-size: 1.2em;
+    margin-bottom: var(--spacing-md);
+    font-weight: 700;
+    text-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+    font-family: 'Orbitron', Arial, sans-serif;
 }
 
 .arm-page .result-value,
@@ -505,115 +509,97 @@
 .calculator-page .result-value,
 .grind-page .result-value,
 .roulette-page .result-value {
-    font-family: var(--font-display);
-    font-size: clamp(2rem, 8vw, 3.5rem);
+    font-size: clamp(2em, 6vw, 3em);
     font-weight: 800;
+    text-shadow: 0 0 30px rgba(0, 217, 255, 0.6);
     background: linear-gradient(135deg, 
-                var(--color-accent-primary), 
-                var(--color-accent-secondary));
+                var(--color-primary), 
+                var(--color-primary-light), 
+                var(--color-primary-bright));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    letter-spacing: -0.025em;
-    line-height: 1.2;
-    filter: drop-shadow(0 0 24px rgba(0, 217, 255, 0.4));
-    animation: pulseGlow 3s ease-in-out infinite;
+    animation: resultGlow 2s ease-in-out infinite alternate;
+    letter-spacing: -0.02em;
 }
 
-@keyframes pulseGlow {
-    0%, 100% {
-        filter: drop-shadow(0 0 20px rgba(0, 217, 255, 0.4));
-    }
-    50% {
-        filter: drop-shadow(0 0 32px rgba(0, 217, 255, 0.6));
-    }
-}
-
-/* === ERROR MESSAGES === */
+/* === ПОВІДОМЛЕННЯ ПРО ПОМИЛКИ === */
 .arm-page .error,
 .boss-page .error,
 .calculator-page .error,
 .grind-page .error,
 .roulette-page .error {
-    color: #EF4444;
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin-top: var(--space-sm);
-    padding: var(--space-sm) var(--space-md);
-    background: rgba(239, 68, 68, 0.1);
-    border-left: 3px solid #EF4444;
-    border-radius: var(--radius-sm);
-    display: none;
+    color: var(--color-error);
+    font-size: 0.95em;
+    margin-top: var(--spacing-sm);
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.arm-page .error:not(:empty),
-.boss-page .error:not(:empty),
-.calculator-page .error:not(:empty),
-.grind-page .error:not(:empty),
-.roulette-page .error:not(:empty) {
-    display: block;
+/* === АНІМАЦІЇ === */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-/* === RESPONSIVE === */
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes floatGhost {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(5deg); }
+}
+
+@keyframes resultGlow {
+    0% { filter: drop-shadow(0 0 15px rgba(0, 217, 255, 0.7)); }
+    100% { filter: drop-shadow(0 0 30px rgba(0, 217, 255, 1)); }
+}
+
+/* === АДАПТИВНІСТЬ === */
 @media (max-width: 768px) {
-    .arm-page,
-    .boss-page,
-    .calculator-page,
-    .grind-page,
-    .roulette-page {
-        padding: var(--space-md);
+    :root {
+        --spacing-xl: 24px;
+        --spacing-lg: 20px;
     }
     
     .arm-page .header-controls,
     .calculator-page .header-controls,
     .grind-page .header-controls {
         flex-direction: column;
-        align-items: stretch;
     }
     
-    .arm-page .settings-btn,
-    .calculator-page .settings-btn,
-    .grind-page .settings-btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .arm-page .settings-panel,
-    .calculator-page .settings-panel,
-    .grind-page .settings-panel {
-        padding: var(--space-lg);
-    }
-    
-    .arm-page .result-section,
-    .boss-page .result-section,
-    .calculator-page .result-section,
-    .grind-page .result-section,
-    .roulette-page .result-section {
-        padding: var(--space-xl);
+    .arm-page h1,
+    .boss-page h1,
+    .calculator-page h1,
+    .grind-page h1,
+    .roulette-page h1 {
+        font-size: 2em;
     }
 }
 
 @media (max-width: 480px) {
-    .arm-page,
-    .boss-page,
-    .calculator-page,
-    .grind-page,
-    .roulette-page {
-        padding: var(--space-sm);
+    :root {
+        --spacing-xl: 20px;
+        --spacing-lg: 16px;
     }
     
     .arm-page .settings-panel,
     .calculator-page .settings-panel,
     .grind-page .settings-panel {
-        padding: var(--space-md);
+        padding: var(--spacing-lg);
     }
     
-    .arm-page .result-section,
-    .boss-page .result-section,
-    .calculator-page .result-section,
-    .grind-page .result-section,
-    .roulette-page .result-section {
-        padding: var(--space-lg);
+    .arm-page .simple-toggle,
+    .calculator-page .simple-toggle,
+    .grind-page .simple-toggle {
+        padding: var(--spacing-sm) 0;
     }
     
     .arm-page .number-input,
@@ -621,8 +607,8 @@
     .calculator-page .number-input,
     .grind-page .number-input,
     .roulette-page .number-input {
-        font-size: 0.9375rem;
-        padding: var(--space-sm) var(--space-md);
+        font-size: 1.05em;
+        padding: var(--spacing-sm) var(--spacing-md);
     }
     
     .arm-page .calculate-btn,
@@ -630,7 +616,7 @@
     .calculator-page .calculate-btn,
     .grind-page .calculate-btn,
     .roulette-page .calculate-btn {
-        padding: var(--space-sm) var(--space-lg);
-        font-size: 0.9375rem;
+        padding: var(--spacing-sm) var(--spacing-lg);
+        font-size: 1.05em;
     }
 }
