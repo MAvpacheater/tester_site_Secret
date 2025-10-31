@@ -1,8 +1,8 @@
 /* ========== SETTINGS CORE ========== */
 .settings-container {
     width: 100%;
-    max-width: 1400px;
-    padding: 20px 30px;
+    max-width: 1600px;
+    padding: 20px 40px;
     margin: 0 auto;
     box-sizing: border-box;
 }
@@ -19,7 +19,7 @@
 .settings-section {
     background: rgba(18, 18, 18, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 24px;
     margin-bottom: 20px;
     backdrop-filter: blur(10px);
@@ -27,10 +27,12 @@
     width: 100%;
     box-sizing: border-box;
     transition: all 0.2s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .settings-section:hover {
     border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* ========== CATEGORIES ========== */
@@ -45,7 +47,7 @@
     cursor: pointer;
     transition: all 0.2s;
     padding: 12px 16px;
-    border-radius: 10px;
+    border-radius: 12px;
     background: rgba(255, 255, 255, 0.02);
 }
 
@@ -94,9 +96,9 @@
 }
 
 .language-option {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
+    background: var(--button-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--button-border, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
     padding: 16px;
     cursor: pointer;
     transition: all 0.2s;
@@ -115,11 +117,13 @@
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.12);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .language-option.active {
-    background: rgba(var(--primary-rgb, 96, 165, 250), 0.15);
+    background: rgba(96, 165, 250, 0.15);
     border-color: var(--primary-color, #60a5fa);
+    box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
 }
 
 .language-option.active::after {
@@ -163,9 +167,9 @@
 }
 
 .color-option {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
+    background: var(--button-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--button-border, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
     padding: 14px;
     cursor: pointer;
     transition: all 0.2s;
@@ -184,11 +188,13 @@
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.12);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .color-option.active {
-    background: rgba(var(--primary-rgb, 96, 165, 250), 0.15);
+    background: rgba(96, 165, 250, 0.15);
     border-color: var(--primary-color, #60a5fa);
+    box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
 }
 
 .color-option.active::after {
@@ -204,10 +210,11 @@
 .color-preview {
     width: 100%;
     height: 48px;
-    border-radius: 8px;
+    border-radius: 10px;
     margin-bottom: 10px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .color-preview-split { 
@@ -255,9 +262,9 @@
 }
 
 .background-option {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
+    background: var(--button-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--button-border, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
     padding: 16px;
     cursor: pointer;
     transition: all 0.2s;
@@ -276,11 +283,13 @@
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.12);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .background-option.active {
-    background: rgba(var(--primary-rgb, 96, 165, 250), 0.15);
+    background: rgba(96, 165, 250, 0.15);
     border-color: var(--primary-color, #60a5fa);
+    box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
 }
 
 .background-option.active::after {
@@ -308,13 +317,14 @@
 .background-preview {
     width: 100%;
     height: 60px;
-    border-radius: 8px;
+    border-radius: 10px;
     margin-top: 8px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     background-size: cover;
     background-position: center;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .background-preview::after {
@@ -322,7 +332,7 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(45deg, rgba(0, 0, 0, 0.2) 0%, transparent 50%, rgba(255, 255, 255, 0.1) 100%);
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 /* ========== MENU OPTIONS ========== */
@@ -345,9 +355,9 @@
 }
 
 .menu-option {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
+    background: var(--button-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--button-border, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
     padding: 18px 12px;
     cursor: pointer;
     transition: all 0.2s;
@@ -366,11 +376,13 @@
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.12);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .menu-option.active {
-    background: rgba(var(--primary-rgb, 96, 165, 250), 0.15);
+    background: rgba(96, 165, 250, 0.15);
     border-color: var(--primary-color, #60a5fa);
+    box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
 }
 
 .menu-option.active::after {
