@@ -4,34 +4,34 @@
 
     const data = {
         "Mutation": [
-            { name: "Gloving", multiplier: "1.2x" },
-            { name: "Rainbow", multiplier: "1.35x" },
-            { name: "Ghost", multiplier: "2x" },
-            { name: "Cosmic", multiplier: "2.5x" }
+            { name: "Gloving ", multiplier: "1.2x" },
+            { name: "Rainbow ", multiplier: "1.35x" },
+            { name: "Ghost ", multiplier: "2x" },
+            { name: "Cosmic ", multiplier: "2.5x" }
         ],
         "Slimes": [
-            { name: "Yellow", multiplier: "1.2x" },
-            { name: "Blue", multiplier: "1.4x" },
-            { name: "Purple", multiplier: "1.65x" },
-            { name: "Red", multiplier: "2.25x" },
-            { name: "Black", multiplier: "2.4x" },
-            { name: "Green", multiplier: "2.55x" },
-            { name: "Orange", multiplier: "2.7x" },
-            { name: "Christmas (Xmas)", multiplier: "2.85x" },
-            { name: "Neowave", multiplier: "3x" },
-            { name: "Shock", multiplier: "3.15x" },
-            { name: "Halloween", multiplier: "3.25x" }
+            { name: "Yellow ", multiplier: "1.2x" },
+            { name: "Blue ", multiplier: "1.4x" },
+            { name: "Purple ", multiplier: "1.65x" },
+            { name: "Red ", multiplier: "2.25x" },
+            { name: "Black ", multiplier: "2.4x" },
+            { name: "Green ", multiplier: "2.55x" },
+            { name: "Orange ", multiplier: "2.7x" },
+            { name: "Christmas (Xmas) ", multiplier: "2.85x" },
+            { name: "Neowave ", multiplier: "3x" },
+            { name: "Shock ", multiplier: "3.15x" },
+            { name: "Halloween ", multiplier: "3.25x" }
 
         ],
         "Evolution and Size": [
-            { name: "Baby", multiplier: "1x" },
-            { name: "Big", multiplier: "1.5x" },
-            { name: "Huge", multiplier: "2x" },
-            { name: "Goliath", multiplier: "2.5x" },
+            { name: "Baby ", multiplier: "1x" },
+            { name: "Big ", multiplier: "1.5x" },
+            { name: "Huge ", multiplier: "2x" },
+            { name: "Goliath ", multiplier: "2.5x" },
             { separator: true },
-            { name: "Golden", multiplier: "1.5x" },
-            { name: "Void", multiplier: "2x" },
-            { name: "Pristine", multiplier: "2.17x" }
+            { name: "Golden ", multiplier: "1.5x" },
+            { name: "Void ", multiplier: "2x" },
+            { name: "Pristine ", multiplier: "2.17x" }
         ]
     };
 
