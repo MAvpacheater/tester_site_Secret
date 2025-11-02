@@ -38,7 +38,7 @@
     let selected = { slime: 'slime_shock', mutation: 'mutation_cosmic', evolution: 'evolution_goliath', type: 'type_pristine' };
 
     const modifiers = {
-        slime_shock: 3.15, slime_neowave: 3.0, slime_christmas: 2.85, slime_orange: 2.7,
+        slime_halloween: 3.2411328, slime_shock: 3.15, slime_neowave: 3.0, slime_christmas: 2.85, slime_orange: 2.7,
         slime_green: 2.55, slime_black: 2.4, slime_red: 2.25, slime_purple: 1.65,
         slime_blue: 1.4, slime_yellow: 1.2,
         mutation_cosmic: 2.5, mutation_ghost: 2.0, mutation_rainbow: 1.35, mutation_glowing: 1.2,
@@ -53,7 +53,8 @@
             slime_purple: { name: "Purple", multiplier: "1.65x" }, slime_red: { name: "Red", multiplier: "2.25x" },
             slime_black: { name: "Black", multiplier: "2.4x" }, slime_green: { name: "Green", multiplier: "2.55x" },
             slime_orange: { name: "Orange", multiplier: "2.7x" }, slime_christmas: { name: "Christmas", multiplier: "2.85x" },
-            slime_neowave: { name: "Neowave", multiplier: "3.0x" }, slime_shock: { name: "Shock", multiplier: "3.15x" }
+            slime_neowave: { name: "Neowave", multiplier: "3.0x" }, slime_shock: { name: "Shock", multiplier: "3.15x" },
+            halloween_shock: { name: "Halloween", multiplier: "3.25x" }
         },
         mutation: {
             mutation_glowing: { name: "Glowing", multiplier: "1.2x" }, mutation_rainbow: { name: "Rainbow", multiplier: "1.35x" },
