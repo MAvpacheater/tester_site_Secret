@@ -19,7 +19,9 @@
             { name: "Orange", multiplier: "2.7x" },
             { name: "Christmas (Xmas)", multiplier: "2.85x" },
             { name: "Neowave", multiplier: "3x" },
-            { name: "Shock", multiplier: "3.15x" }
+            { name: "Shock", multiplier: "3.15x" },
+            { name: "Halloween", multiplier: "3.25x" }
+
         ],
         "Evolution and Size": [
             { name: "Baby", multiplier: "1x" },
