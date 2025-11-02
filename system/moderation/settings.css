@@ -1,6 +1,6 @@
 /* ========== SETTINGS CORE ========== */
 .settings-container {
-    width: 200%;
+    width: 150%;
     max-width: 1600px;
     padding: 20px 40px;
     margin: 0 auto;
@@ -24,7 +24,7 @@
     margin-bottom: 20px;
     backdrop-filter: blur(10px);
     position: relative;
-    width: 100%;
+    width: 150%;
     box-sizing: border-box;
     transition: all 0.2s ease;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
