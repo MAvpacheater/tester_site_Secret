@@ -1,4 +1,4 @@
-// ========== SETTINGS MODULE (ВИПРАВЛЕНО ПІДСВІЧУВАННЯ) ==========
+// ========== SETTINGS MODULE (БЕЗ СЕКЦІЇ КОЛЬОРІВ) ==========
 (function() {
     'use strict';
     
@@ -8,7 +8,7 @@
     const state = {
         initialized: false,
         translations: null,
-        categories: { background: false, menu: false, colors: false, language: false }
+        categories: { background: false, menu: false, language: false }
     };
 
     // ========== CONFIG ==========
@@ -133,7 +133,6 @@
             const updates = [
                 { sel: '.settings-title', txt: t.title },
                 { sel: '[data-category="language"] .category-title span:last-child', txt: t.language },
-                { sel: '[data-category="colors"] .category-title span:last-child', txt: t.colors },
                 { sel: '[data-category="background"] .category-title span:last-child', txt: t.background },
                 { sel: '[data-category="menu"] .category-title span:last-child', txt: t.menu }
             ];
@@ -164,17 +163,6 @@
                 const el = document.querySelector(`[data-language="${key}"] .language-option-name`);
                 if (el && CONFIG.languages[key].name[lang]) {
                     el.textContent = CONFIG.languages[key].name[lang];
-                }
-            });
-        },
-
-        updateColorThemeNames() {
-            const lang = typeof getCurrentAppLanguage === 'function' ? getCurrentAppLanguage() : 'en';
-            const themes = window.colorThemes || {};
-            Object.keys(themes).forEach(theme => {
-                const el = document.querySelector(`[data-theme="${theme}"] .color-option-name`);
-                if (el && themes[theme].name?.[lang]) {
-                    el.textContent = themes[theme].name[lang];
                 }
             });
         },
@@ -210,9 +198,6 @@
             this.updateBackground();
             this.updateMenuPosition();
             this.updateLanguage();
-            if (typeof updateColorThemeUI === 'function') {
-                updateColorThemeUI();
-            }
         }
     };
 
@@ -241,7 +226,6 @@
             if (!page) return;
             
             const classMap = {
-                colors: 'color-options',
                 background: 'background-options',
                 language: 'language-options',
                 menu: 'menu-options'
@@ -287,13 +271,9 @@
         if (!CONFIG.menuPositions[pos]) return;
         console.log('📍 Changing menu position to:', pos);
         
-        // 1. Зберігаємо в storage
         storage.set('menuPosition', pos);
-        
-        // 2. Оновлюємо UI негайно
         ui.updateMenuPosition();
         
-        // 3. Застосовуємо позицію меню
         if (window.menuPositionManager?.apply) {
             window.menuPositionManager.apply(pos);
         }
@@ -325,19 +305,6 @@
             </div>
         `).join('');
 
-        const themes = window.colorThemes || {};
-        const colorHTML = Object.entries(themes).map(([key, theme]) => `
-            <div class="color-option" data-theme="${key}" onclick="changeColorTheme('${key}')">
-                <div class="color-preview">
-                    <div class="color-preview-split">
-                        <div class="color-preview-left" style="background: ${theme.primary}"></div>
-                        <div class="color-preview-right" style="background: ${theme.secondary}"></div>
-                    </div>
-                </div>
-                <div class="color-option-name">${theme.name.en}</div>
-            </div>
-        `).join('');
-
         const langHTML = Object.entries(CONFIG.languages).map(([key, lang]) => `
             <div class="language-option" data-language="${key}" onclick="changeLanguage('${key}')">
                 <div class="language-option-icon">${lang.icon}</div>
@@ -358,17 +325,6 @@
                         <span class="category-toggle">▼</span>
                     </div>
                     <div class="language-options collapsed">${langHTML}</div>
-                </div>
-                
-                <div class="settings-section" data-category="colors">
-                    <div class="category-header collapsed" onclick="toggleSettingsCategory('colors')">
-                        <div class="category-title">
-                            <span class="section-icon">🎨</span>
-                            <span>Color Theme</span>
-                        </div>
-                        <span class="category-toggle">▼</span>
-                    </div>
-                    <div class="color-options collapsed">${colorHTML}</div>
                 </div>
                 
                 <div class="settings-section" data-category="background">
@@ -412,7 +368,6 @@
         
         requestAnimationFrame(() => {
             ui.updateSettings();
-            ui.updateColorThemeNames();
             ui.updateLanguageNames();
             ui.updateAllUI();
             categories.apply();
@@ -440,13 +395,11 @@
         languageChangeTimeout = setTimeout(() => {
             requestAnimationFrame(() => {
                 ui.updateSettings(e.detail.language);
-                ui.updateColorThemeNames();
                 ui.updateLanguageNames();
             });
         }, 100);
     });
 
-    // Слухаємо зміни сторінки - оновлюємо UI при поверненні на settings
     document.addEventListener('pageChanged', (e) => {
         if (e.detail?.page === 'settings' && state.initialized) {
             console.log('📄 Returned to settings, updating UI...');
