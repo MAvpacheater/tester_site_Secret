@@ -1,4 +1,4 @@
-// ========== AWS MODULE LOADER (Optimized with Shared Styles) ==========
+// ========== AWS MODULE LOADER (OPTIMIZED - Lazy Loading) ==========
 
 class AWSModuleLoader {
     constructor() {
@@ -8,21 +8,21 @@ class AWSModuleLoader {
         this.infoSharedStylesLoaded = false;
         this.moduleConfigs = {
             // Калькулятори - БЕЗ власних CSS (все в shared)
-            calculator: { path: 'calc/calculator.js', css: 'calc/calculator.css' }, // має унікальні стилі
+            calculator: { path: 'calc/calculator.js', css: 'calc/calculator.css' },
             arm: { path: 'calc/arm.js' },
-            grind: { path: 'calc/grind.js', css: 'calc/grind.css' }, // має унікальні стилі
+            grind: { path: 'calc/grind.js', css: 'calc/grind.css' },
             roulette: { path: 'calc/roulette.js' },
-            boss: { path: 'calc/boss.js', css: 'calc/boss.css' }, // має унікальні стилі
+            boss: { path: 'calc/boss.js', css: 'calc/boss.css' },
             
             // Інформація - БЕЗ власних CSS (все в shared)
             boosts: { path: 'info/boosts.js' },
             shiny: { path: 'info/shiny.js' },
-            secret: { path: 'info/secret.js', css: 'info/secret.css' }, // має унікальні стилі
-            codes: { path: 'info/codes.js', css: 'info/codes.css' }, // має унікальні стилі
+            secret: { path: 'info/secret.js', css: 'info/secret.css' },
+            codes: { path: 'info/codes.js', css: 'info/codes.css' },
             aura: { path: 'info/aura.js' },
-            trainer: { path: 'info/trainer.js', css: 'info/trainer.css' }, // має унікальні стилі
+            trainer: { path: 'info/trainer.js', css: 'info/trainer.css' },
             charms: { path: 'info/charms.js' },
-            potions: { path: 'info/potions.js', css: 'info/potions.css' }, // має унікальні стилі
+            potions: { path: 'info/potions.js', css: 'info/potions.css' },
             worlds: { path: 'info/worlds.js' },
             
             // Інше (AWS)
@@ -168,23 +168,14 @@ class AWSModuleLoader {
     async preloadCriticalModules() {
         console.log('📦 Preloading critical AWS resources...');
         
-        // 1. Спочатку завантажити спільні стилі для калькуляторів
-        await this.loadSharedStyles();
+        // ONLY load shared CSS - no individual modules
+        // Modules will load on-demand when user switches pages
+        await Promise.all([
+            this.loadSharedStyles(),
+            this.loadInfoSharedStyles()
+        ]);
         
-        // 2. Потім спільні стилі для інфо
-        await this.loadInfoSharedStyles();
-        
-        // 3. Потім критичні модулі calc
-        const criticalCalc = ['calculator', 'arm', 'grind'];
-        await Promise.all(
-            criticalCalc.map(name => {
-                const config = this.moduleConfigs[name];
-                // Завантажити тільки унікальний CSS якщо є
-                return config?.css ? this.loadCSS(this.basePath + config.css) : Promise.resolve();
-            })
-        );
-        
-        console.log('✅ Critical AWS resources preloaded');
+        console.log('✅ Critical AWS resources preloaded (shared CSS only)');
     }
 
     isModuleLoaded(moduleName) {
@@ -223,5 +214,5 @@ Object.assign(window, {
     getAWSModulesByCategory: () => awsLoader.getModulesByCategory()
 });
 
-console.log('✅ AWS Module Loader initialized (Optimized with shared styles)');
+console.log('✅ AWS Module Loader initialized (OPTIMIZED - Lazy Loading)');
 console.log('📍 Base path:', awsLoader.basePath);
