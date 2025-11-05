@@ -2,146 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="description" content="Arm Helper - Comprehensive calculator and helper tool for Animal Warfare Simulator">
+    <meta name="keywords" content="animal warfare simulator, aws, calculator, arm calculator, grind calculator, roulette calculator">
+    <base href="/tester_site_Secret/">
+    
     <title>Arm Helper</title>
     
-    <script>
-        // Set base path early - BEFORE any resource loading
-        (function() {
-            const host = window.location.host;
-            const protocol = window.location.protocol;
-            let basePath = '';
-            
-            if (host === 'mavpacheater.github.io') {
-                basePath = '/tester_site_Secret/';
-            }
-            
-            window.__APP_BASE_PATH__ = basePath;
-            console.log('🔧 Base path set:', basePath);
-            
-            // Create base tag for relative paths
-            const base = document.createElement('base');
-            base.href = protocol + '//' + host + basePath;
-            document.head.insertBefore(base, document.head.firstChild);
-            console.log('✅ Base tag created:', base.href);
-        })();
-    </script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="AWS/image/favicon.ico">
     
-    <script>
-        (function() {
-            const redirect = sessionStorage.pathToRestore;
-            if (redirect && redirect !== '/') {
-                const host = window.location.host;
-                const basePath = host === 'mavpacheater.github.io' ? '/tester_site_Secret' : '';
-                history.replaceState(null, null, basePath + redirect);
-            }
-        })();
-    </script>
-    
-    <link rel="icon" type="image/png" sizes="32x32" href="AWS/image/bg/penguin.png">
-    <link rel="preload" href="system/general.css" as="style">
-    <link rel="preload" href="system/general.js" as="script">
-    
-    <!-- Core CSS -->
+    <!-- General Styles -->
     <link rel="stylesheet" href="system/general.css">
+    
+    <!-- Theme Button Styles (NEW!) -->
+    <link rel="stylesheet" href="system/theme_button.css">
+    
+    <!-- Menu Manager Styles -->
     <link rel="stylesheet" href="system/moderation/menu_manager.css">
-    <link rel="stylesheet" href="system/moderation/settings.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="system/system_content/system_content.css" media="print" onload="this.media='all'">
     
-    <style>
-        /* Loading screen styles */
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            transition: opacity 0.3s ease-out;
-        }
-        
-        .loading-content {
-            text-align: center;
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .loading-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-            animation: spin 2s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .loading-subtitle {
-            margin-top: 10px;
-            opacity: 0.8;
-            font-size: 14px;
-        }
-        
-        /* Signature styles */
-        .signature {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            font-size: 12px;
-            color: var(--text-secondary, #888);
-            z-index: 1000;
-            user-select: none;
-        }
-        
-        /* Auto-reload indicator */
-        .auto-reload-indicator {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(102, 126, 234, 0.9);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            z-index: 9999;
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-        
-        .auto-reload-indicator.show {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-    </style>
+    <!-- System Content Styles -->
+    <link rel="stylesheet" href="system/system_content/system_content.css">
     
-    <!-- AWS CSS завантажуються динамічно через aws_loader.js -->
+    <!-- Preload critical scripts -->
+    <link rel="preload" href="system/loader.js" as="script">
+    <link rel="preload" href="system/general.js" as="script">
+    <link rel="preload" href="system/colors.js" as="script">
+    <link rel="preload" href="system/theme_switcher.js" as="script">
 </head>
 <body>
+    <!-- Loading Screen -->
     <div id="loading-screen">
         <div class="loading-content">
-            <div class="loading-icon">🚀</div>
+            <div class="loading-icon">🐾</div>
             <div>Loading Arm Helper...</div>
-            <div class="loading-subtitle">Initializing...</div>
+            <div class="loading-subtitle">Initializing systems</div>
         </div>
     </div>
 
-    <div class="auto-reload-indicator" id="autoReloadIndicator">🔄 Auto-reload active</div>
-    <div id="app-content"></div>
-    <div class="signature">2025 PROJECT NOT UPDATING NOW</div>
-    
-    <!-- Core System Scripts (порядок важливий!) -->
-    <script src="system/general.js" defer></script>
-    <script src="system/colors.js" defer></script>
-    <script src="system/reload.js" defer></script>
-    <script src="system/url.js" defer></script>
-    <script src="system/loader.js" defer></script>
+    <!-- App Content Container -->
+    <div id="app-content">
+        <!-- Content will be dynamically loaded here by content_loader.js -->
+    </div>
+
+    <!-- Signature -->
+    <div class="signature">Created by Mr dep Dodep</div>
+
+    <!-- Core Scripts (Order matters!) -->
+    <script src="system/general.js"></script>
+    <script src="system/colors.js"></script>
+    <script src="system/url.js"></script>
+    <script src="system/reload.js"></script>
+    <script src="system/loader.js"></script>
 </body>
 </html>
