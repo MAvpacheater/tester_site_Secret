@@ -36,6 +36,9 @@ async function loadSystemScripts() {
             createScript('system/moderation/peoples.js'),
             createScript('system/moderation/menu_manager.js'),
             
+            // Theme switcher (NEW!)
+            createScript('system/theme_switcher.js'),
+            
             // AWS system
             createScript('AWS/system/aws_utils.js'),
             createScript('AWS/system/aws_router.js'),
@@ -181,12 +184,15 @@ function initDebugUtilities() {
             console.log('URL:', window.location.href);
             console.log('Path:', window.location.pathname);
             console.log('\n=== FUNCTIONS ===');
-            ['initializeApp', 'switchPage', 'getCurrentAppLanguage', 'initURLRouting', 'loadAllAWSModules', 'loadAllRCUModules'].forEach(fn => {
+            ['initializeApp', 'switchPage', 'getCurrentAppLanguage', 'initURLRouting', 'loadAllAWSModules', 'loadAllRCUModules', 'switchToNextTheme'].forEach(fn => {
                 console.log(`${typeof window[fn] === 'function' ? '✅' : '❌'} ${fn}`);
             });
             console.log('\n=== MENU MANAGER ===');
             console.log('Position Manager:', typeof window.menuPositionManager);
             console.log('Current Position:', localStorage.getItem('armHelper_menuPosition') || 'left');
+            console.log('\n=== THEME ===');
+            console.log('Current Theme:', localStorage.getItem('armHelper_theme') || 'dark');
+            console.log('Theme Switcher:', typeof window.switchToNextTheme === 'function' ? '✅' : '❌');
             console.log('\n=== AWS ===');
             console.log('Loader:', typeof window.awsLoader);
             console.log('Router:', typeof window.awsRouter);
@@ -237,13 +243,14 @@ function initDebugUtilities() {
             }
         },
         
-        testMenuPositions: () => {
-            console.log('🎯 Testing menu positions...');
-            ['left', 'right', 'up', 'down'].forEach((pos, i) => {
+        testThemes: () => {
+            console.log('🎨 Testing themes...');
+            const themes = ['dark', 'light', 'winter'];
+            themes.forEach((theme, i) => {
                 setTimeout(() => {
-                    console.log(`Testing position: ${pos}`);
-                    if (window.menuPositionManager) {
-                        window.menuPositionManager.apply(pos);
+                    console.log(`Testing theme: ${theme}`);
+                    if (typeof applyTheme === 'function') {
+                        applyTheme(theme);
                     }
                 }, i * 2000);
             });
@@ -259,4 +266,4 @@ function initDebugUtilities() {
     console.log('✅ Debug utilities ready');
 }
 
-console.log('✅ System Loader ready (OPTIMIZED - Parallel Loading)');
+console.log('✅ System Loader ready (WITH THEME SWITCHER - Parallel Loading)');
